@@ -1,0 +1,193 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/#1}}
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
+
+\title{One-loop corrections for the bad Boussinesq soliton and breather}
+\author{Project \emph{quantum\_boussinesq\_solitons} (Phase 2, next step 2)}
+\date{3 November 2026}
+\begin{document}\maketitle
+
+\begin{abstract}
+We ask whether Dashen--Hasslacher--Neveu (DHN) one-loop corrections can fix the $O(\hbar^0)$ ambiguities of the candidate S-matrix in \texttt{smatrix\_ansatz.pdf}.
+
+\emph{Step 0: well-posedness.} The one-loop problem is ill-posed on the full phase space. For the unstable phonons ($|q|>1$) the soliton changes the amplitude of the mode, not only its phase, so no phase shift exists. The problem is well posed and finite on the Charlier--Lenells invariant class, where only stable phonons $|q|<1$ are kept. The PI chose this ``scheme A''.
+
+\emph{Results in scheme A.}
+\begin{itemize}
+\item The phonon phase shifts are $\theta(q)=\arg A_{12}$, verified against the linearised equation.
+\item The one-loop soliton energy $E_1(\beta)$ is finite and unambiguous at fixed $\beta$. The zero-point momentum needs a prescription at the band edges.
+\item The breather's one-loop energy and momentum are the holomorphic continuations of the constituents' values.
+\item Consequently the string condition of the ansatz needs \emph{no} $O(\hbar^0)$ shift and no $\hbar$ renormalisation at this order, once rapidities label the one-loop dispersion. The Maslov index of the breather orbit is assumed, not derived.
+\end{itemize}
+
+\emph{Main caveat.} The short-wave part of the stable band, $1/\sqrt2<|q|<1$, has reversed group velocity. Its phonon at $q^*=-\sqrt3/2$ co-moves with a slow soliton and is captured, so $E_1-VP_1\to-\tfrac{3\sqrt3}8\hbar$ as $\beta\to0$. The quantum Toda chain has no such mode. Scheme~A therefore differs from the Toda continuum limit at one loop even for small amplitudes.
+
+We also correct an error in \texttt{smatrix\_ansatz.pdf}: the breathers with $\pi/3<b<\pi/2$ move to the left, not the right.
+\end{abstract}
+\tableofcontents
+
+\section{Step 0: is the one-loop problem well posed?}
+\paragraph{Phonons as continued solitons.} A soliton has $\tau=1+e^{Kx-\Omega t}$, $\Omega^2=K^2+K^4$. At $K=iq$ this becomes a phonon $e^{iqx-i\omega t}$ with $\omega^2=q^2-q^4$. We take $\beta=i\arcsin q$ for $|q|<1$ and $\beta=i\pi/2+\operatorname{arccosh}q$ for $|q|>1$. Hirota's two-soliton $\tau$, linearised in the phonon amplitude, gives an exact solution of the linearised equation around the soliton; the phonon emerges multiplied by $A(\text{soliton},\text{phonon})$.
+
+\begin{proposition}[\Lc, \script{oneloop\_step0\_wellposedness.py}]\label{prop:step0}
+For solitons $\beta_s=0.3,0.7,1.4$, both phonon branches:
+\begin{enumerate}
+\item for $|q|<1$, $|A|=1$ exactly, so $\theta(q)=\arg A$ is a real phase shift; the spectral parameter $\ell$ of the phonon is real, in $[-1,1]$;
+\item for $|q|>1$, $|A|\neq1$ (e.g.\ $1.84$ at $q=1.3$, $\beta_s=0.7$), so the soliton changes the \emph{amplitude} of the growing mode and no phase shift exists; $\ell$ is purely imaginary there.
+\end{enumerate}
+\end{proposition}
+So the DHN sum over phase shifts is undefined on the full phase space: the full problem is \emph{not} well posed. The unstable modes carry imaginary $\ell$. We identify this, \Ld, with the part $k\in[0,i]$ of the Charlier--Lenells spectral contour on which they impose $r_1=0$ to obtain global well-posedness \La~\cite{CL-WW,CL-SOL}. The class $r_1|_{[0,i]}=0$ is invariant under the flow. Its tangent space at a soliton is spanned by the stable phonons $|q|<1$ and the zero modes.
+
+\paragraph{Decision (PI).} Three ways out were considered:
+\begin{itemize}
+\item \textbf{(A)} quantise the reduced (Charlier--Lenells) theory, keeping phonons $|q|<1$ only;
+\item \textbf{(B)} use the Toda lattice as the definition, which is valid only for $\beta\to0$;
+\item \textbf{(C)} analytic continuation from the good equation.
+\end{itemize}
+The PI chose (A). In (A) everything is finite without a free cutoff:
+\begin{itemize}
+\item $\omega(\pm1)=0$, so the band edges cost no zero-point energy.
+\item $\langle\phi_x^2\rangle=\hbar/(2\pi)$ in the reduced vacuum.
+\item The only scheme freedom is normal ordering of $\phi_x^3$. This adds $3\langle\phi_x^2\rangle M=(3\hbar/2\pi)M$. Since $\int\phi_x=M$ is a boundary term, it does not change the equations of motion.
+\end{itemize}
+\Lc
+
+\section{Phase shifts and the one-loop soliton energy}
+\begin{proposition}[\Lc, \script{oneloop\_phase\_shifts.py}]
+Let $\tau=1+e^{\theta_1}+\varepsilon(e^{\theta_2}+Ae^{\theta_1+\theta_2})$ and $\delta v=\partial_\varepsilon\,2(\log\tau)_{xx}|_{\varepsilon=0}$. Then $\delta v$ solves $\delta v_{tt}=\delta v_{xx}+\delta v_{xxxx}+6(v_0\delta v)_{xx}$; the residual is $<10^{-29}$ at test points. Its asymptotic ratio $\delta v(+\infty)/\delta v(-\infty)$ equals $A$ to $10^{-16}$. The physical mode with $\omega>0$ requires $\epsilon=\operatorname{sgn}q$ in the continuation: one oscillator per $q\in(-1,1)$.
+\end{proposition}
+
+The Levinson-type count $(2\pi)^{-1}\int_{-1}^1\theta'\,dq$ is \emph{not} an integer: for example $-0.63$ at $\beta=0.2$, $-1.96$ at $\beta=0.7$ and $+0.57$ at $\beta=1.5$. This is because $\theta$ does not vanish at the band edges. Edge modes have $\omega=0$, so the lab-frame energy is unaffected; momentum is affected (see below).
+
+\paragraph{Energy.} Box quantisation $qL+\theta(q)=2\pi n$ gives, at fixed classical $\beta$ \Lb\ (DHN method) / \Lc\ (here):
+\begin{equation}\label{eq:E1}
+E_1(\beta)=\frac{\hbar}{4\pi}\int_{-1}^{1}\omega(q)\,\theta'(q)\,dq\ \ (+\,cM),\qquad \omega=|q|\sqrt{1-q^2}.
+\end{equation}
+This is unambiguous, because $\omega=0$ at $q=0,\pm1$ where $\theta$ may jump by $2\pi$.
+
+\begin{center}\small
+\begin{tabular}{@{}lcccccccc@{}}\toprule
+$\beta$ & 0.01 & 0.03 & 0.1 & 0.3 & 0.7 & 1.1 & 1.5 & 2.0\\\midrule
+$E_1/\hbar$ & $-0.2262$ & $-0.2353$ & $-0.2441$ & $-0.2226$ & $-0.1565$ & $-0.1058$ & $-0.0710$ & $-0.0431$\\\bottomrule
+\end{tabular}\end{center}
+\Lc\ (\script{oneloop\_soliton\_energy.py}; scheme term $c=0$. Normal ordering adds $(3\hbar/\pi)\sinh\beta$.)
+
+\begin{proposition}[\Lc, \script{oneloop\_soliton\_energy.py}]\label{prop:res}
+As $\beta\to0$, $E_1\to-\tfrac12\hbar\,\omega(q^*)=-\tfrac{\sqrt3}{8}\hbar$, with $q^*=-\sqrt3/2$. The mechanism is as follows.
+\begin{itemize}
+\item On $1/\sqrt2<|q|<1$ the band $\omega=|q|\sqrt{1-q^2}$ \emph{decreases}, so the group velocity is reversed and takes every value in $(0,\infty)$.
+\item At $q^*(V)$ a phonon co-moves with the soliton ($V=\cosh\beta\to1$ gives $q^*=-\sqrt3/2$).
+\item Its phase shift winds by $-2\pi$ in a window of width $O(\beta)$: $-0.996\times2\pi$ within $|q-q^*|<0.08$ at $\beta=10^{-3}$. One mode is captured.
+\item The approach to the limit is slow ($E_1+\omega(q^*)/2=-0.0097\hbar$ at $\beta=0.01$).
+\end{itemize}
+\end{proposition}
+
+\paragraph{Momentum.} The zero-point momentum $P_1=\frac{\hbar}{4\pi}\int q\theta'\,dq$ has edge terms $q\theta|_{\pm1}\neq0$, which oscillate with the box length. We average them out; this is a prescription \Ld. With it, at fixed physical momentum
+\[
+E(P)=E_{\rm cl}(P)+[E_1-VP_1](\beta(P)),\qquad [E_1-VP_1]/\hbar\to-\tfrac12\big(\omega(q^*)-q^*\big)=-\tfrac{3\sqrt3}{8}\approx-0.650,
+\]
+numerically $-0.640$ at $\beta=0.01$, $-0.562$ at $0.1$, $-0.427$ at $0.3$ and $-0.260$ at $0.7$. \Lc
+
+\section{Breathers}
+\paragraph{Kinematics (correction).} For $\beta_{1,2}=a\mp ib$, the envelope moves with
+\[
+V=\frac{\operatorname{Re}w}{\operatorname{Re}k}=\frac{\cosh a\cos2b}{\cos b}.
+\]
+On $\pi/3<b<\pi/2$, $V<-\cosh a$: every breather is \emph{supersonic and left-moving}, and none is at rest. The range $\pi/2<b<2\pi/3$ gives their parity images. \Lc\ (\script{oneloop\_breather.py}, checked against the centre of mass of $v^2$ over one period.) \texttt{smatrix\_ansatz.pdf} had called them right-moving; its text and \texttt{smatrix\_poles\_bootstrap.py} have been corrected. The pole analysis there used only $\operatorname{Im}(P_1-P_2)$ and is unaffected.
+
+\begin{proposition}[\Lc, \script{oneloop\_breather.py}]\label{prop:br}
+\begin{enumerate}
+\item $|A(\beta_1,\cdot)A(\beta_2,\cdot)|=1$ on the band, so the breather phase shift is $\theta_{\rm br}=\theta(\beta_1)+\theta(\beta_2)$, which is real.
+\item Define $e(\beta)=\frac1{4\pi}\int\omega\,\partial_q(-i\log A)\,dq$ and $p(\beta)=\frac1{4\pi}\int q\,\partial_q(-i\log A)\,dq$. For real $\beta$ these equal $E_1/\hbar$ and $P_1/\hbar$. Both satisfy Cauchy--Riemann along $\beta=a-it$, $0\le t\le b$, so no zero or pole of $A$ crosses the band.
+\item The breather's one-loop energy and momentum, computed directly from $\theta_{\rm br}$, equal $\hbar[e(\beta_1)+e(\beta_2)]$ and $\hbar[p(\beta_1)+p(\beta_2)]$.
+\end{enumerate}
+\end{proposition}
+
+\paragraph{Semiclassical quantisation.} The breather is a relative periodic orbit, with stability angles $T(\omega-Vq)$. Gutzwiller/DHN quantisation then gives \Lb\ (method) / \Lc\ (application):
+\[
+E=E_{\rm cl}+\hbar\sum_i e(\beta_i),\qquad P=P_{\rm cl}+\hbar\sum_i p(\beta_i),\qquad\text{at } I_{\rm br}(\beta_1,\beta_2)=(N+\mu/4)\hbar .
+\]
+We take $\mu=0$, as in Bogdan--Charkina \cite{BC} and as DHN found for sine-Gordon. This is \emph{not} derived here.
+
+\begin{center}\small
+\begin{tabular}{@{}cccccc@{}}\toprule
+$N$ & $b_N$ & $E_{\rm cl}$ & $\hbar\sum e$ & $P_{\rm cl}$ & $\hbar\sum p$\\\midrule
+1 & 1.06092 & 0.87107 & $-0.01386$ & $-0.50737$ & $-0.00697$\\
+2 & 1.07467 & 0.97592 & $-0.01351$ & $-0.38750$ & $-0.00724$\\
+3 & 1.08846 & 1.07585 & $-0.01315$ & $-0.26506$ & $-0.00751$\\\bottomrule
+\end{tabular}\\[2pt]
+One-loop breather data at the ansatz poles, $\hbar=0.1$, $a=0.8$ (\Lc, numerical; scheme $c=0$).
+Direct breather sums agree with the continued constituent sums to $10^{-10}$, e.g.\ $(E_1,P_1)/\hbar=(-0.10213,-0.09437)$ at $(a,b)=(0.8,1.2)$.
+\end{center}
+
+\section{Consequences for the S-matrix ansatz}
+\begin{proposition}[\Lc\ given $\mu=0$]
+Label one-soliton states by their classical $\beta$, with one-loop dispersion $E_{\rm cl}+\hbar e$ and $P_{\rm cl}+\hbar p$. Then the poles of \texttt{smatrix\_ansatz.pdf} at $I_{\rm br}=N\hbar$ carry exactly the one-loop breather energies and momenta. At this order:
+\begin{itemize}
+\item the string condition needs no shift, so $\Gamma(1+i\eta)$ is confirmed rather than $\Gamma(\tfrac12+i\eta)$, given $\mu=0$;
+\item no renormalisation of $\hbar$ in $\eta$ is needed (that would first appear at $O(\hbar^2)$ in the spectrum);
+\item the scheme term $cM$ shifts soliton and breather energies consistently, since $M_{\rm br}=M_1+M_2$.
+\end{itemize}
+\end{proposition}
+This holds because of two features: the breather phase shift is additive over constituents, and the continuation in $\beta$ is holomorphic. Neither was guaranteed: a zero of $A$ crossing the band would have produced an extra, CDD-like term.
+
+\paragraph{What is not fixed.}
+\begin{itemize}
+\item The Maslov index $\mu$.
+\item The one-loop two-soliton phase. It requires the $O(\hbar)$ terms of $\Delta x$ (two-phonon dressing), which were not computed. So CDD factors with $\log f=O(\hbar^0)$ that leave the bound-state energies unchanged remain undetermined.
+\item The edge prescription for $P_1$.
+\end{itemize}
+
+\section{Cross-check with the quantum Toda chain}
+\texttt{toda\_route.pdf} gives the Toda one-loop dispersion $E_1=+0.0301$ and $+0.0203$ at $P=0.6$ and $0.4$ (Toda units). It is positive and decreases towards small $P$. In scheme~A, $E_1-VP_1\to-\tfrac{3\sqrt3}8\hbar\neq0$ as $\beta\to0$. The non-vanishing limit comes entirely from the captured co-moving phonon at $q^*=-\sqrt3/2$.
+
+Toda has no such phonon. Its band $\omega=2|\sin(q/2)|$ has group velocity $\le1<V$, so no Toda phonon co-moves with a supersonic soliton. Scheme~A and the Toda continuum limit therefore \emph{disagree at one loop even in the small-amplitude corner}. \Lc\ (mechanism) / \Ld\ (that the Toda $E_1\to0$ as $P\to0$ is inferred from two data points, and a quantitative comparison in scaling units was not carried out).
+
+This is the most important finding for the choice of quantum theory. The reversed-velocity part of the stable band, $1/\sqrt2<|q|<1$, is where the Boussinesq dispersion $q^2-q^4$ departs from its lattice origin. A scheme that also removes it, keeping $|q|<1/\sqrt2$, would remove the resonance. It is not clear that such a restriction defines an invariant class. This is a decision for the PI. \Ld
+
+\section{Summary}
+\begin{center}\small
+\begin{tabular}{@{}p{5cm}p{7.5cm}p{2cm}@{}}\toprule
+Question & Answer & Status\\\midrule
+Well posed on full phase space? & No: unstable modes have $|A|\ne1$, so no phase shift & \Lc\\
+Well posed on CL class (scheme A)? & Yes; finite, no free cutoff, scheme term $cM$ & \Lc/\Ld\\
+Phase shifts & $\theta=\arg A$, checked against the linearised equation & \Lc\\
+Soliton $E_1$ & finite table; $\to-\frac{\sqrt3}8\hbar$ as $\beta\to0$ (resonance) & \Lc\\
+Soliton $P_1$ & needs an edge prescription & \Ld\\
+Breather one-loop & sum of holomorphically continued constituent values & \Lc\\
+Ansatz pole condition & no $O(\hbar^0)$ shift, no $\hbar$ renormalisation (given $\mu=0$) & \Lc/\Ld\\
+CDD factors & not fixed (needs the one-loop two-soliton phase) & open\\
+Toda cross-check & qualitative disagreement at small amplitude & \Lc/\Ld\\
+\bottomrule\end{tabular}\end{center}
+
+\appendix\section{Scripts}
+All are in \texttt{phase2/scripts}; each ends with \texttt{ALL CHECKS PASSED}.
+\begin{itemize}
+\item \texttt{oneloop\_step0\_wellposedness.py}: Prop.~\ref{prop:step0}.
+\item \texttt{oneloop\_phase\_shifts.py}: linearised modes, phase shifts, Levinson-type counts.
+\item \texttt{oneloop\_soliton\_energy.py}: $E_1$ table, Prop.~\ref{prop:res}, $\langle\phi_x^2\rangle$.
+\item \texttt{oneloop\_breather.py}: breather kinematics, Prop.~\ref{prop:br}, table.
+\end{itemize}
+\emph{Failures along the way:}
+\begin{itemize}
+\item Machine-float phonon wavenumbers broke a 25-digit dispersion check.
+\item Integration break-points outside the band produced complex values.
+\item The root-finder for $q^*$ left the band.
+\item I first assumed a resonance window of width $O(\beta^2)$; it is $O(\beta)$.
+\item I first took $b=\pi/2$ as a ``breather at rest''. It is degenerate ($E_{\rm cl}=0$), and no breather is at rest. This led to the velocity correction above.
+\end{itemize}
+
+\begin{thebibliography}{9}\small
+\bibitem{BC} M.~M.~Bogdan, O.~V.~Charkina, arXiv:2502.14695, \emph{Low Temp. Phys.} 51 (2025).
+\bibitem{CL-WW} C.~Charlier, J.~Lenells, On Boussinesq's equation for water waves, arXiv:2204.02365.
+\bibitem{CL-SOL} C.~Charlier, J.~Lenells, Direct and inverse scattering for the Boussinesq equation with solitons, arXiv:2302.14593.
+\end{thebibliography}
+\end{document}

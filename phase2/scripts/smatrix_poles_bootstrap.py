@@ -1,7 +1,7 @@
 """Pole structure and breather-soliton bootstrap of the candidate S-matrix (smatrix_ansatz.py).
 
-Breather = two right-movers at b1 = a - i b, b2 = a + i b, pi/3 < b < pi/2 (right-moving breathers;
-left-moving ones are their parity images).
+Breather = two right-movers at b1 = a - i b, b2 = a + i b, pi/3 < b < pi/2 (left-moving supersonic breathers, V = cosh a cos 2b/cos b < -cosh a;
+the range pi/2 < b < 2 pi/3 gives their right-moving parity images).
  1. physical sheet: Im(P1 - P2) > 0 for this labelling (relative momentum k = (P1-P2)/(2 hbar) in
     the upper half plane, particle 1 on the left initially), so bound states = poles of S(1,2) here.
  2. poles: S(1,2) has simple poles exactly where i eta = -N, N = 1, 2, ..., i.e.
