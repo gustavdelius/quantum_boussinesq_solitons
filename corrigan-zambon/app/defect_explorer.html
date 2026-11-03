@@ -63,14 +63,14 @@ code,.m{font-family:var(--mono);font-size:.92em}
 <div class="wrap">
 <header>
   <h1>Boussinesq Defect Explorer</h1>
-  <p>Exact solitons of the good Boussinesq equation meeting a Corrigan–Zambon integrable defect at <span class="m">x = 0</span>. The solutions are their eqs. (5.1)–(5.16) of arXiv:2306.03772, which we checked against the defect sewing conditions. The plot shows <span class="m">u = 2(log τ)<sub>xx</sub></span>, the field in our project convention.</p>
+  <p>Exact solitons of the good Boussinesq equation meeting a Corrigan–Zambon integrable defect at <span class="m">x = 0</span>. The solutions are their eqs. (5.1)–(5.16) of arXiv:2306.03772, which we checked against the defect sewing conditions. The plot shows <span class="m">2(log τ)<sub>xx</sub></span>, the field of the good equation <span class="m">u<sub>tt</sub> = u<sub>xx</sub> − u<sub>xxxx</sub> − 3(u²)<sub>xx</sub></span> in our project convention. The τ-function on the left of the defect is τ<sub>L</sub>; on the right it is τ<sub>R</sub>, with each soliton term multiplied by a factor z. Corrigan–Zambon call the two sides' potentials u and v; their field is w = u<sub>x</sub> = −3 × the plotted field.</p>
 </header>
 
 <div class="bench">
   <section class="panel plots" aria-label="Plots">
     <canvas id="wave" aria-label="Field profile at the current time"></canvas>
     <div class="legend">
-      <span><span class="sw" style="background:var(--wave)"></span>with defect (u for x&lt;0, v for x&gt;0)</span>
+      <span><span class="sw" style="background:var(--wave)"></span>with defect (left and right fields; both solve the good equation)</span>
       <span id="lg-ghost"><span class="sw" style="background:var(--ghost)"></span>same solution without defect</span>
       <span><span class="sw" style="background:var(--defect)"></span>defect</span>
     </div>
