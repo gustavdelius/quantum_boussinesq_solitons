@@ -1,0 +1,497 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{phase2/\allowbreak scripts/\allowbreak #1}}
+\emergencystretch=1.5em
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{The one-loop two-soliton scattering phase\\ for the good Boussinesq equation}
+\author{Project \emph{quantum\_boussinesq\_solitons}, Phase 2 (next step 2)}
+\date{3 November 2026}
+
+\begin{document}\maketitle
+
+\begin{abstract}
+We compute the one-loop ($O(\hbar^0)$) two-soliton scattering phase for the good Boussinesq equation $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ directly from the fluctuation determinant around the two-soliton background, to decide between two candidate quantum $S$-matrices that agree at $O(\hbar^{-1})$ and differ at $O(\hbar^0)$:
+\begin{itemize}
+\item \textbf{(A)} the Gamma candidate continued from the bad equation, whose semiclassical expansion gives $\arg S-\delta_0/\hbar\to(\pi/2)\tau\operatorname{sgn}\eta+O(\hbar)$ ($\tau=+1$ for overtaking, $-1$ for head-on);
+\item \textbf{(B)} the pure exponential $S=e^{i\delta_0/\hbar}$, with zero $O(\hbar^0)$ phase.
+\end{itemize}
+Our main findings are:
+\begin{enumerate}
+\item \emph{Well-posed, reflectionless phonon scattering on the one-soliton background (\S\ref{sec:task1}).} Unlike the bad equation, the good equation has real phonon frequency $\omega(q)=|q|\sqrt{1+q^2}$ for all $q\in\mathbb{R}$. Linearising Hirota's $\tau$-function gives exact reflectionless scattering eigenmodes ($R(q)=0$ and zero asymptotic evanescent tails) with unitary transmission factor $A(1,\mathrm{ph}(q))=(z_a/z_b)/\overline{(z_a/z_b)}$, $|A|=1$ for all $q\neq 0$. The unwrapped phase shift $\theta(q;\alpha,\epsilon)$ decomposes into an exact three-root sum over $(\phi_1,\phi_2,\phi_3)=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$ with weights $(c_1,c_2,c_3)=(+1,+1,-2)$.
+\item \emph{Levinson count and heavy-branch linear instability (\S\ref{sec:task1}).} The total phase winding $N_{\rm Lev}=-(\Delta\theta_++\Delta\theta_-)/(2\pi)$ equals $+1$ in the regular region $\alpha<\pi/3$ (counting the translational zero mode $K=k_1$) and jumps to $+2$ on the heavy branch $\alpha>\pi/3$. The extra discrete mode is an exact normalisable exponentially growing/decaying mode with co-moving frequency $\tilde\omega=\pm i\sqrt{3}(\sin^2\alpha-3/4)$, arising from the secondary KP-triple roots $K_{cb}=\sin(\alpha-\pi/3)$ and $K_{ac}=\sin(\alpha+\pi/3)$ entering $(0,k_1)$ across the cusp $\alpha=\pi/3$.
+\item \emph{Closed-form dilogarithm formula for the two-soliton one-loop phase (\S\ref{sec:task2}).} On the two-soliton background, the linearised three-soliton $\tau$-function proves that Faddeev--Korepin's reflection/off-diagonal operator vanishes identically ($\hat{c}=0$). Because $\theta_1(q)\theta_2'(q)=O(q^{-3})$ as $|q|\to\infty$, the Faddeev--Korepin phonon integral is UV-convergent on $(-\infty,\infty)$ without any cutoff or counterterm. Moreover, it evaluates in closed form in terms of the Legendre chi function $\chi_2(z)=\tfrac12[\operatorname{Li}_2(z)-\operatorname{Li}_2(-z)]$.
+\item \emph{Verdict on (A) vs.\ (B): a third answer (\S\ref{sec:task3}).} In the regular region ($\alpha_j<\pi/3$, $A_{12}>0$), the one-loop phase is a \emph{non-constant, velocity-dependent function of $(\alpha_1,\alpha_2)$}. It therefore rules out \textbf{both} Candidate~(A) and Candidate~(B) as exact quantum $S$-matrices: neither contains the genuine two-body dilogarithmic phonon dressing $J_{12}(\alpha_1,\alpha_2)$. Remarkably, however:
+\begin{itemize}
+\item in the overtaking sector ($\alpha_1<\alpha_2<\pi/3$), the $q=0$ zero-mode Levinson jump between the raw Faddeev--Korepin integral $I_{12}^{\rm same}$ and the antisymmetrised integral $J_{12}^{\rm same}$ is precisely $-\pi/2$, which reproduces the $-\pi/2$ constant of Candidate~(A) at $\alpha_1\to\alpha_2$ (where $J_{12}^{\rm same}\to 0$), while adding the non-trivial two-body function $J_{12}^{\rm same}(\alpha_1,\alpha_2)\in(0,\pi/2)$;
+\item in the head-on sector ($\epsilon_1=+1,\epsilon_2=-1$), $I_{12}^{\rm head}=J_{12}^{\rm head}$ has no $\pm\pi/2$ constant and vanishes as $O(\alpha_1\alpha_2\ln(\alpha_1\alpha_2))\to 0$ at small amplitude, agreeing with Candidate~(B) and the quantum Toda Fermi-edge limit in that corner, while becoming $O(1)$ at finite $\alpha_j$.
+\end{itemize}
+\item \emph{Small-amplitude limit, cusp, and resonance lines (\S\ref{sec:task4}--\ref{sec:task5}).} As $\alpha_j\to 0$, $J_{12}^{\rm same}(\lambda\alpha_1,\lambda\alpha_2)$ converges to the scale-invariant KdV dilogarithm function $J_{\rm KdV}(\alpha_1/\alpha_2)$, with no co-moving phonon capture resonance (since $|v_g(q)|>1>|v_j|$). At the cusp $\alpha_j\to\pi/3$, $dP_j/d\alpha_j\to 0$, the Darboux shift $\Delta X_j'$ has a simple pole, and $I_{12}$ jumps by $\pm\pi$ as the heavy-branch instability mode detaches from $q=0$. Across all three classical resonance lines ($A_{12}\to 0$ or $\infty$), the fixed-$\alpha$ phonon integral $I_{12},J_{12}$ and its first derivatives remain completely finite and smooth, whereas the classical delay $\Delta X_j$ and the momentum-renormalisation shift $\delta_{\rm renorm}$ diverge logarithmically as $\ln|A_{12}|$.
+\end{enumerate}
+All formulas are verified to 35 digits in \script{oneloop\_good\_phonon\_scattering.py}, \script{oneloop\_good\_twosoliton\_phase.py}, and \script{oneloop\_good\_limits\_cusp\_resonance.py}; each ends with \texttt{ALL CHECKS PASSED}.
+\end{abstract}
+
+\tableofcontents
+
+\section{Conventions and the $O(\hbar^0)$ question}
+
+We work throughout with the \textbf{good} Boussinesq equation in the fixed project conventions (\texttt{README.md}, \texttt{phase2/report.pdf}, \texttt{phase2/defect\_semiclassics.pdf}):
+\begin{equation}\label{eq:good_bouss}
+u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\qquad u=\phi_x=2(\log\tau)_{xx},
+\end{equation}
+with Lagrangian density and canonical symplectic form
+\begin{equation}\label{eq:lagrangian}
+\mathcal{L}=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\phi_x^3-\tfrac12\phi_{xx}^2,\qquad
+\pi=\phi_t,\qquad \Omega=\int_{-\infty}^\infty dx\,d\pi\wedge d\phi .
+\end{equation}
+Planck's constant $\hbar$ refers to this canonical normalisation.
+
+\paragraph{One- and two-soliton kinematics.} A single soliton with angle parameter $\alpha\in(0,\pi/2)$ and direction $\epsilon\in\{+1,-1\}$ has \La/\Lc:
+\begin{equation}\label{eq:onesol_data}
+\begin{gathered}
+u_0(x,t)=\frac{k^2}{2}\operatorname{sech}^2\!\left(\frac{k(x-vt-x_0)}{2}\right),\qquad
+k=\sin\alpha,\qquad v=\epsilon\cos\alpha,\qquad \ell=-\epsilon\cos 3\alpha,\\
+M=\int_{-\infty}^\infty u_0\,dx=2k,\qquad \Pi=\int_{-\infty}^\infty\pi_0\,dx=-Mv=-\epsilon\sin 2\alpha,\\
+P=\tfrac23\epsilon k^3\cos\alpha,\qquad \frac{dP}{d\alpha}=\tfrac23\epsilon\sin\alpha\sin 3\alpha,\qquad
+E=\tfrac13 k^3(2\cos^2\alpha+1),\qquad \frac{dE}{d\alpha}=v\frac{dP}{d\alpha}.
+\end{gathered}
+\end{equation}
+Its two KP roots are
+\begin{equation}\label{eq:kp_roots}
+p_a=\frac{1}{2}\left(k+\frac{\epsilon\cos\alpha}{\sqrt{3}}\right),\qquad
+p_b=\frac{1}{2}\left(\frac{\epsilon\cos\alpha}{\sqrt{3}}-k\right),
+\end{equation}
+which belong to the three-root KP triple $\{p_a,p_b,p_c\}$ of $\ell(p):=-3\sqrt{3}\,p(1-4p^2)=\ell$, where the third root is $p_c=-p_a-p_b=-\epsilon\cos\alpha/\sqrt{3}$ \Lc\ (\texttt{phase2/defect\_semiclassics.pdf}).
+
+For two solitons with particle $1$ starting on the left at $t\to-\infty$ ($v_1>v_2$) and ending on the right at $t\to+\infty$, the Hirota phase factor and semiclassical two-soliton phase are \La/\Lc:
+\begin{equation}\label{eq:delta0}
+A_{12}=\frac{(p_{1a}-p_{2a})(p_{1b}-p_{2b})}{(p_{1a}-p_{2b})(p_{1b}-p_{2a})},\qquad
+\delta_0=\tfrac29(\ell_1-\ell_2)\ln A_{12}+T_{12},\qquad
+T_{12}=\tfrac23 M_1 M_2(v_1-v_2)=-\tfrac23(\Pi_1 M_2-\Pi_2 M_1).
+\end{equation}
+The topological cross term $T_{12}$ follows from exact symplecticity of the asymptotic two-soliton phase space with ordering-dependent cross terms $d\Pi_i\wedge dM_j$; in the Darboux coordinates $X_j'=X_j+\gamma_j\sum_{i\text{ left of }j}M_i$, where
+\begin{equation}\label{eq:gamma_darboux}
+\gamma_j=\frac{d\Pi_j/d\alpha_j}{dP_j/d\alpha_j}=-\frac{3\cos 2\alpha_j}{\sin\alpha_j\sin 3\alpha_j},
+\end{equation}
+the canonical spatial shifts are $\Delta X_1'=-\ln(A_{12})/k_1+\gamma_1 M_2=-\partial\delta_0/\partial P_1$ and $\Delta X_2'=+\ln(A_{12})/k_2-\gamma_2 M_1=-\partial\delta_0/\partial P_2$ \Lc\ (\texttt{phase2/report.pdf}, \texttt{phase2/defect\_semiclassics.pdf}). The regular region is $\alpha_1,\alpha_2<\pi/3$ with $A_{12}>0$. At the cusp $\alpha=\pi/3$, $dP/d\alpha=0$. Every breather of the good equation is singular \La/\Lc.
+
+\paragraph{The two candidate $S$-matrices.} Let $\eta=\tfrac29(\ell_1-\ell_2)/\hbar$ and $R(x)=\Gamma(1+ix)/\Gamma(1-ix)$.
+\begin{itemize}
+\item \textbf{(A) The Gamma candidate}, continued from the bad equation (\texttt{phase2/smatrix\_ansatz.pdf}, \texttt{phase2/defect\_semiclassics.pdf}):
+\begin{equation}\label{eq:candA}
+S_{\rm A}^{\rm same}=R(\eta)\left(\frac{e^2 A_{12}}{\eta^2}\right)^{i\eta}e^{iT_{12}/\hbar},\qquad
+S_{\rm A}^{\rm head}=R(\eta)^{-1}\left(\frac{A_{12}\eta^2}{e^2}\right)^{i\eta}e^{iT_{12}/\hbar}.
+\end{equation}
+By Stirling's expansion $R(\eta)(e/\eta)^{2i\eta}=\exp\big(i\frac{\pi}{2}\operatorname{sgn}\eta-\frac{i}{6\eta}+O(\eta^{-3})\big)$ as $|\eta|\to\infty$, Candidate~(A) predicts at one loop ($O(\hbar^0)$):
+\begin{equation}\label{eq:candA_oneloop}
+\delta_1^{\rm (A)}:=\lim_{\hbar\to 0}\left(\arg S_{\rm A}-\frac{\delta_0}{\hbar}\right)=\frac{\pi}{2}\tau\operatorname{sgn}\eta,
+\qquad \tau=\begin{cases}+1,&\text{same direction }(\epsilon_1=\epsilon_2),\\-1,&\text{head-on }(\epsilon_1=+1,\epsilon_2=-1).\end{cases}
+\end{equation}
+In the regular region $\alpha_j<\pi/3$, a colliding overtaking pair ($\epsilon_1=\epsilon_2=+1$, $v_1>v_2\implies\alpha_1<\alpha_2$) has $\ell_1-\ell_2=\cos 3\alpha_2-\cos 3\alpha_1<0$, so $\operatorname{sgn}\eta=-1$ and $\delta_1^{\rm (A)}=-\pi/2$. A regular head-on pair ($\epsilon_1=+1,\epsilon_2=-1$, $\alpha_1+\alpha_2<\pi/3$) has $\ell_1-\ell_2=-\cos 3\alpha_1-\cos 3\alpha_2=-2\cos\frac{3(\alpha_1+\alpha_2)}{2}\cos\frac{3(\alpha_1-\alpha_2)}{2}<0$, so again $\operatorname{sgn}\eta=-1$ and $\delta_1^{\rm (A)}=+\pi/2$.
+\item \textbf{(B) The pure exponential} $S_{\rm B}=e^{i\delta_0/\hbar}$, which predicts
+\begin{equation}\label{eq:candB_oneloop}
+\delta_1^{\rm (B)}=0.
+\end{equation}
+\end{itemize}
+
+\section{Task 1: Linearisation about the one-soliton and phonon scattering}\label{sec:task1}
+
+\subsection{The fourth-order fluctuation operator and evanescent modes}
+
+Expanding $\phi=\phi_0+\sqrt{\hbar}\,\delta\phi$ ($\delta u=\partial_x\delta\phi$) around a classical background $u_0(x,t)=\partial_x\phi_0(x,t)$ yields the quadratic fluctuation action $S^{(2)}=-\frac12\int dt\,dx\,\delta\phi\,H\delta\phi$, where
+\begin{equation}\label{eq:H_phi}
+H=\partial_t^2-\partial_x^2+\partial_x^4+6\partial_x u_0(x,t)\partial_x,\qquad
+H_u\,\delta u:=\left[\partial_t^2-\partial_x^2+\partial_x^4+6\partial_x^2 u_0(x,t)\right]\delta u=0.
+\end{equation}
+Unlike KdV (first-order in $\partial_t$), $H$ is \emph{second-order in time} with a canonical kinetic term $\tfrac12(\delta\phi_t)^2$ and a positive-definite fourth-order spatial principal symbol $+\partial_x^4$. On the vacuum $u_0=0$, plane waves $e^{iqx-i\omega t}$ satisfy $\omega^2=q^2+q^4$, so $\omega(q)=|q|\sqrt{1+q^2}>0$ is real for all $q\in\mathbb{R}\setminus\{0\}$.
+
+In the co-moving frame $\xi=x-v_1 t$ of a one-soliton $u_0(\xi)$, stationary modes $\delta u(\xi,t)=e^{-i\tilde\omega t}f(\xi)$ at co-moving frequency $\tilde\omega=\omega-v_1 q$ satisfy the fourth-order ordinary differential equation
+\begin{equation}\label{eq:comoving_ode}
+\left[\partial_\xi^4-(1-v_1^2)\partial_\xi^2-2iv_1\tilde\omega\partial_\xi-\tilde\omega^2+6\partial_\xi^2 u_0(\xi)\right]f(\xi)=0.
+\end{equation}
+As $\xi\to\pm\infty$, $u_0(\xi)\to 0$ exponentially and characteristic exponents $f\sim e^{iq\xi}$ obey the quartic dispersion relation
+\begin{equation}\label{eq:quartic_disp}
+P_{\rm vac}(q;\tilde\omega):=q^4+k_1^2 q^2-2v_1\tilde\omega q-\tilde\omega^2=0,\qquad k_1^2=1-v_1^2=\sin^2\alpha_1>0.
+\end{equation}
+
+\begin{proposition}[\Lc, check~1 of \script{oneloop\_good\_phonon\_scattering.py}]\label{prop:disp_roots}
+For every $\alpha_1\in(0,\pi/2)$ and every real co-moving frequency $\tilde\omega\neq 0$, the quartic~\eqref{eq:quartic_disp} has \emph{strictly two real roots} $q_+(\tilde\omega)>0>q_-(\tilde\omega)$ (propagating waves) and \emph{one complex-conjugate pair of non-real roots} $q_{\rm ev}(\tilde\omega),\overline{q_{\rm ev}(\tilde\omega)}$ with $\operatorname{Im}q_{\rm ev}(\tilde\omega)>0$ (evanescent waves decaying as $\xi\to+\infty$ and $\xi\to-\infty$, respectively).
+\end{proposition}
+\begin{proof}
+For real $q$, $P_{\rm vac}''(q)=12q^2+2k_1^2>0$ everywhere, so $P_{\rm vac}(q;\tilde\omega)$ is strictly convex on $\mathbb{R}$. Since $P_{\rm vac}(0;\tilde\omega)=-\tilde\omega^2<0$ and $P_{\rm vac}(\pm\infty;\tilde\omega)=+\infty$, it crosses zero exactly once on $(0,\infty)$ and once on $(-\infty,0)$. The remaining two roots of the real quartic must be a complex-conjugate non-real pair.
+\end{proof}
+
+\subsection{Exact reflectionlessness and unitarity via Hirota $\tau$-linearisation}
+
+A generic fourth-order scattering problem at frequency $\tilde\omega$ has a $2\times 2$ unitary scattering matrix connecting the two propagating channels $q_\pm(\tilde\omega)$, constructed by matching four boundary conditions (including the decaying evanescent mode at each end). For the integrable Boussinesq one-soliton, linearising the two-soliton Hirota $\tau$-function solves this fourth-order boundary-value problem in closed form.
+
+In Hirota's two-soliton solution $\tau=1+e^{\theta_1}+\varepsilon(e^{\theta_2}+A_{12}e^{\theta_1+\theta_2})$ with $\theta_j=K_j x-\Omega_j t$ ($\Omega_j^2=K_j^2-K_j^4$), setting $K_2=iq$ ($q\in\mathbb{R}\setminus\{0\}$) and $\Omega_2=i\omega(q)$ with $\omega(q)=|q|\sqrt{1+q^2}>0$ corresponds to continuing $\alpha_2\to\alpha_{\rm ph}(q):=i\operatorname{arcsinh}q$ with $\epsilon_{\rm ph}=\operatorname{sgn}(q)$, so that $\sin\alpha_{\rm ph}=iq$ and $\epsilon_{\rm ph}\cos\alpha_{\rm ph}=\operatorname{sgn}(q)\sqrt{1+q^2}=\omega(q)/q$ \Lc. Expanding $u=2(\log\tau)_{xx}$ to $O(\varepsilon)$ gives
+\begin{equation}\label{eq:du_hirota}
+\delta u(x,t;q)=2\partial_x^2\left[\frac{1+A(1,\mathrm{ph}(q))e^{\theta_1}}{1+e^{\theta_1}}\,e^{iqx-i\omega(q)t}\right],
+\qquad \delta\phi(x,t;q)=2\partial_x\left[\frac{1+A(1,\mathrm{ph}(q))e^{\theta_1}}{1+e^{\theta_1}}\,e^{iqx-i\omega(q)t}\right].
+\end{equation}
+
+\begin{proposition}[\Lc, checks~2--3 of \script{oneloop\_good\_phonon\_scattering.py}]\label{prop:phonon_scatt}
+For all $\alpha_1\in(0,\pi/2)$, $\epsilon_1\in\{+1,-1\}$, and $q\in\mathbb{R}\setminus\{0\}$:
+\begin{enumerate}
+\item The mode~\eqref{eq:du_hirota} is an exact solution of the fourth-order linearised equation $H_u\,\delta u=0$ (verified to $<10^{-35}$).
+\item As $x\to-\infty$ ($e^{\theta_1}\to 0$), $\delta u(x,t;q)\to -2q^2 e^{iqx-i\omega(q)t}$; as $x\to+\infty$ ($e^{\theta_1}\to\infty$), $\delta u(x,t;q)\to -2q^2 A(1,\mathrm{ph}(q))e^{iqx-i\omega(q)t}$. Thus \emph{phonon scattering on the one-soliton is strictly reflectionless ($R(q)=0$) and has zero asymptotic evanescent tails ($C_\pm(q)=0$)}.
+\item Under the continuation $\alpha_{\rm ph}=i\operatorname{arcsinh}q$, $\epsilon_{\rm ph}=\operatorname{sgn}(q)$, the phonon's KP roots~\eqref{eq:kp_roots} are complex conjugates:
+\begin{equation}\label{eq:kp_phonon}
+p_{\rm ph,a}(q)=\frac{\operatorname{sgn}(q)\sqrt{1+q^2}}{2\sqrt{3}}+\frac{iq}{2},\qquad
+p_{\rm ph,b}(q)=\overline{p_{\rm ph,a}(q)}=\frac{\operatorname{sgn}(q)\sqrt{1+q^2}}{2\sqrt{3}}-\frac{iq}{2}.
+\end{equation}
+Since the soliton's KP roots $p_{1a},p_{1b}$ are real, the transmission coefficient $T(q)=A(1,\mathrm{ph}(q))$ takes the manifestly unitary form
+\begin{equation}\label{eq:A_unitary}
+A(1,\mathrm{ph}(q))=\frac{(p_{1a}-p_{\rm ph,a})(p_{1b}-\overline{p_{\rm ph,a}})}{(p_{1a}-\overline{p_{\rm ph,a}})(p_{1b}-p_{\rm ph,a})}
+=\frac{z_a(q)/z_b(q)}{\overline{z_a(q)/z_b(q)}},\qquad
+z_{a,b}(q):=\left(p_{1a,b}-\frac{\operatorname{sgn}(q)\sqrt{1+q^2}}{2\sqrt{3}}\right)-\frac{iq}{2}.
+\end{equation}
+Consequently, $|A(1,\mathrm{ph}(q))|=1$ for \emph{all} $q\in\mathbb{R}\setminus\{0\}$: unlike the bad Boussinesq equation (\texttt{phase2/oneloop.pdf}), the good equation has no unstable continuum phonon band.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Closed-form transmission phase shift $\theta(q;\alpha,\epsilon)$}
+
+Because $z_a(q)-z_b(q)=p_{1a}-p_{1b}=k_1>0$ is real and positive, we have
+\begin{equation}\label{eq:w_ratio}
+\frac{z_a(q)}{z_b(q)}=1+\frac{k_1}{z_b(q)},\qquad
+\operatorname{Im}\left(\frac{z_a(q)}{z_b(q)}\right)=\frac{k_1 q}{2|z_b(q)|^2}.
+\end{equation}
+For $q\neq 0$, $\operatorname{Im}(z_a(q)/z_b(q))$ has the strict sign of $q$ and never vanishes! Thus $z_a(q)/z_b(q)$ lies strictly in the upper half-plane for all $q>0$ and strictly in the lower half-plane for all $q<0$, and approaches $1$ as $q\to\pm\infty$. This defines a unique, smooth, unwrapped transmission phase shift $\theta(q;\alpha,\epsilon)$ on $(-\infty,0)$ and $(0,\infty)$ vanishing at $q=\pm\infty$:
+\begin{equation}\label{eq:theta_def}
+A(1,\mathrm{ph}(q))=e^{i\theta(q;\alpha,\epsilon)},\qquad
+\theta(q;\alpha,\epsilon):=2\operatorname{atan2}\!\left(\operatorname{Im}\left(1+\frac{k_1}{z_b(q)}\right),\,\operatorname{Re}\left(1+\frac{k_1}{z_b(q)}\right)\right)\in(-2\pi,2\pi).
+\end{equation}
+
+\begin{proposition}[\Lc, check~3 of \script{oneloop\_good\_phonon\_scattering.py}]\label{prop:theta_3root}
+Let $(\phi_1,\phi_2,\phi_3):=(\alpha+\frac{2\pi}{3},\alpha-\frac{2\pi}{3},\alpha)$ and $(c_1,c_2,c_3):=(+1,+1,-2)$. For all $\alpha\in(0,\pi/2)$, $\epsilon\in\{+1,-1\}$, and $q\in\mathbb{R}\setminus\{0\}$, the unwrapped phase shift~\eqref{eq:theta_def} decomposes into the exact three-root sum
+\begin{equation}\label{eq:theta_3root_formula}
+\boxed{\ \theta(q;\alpha,\epsilon)=-\sum_{r=1}^3 c_r\left[\operatorname{sgn}(q)\arctan\!\left(\frac{\sin\phi_r}{|q|}\right)
++\epsilon\arctan\!\left(\frac{\sin\phi_r\cos\phi_r}{|q|\sqrt{1+q^2}+q^2+\sin^2\phi_r}\right)\right]\ }
+\end{equation}
+where every $\arctan$ takes its principal value in $(-\pi/2,\pi/2)$. Its derivative $\theta'(q;\alpha,\epsilon)=\partial_q\theta(q;\alpha,\epsilon)$ decomposes into an $\epsilon$-independent even rational part and an $\epsilon$-odd algebraic part:
+\begin{equation}\label{eq:dtheta_formula}
+\boxed{\ \frac{\partial\theta(q;\alpha,\epsilon)}{\partial q}
+=\sum_{r=1}^3\frac{c_r\sin\phi_r}{q^2+\sin^2\phi_r}
++\frac{\epsilon\operatorname{sgn}(q)}{\sqrt{1+q^2}}\sum_{r=1}^3\frac{c_r\sin\phi_r\cos\phi_r}{q^2+\sin^2\phi_r}.\ }
+\end{equation}
+In the hyperbolic variable $q=\sinh u$ ($u>0$, $\epsilon=+1$), $\partial_u\theta(\sinh u;\alpha,+1)=\sum_{r=1}^3\frac{c_r\sin\phi_r}{\cosh u-\cos\phi_r}$ and $\partial_u\theta(-\sinh u;\alpha,+1)=\sum_{r=1}^3\frac{c_r\sin\phi_r}{\cosh u+\cos\phi_r}$. As $|q|\to\infty$, the trigonometric identities $\sum_{r=1}^3 c_r\sin\phi_r\cos^m\phi_r=(-3\sin\alpha,-\tfrac32\sin 2\alpha,-\tfrac34\sin\alpha)$ for $m=0,1,2$ yield the Laurent expansion
+\begin{equation}\label{eq:theta_asymptotic}
+\theta(q;\alpha,\epsilon)=\frac{3k_1}{q}+\frac{3k_1 v_1}{2q^2}-\frac{3k_1}{4q^3}+O(q^{-4}),\qquad
+\frac{\partial\theta(q;\alpha,\epsilon)}{\partial q}=-\frac{3k_1}{q^2}-\frac{3k_1 v_1}{q^3}+\frac{9k_1}{4q^4}+O(q^{-5}).
+\end{equation}
+\end{proposition}
+
+\subsection{Levinson-type mode count, zero modes, and heavy-branch instability}\label{sec:levinson}
+
+Because the odd part of~\eqref{eq:dtheta_formula} cancels between $+q$ and $-q$, the total phase winding over the continuum $(-\infty,0)\cup(0,\infty)$ is the integral of three elementary Lorentzians:
+\begin{equation}\label{eq:levinson_integral}
+\Delta\theta_{\rm tot}(\alpha):=\int_{-\infty}^0\theta'(q)\,dq+\int_0^\infty\theta'(q)\,dq
+=\int_0^\infty\sum_{r=1}^3\frac{2c_r\sin\phi_r}{q^2+\sin^2\phi_r}\,dq
+=\pi\sum_{r=1}^3 c_r\operatorname{sgn}(\sin\phi_r).
+\end{equation}
+For $\alpha\in(0,\pi/2)$, we have $\sin\phi_3=\sin\alpha>0$ and $\sin\phi_2=\sin(\alpha-2\pi/3)<0$, whereas $\sin\phi_1=\sin(\alpha+2\pi/3)=\sin(\pi/3-\alpha)$ is \emph{positive for $\alpha<\pi/3$ and negative for $\alpha>\pi/3$}!
+
+\begin{proposition}[\Lc, checks~4--5 of \script{oneloop\_good\_phonon\_scattering.py}]\label{prop:levinson_discrete}
+Define the branch windings $\Delta\theta_+=\theta(+\infty)-\theta(0^+)=-\theta(0^+)$ and $\Delta\theta_-=\theta(0^-)-\theta(-\infty)=\theta(0^-)$, and the Levinson mode count $N_{\rm Lev}:=-(\Delta\theta_++\Delta\theta_-)/(2\pi)=[\theta(0^+)-\theta(0^-)]/(2\pi)$.
+\begin{enumerate}
+\item \emph{Regular branch $\alpha\in(0,\pi/3)$:} For $\epsilon=+1$, $\theta(0^+)=2\pi$ and $\theta(0^-)=0$ (for $\epsilon=-1$, $\theta(0^+)=0$ and $\theta(0^-)=-2\pi$). Thus $\Delta\theta_{\rm tot}=-2\pi$ and
+\begin{equation}\label{eq:nlev_reg}
+N_{\rm Lev}=1\qquad (\alpha<\pi/3).
+\end{equation}
+\item \emph{Heavy branch $\alpha\in(\pi/3,\pi/2)$:} For both $\epsilon=\pm 1$, $\theta(0^+)=2\pi$ and $\theta(0^-)=-2\pi$, so $\Delta\theta_+=\Delta\theta_-=-2\pi$, $\Delta\theta_{\rm tot}=-4\pi$, and
+\begin{equation}\label{eq:nlev_heavy}
+N_{\rm Lev}=2\qquad (\alpha>\pi/3).
+\end{equation}
+\item \emph{Discrete spectrum from KP triples:} A continuation $q=-iK$ ($\operatorname{Re}K>0$) of~\eqref{eq:du_hirota} yields a spatially normalisable discrete mode on $\mathbb{R}$ iff $A(1,K)=0$ with $0<\operatorname{Re}K<k_1$, or $K=k_1$ where $\partial_\xi^2$ annihilates the constant $1$ in $1+A(1,K)e^{k_1\xi}$. By~\eqref{eq:A_unitary}, $A(1,K)=0$ iff the perturbation's KP root pair $(p_{2a},p_{2b})$ is drawn from the soliton's own KP triple $\{p_{1a},p_{1b},p_{1c}\}$:
+\begin{itemize}
+\item $(p_{1a},p_{1b})$ gives $K=k_1$ and $\tilde\omega=0$: the \emph{translational zero mode} $\delta u_0(\xi)=\partial_\xi u_0(\xi)$ (present for all $\alpha\in(0,\pi/2)$, together with its secular partner $\partial_P u_0$, which degenerates at the cusp $dP/d\alpha=0$).
+\item $(p_{1c},p_{1b})$ and $(p_{1a},p_{1c})$ give wavenumbers $K_{cb}=p_{1c}-p_{1b}=\sin(\alpha-\pi/3)$ and $K_{ac}=p_{1a}-p_{1c}=\sin(\alpha+\pi/3)=k_1-K_{cb}$, with purely imaginary co-moving frequencies $\tilde\omega=\pm i\gamma(\alpha)$, where
+\begin{equation}\label{eq:gamma_instability}
+\gamma(\alpha)=\sqrt{3}\left(\sin^2\alpha-\tfrac34\right),
+\end{equation}
+and exact spatial profile $\delta u_{\pm}(\xi,t)=e^{\pm\gamma(\alpha)t}\partial_\xi^2\big[\frac{e^{K_{cb}\xi}}{1+e^{k_1\xi}}\big]$. For $\alpha<\pi/3$, $K_{cb}<0$ and $K_{ac}>k_1$, so $\delta u_\pm$ blows up exponentially as $\xi\to-\infty$ and there are \emph{no bound or unstable modes beyond the translational zero mode} ($N_{\rm Lev}=1$). For $\alpha>\pi/3$, $0<K_{cb},K_{ac}<k_1$ and $\gamma(\alpha)>0$, so $\delta u_\pm$ are \emph{normalisable exponentially growing and decaying linear instability modes} ($N_{\rm Lev}=2$), representing the linearised resonant Y-junction decay of a heavy soliton into the two light solitons of its KP triple.
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\section{Task 2: Two-soliton $O(\hbar^0)$ phase on the two-soliton background}\label{sec:task2}
+
+\subsection{Exact two-soliton phonon eigenmodes and $\hat{c}=0$}
+
+Following Faddeev and Korepin (FK) \cite{FK78} (\S 5.4 and Appendices~5--6, full text read), the one-loop correction to the two-soliton $S$-matrix is governed by the scattering of continuum modes on the time-dependent two-soliton background $u_{12}(x,t)=2(\log\tau_{12})_{xx}$, where $\tau_{12}=1+E_1+E_2+A_{12}E_1 E_2$ with $E_j=\exp(k_j(x-v_j t-x_{0j}))$.
+
+In a general non-integrable theory, a plane wave $e^{iqx-i\omega(q)t}$ scattering through the two-soliton collision region emerges at $t\to-\infty$ as a superposition involving an off-diagonal integral kernel $\hat{c}(q,q')$, which adds $-\tfrac12\operatorname{Tr}\ln(1+\hat{c})$ to $\ln S_0$ \La~\cite{FK78}. For the good Boussinesq equation, linearising the three-soliton Hirota $\tau$-function in the third (phonon) amplitude $K_3=iq$, $\Omega_3=i\omega(q)$ gives the exact time-dependent eigenmode
+\begin{equation}\label{eq:du_twosol}
+\delta u_{12}(x,t;q)=2\partial_x^2\left[\frac{1+A(1,\mathrm{ph}(q))E_1+A(2,\mathrm{ph}(q))E_2+A_{12}A(1,\mathrm{ph}(q))A(2,\mathrm{ph}(q))E_1 E_2}{1+E_1+E_2+A_{12}E_1 E_2}\,e^{iqx-i\omega(q)t}\right].
+\end{equation}
+
+\begin{proposition}[\Lc, check~1 of \script{oneloop\_good\_twosoliton\_phase.py}]\label{prop:twosol_modes}
+For every regular two-soliton background ($\alpha_1,\alpha_2\in(0,\pi/3)$, $A_{12}>0$) and every $q\in\mathbb{R}\setminus\{0\}$, the function~\eqref{eq:du_twosol} satisfies the time-dependent fourth-order linearised equation $\big[\partial_t^2-\partial_x^2+\partial_x^4+6\partial_x^2 u_{12}(x,t)\big]\delta u_{12}=0$ identically for all $(x,t)\in\mathbb{R}^2$ (verified at finite collision times to $<10^{-36}$). It is purely monochromatic of wavenumber $q$ as $t\to\pm\infty$ and $x\to\pm\infty$, with zero reflection and exact factorised transmission amplitude $A_{12}^{\rm ph}(q)=A(1,\mathrm{ph}(q))A(2,\mathrm{ph}(q))=e^{i\theta_1(q)+i\theta_2(q)}$. Therefore, the Faddeev--Korepin off-diagonal operator vanishes identically: $\hat{c}=0$.
+\end{proposition}
+
+\subsection{The Faddeev--Korepin phonon sum, UV convergence, and closed-form dilogarithm solution}
+
+Because $H=\partial_t^2-\partial_x^2+\partial_x^4+6\partial_x u_0(x,t)\partial_x$ is second-order in time with unit coefficient of $\partial_t^2$, the Wronskian and Krein spectral-density identities of FK \cite{FK78} (\S 5.4, eqs.~4.14--4.28 and Appendix~6, eq.~A.6.2) apply verbatim. Specifically, with particle $1$ starting on the left at $t'\to-\infty$ and ending on the right at $t''\to+\infty$:
+\begin{itemize}
+\item Differentiating the negative-frequency Jost mode $\psi_-(x,t;q)$ (normalised to $e^{iqx-i\omega(q)t}$ as $x\to-\infty$) with respect to $\alpha_1$ gives a non-zero result only near soliton $1$ and to its right. At $t''\to+\infty$, soliton $1$ is to the right of soliton $2$, so the region to the right of soliton $1$ is vacuum and cancels against the single-soliton determinant $\det H(u_1)$ in the denominator. At $t'\to-\infty$, soliton $2$ lies to the right of soliton $1$, where $\partial_{\alpha_1}\ln\psi_-=i\,\partial_{\alpha_1}\theta_1(q;\alpha_1,\epsilon_1)$, and integrating across soliton $2$ against the Krein density $-2i\,\partial_q\theta_2(q;\alpha_2,\epsilon_2)$ divided by the Wronskian $-4\pi i$ (times $-\tfrac12$ from $\det^{-1/2}$) gives FK eq.~(4.27):
+\begin{equation}\label{eq:fk_grad1}
+\frac{\partial\delta_{\rm ph}(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)}{\partial\alpha_1}
+=\frac{1}{4\pi}\int_{-\infty}^\infty dq\,\frac{\partial\theta_1(q;\alpha_1,\epsilon_1)}{\partial\alpha_1}\frac{\partial\theta_2(q;\alpha_2,\epsilon_2)}{\partial q}.
+\end{equation}
+\item Differentiating with respect to $\alpha_2$ receives its non-cancelling contribution from the upper limit $t''\to+\infty$ (where soliton $2$ is on the left and soliton $1$ lies to its right), giving the opposite sign:
+\begin{equation}\label{eq:fk_grad2}
+\frac{\partial\delta_{\rm ph}(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)}{\partial\alpha_2}
+=-\frac{1}{4\pi}\int_{-\infty}^\infty dq\,\frac{\partial\theta_2(q;\alpha_2,\epsilon_2)}{\partial\alpha_2}\frac{\partial\theta_1(q;\alpha_1,\epsilon_1)}{\partial q}.
+\end{equation}
+\end{itemize}
+
+\paragraph{UV convergence and the $q=0$ Levinson boundary term ($I_{12}$ vs.\ $J_{12}$).}
+By~\eqref{eq:theta_asymptotic}, $\theta_1(q)\theta_2'(q)=-9k_1 k_2/q^3+O(q^{-4})$ as $|q|\to\infty$, so the integrals~\eqref{eq:fk_grad1}--\eqref{eq:fk_grad2} as well as the undifferentiated integrals
+\begin{equation}\label{eq:I12_J12_defs}
+I_{12}:=\frac{1}{4\pi}\int_{-\infty}^\infty dq\,\theta_1(q)\theta_2'(q),\qquad
+J_{12}:=\frac{1}{8\pi}\int_{-\infty}^\infty dq\,\big[\theta_1(q)\theta_2'(q)-\theta_2(q)\theta_1'(q)\big]
+\end{equation}
+are \emph{absolutely UV-convergent on $(-\infty,\infty)$ without any cutoff or counterterm} \Lc. (Any local tadpole counterterm $\propto\int u\,dx$ is proportional to the conserved topological charge $M=\int u\,dx$ and cancels identically in the ratio $\det H(u_{12})/[\det H(u_1)\det H(u_2)]$ since $M_{12}=M_1+M_2$.)
+
+On $(-\infty,0)\cup(0,\infty)$, integrating $I_{12}$ by parts yields a boundary term at $q=0^\pm$ from the $2\pi$ Levinson jump of $\theta_j(q)$ (Proposition~\ref{prop:levinson_discrete}):
+\begin{equation}\label{eq:I12_ibp}
+I_{12}+I_{21}=\frac{1}{4\pi}\Big[\theta_1(0^-)\theta_2(0^-)-\theta_1(0^+)\theta_2(0^+)\Big]
+=\begin{cases}-\pi,&\epsilon_1=\epsilon_2\text{ (same direction)},\\ 0,&\epsilon_1=-\epsilon_2\text{ (head-on)},\end{cases}
+\qquad (\alpha_1,\alpha_2<\pi/3).
+\end{equation}
+Because the values $\theta_j(0^\pm)\in\{0,\pm 2\pi\}$ are topological constants independent of $\alpha_j\in(0,\pi/3)$, we have $\partial_{\alpha_j}\theta_j(0^\pm)=0$. Hence integrating~\eqref{eq:fk_grad1}--\eqref{eq:fk_grad2} by parts in $q$ produces \emph{zero} boundary term at $q=0$, proving that $I_{12}$ and $J_{12}$ share the \emph{exact same gradient} on $(0,\pi/3)^2$:
+\begin{equation}\label{eq:grad_equality}
+\nabla_{\alpha} I_{12}=\nabla_{\alpha} J_{12}=\left(\frac{\partial\delta_{\rm ph}}{\partial\alpha_1},\,\frac{\partial\delta_{\rm ph}}{\partial\alpha_2}\right),\qquad
+I_{12}=J_{12}-\frac{\pi}{2}\delta_{\epsilon_1,\epsilon_2}\qquad (\alpha_1,\alpha_2<\pi/3).
+\end{equation}
+In FK eq.~(4.28), this $O(\hbar^0)$ integration constant is the overall factor $Z=e^{i\delta_{\rm const}}$. Following the PI's decision, we report both $I_{12}$ and $J_{12}$ in parallel.
+
+\begin{proposition}[\Lc, check~2 of \script{oneloop\_good\_twosoliton\_phase.py}]\label{prop:closed_dilog}
+Define the odd function $L:\mathbb{R}\to\mathbb{R}$ via the Legendre chi function $\chi_2(z)=\sum_{n=0}^\infty\frac{z^{2n+1}}{(2n+1)^2}=\tfrac12[\operatorname{Li}_2(z)-\operatorname{Li}_2(-z)]$:
+\begin{equation}\label{eq:L_chi2}
+L(z):=\int_0^z\frac{2\ln|t|}{1-t^2}\,dt=-\operatorname{sgn}(z)\left\{2\operatorname{Re}\chi_2(|z|)+\ln|z|\,\ln\left|\frac{1-|z|}{1+|z|}\right|\right\},
+\qquad L(0)=0,\quad L(\pm 1)=\mp\frac{\pi^2}{4},
+\end{equation}
+which satisfies the inversion identity $L(z)+L(1/z)=-\operatorname{sgn}(z)\frac{\pi^2}{2}$ for all $z\neq 0$. Let $\phi_{j,r}\in(\alpha_j+\frac{2\pi}{3},\alpha_j-\frac{2\pi}{3},\alpha_j)$ with weights $(c_1,c_2,c_3)=(+1,+1,-2)$. Then for all $\alpha_1,\alpha_2\in(0,\pi/3)$:
+\begin{enumerate}
+\item For \textbf{same-direction (overtaking)} collisions ($\epsilon_1=\epsilon_2=+1$):
+\begin{equation}\label{eq:I_J_same_closed}
+\boxed{\ I_{12}^{\rm same}(\alpha_1,\alpha_2)=\frac{1}{2\pi}\sum_{r=1}^3\sum_{s=1}^3 c_r c_s\,L\!\left(\frac{\tan(\phi_{1,r}/2)}{\tan(\phi_{2,s}/2)}\right),\qquad
+J_{12}^{\rm same}(\alpha_1,\alpha_2)=\frac{\pi}{2}+I_{12}^{\rm same}(\alpha_1,\alpha_2).\ }
+\end{equation}
+\item For \textbf{head-on} collisions ($\epsilon_1=+1,\epsilon_2=-1$):
+\begin{equation}\label{eq:I_J_head_closed}
+\boxed{\ I_{12}^{\rm head}(\alpha_1,\alpha_2)=J_{12}^{\rm head}(\alpha_1,\alpha_2)
+=\frac{1}{2\pi}\sum_{r=1}^3\sum_{s=1}^3 c_r c_s\,L\!\left(\tan\frac{\phi_{1,r}}{2}\,\tan\frac{\phi_{2,s}}{2}\right)
+=I_{12}^{\rm same}(\alpha_1,\pi-\alpha_2).\ }
+\end{equation}
+\item The partial derivatives $\partial_{\alpha_j}I_{12}=\partial_{\alpha_j}J_{12}$ are purely elementary functions of $\sin\phi_{j,r},\cos\phi_{j,r}$, and $\ln|\tan(\phi_{j,r}/2)|$, given by $\partial_{\alpha_1}I_{12}=\epsilon_2\,\partial_{\alpha_1}K(\alpha_1,\alpha_2)-\epsilon_1\,\partial_{\alpha_1}K(\alpha_2,\alpha_1)$ with
+\begin{equation}\label{eq:dK_elem}
+\frac{\partial K(\alpha_1,\alpha_2)}{\partial\alpha_1}
+=\frac{1}{2\pi}\sum_{r=1}^3\sum_{s=1}^3\frac{c_r c_s\sin\phi_{2,s}}{\sin^2\phi_{2,s}-\sin^2\phi_{1,r}}
+\left(\cos\phi_{2,s}\ln\left|\tan\frac{\phi_{1,r}}{2}\right|-\cos\phi_{1,r}\ln\left|\tan\frac{\phi_{2,s}}{2}\right|\right).
+\end{equation}
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Splitting $\theta_j(q)=\theta_j^{\rm odd}(q)+\epsilon_j\theta_j^{\rm even}(q)$ via~\eqref{eq:theta_3root_formula}--\eqref{eq:dtheta_formula}, only the even-integrand cross terms survive integration over $(-\infty,\infty)$, reducing $I_{12}$ to $K(\alpha_1,\alpha_2):=\frac{1}{2\pi}\int_0^\infty\theta_1^{\rm odd}(q)(\theta_2^{\rm even})'(q)\,dq$ and $K(\alpha_2,\alpha_1)$. Differentiating the elementary integral $g(\kappa_1,\kappa_2)=\int_0^\infty\frac{dq}{\sqrt{1+q^2}}\frac{\arctan(\kappa_1/q)}{q^2+\kappa_2^2}$ with respect to $\kappa_1=\sin\phi_{1,r}$ replaces $\arctan(\kappa_1/q)$ by $q/(q^2+\kappa_1^2)$, and the substitution $t=\sqrt{1+q^2}\in[1,\infty)$ ($dt=q\,dq/\sqrt{1+q^2}$) yields~\eqref{eq:dK_elem}. Passing to $x=\tan(\phi_{1,r}/2)$ and $y=\tan(\phi_{2,s}/2)$ decomposes the differential into $\tfrac14[dL(x/y)-dL(xy)]$, and applying $L(u)+L(1/u)=-\operatorname{sgn}(u)\frac{\pi^2}{2}$ together with $\sum_{r=1}^3 c_r\operatorname{sgn}(\sin\phi_{j,r})=-2$ on $(0,\pi/3)$ gives~\eqref{eq:I_J_same_closed}--\eqref{eq:I_J_head_closed}. Every step is verified against 35-digit numerical quadrature to $<5\times 10^{-36}$.
+\end{proof}
+
+\subsection{Maslov index, zero modes, topological cross terms, and parameter renormalisation}
+
+\begin{proposition}[\Lc, checks~3--4 of \script{oneloop\_good\_twosoliton\_phase.py}]\label{prop:maslov_top_renorm}
+In the regular region $\alpha_1,\alpha_2\in(0,\pi/3)$ with $A_{12}>0$:
+\begin{enumerate}
+\item \emph{Zero modes and wave-packet Maslov index:} Each one-soliton has a single translational zero mode and no oscillating bound states ($N_{\rm Lev}=1$). In the collective-coordinate reduction formula (FK \cite{FK78}, Appendix~1, eq.~A.1.9 and Appendix~5, eq.~A.5.26), the zero-mode Wronskian is time-independent and cancels against the single-soliton propagators in the denominator. The stationary-phase Hessian of the momentum wave-packet integral has eigenvalues $(t''-t')\frac{dv_j}{dP_j}-\frac{\partial\Delta X_j'}{\partial P_j}=(t''-t')\frac{dv_j}{dP_j}[1+O((t''-t')^{-1})]$ as $t''-t'\to+\infty$, which has the \emph{exact same signature} as the free single-soliton propagators $(t''-t')\frac{dv_j}{dP_j}$ for all $\alpha_j\neq\pi/3$ (where $\frac{dv_j}{dP_j}=-\frac{3}{2\sin 3\alpha_j}<0$ is finite and non-zero). Hence the relative wave-packet Maslov index vanishes in the regular region:
+\begin{equation}\label{eq:maslov_zero}
+\mu_{\rm Maslov}=0\qquad (\alpha_1,\alpha_2<\pi/3).
+\end{equation}
+\item \emph{Topological cross terms at $O(\hbar^0)$:} The classical cross term $T_{12}=-\tfrac23(\Pi_1 M_2-\Pi_2 M_1)=\tfrac23 M_1 M_2(v_1-v_2)$ depends solely on the conserved soliton momenta $(P_1,P_2)$ and is independent of the coordinates $(X_1,X_2)$. Since $[\hat{P}_1,\hat{P}_2]=0$, all operators in $T_{12}(\hat{P}_1,\hat{P}_2)$ mutually commute, and the Jacobian of the Darboux coordinate transformation $X_j\mapsto X_j'=X_j+\gamma_j(P_j)\sum_{i\text{ left of }j}M_i(P_i)$ at fixed $(P_1,P_2)$ is $\det(\partial X_j'/\partial X_k)=1$. In the field path integral, $T_{12}/\hbar$ is already part of the classical action of the two-soliton saddle point $u_{12}(x,t)$, whose Gaussian fluctuation determinant gives $I_{12}$ / $J_{12}$ directly with no additional $O(\hbar^0)$ cross-term operator-ordering anomaly.
+\item \emph{Single-soliton one-loop dispersion and fixed-$P^{\rm phys}$ renormalisation shift:} On the one-soliton background, the one-loop zero-point momentum shift $\Delta P_1(\alpha,\epsilon)=\frac{1}{4\pi}\int_{-\infty}^\infty q\,\theta'(q;\alpha,\epsilon)\,dq$ is UV-convergent and evaluates in closed form via $t=\sqrt{1+q^2}$ to
+\begin{equation}\label{eq:Delta_P1}
+\boxed{\ \Delta P_1(\alpha,\epsilon)=-\frac{\epsilon}{2\pi}\sum_{r=1}^3 c_r\sin\phi_r\,\ln\left|\tan\frac{\phi_r}{2}\right|.\ }
+\end{equation}
+Similarly, in box quantisation $q_n L+\theta(q_n)=2\pi n$ (FK eq.~A.6.14), the linear UV divergence $-\frac{3\hbar k_1}{\pi}\sqrt{1+\Lambda^2}$ of the mode energy sum $-\frac{\hbar}{4\pi}\int_{-\Lambda}^\Lambda\omega'(q)\theta(q)\,dq$ is \emph{exactly cancelled} by the normal-ordering counterterm $+3\langle\phi_x^2\rangle_\Lambda M_1=+\frac{3\hbar k_1}{\pi}(\sqrt{1+\Lambda^2}-1)$ of the cubic potential $-\phi_x^3$, leaving the finite closed-form one-loop energy shift
+\begin{equation}\label{eq:Delta_E1}
+\Delta E_1^{\rm ren}(\alpha)=\frac{1}{4\pi}\left(-6\sin\alpha-2\sum_{r=1}^3 c_r\sin\phi_r\cos\phi_r\,\ln\left|\tan\frac{\phi_r}{2}\right|\right).
+\end{equation}
+If the $S$-matrix is expressed as a function of the \textbf{classical velocity parameters $(\alpha_1,\alpha_2)$}, the single-soliton propagator shifts cancel the trajectory shifts at $t=t_0$ (FK \cite{FK78}, eqs.~4.13 and 4.21), so $\delta_1=\delta_{\rm ph}$ ($I_{12}$ or $J_{12}$). If instead the $S$-matrix is expressed at \textbf{fixed renormalised physical momenta} $P_j^{\rm phys}=P_j(\alpha_j)+\hbar\,\Delta P_1(\alpha_j,\epsilon_j)$, re-expanding $\delta_0(P_1,P_2)/\hbar$ adds the finite shift
+\begin{equation}\label{eq:delta_renorm}
+\delta_{\rm renorm}(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)
+=-\sum_{j=1}^2\frac{\partial\delta_0}{\partial P_j}\Delta P_1(\alpha_j,\epsilon_j)
+=\Delta X_1'\,\Delta P_1(\alpha_1,\epsilon_1)+\Delta X_2'\,\Delta P_1(\alpha_2,\epsilon_2).
+\end{equation}
+\end{enumerate}
+\end{proposition}
+
+\section{Task 3: Comparison with Candidates (A) and (B) in the regular region}\label{sec:task3}
+
+Table~\ref{tab:comparison} compares the direct one-loop phase against Candidate~(A)~\eqref{eq:candA_oneloop} and Candidate~(B)~\eqref{eq:candB_oneloop} across five regular overtaking configurations ($\epsilon_1=\epsilon_2=+1$, $\alpha_1<\alpha_2<\pi/3$) and five regular head-on configurations ($\epsilon_1=+1,\epsilon_2=-1$, $\alpha_1+\alpha_2<\pi/3$). Following the PI's instruction, we display both $I_{12}$ and $J_{12}$, and both the fixed-$\alpha$ (FK eq.~4.28) and fixed-$P^{\rm phys}$ conventions.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Comparison of the $O(\hbar^0)$ two-soliton scattering phase in the regular region ($\alpha_j<\pi/3$, $A_{12}>0$) between Candidate~(A) ($\frac{\pi}{2}\tau\operatorname{sgn}\eta$), Candidate~(B) ($0$), and the direct one-loop calculation (\Lc, check~4 of \script{oneloop\_good\_twosoliton\_phase.py}).}\label{tab:comparison}
+\medskip
+\begin{tabular}{@{}lcccccccc@{}}\toprule
+\multicolumn{9}{@{}l}{\textbf{Overtaking collisions} ($\epsilon_1=+1,\ \epsilon_2=+1,\ \alpha_1<\alpha_2<\pi/3\implies v_1>v_2,\ \eta<0,\ \tau=+1$)}\\\midrule
+$(\alpha_1,\alpha_2)$ & $A_{12}$ & Cand.~(A) & Cand.~(B) & $I_{12}^{\rm same}$ & $J_{12}^{\rm same}$ & $\delta_{\rm renorm}$ & $I_{12}^{\rm same}+\delta_{\rm renorm}$ & $J_{12}^{\rm same}+\delta_{\rm renorm}$\\\midrule
+$(0.15,\,0.30)$ & $0.10610$ & $-1.570796$ & $0$ & $-1.150743$ & $+0.420053$ & $+2.811283$ & $+1.660541$ & $+3.231337$\\
+$(0.20,\,0.60)$ & $0.21918$ & $-1.570796$ & $0$ & $-0.955341$ & $+0.615455$ & $+4.466006$ & $+3.510665$ & $+5.081461$\\
+$(0.25,\,0.50)$ & $0.09715$ & $-1.570796$ & $0$ & $-1.167458$ & $+0.403338$ & $+2.203415$ & $+1.035956$ & $+2.606752$\\
+$(0.30,\,0.80)$ & $0.15509$ & $-1.570796$ & $0$ & $-1.044218$ & $+0.526579$ & $+3.073261$ & $+2.029043$ & $+3.599839$\\
+$(0.40,\,0.65)$ & $0.04202$ & $-1.570796$ & $0$ & $-1.301285$ & $+0.269511$ & $+1.023330$ & $-0.277955$ & $+1.292841$\\\midrule
+\multicolumn{9}{@{}l}{\textbf{Head-on collisions} ($\epsilon_1=+1,\ \epsilon_2=-1,\ \alpha_1+\alpha_2<\pi/3\implies A_{12}>0,\ \eta<0,\ \tau=-1$)}\\\midrule
+$(\alpha_1,\alpha_2)$ & $A_{12}$ & Cand.~(A) & Cand.~(B) & \multicolumn{2}{c}{$I_{12}^{\rm head}=J_{12}^{\rm head}$} & $\delta_{\rm renorm}$ & \multicolumn{2}{c}{$I_{12}^{\rm head}+\delta_{\rm renorm}$}\\\midrule
+$(0.10,\,0.15)$ & $1.04775$ & $+1.570796$ & $0$ & \multicolumn{2}{c}{$+0.059626$} & $+5.009121$ & \multicolumn{2}{c}{$+5.068747$}\\
+$(0.20,\,0.30)$ & $1.23382$ & $+1.570796$ & $0$ & \multicolumn{2}{c}{$+0.171241$} & $+4.188721$ & \multicolumn{2}{c}{$+4.359961$}\\
+$(0.25,\,0.45)$ & $1.61562$ & $+1.570796$ & $0$ & \multicolumn{2}{c}{$+0.277721$} & $+4.380681$ & \multicolumn{2}{c}{$+4.658402$}\\
+$(0.35,\,0.55)$ & $3.23295$ & $+1.570796$ & $0$ & \multicolumn{2}{c}{$+0.408191$} & $+4.332791$ & \multicolumn{2}{c}{$+4.740982$}\\
+$(0.40,\,0.60)$ & $9.26612$ & $+1.570796$ & $0$ & \multicolumn{2}{c}{$+0.478642$} & $+5.241126$ & \multicolumn{2}{c}{$+5.719769$}\\\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Decisive comparison and implications for the good-equation $S$-matrix.}
+\begin{enumerate}
+\item \textbf{Neither Candidate~(A) nor Candidate~(B) is the exact one-loop $S$-matrix (\Lc):}
+Both candidates predict a \emph{constant} $O(\hbar^0)$ phase across each kinematic sector ($\mp\pi/2$ for Candidate~(A), $0$ for Candidate~(B)). By contrast, the direct one-loop calculation yields a non-trivial function of $(\alpha_1,\alpha_2)$ with non-vanishing gradient~\eqref{eq:fk_grad1}--\eqref{eq:fk_grad2}, given in closed form by dilogarithms~\eqref{eq:I_J_same_closed}--\eqref{eq:I_J_head_closed}. Unlike the sine-Gordon model \cite{FK78} (where the phonon phase-shift integral is proportional to the tree-level phase and is wholly absorbed into the coupling renormalisation $\gamma\to\gamma'=\gamma/(1-\gamma/8\pi)$), the Boussinesq equation is not Lorentz-invariant and the dilogarithm sum $J_{12}(\alpha_1,\alpha_2)$ is \emph{not} proportional to $\delta_0(\alpha_1,\alpha_2)$. Thus a third answer holds at one loop:
+\begin{equation}\label{eq:third_answer}
+S(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)=Z\,\exp\!\left[\frac{i}{\hbar}\delta_0(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)+i\,\delta_1(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)+O(\hbar)\right],
+\end{equation}
+where $\delta_1=I_{12}$ (or $J_{12}$ for $Z=e^{i\frac{\pi}{2}\delta_{\epsilon_1,\epsilon_2}}$) at fixed $(\alpha_1,\alpha_2)$, plus $\delta_{\rm renorm}$ at fixed $P_j^{\rm phys}$.
+\item \textbf{What the constant part tells us about Candidate~(A) vs.\ Candidate~(B) (\Lc/\Ld):}
+Decomposing the raw Faddeev--Korepin integral as $I_{12}^{\rm same}=-\frac{\pi}{2}+J_{12}^{\rm same}(\alpha_1,\alpha_2)$ and $I_{12}^{\rm head}=J_{12}^{\rm head}(\alpha_1,\alpha_2)$ reveals a striking dichotomy between the two channels:
+\begin{itemize}
+\item In the \emph{overtaking channel} ($\alpha_1<\alpha_2<\pi/3$), the $q=0$ Levinson jump contributes $-\pi/2$, which \emph{matches the $-\pi/2$ Stirling constant of Candidate~(A)} ($\frac{\pi}{2}\tau\operatorname{sgn}\eta=-\frac{\pi}{2}$)! As $\alpha_1\to\alpha_2^-$ (threshold / equal velocities), $J_{12}^{\rm same}(\alpha_1,\alpha_2)\to 0$ and $I_{12}^{\rm same}\to -\pi/2$.
+\item In the \emph{head-on channel} ($\epsilon_1=+1,\epsilon_2=-1$), the $q=0$ boundary term~\eqref{eq:I12_ibp} vanishes identically because $\theta_1(0^\pm,\epsilon_1=+1)$ and $\theta_2(0^\pm,\epsilon_2=-1)$ are supported at opposite signs of $q=0^\pm$ ($\theta_1(0^+)=2\pi,\theta_1(0^-)=0$ whereas $\theta_2(0^+)=0,\theta_2(0^-)=-2\pi$). Hence there is \emph{no $+\pi/2$ constant in the head-on channel}, and as $\alpha_1,\alpha_2\to 0$, $I_{12}^{\rm head}=J_{12}^{\rm head}\to 0$, matching \textbf{Candidate~(B)} rather than Candidate~(A)'s $+\pi/2$!
+\end{itemize}
+This explains why the naive analytic continuation of the bad-equation Gamma factor $R(\eta)^{-1}$ to the head-on channel of the good equation failed the defect fusion triangle test by $e^{\pm i\pi/2}$ in \texttt{phase2/defect\_semiclassics.pdf}: the $q=0$ zero-mode step is present only when both solitons move in the \emph{same} direction ($\delta_{\epsilon_1,\epsilon_2}$), not with opposite sign in the head-on channel.
+\end{enumerate}
+
+\section{Task 4: Small-amplitude limit and quantum Toda cross-check}\label{sec:task4}
+
+\begin{proposition}[\Lc, checks~1--3 of \script{oneloop\_good\_limits\_cusp\_resonance.py}]\label{prop:small_amp}
+In the small-amplitude limit $\alpha_1,\alpha_2\to 0^+$:
+\begin{enumerate}
+\item \emph{Overtaking ($\epsilon_1=\epsilon_2=+1$, $\alpha_1=\lambda\rho,\alpha_2=\lambda\to 0^+$ at fixed ratio $\rho=\alpha_1/\alpha_2\in(0,1)$):}
+Of the nine terms $(r,s)\in\{1,2,3\}^2$ in~\eqref{eq:I_J_same_closed}, the eight terms with $(r,s)\neq(3,3)$ cancel to $O(\lambda^2)$, while the $(3,3)$ term ($c_3^2=4$, $x_{1,3}/x_{2,3}\to\rho$) converges at rate $O(\lambda^2)$ to the scale-invariant KdV dilogarithm function:
+\begin{equation}\label{eq:J_KdV}
+\boxed{\ \lim_{\lambda\to 0^+}J_{12}^{\rm same}(\lambda\rho,\lambda)=J_{\rm KdV}(\rho):=\frac{\pi}{2}+\frac{2}{\pi}L(\rho)=\frac{1}{\pi}\big[L(\rho)-L(1/\rho)\big],\ }
+\end{equation}
+and $\lim_{\lambda\to 0^+}I_{12}^{\rm same}(\lambda\rho,\lambda)=-\frac{\pi}{2}+J_{\rm KdV}(\rho)=\frac{2}{\pi}L(\rho)$. Notice that $J_{\rm KdV}(\rho)$ interpolates monotonically between
+\begin{equation}\label{eq:J_KdV_endpoints}
+\lim_{\rho\to 1^-}J_{\rm KdV}(\rho)=0\quad\big(I_{\rm KdV}(1^-)=-\tfrac{\pi}{2}\big),\qquad
+\lim_{\rho\to 0^+}J_{\rm KdV}(\rho)=+\frac{\pi}{2}\quad\big(I_{\rm KdV}(0^+)=0\big).
+\end{equation}
+\item \emph{Head-on ($\epsilon_1=+1,\epsilon_2=-1$, $\alpha_1,\alpha_2\to 0^+$):}
+Every argument $x_{1,r}x_{2,s}$ in~\eqref{eq:I_J_head_closed} either vanishes as $O(\alpha)$ or approaches $\pm 3$ where the leading terms cancel. Expanding to $O(\alpha_1\alpha_2)$ gives the exact asymptotic law
+\begin{equation}\label{eq:I_head_small}
+\boxed{\ I_{12}^{\rm head}(\alpha_1,\alpha_2)=J_{12}^{\rm head}(\alpha_1,\alpha_2)
+=\frac{\alpha_1\alpha_2}{\pi}\left[-3\ln(\alpha_1\alpha_2)+6\ln 2-\frac{3}{2}\ln 3-3\right]+O(\alpha^4\ln\alpha)\;\xrightarrow{\;\alpha_j\to 0\;}\;0.\ }
+\end{equation}
+\item \emph{Single-soliton dispersion as $\alpha\to 0^+$:}
+Because the phonon group velocity $v_g(q)=\operatorname{sgn}(q)(1+2q^2)/\sqrt{1+q^2}$ satisfies $|v_g(q)|>1>|\cos\alpha|=|v_1|$ for all $q\neq 0$, \emph{no phonon ever co-moves with a good-Boussinesq soliton}. Consequently, there is no co-moving phonon capture resonance (unlike the $q^*=-\sqrt{3}/2$ resonance of the bad equation in \texttt{phase2/oneloop.pdf} Prop.~2.2), and $\Delta P_1,\Delta E_1^{\rm ren}$ vanish smoothly as $\alpha\to 0^+$:
+\begin{equation}\label{eq:DP1_small}
+\Delta P_1(\alpha,+1)=\frac{\alpha}{\pi}\left(\ln\frac{\alpha}{2}-1+\frac{\ln 3}{4}\right)+O(\alpha^3\ln\alpha)\to 0.
+\end{equation}
+Moreover, in the Hirota delay shift $-\ln(A_{12})\big(\frac{\Delta P_1(\alpha_1)}{k_1}-\frac{\Delta P_1(\alpha_2)}{k_2}\big)$ for overtaking collisions, the $\ln\lambda$ and constant terms cancel identically between the two solitons, leaving $-\frac{2}{\pi}\ln\rho\,\ln\big|\frac{1-\rho}{1+\rho}\big|$, which precisely cancels the logarithmic part of $\frac{2}{\pi}L(\rho)$ in~\eqref{eq:L_chi2} to leave the pure Legendre chi function $-\frac{4}{\pi}\chi_2(\rho)$.
+\end{enumerate}
+\end{proposition}
+
+\paragraph{Cross-check with the quantum Toda Fermi-edge route (\texttt{phase2/toda\_route.pdf}, \texttt{phase2/toda\_edge.pdf}).}
+In \texttt{phase2/toda\_edge.pdf}, the small-amplitude double-scaling limit ($\beta_j=\sqrt{y_j\hbar_B}\to 0$ at fixed $y_j$) of the quantum Toda Bethe ansatz established two facts:
+\begin{enumerate}
+\item For \emph{head-on} scattering, the exact Toda phase equals $\delta_0/\hbar$ with no non-trivial $O(\hbar^0)$ two-body residual. Proposition~\ref{prop:small_amp}(2) (\eqref{eq:I_head_small}: $I_{12}^{\rm head}=O(\alpha_1\alpha_2\ln(\alpha_1\alpha_2))\to 0$) is in \emph{complete agreement} with this head-on Toda limit \Lc.
+\item For \emph{overtaking} scattering, \texttt{toda\_edge.pdf} normalised the phase by subtracting the Fermi-edge value $y_2\to 0^+$ ($\arg S(1,2)-\arg S(1,e_2)$) and found that Candidate~(A) is very accurate when $y_1\gg y_2$ ($\rho=\sqrt{y_2/y_1}\ll 1$), but leaves a genuine two-body residual of $O(10^{-1})$ depending on \emph{both} $y_1$ and $y_2$ when $\rho=\sqrt{y_2/y_1}$ is closer to $1$ (e.g.\ $(y_1,y_2)=(1.5,1),(3,1),(1.2,1)$). Equation~\eqref{eq:J_KdV}--\eqref{eq:J_KdV_endpoints} exhibits the semiclassical counterpart of this two-body structure \Lc/\Ld: $I_{\rm KdV}(\rho)=\frac{2}{\pi}L(\rho)$ vanishes as $\rho\to 0^+$ (when one soliton approaches the Fermi edge $e_2$) and reaches $-\frac{\pi}{2}$ as $\rho\to 1^-$ (when the two amplitudes become comparable).
+\end{enumerate}
+
+\section{Task 5: Behaviour near the cusp and near the resonance lines}\label{sec:task5}
+
+\subsection{Near the cusp $\alpha\to\pi/3$}
+
+\begin{proposition}[\Lc, check~4 of \script{oneloop\_good\_limits\_cusp\_resonance.py}]\label{prop:cusp}
+Let $\alpha_2=\frac{\pi}{3}-\varepsilon$ ($\varepsilon\to 0$) at fixed $\alpha_1\in(0,\pi/3)$:
+\begin{enumerate}
+\item \emph{Classical degeneracy and Darboux pole:} As $\varepsilon\to 0$, $\frac{dP_2}{d\alpha_2}=\sqrt{3}\,\epsilon_2\varepsilon+O(\varepsilon^2)\to 0$ and changes sign across the cusp, so the effective inverse mass $\frac{dv_2}{dP_2}=-\frac{1}{2\varepsilon}+O(1)$ diverges and flips sign. While the Hirota peak shift $\Delta X_2=\frac{\ln A_{12}}{k_2}$ remains finite at $\alpha_2=\pi/3$, the Darboux factor $\gamma_2=\frac{\sqrt{3}}{\varepsilon}+O(1)$ and the canonical shift $\Delta X_2'=-\frac{\partial\delta_0}{\partial P_2}$ (hence also $\delta_{\rm renorm}$) have a \emph{simple pole} $\propto(\frac{\pi}{3}-\alpha_2)^{-1}$.
+\item \emph{Detachment of the instability mode and $\pm\pi$ jump of $I_{12}$:} At $\alpha_2=\frac{\pi}{3}-\varepsilon$, the first root angle $\phi_{2,1}=\alpha_2+\frac{2\pi}{3}=\pi-\varepsilon$ approaches $\pi$, so the Lorentzian width $|\sin\phi_{2,1}|=\sin\varepsilon\approx|\varepsilon|$ in~\eqref{eq:dtheta_formula} shrinks to zero at $q=0$ and $\tan(\phi_{2,1}/2)\approx 2/\varepsilon\to\pm\infty$. Consequently:
+\begin{itemize}
+\item $\Delta P_1(\alpha_2)$ is continuous at $\alpha_2=\pi/3$ with a vertical cusp derivative $\partial_{\alpha_2}\Delta P_1(\alpha_2)\sim\frac{\epsilon_2}{2\pi}\ln|\frac{\pi}{3}-\alpha_2|$;
+\item $I_{12}^{\rm same}(\alpha_1,\alpha_2)$ is continuous across $\alpha_2=\pi/3$ (since $\tan(\phi_{1,r}/2)/\tan(\phi_{2,1}/2)\to 0$ where $L(0)=0$), with logarithmic derivative singularity $\partial_{\alpha_2}I_{12}^{\rm same}(\alpha_1,\alpha_2)\propto\ln|\frac{\pi}{3}-\alpha_2|$;
+\item $I_{12}^{\rm head}(\alpha_1,\alpha_2)$ and $I_{12}^{\rm same}(\alpha_2,\alpha_1)$ have $\tan(\phi_{2,1}/2)$ in the numerator, which flips from $+\infty$ ($\varepsilon>0$) to $-\infty$ ($\varepsilon<0$). Since $L(+\infty)-L(-\infty)=-\frac{\pi^2}{2}$ and $\sum_{r=1}^3 c_r\operatorname{sgn}(\tan(\phi_{1,r}/2))=-2$, both jump discontinuously by $+\pi$ across the cusp:
+\begin{equation}\label{eq:cusp_jump}
+\lim_{\varepsilon\to 0^+}\Big[I_{12}^{\rm head}\!\left(\alpha_1,\tfrac{\pi}{3}-\varepsilon\right)-I_{12}^{\rm head}\!\left(\alpha_1,\tfrac{\pi}{3}+\varepsilon\right)\Big]
+=\lim_{\varepsilon\to 0^+}\Big[I_{12}^{\rm same}\!\left(\tfrac{\pi}{3}-\varepsilon,\alpha_1\right)-I_{12}^{\rm same}\!\left(\tfrac{\pi}{3}+\varepsilon,\alpha_1\right)\Big]=+\pi.
+\end{equation}
+\end{itemize}
+Beyond the cusp ($\alpha_2>\pi/3$), the one-soliton is linearly unstable ($\tilde\omega=\pm i\gamma(\alpha_2)$, Proposition~\ref{prop:levinson_discrete}), so the oscillatory one-loop fluctuation integral around it acquires an imaginary instability width and an asymptotic one-soliton scattering state no longer exists.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Near the resonance lines ($A_{12}\to 0$ or $\infty$)}
+
+The classical two-soliton solution encounters a Y-junction resonance whenever two KP roots coincide:
+\begin{enumerate}
+\item[(i)] \emph{Head-on $A_{12}^{\rm head}\to\infty$:} $p_{1b}=p_{2a}$, i.e.\ $\alpha_1+\alpha_2=\frac{\pi}{3}$ (which forms the upper boundary of the regular head-on triangle $\alpha_1+\alpha_2<\frac{\pi}{3}$ inside $(0,\pi/3)^2$);
+\item[(ii)] \emph{Overtaking $A_{12}^{\rm same}\to\infty$ and head-on $A_{12}^{\rm head}\to 0$:} $p_{1a}=p_{2b}$ or $p_{1b}=p_{2a}$, i.e.\ $|\alpha_1-\alpha_2|=\frac{\pi}{3}$;
+\item[(iii)] \emph{Overtaking $A_{12}^{\rm same}\to 0$:} $p_{1a}=p_{2a}$, i.e.\ $\alpha_1+\alpha_2=\frac{2\pi}{3}$ (mirror image across the cusp).
+\end{enumerate}
+
+\begin{proposition}[\Lc, check~5 of \script{oneloop\_good\_limits\_cusp\_resonance.py}]\label{prop:resonance}
+On all three resonance lines~(i)--(iii):
+\begin{enumerate}
+\item \emph{Finiteness and $C^1$-smoothness of $I_{12}$ and $J_{12}$ at fixed $(\alpha_1,\alpha_2)$:}
+On each resonance line, one of the nine root pairs $(r,s)$ satisfies $\sin^2\phi_{1,r}=\sin^2\phi_{2,s}$, so the argument $z_{r,s}$ of $L(z_{r,s})$ in~\eqref{eq:I_J_same_closed}--\eqref{eq:I_J_head_closed} hits $z_{r,s}=\pm 1$. Because $L'(z)=\frac{2\ln|z|}{1-z^2}$ has a \emph{removable singularity} at $z=\pm 1$ ($\lim_{z\to\pm 1}L'(z)=-1$), both $I_{12},J_{12}$ and their first derivatives $\partial_{\alpha_j}I_{12},\partial_{\alpha_j}J_{12}$ (where the vanishing denominator $\sin^2\phi_{2,s}-\sin^2\phi_{1,r}$ in~\eqref{eq:dK_elem} is cancelled by the numerator) remain \emph{completely finite and continuous} right onto the resonance lines! For example, on the regular-region head-on resonance line $\alpha_1+\alpha_2=\pi/3$ at $\alpha_1=0.4,\alpha_2=\pi/3-0.4\approx 0.647198$, $I_{12}^{\rm head}$ approaches the finite limit $+0.5164972485$ linearly in $h=\frac{\pi}{3}-\alpha_1-\alpha_2$.
+\item \emph{Logarithmic divergence of delays and $\delta_{\rm renorm}$, and breakdown of the saddle point for $A_{12}<0$:}
+On every resonance line, $\ell_1=\ell_2$ ($\eta=0$), so the tree-level phase $\delta_0=\tfrac29(\ell_1-\ell_2)\ln A_{12}+T_{12}\to T_{12}$ stays finite while the classical spatial shift $\Delta X_j=\mp\ln(A_{12})/k_j$, the Darboux shift $\Delta X_j'$, and hence the momentum-renormalisation shift $\delta_{\rm renorm}$~\eqref{eq:delta_renorm} \emph{diverge logarithmically as $\ln|A_{12}|$}. Physically, as $A_{12}\to 0$ or $\infty$, the two solitons fuse into the resonant third soliton of their KP triple for a time $\Delta t\propto|\ln A_{12}|\to\infty$; and in the singular region $A_{12}<0$ beyond the resonance line, $\tau_{12}(x,t)$ vanishes along a spacetime curve where $u_{12}=2(\log\tau_{12})_{xx}$ has a $-2/(x-x_0(t))^2$ pole, so the regular two-soliton saddle point ceases to exist.
+\end{enumerate}
+\end{proposition}
+
+\section{Summary of claims, labels, and checks}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{6.9cm}c>{\raggedright\arraybackslash}p{6.5cm}@{}}\toprule
+Claim & Label & Verification script \& check\\\midrule
+Quartic co-moving dispersion has 2 real propagating roots and 1 evanescent pair for all $\tilde\omega\neq 0$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~1)\\
+Exact Hirota linearised eigenmode solves fourth-order PDE $H_u\delta u=0$ with $R(q)=0$ and $C_\pm(q)=0$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~2)\\
+KP root form~\eqref{eq:A_unitary} and unitarity $|A(1,\mathrm{ph}(q))|=1$ on $\mathbb{R}\setminus\{0\}$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~3)\\
+Three-root $\arctan$ formula~\eqref{eq:theta_3root_formula} for $\theta(q)$ and rational/algebraic formula~\eqref{eq:dtheta_formula} for $\theta'(q)$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~3)\\
+Levinson mode count $N_{\rm Lev}=1$ for $\alpha<\pi/3$ and $N_{\rm Lev}=2$ for $\alpha>\pi/3$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~4)\\
+Discrete modes from KP triple: zero mode $K=k_1$ and heavy-branch instability $\gamma=\sqrt{3}(\sin^2\alpha-3/4)$ for $\alpha>\pi/3$ & \Lc & \texttt{oneloop\_good\_phonon\_scattering.py} (check~5)\\
+Exact two-soliton phonon eigenmodes~\eqref{eq:du_twosol}, $\hat{c}=0$, and factorised transmission $A(1,\mathrm{ph})A(2,\mathrm{ph})$ & \Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (check~1)\\
+UV convergence of $I_{12},J_{12}$, equality $\nabla I_{12}=\nabla J_{12}=\nabla\delta_{\rm ph}$, and $I_{12}=J_{12}-\frac{\pi}{2}\delta_{\epsilon_1,\epsilon_2}$ & \Lb/\Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (check~2)\\
+Closed-form Legendre-$\chi_2$ formulas~\eqref{eq:I_J_same_closed}--\eqref{eq:I_J_head_closed} and crossing $I_{12}^{\rm head}(\alpha_1,\alpha_2)=I_{12}^{\rm same}(\alpha_1,\pi-\alpha_2)$ & \Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (check~2)\\
+Closed-form $\Delta P_1(\alpha)$~\eqref{eq:Delta_P1}, normal-ordered $\Delta E_1^{\rm ren}(\alpha)$~\eqref{eq:Delta_E1}, and $\delta_{\rm renorm}$~\eqref{eq:delta_renorm} & \Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (checks~3--4)\\
+Maslov index $\mu_{\rm Maslov}=0$ and absence of $O(\hbar^0)$ cross-term ordering anomaly in regular region & \Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (\S\ref{sec:task2})\\
+Direct one-loop phase is a non-constant function of $(\alpha_1,\alpha_2)$, ruling out both (A) and (B) as exact & \Lc & \texttt{oneloop\_good\_twosoliton\_phase.py} (check~4, Table~\ref{tab:comparison})\\
+Small-amplitude overtaking limit $J_{12}^{\rm same}\to J_{\rm KdV}(\alpha_1/\alpha_2)$~\eqref{eq:J_KdV} and head-on limit $I_{12}^{\rm head}=O(\alpha_1\alpha_2\ln(\alpha_1\alpha_2))\to 0$~\eqref{eq:I_head_small} & \Lc & \texttt{oneloop\_good\_limits\_cusp\_resonance.py} (checks~1--3)\\
+Cusp $\alpha\to\pi/3$: $dP/d\alpha\to 0$, simple pole of $\Delta X_j'$ and $\delta_{\rm renorm}$, and $\pm\pi$ jump~\eqref{eq:cusp_jump} of $I_{12}$ & \Lc & \texttt{oneloop\_good\_limits\_cusp\_resonance.py} (check~4)\\
+Resonance lines $A_{12}\to 0,\infty$: removable singularity of $L(z)$ at $|z|=1$, finite $I_{12},J_{12}$, and $\ln|A_{12}|$ divergence of $\delta_{\rm renorm}$ & \Lc & \texttt{oneloop\_good\_limits\_cusp\_resonance.py} (check~5)\\\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item In an initial numerical test of the Levinson integral $\int_0^\infty\theta'(q)\,dq$, we differentiated $\ln A(1,\mathrm{ph}(q))$ numerically with \texttt{mpmath.diff} inside \texttt{mpmath.quad}. Because \texttt{mpmath.diff} uses complex steps $q+he^{i\phi}$, the branch condition \texttt{if q >= 0} inside \texttt{phonon(q)} failed off the real axis and returned spurious integrals of order $10^{21}$. Replacing numerical differentiation by the exact rational/algebraic expression~\eqref{eq:dtheta_formula} restored 35-digit accuracy.
+\item In an initial test of the hyperbolic formula for $\partial_u\theta(-\sinh u;\alpha,+1)$ ($q<0$), we used the wrong sign in the continuation $\alpha\mapsto\pi-\alpha$ (which swaps the KP roots $p_a\leftrightarrow -p_b$ and adds a minus sign), producing an $O(1)$ mismatch ($0.501$) for $q<0$. Tracking the $p_a\leftrightarrow -p_b$ swap fixed the sign and gave agreement to $3.7\times 10^{-37}$.
+\item In an initial numerical check of the normal-ordered energy integral $-\int_0^\infty[\omega'(q)(\theta(q)-\theta(-q))-12k_1 q/\sqrt{1+q^2}]\,dq$ using \texttt{mpmath.quad(..., [0, 1, 5, 20, mp.inf])}, evaluating at the deepest tanh-sinh nodes $q\sim 10^{35}$ caused catastrophic cancellation between $p_{1b}$ and $\sqrt{1+q^2}/(2\sqrt{3})$ in $z_b(q)$, returning $\sim 4\times 10^{36}$. Cancelling the $-6k_1$ tadpole algebraically in the rational integrand~\eqref{eq:Delta_E1} eliminated the subtraction completely and gave agreement with the closed form to $7.5\times 10^{-37}$.
+\item When testing the small-amplitude head-on asymptotic coefficient of $\frac{\alpha_1\alpha_2}{\pi}$ in~\eqref{eq:I_head_small}, we initially counted two terms instead of four in the $\{1,2\}\times\{1,2\}$ block (omitting $(1,2)$ and $(2,1)$ at $z=-3$, where $[zL'(z)]'$ is even and equals $+\frac{5\ln 3-4}{16}$ just as at $z=+3$), leaving a constant offset of $\frac{5\ln 3-4}{4}\approx 0.373265$. Including all four terms gave the exact constant $6\ln 2-\frac{3}{2}\ln 3-3$, reducing the residual to $O(\alpha^4\ln\alpha)$ ($2.2\times 10^{-18}$ at $\lambda=10^{-5}$).
+\item In an early check of the Darboux shift $\Delta X_j'=-\partial\delta_0/\partial P_j$, we wrote $\frac{dP}{d\alpha}=2\epsilon\sin^2\alpha\cos 3\alpha$ (which vanishes at $\alpha=\pi/6$) instead of $\frac{dP}{d\alpha}=\frac{2}{3}\epsilon\sin\alpha\sin 3\alpha$ (which vanishes at the cusp $\alpha=\pi/3$). Cross-checking against \texttt{corrigan-zambon/defect\_two\_soliton\_symplectic.py} caught the error and yielded $\Delta X_j'+\partial\delta_0/\partial P_j=0$ to 35 digits. Also, in the first run of \script{oneloop\_good\_phonon\_scattering.py}, a typo ($-6\partial_\xi^2(u_0 f)$ instead of $+6\partial_\xi^2(u_0 f)$ in the static co-moving operator check) caused the assertion to fail with residual $1.61$; fixing the sign reduced the residual to $3.76\times 10^{-37}$.
+\item In the first run of \script{oneloop\_good\_twosoliton\_phase.py}, \texttt{delta\_renorm\_good} defined $\delta_{\rm renorm}$ as $-\sum_j\Delta X_j'\Delta P_j$ while the numerical check evaluated $-\sum_j(\partial\delta_0/\partial P_j)\Delta P_j=+\sum_j\Delta X_j'\Delta P_j$ (since $\Delta X_j'=-\partial\delta_0/\partial P_j$ already carries the minus sign), triggering the sign assertion in check~4. Aligning the sign to $-\sum_j(\partial\delta_0/\partial P_j)\Delta P_j=+\sum_j\Delta X_j'\Delta P_j$ passed all checks to $10^{-32}$.
+\end{enumerate}
+
+\begin{thebibliography}{9}\small
+\bibitem{FK78} L.~D.~Faddeev, V.~E.~Korepin, \emph{Quantum theory of solitons}, Phys.\ Rep.\ \textbf{42} (1978), 1--87, DOI: \href{https://doi.org/10.1016/0370-1573(78)90058-3}{10.1016/0370-1573(78)90058-3}. [full text read]
+\bibitem{DHN75} R.~F.~Dashen, B.~Hasslacher, A.~Neveu, \emph{Particle spectrum in model field theories from semiclassical functional integral techniques}, Phys.\ Rev.\ D \textbf{11} (1975), 3424--3450, DOI: \href{https://doi.org/10.1103/PhysRevD.11.3424}{10.1103/PhysRevD.11.3424}. [full text read]
+\bibitem{CZ23} E.~Corrigan, C.~Zambon, \emph{Adding integrable defects to the Boussinesq equation}, J.\ Phys.\ A \textbf{56} (2023), 315202, \href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}, DOI: \href{https://doi.org/10.1088/1751-8121/ace204}{10.1088/1751-8121/ace204}. [full text read]
+\end{thebibliography}
+
+\end{document}
