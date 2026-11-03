@@ -1,0 +1,83 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/#1}}
+\newtheorem{proposition}{Proposition}\theoremstyle{remark}\newtheorem{remark}{Remark}
+\title{The Fermi-edge double-scaling limit of the quantum Toda chain:\\ small-amplitude Boussinesq soliton scattering}
+\author{Project \emph{quantum\_boussinesq\_solitons}, Phase 2d}
+\date{3 November 2026}
+\begin{document}\maketitle
+
+\begin{abstract}
+We carry out the Fermi-edge double-scaling limit of the quantum Toda Bethe ansatz: $\beta\to0$ with $y=\beta^2/\hbar_B$ fixed. This gives the \emph{exact} quantum phase of small-amplitude Boussinesq soliton scattering, which we compare with the Phase~2c candidate S-matrix \Ld\ and with the semiclassical phase.
+\begin{itemize}
+\item \emph{Head-on:} the exact phase is $4\sqrt{y_1y_2}=\delta/\hbar$, within $10^{-4}$. In this corner the candidate's Gamma ratio is in its Stirling regime, so the candidate agrees. A constant Maslov phase cannot be detected here.
+\item \emph{Overtaking:} the candidate agrees with the exact phase to $\lesssim10^{-3}$ for $\eta=y_1-y_2\gtrsim2.5$. Near threshold it is much closer than the semiclassical phase: for example, error $-0.076$ against $-0.33$ at $(y_1,y_2)=(1.5,1)$. A residual of $10^{-2}$--$10^{-1}$ remains for $\eta\lesssim1$. It is converged in $\hbar$ and depends on both $y_1$ and $y_2$. It is therefore a genuine two-body correction: the candidate is \emph{not} exact in the corner. \Lc\ (numerical)
+\end{itemize}
+\end{abstract}
+
+\section{Setting and what is computed}
+
+We use the conventions of \texttt{toda\_route.pdf} (Toda chain with spacing $a$, $b=e^{-a/2}$) and of \texttt{report.pdf} (bad Boussinesq equation, $k=\sinh\beta$).
+
+\paragraph{The corner.} Boussinesq solitons with $\beta\to0$ are the continuum limit of Toda solitons with $\kappa=\sqrt3\beta$. The actions are related by $S_{\rm Toda}=3b\,S_{\rm Bouss}$, so $\hbar_T=3b\,\hbar_B$. The semiclassical phases are $O(\beta^2)$: overtaking $\delta\approx(\beta_1^2-\beta_2^2)\log A$, head-on $\delta\approx4\beta_1\beta_2$. The exact S-matrix in the corner is therefore a function of the scaling variables
+\[
+y_j=\beta_j^2/\hbar_B ,
+\]
+obtained as $\hbar_T\to0$ at fixed $y_j$.
+
+\emph{Remark on the candidate's scalings.} \texttt{smatrix\_ansatz.pdf}, item~2 of its final list, states that $\eta=O(1)$ needs $\hbar\propto\beta^4$ for overtaking. Since $\ell_1-\ell_2\approx\tfrac92(\beta_1^2-\beta_2^2)$, one has $\eta\approx(\beta_1^2-\beta_2^2)/\hbar_B=y_1-y_2$, so $\hbar\propto\beta^2$ suffices. For head-on scattering $\eta\approx\tfrac49/\hbar_B\to\infty$ in the corner, so the head-on Gamma ratio \emph{is} in its Stirling regime there. Then the candidate reduces to $e^{i\delta/\hbar-i\pi/2}$. \Lc\ (elementary)
+
+\paragraph{What is computed.} We solve the finite-$\hbar$ asymptotic Bethe ansatz of the quantum Toda chain, with exact digamma kernel, Nyström method, LU reuse and a secant search for the Fermi edge (\script{toda\_edge\_ba.py}).
+\begin{itemize}
+\item Solitons are fixed by their \emph{physical dressed momenta}, $P_{\rm dr}(p)-P_{\rm dr}(q)=P_n(\kappa)/a$. This avoids any convention in the bare quasi-momentum.
+\item For head-on scattering we form the normalised label-frame phase
+\[
+\Psi_T=\big[\Phi(1|2)-\Phi(1|e_2)-\Phi(e_1|2)+\Phi(e_1|e_2)\big]-M_1\big(P_{n2}/a-\Pi_2\big) ,
+\]
+where $e_j$ is the edge excitation. This vanishes when either soliton shrinks to the Fermi edge, which removes all single-particle conventions, including constant phases. The last term is the classical frame change (\texttt{toda\_route.pdf}, Prop.~2).
+\item For overtaking the two-term version of §2 is used. We compare $\Psi_T/\hbar_T$ with the candidate's phase normalised in the same way, and with the semiclassical $\delta/\hbar_B$.
+\end{itemize}
+
+\section{Results}
+
+\paragraph{Normalisation.} The classical relation $\Phi(1|2)=\delta_T+M_1(P_{n2}/a-\Pi_2)+f(\kappa_1)$ was verified only for colliding configurations, $\kappa_1>\kappa_2$. We therefore remove only $f(\kappa_1)$:
+\[
+\Psi_T=\Phi(1|2)-\Phi(1|e_2)-M_1(P_{n2}/a-\Pi_2),
+\]
+and normalise the candidate in the same way, $\arg S(1,2)-\arg S(1,e_2)$ (\script{toda\_edge\_twoterm.py}).
+
+\emph{A failure along the way.} A first, four-term normalisation also subtracted $\Phi(e_1|2)$. That configuration has a slower soliton~1, which never collides, and there the classical relation does not hold. This normalisation produced spurious $O(1)$ differences, for example $-2.04$ (\script{toda\_edge\_scan.py}, \script{toda\_edge\_grid.py}). It also contained an omitted $S(e,e)$ term for the candidate, which produced an apparent $\pi/2$ in the head-on channel. Both are recorded here and superseded.
+
+\paragraph{Convergence.} We used $\hbar_T=0.01,0.005,0.0025$ ($N$ up to $6397$ nodes). The values change by $<4\times10^{-3}$ between successive $\hbar$, and we extrapolate quadratically.
+
+\begin{center}\small
+\begin{tabular}{cccccc}\toprule
+$(y_1,y_2)$ & $\eta\approx y_1-y_2$ & exact (Toda) & candidate & semiclassical & exact$-$candidate\\\midrule
+$(1.5,0.5)$ & 1.0 & $-2.7009$ & $-2.6949$ & $-2.6339$ & $-0.0060$\\
+$(3,0.5)$ & 2.5 & $-4.3477$ & $-4.3463$ & $-4.3351$ & $-0.0014$\\
+$(6,0.5)$ & 5.5 & $-6.5400$ & $-6.5392$ & $-6.5366$ & $-0.0008$\\
+$(1.5,1)$ & 0.5 & $-2.6215$ & $-2.5451$ & $-2.2924$ & $-0.0764$\\
+$(3,1)$ & 2.0 & $-5.3134$ & $-5.2962$ & $-5.2678$ & $-0.0172$\\
+$(6,1)$ & 5.0 & $-8.6817$ & $-8.6757$ & $-8.6701$ & $-0.0059$\\
+$(0.3,0.1)$ & 0.2 & $-0.6129$ & $-0.7044$ & $-0.5268$ & $+0.0914$\\
+$(3,0.1)$ & 2.9 & $-2.1425$ & $-2.1438$ & $-2.1419$ & $+0.0013$\\
+\bottomrule\end{tabular}\end{center}
+
+All columns are quadratic extrapolations $\hbar_T\to0$ of values computed at the same $(y_1,y_2)$ and $\hbar$. The candidate and semiclassical phases are evaluated at the finite $\beta_j=\sqrt{y_j\hbar_B}$ of each run. See \texttt{scripts/toda\_edge\_twoterm.json} for all raw numbers.
+
+\paragraph{Head-on.} With the four-term normalisation, which is valid here because both configurations collide, the exact phase extrapolates to $2.00000$, $4.00002$ and $4.00000$ at $(y_1,y_2)=(0.5,0.5),(1,1),(2,0.5)$. These equal $4\sqrt{y_1y_2}$. The candidate, correctly normalised, agrees (\script{toda\_edge\_scan.py}).
+
+\section{Conclusions}
+\begin{enumerate}
+\item In the small-amplitude corner, the candidate captures the exact two-body phase far better than semiclassics. The Gamma function in $\eta$ carries most of the threshold structure. \Lc
+\item It is not exact. A residual two-body correction of $O(10^{-1})$ remains at $\eta\lesssim1$. Its sign changes between $(1.5,1)$ and $(0.3,0.1)$, so it is not a single CDD factor of definite sign in $\eta$ alone. Since the residual is not a function of $\eta$ alone, the variable in the exact Gamma function may be the bare Toda quasi-momentum difference $(p_1-p_2)/\hbar_T$ of the \emph{quantum} excitations. That differs from $\eta$ by quantum dispersion corrections of relative size $O(1/y)$. This is the natural next test. \Ld
+\item The head-on corner cannot decide the $\pm\pi/2$ Maslov question raised by the defect test: there the constant is a convention.
+\item Caveats: the frame-change term is used in its classical form, and the comparison is only in the corner $\beta\to0$.
+\end{enumerate}
+
+
+\end{document}

@@ -3,7 +3,7 @@ import json, numpy as np
 from toda_edge_ba import EdgeBA, Psi_T
 from toda_edge_scan import cand_norm, semi_norm
 res = {}
-for h in [0.01, 0.005]:
+for h in [0.01]:
     m = EdgeBA(1.0, h)
     for y2 in [0.25, 0.5, 1.0, 2.0]:
         for y1 in [0.1, 0.2, 0.4, 0.6, 1.0, 1.5, 2.5, 4.0, 8.0]:

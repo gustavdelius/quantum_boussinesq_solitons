@@ -8,9 +8,9 @@ from toda_edge_ba import EdgeBA, Psi_T
 import smatrix_ansatz as SA
 
 def cand_norm(be1, s1, be2, s2, hB):
-    tiny = mp.mpf('1e-12')
+    t1, t2 = mp.mpf('1e-12'), mp.mpf('0.5e-12')     # distinct, so that l1 - l2 != 0 at the double edge
     S = lambda x1, x2: mp.im(SA.logS(SA.sol(x1, s1), SA.sol(x2, s2), hB))
-    return float(S(be1, be2) - S(be1, tiny) - S(tiny, be2) + S(tiny, tiny))
+    return float(S(be1, be2) - S(be1, t2) - S(t1, be2) + S(t1, t2))
 
 def semi_norm(be1, s1, be2, s2, hB):
     return float(SA.delta(SA.sol(be1, s1), SA.sol(be2, s2))/hB)
