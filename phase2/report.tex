@@ -214,11 +214,19 @@ Further obstructions:
 \emph{(ii) Quantum Toda chain.} This is our recommended route. The required ingredients are:
 \begin{enumerate}
 \item The exact quantum Toda chain \La~\cite{Gutzwiller,Sklyanin} and its asymptotic Bethe ansatz \La/\Lb~\cite{Sutherland,Mertens,SS}. Its particle excitations become solitons in the classical limit \Lb~\cite{Mertens,PM}.
-\item The dressed particle--particle S-matrix in the finite-density ground state. This is computable from linear integral equations. \emph{Not done.}
-\item Its classical limit should reproduce the Toda soliton phase, obtained by the symplectic construction of §\ref{sec:A} applied to the lattice. The lattice has the same structure: displacement $x_n\leftrightarrow\phi$, $p_n\leftrightarrow\pi$, compression $\sum r_n\leftrightarrow M$, $\sum p_n\leftrightarrow\Pi$. So the same cross terms arise. \Lc\ (structure only)
-\item The small-amplitude scaling limit should give~\eqref{eq:delta}. Phase~1 verified $\log A^{\rm Toda}/\log A^{\rm bad}\to1$. The weight and topological terms remain to be compared.
+\item The dressed particle--particle S-matrix in the finite-density ground state.
+\item Its classical limit should reproduce the Toda soliton phase.
+\item The small-amplitude scaling limit should give~\eqref{eq:delta}.
 \end{enumerate}
-If steps 2--4 succeed, the Toda dressed S-matrix in the scaling limit \emph{is} a candidate exact quantum Boussinesq soliton S-matrix, because it carries a definite $\hbar$-dependence. \Ld
+
+\textbf{Update (Phase 2b, \texttt{toda\_route.pdf}).} Steps 2--4 have now been carried out in the classical limit, and step 2 at finite $\hbar$ to $O(\hbar)$. \Lc
+\begin{itemize}
+\item The classical limit of the Bethe ansatz reproduces the Toda soliton energies, momenta and exact two-soliton shifts.
+\item Its two-body phases carry exactly the predicted topological cross terms.
+\item The label-frame phase is $\delta_T=(p_1-p_2)\log A_T-(\Pi_1M_2-\Pi_2M_1)$.
+\item In the scaling limit, $\delta_T\to3b\,\delta_{\rm bad}$ for overtaking \emph{and} head-on collisions. This independently confirms~\eqref{eq:delta}, including its topological term, from an exactly solvable quantum model.
+\end{itemize}
+The limitation is that Toda reaches only the small-amplitude corner $\beta\to0$. There, an exact quantum S-matrix requires the double-scaling (Fermi-edge) limit $\hbar\propto\beta^2$, which has not yet been done. \Ld
 
 %=====================================================================
 \section{Consistency checks on the candidate}
@@ -234,6 +242,7 @@ Yang--Baxter / factorisation & diagonal scattering, so YBE is trivial; classical
 Semiclassical limit vs.\ time delays & by construction, with the symplectic consistency of Prop.~\ref{prop:symp} & \Lc\ passed\\
 Bound states / bootstrap & breather existence boundary and action reproduced (Prop.~\ref{prop:breather}); no exact pole structure, so the bootstrap cannot be tested & \Lc\ partial\\
 Good equation & formula~\eqref{eq:delta} holds in the regular region; behaviour at the cusp and resonances not analysed & \Lc\ partial\\
+Exactly solvable quantum model & $\delta$ is the scaling limit of the classical limit of the quantum Toda Bethe ansatz, including the topological term (small amplitudes only) & \Lc\ passed\\
 \bottomrule\end{tabular}\end{center}
 
 %=====================================================================
@@ -242,13 +251,13 @@ Good equation & formula~\eqref{eq:delta} holds in the regular region; behaviour 
 \paragraph{Conclusions.}
 \begin{enumerate}
 \item No route yields an exact soliton S-matrix. The furthest-developed result is the semiclassical phase~\eqref{eq:delta}. \Lc
-\item The topological cross term is unavoidable. Any quantisation must treat the $\phi$ zero mode and the kink charge $M$ (a continuous ``winding'') properly. This is absent from sine-Gordon and Toda, and is the most important structural difference we found. \Lc
+\item The topological cross term is unavoidable. Any quantisation must treat the $\phi$ zero mode and the kink charge $M$ (a continuous ``winding'') properly. This term is absent from sine-Gordon and affine Toda field theory. It is present, with the same structure, in the Toda lattice, where the quantum Bethe ansatz confirms it (Phase 2b). It is the most important structural difference we found. \Lc
 \item The spectral parameter $\ell\propto\lambda$ organises everything: the phase weight, the breather action and the string condition. \Lc/\Ld
 \end{enumerate}
 
 \paragraph{Ranked next steps, with reasons.}
 \begin{enumerate}
-\item \textbf{Quantum Toda dressing in the scaling limit} (Route D, steps 2--4). This is the only route with an exactly solvable quantum theory whose classical limit is our model. It would test~\eqref{eq:delta}, including the topological term, and provide $\hbar$-exact data.
+\item \textbf{Fermi-edge double-scaling limit of the quantum Toda Bethe ansatz} ($\beta\to0$, $\hbar\propto\beta^2$, digamma kernel). The classical-limit steps are done (Phase 2b). This would give an \emph{exact} quantum S-matrix for small-amplitude Boussinesq solitons, including head-on scattering.
 \item \textbf{One-loop corrections for breathers and solitons} (Dashen--Hasslacher--Neveu-style): the fluctuation spectrum around a soliton of the bad equation. This would fix the $\hbar$ renormalisation in~\eqref{eq:string} and test the ``string'' interpretation. It is feasible because the linearised operators are reflectionless (integrability).
 \item \textbf{An exact ansatz in the variables $\mu$ (roots of the cubic).} $A_{12}$ is a KP cross-ratio of the roots (verified, \script{consistency\_checks.py}), so a product of $\Gamma$-function factors in root differences is a natural candidate. Test it against~\eqref{eq:delta}, the string condition~\eqref{eq:string} and unitarity.
 \item \textbf{The mirror-image structure} of Prop.~\ref{prop:fact} and the possible link to boundary affine Toda \cite{BHK}.

@@ -1,0 +1,153 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/#1}}
+\newtheorem{proposition}{Proposition}\theoremstyle{remark}\newtheorem{remark}{Remark}
+\title{Route D: Boussinesq solitons from the quantum Toda chain}
+\author{Project \emph{quantum\_boussinesq\_solitons}, Phase 2b}
+\date{3 November 2026}
+\begin{document}\maketitle
+\begin{abstract}
+We carry out the first steps of the top-ranked route of the Phase~2 report. The quantum Toda chain is exactly solvable, and its small-amplitude long-wave limit is the bad Boussinesq equation. We find:
+\begin{enumerate}
+\item In the classical limit, the asymptotic Bethe ansatz reproduces the Toda soliton sector \emph{exactly}: energies, momenta, two-soliton position shifts, and the ordering-dependent ``topological'' cross terms of Phase~2.
+\item The label-frame semiclassical phase of Toda solitons has the closed form
+\[
+\delta_T=(p_1-p_2)\log A_T-(\Pi_1M_2-\Pi_2M_1),
+\]
+with $p$ the Lax eigenvalue.
+\item In the Boussinesq scaling limit, $\delta_T$ converges to $3b$ times the Phase~2 Boussinesq phase, \emph{including its topological term}.
+\item At finite $\hbar$ we compute the $O(\hbar)$ quantum corrections.
+\end{enumerate}
+We also identify a structural limitation: Toda reaches only the small-amplitude corner of the Boussinesq soliton sector.
+\end{abstract}
+
+\section{Setting}
+
+The Toda chain is
+\[
+H=\sum_n\big(\tfrac12p_n^2+e^{-r_n}\big),\qquad r_n=x_{n+1}-x_n ,
+\]
+with mean spacing $a$ and $b=e^{-a/2}$.
+
+\paragraph{Classical solitons.} The one-soliton is $e^{-r_n}=b^2[1+\sinh^2\kappa\,\operatorname{sech}^2(\kappa n-s\,b\,t\sinh\kappa)]$, with $s=\pm1$ the direction. Computing its charges numerically on the lattice gives
+\[
+M=\sum(r_n-a)=-2\kappa,\qquad \Pi=\sum p_n=2sb\sinh\kappa,\qquad E=2b^2(\sinh\kappa\cosh\kappa-\kappa) .
+\]
+\Lc\ \script{toda\_soliton\_classical.py}
+
+The pull-back of $\Omega=\sum dp_n\wedge dx_n$ to the family $(\kappa,n_0)$ is
+\[
+dP_n\wedge dn_0,\qquad P_n=4sb(\kappa\cosh\kappa-\sinh\kappa),
+\]
+and $dE/dP_n$ equals the label velocity $b\sinh\kappa/\kappa$. \Lc\ \script{toda\_label\_symplectic.py} The Eulerian total momentum $\Pi$ is \emph{not} canonically conjugate to the soliton position.
+
+\paragraph{Quantum two-body problem.} The relative Hamiltonian $q^2+e^{-x}$ is solved by $K_{2iq/\hbar}(2e^{-x/2}/\hbar)$. Its reflection amplitude is
+\[
+R=\frac{\Gamma(i\kappa)}{\Gamma(-i\kappa)}\,\hbar^{2i\kappa},\qquad \kappa=\frac{\Delta p}{\hbar}.
+\]
+\Lc\ (derived here; standard, but not compared line by line with \cite{Gutzwiller,Sklyanin}). The asymptotic Bethe equations are $p_jL+\sum_l\Theta(p_j-p_l)=2\pi\hbar I_j$ with
+\[
+\Theta(D)=2\hbar\operatorname{Im}\log\Gamma(1+iD/\hbar)+2D\log\hbar .
+\]
+This has the classical limit $2(D\log|D|-D)$. The method is that of Sutherland and Mertens \Lb~\cite{Sutherland,Mertens}.
+
+\section{Classical limit of the Bethe ansatz}
+
+\begin{proposition}[\Lc, \script{toda\_bethe\_classical.py}]
+As $\hbar\to0$ the ground-state quasi-momenta fill $[-w,w]$ with $w=2b$, with the arcsine density of total weight $1/a$. This is the logarithmic equilibrium measure, which equals the Lax spectrum of the static lattice. It reproduces the ground-state energy per particle $b^2$.
+
+A particle excitation at $p=2sb\cosh\kappa$, the soliton's Lax eigenvalue, has:
+\begin{itemize}
+\item dressed momentum exactly $P_n/a$, the physical-frame canonical momentum;
+\item dressed energy, relative to the edge excitation, exactly the soliton energy $E$.
+\end{itemize}
+Both hold to $10^{-8}$; the Chebyshev method is exact up to truncation.
+\end{proposition}
+
+\begin{proposition}[\Lc, \script{toda\_dressed\_phase\_check.py}, \script{toda\_ba\_vs\_label.py}]
+Let $\Phi(1|2)$ be the dressed Bethe phase of excitation 1 in the presence of 2.
+\begin{enumerate}
+\item The exact classical physical-frame shifts of the two-soliton solution are
+\[
+\Delta x_1=a\Delta n_1+M_2,\qquad \Delta x_2=a\Delta n_2-M_1 ,
+\]
+the extra terms being the displacement caused by the other soliton's compression. They are given by
+\[
+\Delta x_2=-\partial\Phi(1|2)/\partial P_2,\qquad \Delta x_1=+\partial\Phi(2|1)/\partial P_1 .
+\]
+\item $\Phi(1|2)+\Phi(2|1)$ is \emph{not} separable. Its mixed derivative equals exactly
+\[
+M_1'(P_{n2}'/a-\Pi_2')+M_2'(P_{n1}'/a-\Pi_1').
+\]
+That is, the Bethe ansatz carries precisely the topological cross terms of the Phase~2 mechanism.
+\item Specifically,
+\[
+\Phi(1|2)=\delta_T+M_1(P_{n2}/a-\Pi_2)+f(\kappa_1),\qquad \Phi(2|1)=-\delta_T+M_2(P_{n1}/a-\Pi_1)+g(\kappa_2),
+\]
+to machine precision.
+\end{enumerate}
+\end{proposition}
+
+\section{Label frame and the Boussinesq limit}
+
+\begin{proposition}[\Lc, \script{toda\_label\_symplectic.py}, \script{toda\_scaling\_fast.py}]
+\begin{enumerate}
+\item On the lattice, two-soliton scattering satisfies
+\[
+\sum dP_{n,j}\wedge d\Delta n_j=d\Pi_2\wedge dM_1-d\Pi_1\wedge dM_2
+\]
+to 30 digits. This is the exact analogue of the Boussinesq identity.
+\item The Darboux phase is
+\[
+\boxed{\delta_T=(p_1-p_2)\log A_T+M_1M_2(v_1-v_2)=(p_1-p_2)\log A_T-(\Pi_1M_2-\Pi_2M_1)}
+\]
+with $p=2sb\cosh\kappa$ and $v$ the label velocity. The ratio of the remainder to $M_1M_2(v_1-v_2)$ is $1$ to ten digits.
+\item With $\kappa_j=\sqrt3\beta_j\to0$ and the action scale $S_{\rm Toda}=3bS_{\rm Bouss}$,
+\[
+\delta_T/(3b\,\delta_{\rm bad})\to1
+\]
+for overtaking \emph{and} head-on collisions. The error is $1\times10^{-5}$ at $\beta\sim3\times10^{-3}$.
+\end{enumerate}
+\end{proposition}
+
+At leading order the head-on Boussinesq phase is $4\beta_1\beta_2$. Of this, $\tfrac{16}3\beta_1\beta_2$ comes from the topological term and $-\tfrac43\beta_1\beta_2$ from the dynamical term. Agreement in the head-on case is therefore a direct confirmation of the topological term, by an exactly solvable quantum model.
+
+\begin{remark}[\Ld]
+Toda and Boussinesq share the structure
+\[
+\delta=(\text{difference of spectral parameters})\times\log A-c\,(\Pi_1M_2-\Pi_2M_1),
+\]
+with $c=1$ (Toda) and $c=\tfrac23$ (Boussinesq, in its normalisation). The split between the two terms is not invariant under the scaling limit; only the sum is. We conjecture the structure is universal for integrable models with continuous kink charge (KdV included) and suggest testing it on KdV.
+\end{remark}
+
+\section{Finite $\hbar$: quantum corrections}
+
+We solved the finite-$\hbar$ Bethe equations (Nyström method, node spacing $<\hbar/8$) for $\hbar=0.1,0.05,0.025$ at $a=1$ (\script{toda\_bethe\_quantum.py}, \script{toda\_quantum\_corrections.py}). All quantities converge linearly in $\hbar$ to the classical ones. Richardson extrapolation gives the one-loop soliton dispersion correction at fixed physical momentum, $E(P)=E_{\rm cl}(P)+\hbar E_1(P)$:
+
+\begin{center}\begin{tabular}{ccc}\toprule $P$ & $E_{\rm cl}$ & $E_1$\\\midrule $0.60$ & $0.39347$ & $+0.0301$\\ $0.40$ & $0.25768$ & $+0.0203$\\\bottomrule\end{tabular}\end{center}
+\Lc\ (numerical)
+
+The $O(\hbar)$ phase corrections $\Phi_1$ also converge. However, they contain convention-dependent constants: $\pm\pi/2$ from the Stirling branch of $\Theta$, and quantum-number shifts. We have not yet separated out a convention-free quantity. \Lc/\Ld
+
+\section{The limitation, and what would give an exact Boussinesq S-matrix}
+
+The Toda continuum limit produces the bad Boussinesq equation only at \emph{leading order in amplitude}. Toda solitons therefore test the Boussinesq phase only for $\beta\to0$, where Boussinesq solitons are KdV-like with weak head-on coupling. Finite-$\beta$ Boussinesq solitons have widths comparable to the dispersion length, which is where the bad equation is ill-posed. On the lattice this is the lattice spacing, where Toda and Boussinesq differ at $O(1)$. \Lc
+
+Consequently:
+\begin{itemize}
+\item In the double-scaling limit $\beta\to0$, $\hbar\propto\beta^2$ (so that $\delta/\hbar=O(1)$), the quantum Toda dressed S-matrix gives an \emph{exact quantum} S-matrix for small-amplitude Boussinesq solitons. In Bethe-ansatz terms this is an edge-scaling problem: excitations within $O(\hbar)$ of the Fermi edge, with the digamma kernel. It is well posed and is the next computation. It would extend Pustilnik--Matveev's analysis of the KdV crossover \cite{PM} to bidirectional (head-on) scattering. \Ld
+\item An exact S-matrix for finite-amplitude Boussinesq solitons requires a quantum regularisation that agrees with Boussinesq at the dispersion scale. We know of no integrable lattice with that property. The ill-posedness of the bad equation is precisely the statement that the continuum theory alone does not provide one. \Lc/\Ld
+\end{itemize}
+
+\begin{thebibliography}{9}\small
+\bibitem{Gutzwiller} M.~C.~Gutzwiller, \emph{Ann. Phys.} 133 (1981) 304.
+\bibitem{Sklyanin} E.~K.~Sklyanin, \emph{Lect. Notes Phys.} 226 (1985) 196. [not machine-verified]
+\bibitem{Sutherland} B.~Sutherland, \emph{Rocky Mountain J. Math.} 8 (1978) 413.
+\bibitem{Mertens} F.~G.~Mertens, \emph{Z. Phys. B} 55 (1984) 353.
+\bibitem{PM} M.~Pustilnik, K.~A.~Matveev, \emph{Phys. Rev. B} 92 (2015) 195146, arXiv:1507.05639.
+\end{thebibliography}
+\end{document}

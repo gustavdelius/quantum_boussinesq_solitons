@@ -45,3 +45,9 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
   - No exact S-matrix was obtained.
   - Main result: a closed-form semiclassical two-soliton phase δ = (2/9)(ℓ₁−ℓ₂) log A₁₂ + (2/3)M₁M₂(v₁−v₂). It rests on exact symplecticity of scattering once topological cross terms are included, and it matches the Bogdan–Charkina breather action.
   - The report ends with a ranked list of next steps.
+- **Phase 2b, Route D (quantum Toda chain).** Write-up in [`phase2/toda_route.pdf`](phase2/toda_route.pdf); scripts `phase2/scripts/toda_*.py`.
+  - The classical limit of the Toda Bethe ansatz reproduces the Toda soliton sector exactly, including the topological cross terms.
+  - The Toda label-frame phase has the closed form δ_T = (p₁−p₂) log A_T − (Π₁M₂−Π₂M₁).
+  - In the Boussinesq scaling limit δ_T → 3b·δ_bad, for overtaking and head-on collisions.
+  - O(ħ) quantum corrections were computed at finite ħ.
+  - Limitation: Toda reaches only small-amplitude Boussinesq solitons.
