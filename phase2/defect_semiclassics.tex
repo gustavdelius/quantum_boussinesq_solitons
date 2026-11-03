@@ -1,0 +1,210 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{corrigan-zambon/#1}}
+\newtheorem{proposition}{Proposition}\theoremstyle{remark}\newtheorem{remark}{Remark}
+\title{Semiclassical soliton--defect scattering\\ for the good Boussinesq equation}
+\author{Project \emph{quantum\_boussinesq\_solitons}, Phase 2c}
+\date{3 November 2026}
+\begin{document}\maketitle
+\begin{abstract}
+We apply the symplectic (Darboux-coordinate) method of the Phase~2 report to solitons crossing the integrable type-I defect of Corrigan and Zambon (CZ) \cite{CZ}. Everything is for the good equation in the project convention. We find:
+\begin{enumerate}
+\item The CZ transmission factor is a ratio of KP roots, $z=[(p_b-q)/(p_a-q)]^{\eta}$. Here $(p_a,p_b)$ are the soliton's two roots and $q=-s/(2\sqrt3)$ is a single root carried by the defect.
+\item The semiclassical transmission phase has the same structure as the two-soliton phase:
+\[
+\delta_D=\tfrac29\big(\ell-\ell(q)\big)\log z^{\epsilon}-\tfrac23\big(\Pi M_D-\Pi_D M\big).
+\]
+The defect's spectral parameter is $\ell(q)=(3s-s^3)/2$, and $(M_D,\Pi_D)$ are effective defect charges.
+\item The type-I defect has no continuous degrees of freedom and adds no cross terms to $\Omega$. Two-soliton--defect scattering is symplectic with exactly the Phase~2 cross terms. It factorises: the total phase is $\delta_{12}+\delta_{1D}+\delta_{2D}$, whether the solitons collide before or after crossing the defect.
+\item Absorption of a soliton by the defect happens exactly when $q$ coincides with one of its roots. The defect then moves to another of its vacua, and we verify exact energy--momentum balance. Phases stay finite on absorption and resonance lines, while delays diverge logarithmically.
+\end{enumerate}
+All checks are at 40 digits and are in \script{defect\_transmission\_phase.py} and \script{defect\_two\_soliton\_symplectic.py}; both end with \texttt{ALL CHECKS PASSED}.
+\end{abstract}
+
+\section{Set-up and dictionary}
+
+The project convention is $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ with $u=\phi_x=2(\log\tau)_{xx}$. The Lagrangian is $L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\phi_x^3-\tfrac12\phi_{xx}^2$, the canonical form is $\Omega=\int d\pi\wedge d\phi$ with $\pi=\phi_t$, and $\hbar$ refers to this normalisation. A soliton has $k=\sin\alpha$, velocity $v=\epsilon\cos\alpha$, $M=\int u=2k$, $\Pi=\int\pi=-Mv$, $P=\tfrac23\epsilon k^3\cos\alpha$, and $\ell=-\epsilon\cos3\alpha$.
+
+CZ \cite{CZ} (full text read) use a potential field $u_{\rm CZ}$ and set $c=\lambda=\kappa=1$. Translating:
+\[
+u_{\rm CZ}=-3\phi,\qquad L_{\rm CZ}=9L,\qquad P_{\rm CZ}=9P,\qquad \gamma=\operatorname{sech}\theta=k,\qquad \nu=\tanh\theta=\epsilon\cos\alpha .
+\]
+\Lc, check~1 of \script{defect\_transmission\_phase.py}.
+
+Their defect has parameter $s=\sigma_0$ and orientation $\eta=\pm1$, where $\alpha_{\rm CZ}=\eta/\sqrt3$. Its sewing conditions were rederived from the action and checked on the exact solutions in \texttt{corrigan-zambon/verify\_defect\_solutions.py}. CZ's one- and two-soliton solutions are purely transmitting, with the factor
+\[
+z=\frac{\sinh\theta+s\cosh\theta-\eta\sqrt3}{\sinh\theta+s\cosh\theta+\eta\sqrt3}
+\]
+multiplying each $E_j$ on the far side \La\ (CZ (5.5), (5.11)).
+
+\section{Symplectic structure with a type-I defect}
+
+The defect term $D=u_tF+v_tG+H$ adds $F\,\delta u+G\,\delta v$ at $x_0$ to the canonical one-form. Asymptotically $u_x=v_x=0$ at $x_0$, so $F\to f$ and $G\to g$. Hence
+\[
+\Omega_D=(f_v-g_u)\,du\wedge dv\big|_{x_0}=\sigma\,du\wedge dv .
+\]
+The defect is asymptotically in a vacuum, where $\tau'(u-v)=0$, so $w=u-v$ at $x_0$ is a discrete label and $du=dv$. Therefore \emph{$\Omega_D=0$ on every vacuum sector}. \Lc, check~6.
+
+It follows that:
+\begin{itemize}
+\item The type-I defect has no continuous degree of freedom.
+\item There is no $d\Pi\wedge dM_D$ or $d\Pi_D\wedge dM$ cross term: both $M_D\propto w$ and the defect's shift charge are locally constant.
+\end{itemize}
+We use the shift-invariant gauge $f=g=-\sigma^2/(4\mu)$, which has $f_v-g_u=\sigma$. (CZ's (3.47) gives $2\sigma$; see \texttt{corrigan-zambon/README.md}.) In this gauge the total $\Pi$ is conserved through the defect.
+
+For one soliton the phase space is $\Omega=dP\wedge dX+d\Pi_{\rm tot}\wedge dc$, with $X$ measured from the fixed defect. Any map $X\mapsto X+\Delta x(P)$ is then symplectic. One-soliton--defect scattering is therefore trivially symplectic, and the content lies in the phase and in the multi-soliton case.
+
+\section{The transmission factor in KP roots}
+
+\begin{proposition}[\Lc, check~2]\label{prop:z}
+Let the soliton roots be $p_a=\tfrac12(k+\epsilon\cos\alpha/\sqrt3)$ and $p_b=\tfrac12(\epsilon\cos\alpha/\sqrt3-k)$, so that $p_a-p_b=k$ and $p_a^2+p_ap_b+p_b^2=\tfrac14$. Let $q=-s/(2\sqrt3)$. Then
+\[
+z=\Big(\frac{p_b-q}{p_a-q}\Big)^{\eta},\qquad
+\ell=\ell(p_a)=\ell(p_b),\quad \ell(p):=-3\sqrt3\,p\,(1-4p^2).
+\]
+The two-soliton factor is the KP cross-ratio,
+\[
+A_{12}=S_{12}=\frac{(p_{1a}-p_{2a})(p_{1b}-p_{2b})}{(p_{1a}-p_{2b})(p_{1b}-p_{2a})} .
+\]
+(\Lc, check~1 of \script{defect\_two\_soliton\_symplectic.py}.) Formally, $z^{-\eta}$ is the cross-ratio of the soliton with a pair $(q,\infty)$. The defect behaves like ``half a soliton''.
+\end{proposition}
+
+CZ remark that no factor of $S_{12}$ seems closely related to $z$ \La. In root variables the relation is transparent.
+
+\paragraph{Regular region.} $z>0$ iff $q\notin[p_b,p_a]$. The roots of all solitons lie in $[-1/\sqrt3,1/\sqrt3]$, so for $|s|>2$ every soliton is regular and none can be absorbed. This agrees with CZ's statement for $|s|>2$ \La. For $z<0$ the transmitted solution is singular \La.
+
+\paragraph{Delay.} From peak positions of the exact solution, $\Delta x=-k^{-1}\log z^{\epsilon}$, where $z^\epsilon$ is the factor in the direction of motion \Lc\ (check~3, 16 regular cases, agreement to $10^{-39}$).
+
+\section{The semiclassical transmission phase}
+
+With $\Delta x=-\partial\delta_D/\partial P$ we have $\partial_\alpha\delta_D=\tfrac23\epsilon\sin3\alpha\,\log z^\epsilon$.
+
+\begin{proposition}[\Lc, check~4]\label{prop:dD}
+For all $\epsilon,\eta=\pm1$ and all $s$, in the regular region,
+\begin{equation}\label{eq:dD}
+\boxed{\ \delta_D=\tfrac29\big(\ell-\ell_D\big)\log z^{\epsilon}-\tfrac23\big(\Pi M_D-\Pi_D M\big)\ }
+\end{equation}
+with
+\[
+\ell_D=\ell(q)=\tfrac12(3s-s^3),\qquad M_D=\epsilon\eta\,q,\qquad \Pi_D=\epsilon\eta\,\frac{s^2-2}{2\sqrt3} .
+\]
+This holds up to an additive $s$-dependent constant, which the classical data do not fix. Moreover $\delta_D(-\eta)=-\delta_D(\eta)$: the two orientations are semiclassically inverse to each other.
+\end{proposition}
+
+\begin{remark}
+\begin{itemize}
+\item The coefficients $\ell_D,M_D,\Pi_D$ were first found by solving a linear system numerically. They were then identified exactly. For $\epsilon=\eta=1$, an exploratory polynomial division in $\cos\alpha$ (not part of the scripts) shows that the remainder has no pole at $z=0,\infty$ only for $\ell_D=(3s-s^3)/2$. The identification was then verified at 40 digits.
+\item Compare the two-soliton phase $\delta_{12}=\tfrac29(\ell_1-\ell_2)\log A_{12}-\tfrac23(\Pi_1M_2-\Pi_2M_1)$. The defect enters exactly like a second particle, with spectral parameter $\ell(q)$ and charges $(M_D,\Pi_D)$. \Lc\ for the formula; the ``particle'' reading is \Ld.
+\item Since $\rho_0=-(s/2\mu)(1-s^2/3)$ and $\mu=\eta/\sqrt3$ in CZ, we have $\ell_D=-\sqrt3\,\eta\,\rho_0$. The defect's spectral parameter is its constant $\rho_0$. \Lc\ (one line of algebra)
+\item $M_D$ and $\Pi_D$ depend on $\epsilon$. They are therefore effective coefficients of a mutual-statistics term, not intrinsic charges of the defect. (In Section~2 the defect has none.)
+\end{itemize}
+\end{remark}
+
+\section{Two solitons and a defect: symplecticity and factorisation}
+
+CZ's two-soliton solution (5.11) multiplies $E_j$ by $z_j$ and leaves $S_{12}$ unchanged \La. We tested this as follows (\script{defect\_two\_soliton\_symplectic.py}).
+
+\begin{proposition}[\Lc]\label{prop:2s}
+\begin{enumerate}
+\item \emph{Shifts} (check~2). From peak positions of the exact solution at $t=\pm1000$, $\Delta x_j=\Delta x_j^{\rm ss}+\Delta x_j^{D}$, with agreement to $<10^{-27}$. This was done for overtaking and head-on collisions, both orientations, and $s$ of both signs. The shifts are \emph{identical} whether the soliton--soliton collision takes place left or right of the defect.
+\item \emph{Symplecticity} (check~3). The identity
+\[
+\sum_jdP_j\wedge d\Delta x_j=(d\Pi_i\wedge dM_j)_{\rm in}-(d\Pi_i\wedge dM_j)_{\rm out}
+\]
+holds to $10^{-40}$, with the Phase~2 cross terms and no defect cross terms. The left side alone is $O(1)$ (e.g.\ $-2.441$), so the naive test fails as in Phase~2.
+\item \emph{Factorisation} (check~4). In the Phase~2 Darboux frame ($\phi$ normalised at $-\infty$),
+\[
+\Delta x'_j=-\partial_{P_j}\big(\delta_{12}+\delta_{1D}+\delta_{2D}\big),
+\]
+to $10^{-40}$.
+\end{enumerate}
+\end{proposition}
+
+\paragraph{Interpretation.} Semiclassically the soliton--soliton--defect amplitude factorises as $S_{12}T_1T_2$. Because scattering is diagonal and purely transmitting, the reflection--transmission compatibility relation $T_1T_2S_{12}=S_{12}T_2T_1$ is automatic. The non-trivial content is twofold:
+\begin{itemize}
+\item the defect shifts are independent of the other soliton (an exact classical fact, \La/\Lc);
+\item the Darboux-frame corrections $\gamma_jM_i$ are unaffected by the defect, because $\Omega_D=0$.
+\end{itemize}
+This is the semiclassical analogue of the sine-Gordon defect story, but with one difference. The required cross terms between solitons are present, while there are none between soliton and defect. \Lc\ for the leading order; nothing is claimed beyond it.
+
+\section{Absorption, decay, the cusp and the resonances}
+
+\subsection{Absorption and decay into one soliton}
+
+The defect vacua are $\sigma\rho(\sigma)=0$, that is $\sigma\in\{s,\,0,\,\sigma_\pm\}$ with $\sigma_\pm^2+s\sigma_\pm+s^2=3$. Write $\sigma=-2\sqrt3\,q'$. Then the condition for $\sigma_\pm$ reads
+\[
+q'^2+qq'+q^2=\tfrac14 .
+\]
+So the excited vacua correspond to the \emph{other two roots of the KP triple containing $q$}. \Lc
+
+$z\in\{0,\infty\}$ (absorption, CZ \La) occurs iff $q=p_a$ or $q=p_b$. In that case we verify:
+\[
+(E,P)_{\rm soliton}=\pm\big[(E_D,P_D)(\sigma_\pm)-(E_D,P_D)(s)\big]\quad\text{exactly},
+\]
+with $E_D=-\tau$ and $P_D=h$ on vacua (CZ (3.48)--(3.51)). \Lc, check~5, $10^{-40}$.
+
+In root language, the defect with root $q$ absorbs the soliton $(q,p)$ and becomes the defect with root $p$, in the same triple. The time-reversed process is the decay of an excited defect into a soliton plus the ground defect.
+
+On an absorption line $\ell(p)=\ell(q)$, so the coefficient of $\log z$ in~\eqref{eq:dD} vanishes linearly. Hence:
+\begin{itemize}
+\item $\delta_D$ stays finite; numerically it converges to $-0.58063712\ldots$ at $s=0.7$;
+\item the delay diverges like $\log|\alpha-\alpha^*|$.
+\end{itemize}
+\Lc
+
+The natural quantum picture is that $T(\alpha)$ has a pole near $\alpha^*$, corresponding to a defect bound state $D_{q}\,S_{(q,p)}\to D_{p}$, as for sine-Gordon defects. \Ld\ This was not derived: a static excited vacuum is not a periodic orbit, so no Bohr--Sommerfeld rule applies directly.
+
+\subsection{Resonance lines}
+
+$A_{12}\to0$ or $\infty$ when two roots of different solitons coincide. For example, for overtaking $A\to0$ at $\alpha_1=2\pi/3-\alpha_2$, the mirror image of soliton~2 across the cusp, which has the same $P$. On these lines $\ell_1=\ell_2$, so
+\[
+\delta_{12}\to\tfrac23M_1M_2(v_1-v_2),
+\]
+which is finite. \Lc, check~5, for overtaking $A\to0$ and head-on $A\to\infty$. The delays diverge logarithmically. Past these lines lie the merging/splitting (Y-shaped) solutions, which are outside the two-particle description.
+
+\subsection{The cusp $\alpha=\pi/3$}
+
+$dP/d\alpha=\tfrac23k\sin3\alpha$ vanishes, and so does $d\delta_D/d\alpha$, while $\Delta x$ stays finite. In the example, $z=0.318$ or $8.5$ at $s=\pm2.4$. \Lc, check~5. So $\delta_D$ is smooth in $\alpha$ but has a square-root branch point as a function of $P$. The two branches are $\alpha<\pi/3$ and $\alpha>\pi/3$, and they share each value $P<P_{\max}$. The stationary-phase link $\Delta x=-\partial\delta/\partial P$ still holds on each branch. Near $P_{\max}$, however, the wave-packet derivation needs a uniform (Airy-type) treatment, and $\alpha$ (or the root) rather than $P$ is the natural label. \Ld
+
+We therefore state results in the regular region: $\alpha_j<\pi/3$ for the two-soliton checks, $z_j>0$, and $A_{12}>0$.
+
+\subsection{Status of reflection and of decay into two solitons}
+
+\begin{itemize}
+\item For ordinary one- and two-soliton solutions, the CZ defect is \emph{purely transmitting} \La. Hence $R=0$ at the semiclassical order considered here \Lc.
+\item CZ's reflection occurs only for the merging/splitting three-exponential solutions (their \S5.3) \La. Those lie on or beyond the resonance lines and involve soliton-number change. The phase-space description used here (fixed number of asymptotic solitons, Darboux coordinates) does not cover them. We have \emph{not} derived a reflection amplitude.
+\item Likewise, CZ's ``decaying defect'' into two solitons (their Fig.~8) has not been analysed.
+\item Our guess is that semiclassical reflection is a resonance phenomenon: reflection $\sim$ absorption of the incoming soliton into an excited vacuum, followed by emission into the other root pair of the triple. Quantum reflection amplitudes would then be suppressed except near the resonance and absorption lines. \Ld
+\end{itemize}
+
+\section{Summary of labels and checks}
+
+\begin{center}\begin{tabular}{lll}\toprule
+Claim & Label & Check\\\midrule
+Root form of $z$ and of $S_{12}$ & \Lc & phase script 2; two-soliton script 1\\
+Delay from the exact solution & \Lc & phase script 3\\
+$\delta_D$, eq.~\eqref{eq:dD} & \Lc & phase script 4\\
+Vacua $\leftrightarrow$ triple; absorption energy balance & \Lc & phase script 5\\
+$\Omega_D=0$ on vacua, no defect cross terms & \Lc & phase script 6\\
+2-soliton shifts, order independence & \Lc & two-soliton script 2\\
+Symplecticity with Phase 2 cross terms & \Lc & two-soliton script 3\\
+Factorisation $\delta_{12}+\delta_{1D}+\delta_{2D}$ & \Lc & two-soliton script 4\\
+Finite phases on resonance/absorption lines; cusp & \Lc & two-soliton script 5\\
+Bound-state poles, reflection as resonance, cusp uniformisation & \Ld & ---\\\bottomrule
+\end{tabular}\end{center}
+
+\paragraph{Failures recorded.}
+\begin{itemize}
+\item A first version of the delay check started the root-finder too far from the peak and returned wrong roots. It was fixed by starting near the predicted peak and requiring the peak height $k^2/2$.
+\item A first resonance test converged to a spurious root. It was replaced by the explicit line $p_{1a}=p_{2a}$ (or $p_{1b}=p_{2a}$).
+\item For $s=1.9$ only one absorbable soliton exists; the check originally demanded two.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{CZ} E.~Corrigan, C.~Zambon, \emph{Adding integrable defects to the Boussinesq equation}, J.~Phys.~A 56 (2023), arXiv:2306.03772. [full text read]
+\end{thebibliography}
+\end{document}
