@@ -1,0 +1,298 @@
+<title>Boussinesq Defect Explorer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an instrument bench — wide plot panel on the left, a narrow control column on the right; stacks on phones. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#18222e; --muted:#5b6876; --line:#d6dde4;
+  --wave:#1f5f99; --ghost:#9fb2c4; --defect:#c7731d; --bad:#b3362f; --good:#2f7d4f;
+  --heat-lo:#ffffff; --grid:#e7ecf0;
+  --display:"Fraunces", Georgia, serif; --body:"IBM Plex Sans", system-ui, sans-serif; --mono:"IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f151b; --panel:#161e26; --ink:#e3e9ef; --muted:#93a1ae; --line:#2a3541;
+  --wave:#6fb2ec; --ghost:#3f5163; --defect:#e79a49; --bad:#e2675f; --good:#5cbf86; --heat-lo:#161e26; --grid:#212b35; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f151b; --panel:#161e26; --ink:#e3e9ef; --muted:#93a1ae; --line:#2a3541;
+  --wave:#6fb2ec; --ghost:#3f5163; --defect:#e79a49; --bad:#e2675f; --good:#5cbf86; --heat-lo:#161e26; --grid:#212b35; color-scheme:dark }
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.5;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header h1{font-family:var(--display);font-weight:650;font-size:clamp(1.6rem,3.2vw,2.3rem);margin:0;text-wrap:balance;letter-spacing:-.01em}
+header p{margin:.35rem 0 0;color:var(--muted);max-width:72ch}
+.bench{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px}
+@media (max-width:860px){.bench{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;min-width:0}
+.plots{display:flex;flex-direction:column;gap:10px}
+canvas{display:block;width:100%;max-width:100%}
+#wave{aspect-ratio:2.4/1}
+#heat{aspect-ratio:2.4/1}
+.caption{font-size:12.5px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted)}
+.sw{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+.controls{display:flex;flex-direction:column;gap:14px}
+.group{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:12px}
+.group:first-child{border-top:0;padding-top:0}
+.label{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.row{display:flex;align-items:center;gap:10px}
+.row label{flex:0 0 auto;min-width:2.2em;font-family:var(--mono);font-size:13px}
+.row input[type=range]{flex:1;min-width:0;accent-color:var(--wave)}
+.row output{font-family:var(--mono);font-size:13px;min-width:4.2em;text-align:right;font-variant-numeric:tabular-nums}
+.seg{display:flex;border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);font:500 13px var(--body);padding:7px 4px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--wave);color:var(--panel)}
+button.play{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 13px var(--body);padding:7px 12px;border-radius:5px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--defect);outline-offset:2px}
+.check{display:flex;gap:8px;align-items:center;font-size:13.5px}
+.readout{font-family:var(--mono);font-size:13px;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-variant-numeric:tabular-nums}
+.readout dt{color:var(--muted)} .readout dd{margin:0;text-align:right}
+.pill{display:inline-block;font:600 12px var(--body);padding:3px 9px;border-radius:999px;border:1px solid currentColor}
+.pill.ok{color:var(--good)} .pill.warn{color:var(--defect)} .pill.err{color:var(--bad)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.notes h2{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:0 0 .3rem}
+.notes p,.notes li{color:var(--muted);font-size:14px;max-width:65ch}
+.notes ul{padding-left:1.1em;margin:.2rem 0}
+code,.m{font-family:var(--mono);font-size:.92em}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+<header>
+  <h1>Boussinesq Defect Explorer</h1>
+  <p>Exact solitons of the good Boussinesq equation meeting a Corrigan–Zambon integrable defect at <span class="m">x = 0</span>. The solutions are their eqs. (5.1)–(5.16) of arXiv:2306.03772, which we checked against the defect sewing conditions. The plot shows <span class="m">u = 2(log τ)<sub>xx</sub></span>, the field in our project convention.</p>
+</header>
+
+<div class="bench">
+  <section class="panel plots" aria-label="Plots">
+    <canvas id="wave" aria-label="Field profile at the current time"></canvas>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--wave)"></span>with defect (u for x&lt;0, v for x&gt;0)</span>
+      <span id="lg-ghost"><span class="sw" style="background:var(--ghost)"></span>same solution without defect</span>
+      <span><span class="sw" style="background:var(--defect)"></span>defect</span>
+    </div>
+    <canvas id="heat" aria-label="Space-time diagram"></canvas>
+    <div class="caption">Space–time diagram: horizontal axis <span class="m">x ∈ [−40, 40]</span>, time runs upward over <span class="m">t ∈ [−40, 40]</span>. The orange line marks the current time. A kink in a soliton track at the defect is the time delay; a track that ends at the defect is absorption.</div>
+  </section>
+
+  <aside class="panel controls" aria-label="Controls">
+    <div class="group">
+      <span class="label">Configuration</span>
+      <div class="seg" role="group" aria-label="Configuration">
+        <button id="m1" aria-pressed="true">One soliton</button>
+        <button id="m2" aria-pressed="false">Two</button>
+        <button id="m3" aria-pressed="false">Merging</button>
+      </div>
+    </div>
+    <div class="group">
+      <span class="label">Solitons</span>
+      <div class="row"><label for="th1" id="th1lab">θ₁</label><input id="th1" type="range" min="-2.5" max="2.5" step="0.01" value="1"><output id="th1o"></output></div>
+      <div class="row" id="th2row"><label for="th2">θ₂</label><input id="th2" type="range" min="-2.5" max="2.5" step="0.01" value="-0.8"><output id="th2o"></output></div>
+      <div class="row" id="x1row"><label for="x1">x₁</label><input id="x1" type="range" min="-20" max="20" step="0.1" value="0"><output id="x1o"></output></div>
+      <div class="caption" id="thnote">Rapidity θ: velocity ν = tanh θ, wavenumber k = sech θ, amplitude k²/2. θ &lt; 0 moves left.</div>
+    </div>
+    <div class="group">
+      <span class="label">Defect</span>
+      <div class="row"><label for="s">s</label><input id="s" type="range" min="-3" max="3" step="0.01" value="0.5"><output id="so"></output></div>
+      <div class="seg" role="group" aria-label="Sign of alpha">
+        <button id="ap" aria-pressed="true">α = +1/√3</button>
+        <button id="am" aria-pressed="false">α = −1/√3</button>
+      </div>
+      <div class="caption">Defect parameter σ₀ = s·c. The sign of α picks one of the two defect families allowed by β = 2α.</div>
+    </div>
+    <div class="group">
+      <span class="label">Time</span>
+      <div class="row"><label for="t">t</label><input id="t" type="range" min="-40" max="40" step="0.05" value="-30"><output id="to"></output></div>
+      <div class="row"><button class="play" id="play">Play</button>
+        <label class="check"><input type="checkbox" id="ghost" checked> show no-defect solution</label></div>
+    </div>
+    <div class="group">
+      <span class="label">Readout</span>
+      <div id="status"></div>
+      <dl class="readout" id="readout"></dl>
+    </div>
+  </aside>
+</div>
+
+<section class="notes">
+  <div class="panel">
+    <h2>What the defect does</h2>
+    <p>On the far side of the defect each soliton component picks up a factor <span class="m">z</span> in the τ-function (CZ eq. 5.5):</p>
+    <p class="m">z = (sinh θ + s cosh θ ∓ √3) / (sinh θ + s cosh θ ± √3)</p>
+    <ul>
+      <li><b>z &gt; 0</b>: transmitted. The position shift is <span class="m">−(ln z)/k</span>.</li>
+      <li><b>z = 0 or ∞</b>: the soliton is absorbed by the defect, or emitted by it.</li>
+      <li><b>z &lt; 0</b>: the field on the far side is singular.</li>
+    </ul>
+    <p>In two-soliton solutions each component transmits independently, with its own <span class="m">z</span>.</p>
+  </div>
+  <div class="panel">
+    <h2>Merging solitons</h2>
+    <p>Three exponentials and no constant term (CZ 5.12–5.16). Two solitons fuse into one, or one splits into two, even with no defect present.</p>
+    <p>At the defect, part of the configuration is reflected and part transmitted. With α &gt; 0 and <span class="m">tanh θ = s/2</span>, nothing passes through: the field beyond the defect is constant.</p>
+  </div>
+  <div class="panel">
+    <h2>Scope</h2>
+    <p>This is the good equation only. We showed that this defect family has no real version for the bad equation when the nonlinear term is present. Units: <span class="m">c = λ = κ = 1</span>.</p>
+    <p>Singular fields (z &lt; 0) are drawn clipped.</p>
+  </div>
+</section>
+</div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const S3 = Math.sqrt(3);
+const st = {mode:1, th1:1, th2:-0.8, x1:0, s:0.5, sgn:1, t:-30, ghost:true, playing:false};
+const XMIN=-40, XMAX=40, TMIN=-40, TMAX=40;
+
+// ---- exact solutions: tau = sum_j a_j exp(K_j x - W_j t + p_j); field u = 2 (log tau)_xx ----
+function zOf(th, s, sgn){ const a=Math.sinh(th)+s*Math.cosh(th); return (a - sgn*S3)/(a + sgn*S3); }
+function S12(a,b){ const d=Math.sinh(a-b)**2; return (d-3*(Math.cosh(a)-Math.cosh(b))**2)/(d-3*(Math.cosh(a)+Math.cosh(b))**2); }
+function sol(th){ return {k:1/Math.cosh(th), nu:Math.tanh(th)}; }
+
+// returns {left:[terms], right:[terms], info}
+function build(){
+  const s=st.s, g=st.sgn;
+  if(st.mode===1){
+    const A=sol(st.th1), z=zOf(st.th1,s,g);
+    const E={K:A.k, W:A.k*A.nu, p:st.x1*A.k};
+    return {left:[{a:1,K:0,W:0,p:0},{a:1,...E}],
+            right:[{a:1,K:0,W:0,p:0},{a:z,...E}], info:{z:[z], k:[A.k], nu:[A.nu]}};
+  }
+  if(st.mode===2){
+    const A=sol(st.th1), B=sol(st.th2), S=S12(st.th1,st.th2);
+    const za=zOf(st.th1,s,g), zb=zOf(st.th2,s,g);
+    const E1={K:A.k,W:A.k*A.nu,p:st.x1*A.k}, E2={K:B.k,W:B.k*B.nu,p:-st.x1*B.k};
+    const both={K:E1.K+E2.K,W:E1.W+E2.W,p:E1.p+E2.p};
+    return {left:[{a:1,K:0,W:0,p:0},{a:1,...E1},{a:1,...E2},{a:S,...both}],
+            right:[{a:1,K:0,W:0,p:0},{a:za,...E1},{a:zb,...E2},{a:S*za*zb,...both}],
+            info:{z:[za,zb], k:[A.k,B.k], nu:[A.nu,B.nu], S}};
+  }
+  // merging (CZ 5.12-5.16): E_a = exp(w_a (x - sqrt3 w_a t)), z3 = 1
+  const th=st.th1, ch=Math.cosh(th), tt=Math.tanh(th);
+  const w=[(1/ch+tt/S3)/2, (-1/ch+tt/S3)/2, -tt/S3];
+  const a=s*ch+Math.sinh(th), b=s*ch-2*Math.sinh(th);
+  const zz = g===1 ? [b/(a+S3), b/(a-S3), 1] : [(a+S3)/b, (a-S3)/b, 1];
+  const terms = c => w.map((wa,i)=>({a:c[i], K:wa, W:S3*wa*wa, p:st.x1*wa}));
+  return {left:terms([1,1,1]), right:terms(zz), info:{zm:zz, w}};
+}
+
+// stable evaluation of 2 (log tau)_xx for signed coefficients
+function field(terms, x, t){
+  let m=-Infinity;
+  for(const q of terms){ const e=q.K*x-q.W*t+q.p; if(q.a!==0 && e>m) m=e; }
+  let T=0,T1=0,T2=0;
+  for(const q of terms){ if(q.a===0) continue; const e=q.a*Math.exp(q.K*x-q.W*t+q.p-m); T+=e; T1+=q.K*e; T2+=q.K*q.K*e; }
+  if(T===0) return NaN;
+  const r1=T1/T; return 2*(T2/T - r1*r1);
+}
+function uAt(B, x, t, ghost){ return (ghost || x<0) ? field(B.left,x,t) : field(B.right,x,t); }
+
+// ---- drawing ----
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function setup(cv){ const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+  cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d); const c=cv.getContext('2d'); c.setTransform(d,0,0,d,0,0); return [c,r.width,r.height]; }
+
+let B=build(), heatImg=null, heatKey='';
+function drawWave(){
+  const [c,W,H]=setup($('wave')); const L=40,R=12,T=12,Bm=26, pw=W-L-R, ph=H-T-Bm;
+  const ymax = st.mode===3 ? 1.0 : 0.6, ymin=-0.1;
+  const X=x=>L+(x-XMIN)/(XMAX-XMIN)*pw, Y=y=>T+(ymax-y)/(ymax-ymin)*ph;
+  c.clearRect(0,0,W,H);
+  c.strokeStyle=css('--grid'); c.lineWidth=1; c.font='11px "IBM Plex Mono", monospace'; c.fillStyle=css('--muted');
+  for(let x=-40;x<=40;x+=10){ c.beginPath(); c.moveTo(X(x),T); c.lineTo(X(x),T+ph); c.stroke(); c.textAlign='center'; c.fillText(x,X(x),H-8); }
+  const yt = st.mode===3?[0,0.25,0.5,0.75,1]:[0,0.2,0.4,0.6];
+  for(const y of yt){ c.beginPath(); c.moveTo(L,Y(y)); c.lineTo(L+pw,Y(y)); c.stroke(); c.textAlign='right'; c.fillText(y,L-6,Y(y)+4); }
+  c.strokeStyle=css('--defect'); c.lineWidth=2; c.setLineDash([5,4]); c.beginPath(); c.moveTo(X(0),T); c.lineTo(X(0),T+ph); c.stroke(); c.setLineDash([]);
+  const curve=(ghost,col,lw)=>{ c.strokeStyle=col; c.lineWidth=lw; c.beginPath(); let pen=false;
+    for(let i=0;i<=pw;i++){ const x=XMIN+i/pw*(XMAX-XMIN); if(!ghost && i>0){ const xp=XMIN+(i-1)/pw*(XMAX-XMIN); if(xp<0&&x>=0) pen=false; }
+      let y=uAt(B,x,st.t,ghost); if(!isFinite(y)){pen=false;continue;}
+      const cl=Math.max(ymin-0.05,Math.min(ymax+0.05,y)); if(cl!==y){ if(pen){c.lineTo(X(x),Y(cl));} pen=false; continue; }
+      if(pen) c.lineTo(X(x),Y(y)); else c.moveTo(X(x),Y(y)); pen=true; }
+    c.stroke(); };
+  c.save(); c.beginPath(); c.rect(L,T,pw,ph); c.clip();
+  if(st.ghost) curve(true,css('--ghost'),1.5);
+  curve(false,css('--wave'),2.2);
+  c.restore();
+  c.fillStyle=css('--muted'); c.textAlign='left'; c.fillText('u(x, t='+st.t.toFixed(1)+')',L+6,T+12);
+}
+function drawHeat(){
+  const [c,W,H]=setup($('heat')); const L=40,R=12,T=8,Bm=24, pw=Math.floor(W-L-R), ph=Math.floor(H-T-Bm);
+  const key=JSON.stringify([st.mode,st.th1,st.th2,st.x1,st.s,st.sgn,pw,ph,document.documentElement.dataset.theme||'', matchMedia('(prefers-color-scheme: dark)').matches]);
+  const d=window.devicePixelRatio||1;
+  if(key!==heatKey){
+    const nx=Math.min(360,pw), nt=Math.min(180,ph);
+    const off=document.createElement('canvas'); off.width=nx; off.height=nt; const oc=off.getContext('2d'); const img=oc.createImageData(nx,nt);
+    const lo=hex(css('--heat-lo')), hi=hex(css('--wave')), bad=hex(css('--bad'));
+    const umax = st.mode===3?0.9:0.5;
+    for(let j=0;j<nt;j++){ const t=TMAX-(j+0.5)/nt*(TMAX-TMIN);
+      for(let i=0;i<nx;i++){ const x=XMIN+(i+0.5)/nx*(XMAX-XMIN); const u=uAt(B,x,t,false);
+        let col; if(!isFinite(u)||u<-0.05||u>umax*1.6) col=bad; else { const f=Math.max(0,Math.min(1,u/umax))**0.7; col=lo.map((v,k)=>v+(hi[k]-v)*f); }
+        const p=4*(j*nx+i); img.data[p]=col[0]; img.data[p+1]=col[1]; img.data[p+2]=col[2]; img.data[p+3]=255; } }
+    oc.putImageData(img,0,0); heatImg=off; heatKey=key;
+  }
+  c.clearRect(0,0,W,H); c.imageSmoothingEnabled=true; c.drawImage(heatImg,L,T,pw,ph);
+  c.strokeStyle=css('--line'); c.strokeRect(L+.5,T+.5,pw-1,ph-1);
+  const X=x=>L+(x-XMIN)/(XMAX-XMIN)*pw, Yt=t=>T+(TMAX-t)/(TMAX-TMIN)*ph;
+  c.strokeStyle=css('--defect'); c.setLineDash([4,4]); c.lineWidth=1.5; c.beginPath(); c.moveTo(X(0),T); c.lineTo(X(0),T+ph); c.stroke(); c.setLineDash([]);
+  c.lineWidth=2; c.beginPath(); c.moveTo(L,Yt(st.t)); c.lineTo(L+pw,Yt(st.t)); c.stroke();
+  c.fillStyle=css('--muted'); c.font='11px "IBM Plex Mono", monospace';
+  for(let x=-40;x<=40;x+=20){ c.textAlign='center'; c.fillText(x,X(x),H-7); }
+  for(const t of [-40,0,40]){ c.textAlign='right'; c.fillText('t='+t,L-4,Yt(t)+4); }
+}
+function hex(s){ s=s.replace('#',''); if(s.length===3) s=[...s].map(ch=>ch+ch).join(''); return [0,2,4].map(i=>parseInt(s.slice(i,i+2),16)); }
+
+function zStatus(z){ if(!isFinite(z)||Math.abs(z)>1e6) return ['warn','emitted by defect']; if(Math.abs(z)<1e-6) return ['warn','absorbed by defect'];
+  return z>0 ? ['ok','transmitted'] : ['err','singular beyond defect']; }
+function readout(){
+  const I=B.info, rows=[]; let pills=[];
+  const f=v=>!isFinite(v)?'∞':(Math.abs(v)>=1e4||Math.abs(v)<1e-3&&v!==0)?v.toExponential(2):v.toFixed(4);
+  if(I.z){ I.z.forEach((z,i)=>{ const [cl,txt]=zStatus(z); pills.push(`<span class="pill ${cl}">${I.z.length>1?'soliton '+(i+1)+': ':''}${txt}</span>`);
+      rows.push(['k'+(i+1), f(I.k[i])],['ν'+(i+1), f(I.nu[i])],['z'+(i+1), f(z)]);
+      if(z>0&&isFinite(z)) rows.push(['shift'+(i+1), f(-Math.log(z)/I.k[i])]); });
+    if(I.S!==undefined){ rows.push(['A₁₂', f(I.S)]); if(I.S<=0) pills.push('<span class="pill err">two-soliton solution singular (A₁₂ ≤ 0)</span>'); }
+  } else {
+    const [z1,z2]=I.zm; rows.push(['ω₁',f(I.w[0])],['ω₂',f(I.w[1])],['ω₃',f(I.w[2])],['z₁',f(z1)],['z₂',f(z2)]);
+    if(Math.abs(z1)<1e-6&&Math.abs(z2)<1e-6) pills.push('<span class="pill warn">nothing transmitted: field constant beyond defect</span>');
+    else if(z1<0||z2<0||(z1*z2<0)) pills.push('<span class="pill err">singular beyond defect</span>');
+    else pills.push('<span class="pill ok">reflection and transmission</span>');
+  }
+  $('status').innerHTML=pills.join(' ');
+  $('readout').innerHTML=rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('');
+}
+function syncUI(){
+  $('th1o').textContent=st.th1.toFixed(2); $('th2o').textContent=st.th2.toFixed(2); $('x1o').textContent=st.x1.toFixed(1);
+  $('so').textContent=st.s.toFixed(2); $('to').textContent=st.t.toFixed(1);
+  $('th2row').hidden = st.mode!==2;
+  $('th1lab').textContent = st.mode===3 ? 'θ' : 'θ₁';
+  $('thnote').textContent = st.mode===3 ? 'θ fixes the three components: ω₁ + ω₂ + ω₃ = 0, ω₁² + ω₂² + ω₃² = 1/2, speeds √3·ω. The x₁ slider shifts the whole configuration.'
+    : 'Rapidity θ: velocity ν = tanh θ, wavenumber k = sech θ, amplitude k²/2. θ < 0 moves left. x₁ shifts the soliton(s).';
+  ['m1','m2','m3'].forEach((id,i)=>$(id).setAttribute('aria-pressed', st.mode===i+1));
+  $('ap').setAttribute('aria-pressed', st.sgn===1); $('am').setAttribute('aria-pressed', st.sgn===-1);
+  $('play').textContent = st.playing?'Pause':'Play';
+  $('lg-ghost').hidden=!st.ghost;
+}
+function render(rebuild){ if(rebuild){ B=build(); readout(); } syncUI(); drawWave(); drawHeat(); }
+
+const bind=(id,key)=>$(id).addEventListener('input',e=>{ st[key]=parseFloat(e.target.value); render(key!=='t'); });
+bind('th1','th1'); bind('th2','th2'); bind('x1','x1'); bind('s','s'); bind('t','t');
+$('ghost').addEventListener('change',e=>{ st.ghost=e.target.checked; render(false); });
+[['m1',1],['m2',2],['m3',3]].forEach(([id,m])=>$(id).addEventListener('click',()=>{ st.mode=m;
+  if(m===3){ st.th1=-1.5; st.s=2; } else if(m===2){ st.th1=1; st.th2=-0.8; st.s=0.5; } else { st.th1=1; st.s=0.5; }
+  $('th1').value=st.th1; $('s').value=st.s; st.t=-30; $('t').value=st.t; render(true); }));
+$('ap').addEventListener('click',()=>{ st.sgn=1; render(true); });
+$('am').addEventListener('click',()=>{ st.sgn=-1; render(true); });
+let last=0;
+function tick(ts){ if(!st.playing) return; const dt=last?Math.min(0.05,(ts-last)/1000):0; last=ts;
+  st.t+=dt*8; if(st.t>TMAX) st.t=TMIN; $('t').value=st.t; render(false); requestAnimationFrame(tick); }
+$('play').addEventListener('click',()=>{ st.playing=!st.playing; last=0; syncUI(); if(st.playing) requestAnimationFrame(tick); });
+addEventListener('resize',()=>{ heatKey=''; render(false); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ heatKey=''; render(false); });
+new MutationObserver(()=>{ heatKey=''; render(false); }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+render(true);
+})();
+</script>
