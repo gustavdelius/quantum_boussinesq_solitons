@@ -1,0 +1,318 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,graphicx,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\hypersetup{pdftitle={Matching Toda edge scattering to good-Boussinesq semiclassics},
+pdfauthor={Quantum Boussinesq solitons project}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\scr}[1]{\texttt{matching\_#1.py}}
+\newcommand{\Li}{\operatorname{Li}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=2em
+\title{Matching the Toda edge phase to good-Boussinesq semiclassics:\\a nonuniform limit and a sign correction}
+\author{Quantum Boussinesq solitons project: Phase 2f}
+\date{3 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The proposed quantitative matching does not close in the conventions currently
+used by the project. The good-equation phonon phase has a finite small-amplitude
+limit, but its complete one-loop coefficient at fixed physical momentum diverges
+logarithmically in both collision channels. This follows from the existing
+one-soliton momentum shift and the full Darboux shifts, checked independently by
+differentiating the classical phase. At fixed edge variable $y=\alpha^2/\hbar$,
+the relative momentum correction is itself unbounded, so taking the edge limit
+before the semiclassical limit is not justified by this expansion. \Lc
+
+We also correct a sign in the previously claimed cancellation to a pure
+Legendre chi function. \Lc\ Independently, we scan the Toda Bethe phase at fixed
+physical dressed momenta, retaining its existing classical frame conversion,
+and separate mesh, edge-extrapolation and large-$y$ uncertainties. \Lc\ (numerical)
+These tests
+do not prove inequivalence of exact quantum theories, nor identify an exact
+dressing factor. They locate the missing step: a controlled quantum momentum
+and frame dictionary.~\Ld
+\end{abstract}
+
+\section{What is being compared}
+All calculations here use the existing equations and normalisations; no new
+regularisation prescription is chosen. The input is the good-equation
+one-loop result in \texttt{oneloop\_phase.tex}, and the Toda computation in
+\texttt{toda\_edge.tex}. The latter approaches the \emph{bad} equation.
+Their identification at the quantum level is a hypothesis \Ld, not an input.
+
+\paragraph{Classical dictionary (\Lc, \scr{conventions}).}
+For the right-moving long-wave scaling
+\[
+ u=\lambda^2 U(X,T),\qquad X=\lambda(x-t),\qquad T=\lambda^3t,
+\]
+the good and bad equations, respectively, give
+\[
+ U_T=+\tfrac12 U_{XXX}+3UU_X,
+ \qquad U_T=-\tfrac12 U_{XXX}-3UU_X.
+\]
+Here the integration constant is zero for decaying pulses. The leading
+equations are related by reversing slow time, not by identifying colliding
+particle labels. In the good equation the smaller pulse is faster; in the bad
+equation the larger pulse is faster.
+
+Write $0<r<1$ and take $(\alpha_1,\alpha_2)=(r\lambda,\lambda)$ for a
+colliding good-equation pair, and $(\beta_1,\beta_2)=(\lambda,r\lambda)$ for
+a colliding bad-equation pair. Define
+\[
+ A_0(r)=\left(\frac{1-r}{1+r}\right)^2.
+\]
+The full classical phases in the project then satisfy
+\begin{align}
+ \delta_{0,g}^{\rm same}&=\lambda^2(r^2-1)\log A_0+O(\lambda^4),\label{eq:classsame}\\
+ \delta_{0,b}^{\rm same}&=\lambda^2(1-r^2)\log A_0+O(\lambda^4),\\
+ \delta_{0,g}^{\rm head}&=4r\lambda^2+O(\lambda^4),\qquad
+ \delta_{0,b}^{\rm head}=4r\lambda^2+O(\lambda^4).
+\end{align}
+The head-on ordering is $(+, -)$ in both equations. Thus even the classical
+comparison needs a channel-dependent ordering dictionary. These equations
+alone do not establish a quantum conjugation or continuation rule.
+
+For Toda, retain the established dictionary
+$\kappa=\sqrt3\,\beta$, $b=e^{-a/2}$, $\hbar_T=3b\hbar_B$,
+and $y_j=\beta_j^2/\hbar_B$. All new runs use $a=1$ and determine excitations
+from $P_{\rm dr}(p)-P_{\rm dr}(e)=P_n(\kappa)/a$.
+Here $P_n=4s b(\kappa\cosh\kappa-\sinh\kappa)$.
+The leading coordinate dictionary is $x_B=2\sqrt3\,n$,
+$t_B=2\sqrt3\,b\,t_T$; correspondingly
+$P_n=6\sqrt3\,b\,P_B[1+O(\beta^2)]$.
+These charge and velocity limits are checked in \scr{conventions}; they
+do not supply their quantum corrections.
+The overtaking phase is the same two-term subtraction used in Phase 2d:
+\begin{equation}
+ \Psi_T=\Phi(p_1|p_2)-\Phi(p_1|e_2)
+ -M_1\big(P_{n2}/a-\Pi_2\big),\qquad
+ M_j=-2\kappa_j,\quad \Pi_j=2s_jb\sinh\kappa_j.
+\end{equation}
+This removes the first particle's edge-reference phase. The final term is
+\emph{still the classical frame conversion}; its quantum completeness is not
+established. Head-on scattering uses the existing four-term edge subtraction.
+
+\section{The complete good-equation coefficient}
+In this section \Lc\ means an algebraic consequence of the one-loop formulas
+already adopted in Phase 2e, rather than a new independent derivation of the
+fluctuation determinant. All new limits and signs are checked in
+\scr{conventions} with 60-digit arithmetic.
+
+The input physical-momentum convention is
+\[
+ P^{\rm phys}=P(\alpha)+\hbar\Delta P(\alpha),\qquad
+ P(\alpha)=\tfrac23\epsilon\sin^3\alpha\cos\alpha.
+\]
+Put $c=-\log2-1+\tfrac14\log3$. The existing closed-form momentum shift gives
+\begin{equation}
+ \Delta P(\alpha,\epsilon)
+ =\frac{\epsilon\alpha}{\pi}(\log\alpha+c)
+ +O(\alpha^3\log\alpha).\label{eq:dp}
+\end{equation}
+The coefficient in $\arg S=\delta_0/\hbar+\delta_1+O(\hbar)$, when re-expressed
+at fixed $P^{\rm phys}$, is
+\begin{equation}
+ \delta_1=I_{12}+\delta_{\rm ren},\qquad
+ \delta_{\rm ren}=-\sum_j\frac{\partial\delta_0}{\partial P_j}\Delta P_j
+ =\sum_j\Delta X_j'\Delta P_j.\label{eq:ren}
+\end{equation}
+The plus sign in the final expression is essential: the definition is
+$\Delta X_j'=-\partial\delta_0/\partial P_j$.
+Direct differentiation agrees with the implemented Darboux formula to
+better than $10^{-50}$ in the new test.
+
+\subsection{Overtaking: a term lost by keeping only the Hirota shift}
+For $(\alpha_1,\alpha_2)=(r\lambda,\lambda)$, the Darboux coefficient
+$\gamma_j=-3\cos2\alpha_j/(\sin\alpha_j\sin3\alpha_j)$ obeys
+$\gamma_j=-\alpha_j^{-2}+O(1)$. Separate \eqref{eq:ren} into the Hirota
+shift and the remaining Darboux contribution:
+\begin{align}
+ H(r)&=-\frac{\log A_0(r)\log r}{\pi},\label{eq:hirota}\\
+ D(r,\lambda)&=\frac2\pi\left[
+ (r-r^{-1})(\log\lambda+c)-\frac{\log r}{r}\right].\label{eq:darboux}
+\end{align}
+The raw phonon term tends to $I_0(r)=2L(r)/\pi$, where
+\[
+ L(r)=-2\chi_2(r)-\log r\log\frac{1-r}{1+r},\qquad
+ \chi_2(r)=\tfrac12\big[\Li_2(r)-\Li_2(-r)\big].
+\]
+Consequently the \emph{complete} coefficient is
+\begin{equation}
+ \boxed{\delta_1^{\rm same}(r\lambda,\lambda)
+ =\frac2\pi L(r)+H(r)+D(r,\lambda)
+ +O(\lambda^2|\log\lambda|).}\label{eq:samefull}
+\end{equation}
+In particular, its logarithmic slope is
+$\partial_{\log\lambda}\delta_1\to2(r-r^{-1})/\pi$.
+It depends on the amplitude ratio and cannot be removed by a constant phase.
+Replacing $I$ by the antisymmetrised $J=I+\pi/2$ does not change this conclusion.
+
+\paragraph{Correction to Phase 2e.}
+The paragraph following its small-amplitude $\Delta P$ formula claims that the
+Hirota correction cancels the logarithmic part of $I_0$, leaving
+$-4\chi_2(r)/\pi$. With its stated signs, the actual sum is
+\begin{equation}
+ \boxed{I_0(r)+H(r)=-\frac4\pi\chi_2(r)
+ -\frac4\pi\log r\log\frac{1-r}{1+r}.}\label{eq:signcorrection}
+\end{equation}
+At $r=1/2$ the actual value is $-1.62570710834$, whereas the claimed pure-chi
+value is $-0.65613518176$. The old limits script tests $H$ and $I$ separately
+but never asserts their claimed cancellation. Its passing status therefore
+does not validate that sentence. The original report is left intact here;
+this note and the README explicitly record the correction.
+
+\subsection{Head-on: the phonon limit is not the physical-momentum limit}
+For $(\alpha_1,\epsilon_1)=(r\lambda,+1)$ and
+$(\alpha_2,\epsilon_2)=(\lambda,-1)$, the phonon term tends to zero, but
+\begin{equation}
+ \boxed{\delta_1^{\rm head}
+ =-\frac2\pi\left[(r+r^{-1})(\log\lambda+c)+\frac{\log r}{r}\right]
+ +O(\lambda^2|\log\lambda|).}\label{eq:headfull}
+\end{equation}
+Thus the vanishing fixed-$\alpha$ phonon correction cited in the README is not
+by itself a match to a fixed-physical-momentum Toda phase.
+Both \eqref{eq:samefull} and \eqref{eq:headfull}, including their ratio
+derivatives, were checked at $r=1/4,1/2,3/4$ and
+$\lambda=10^{-3},10^{-6},10^{-9}$.
+For example, at $r=1/2$ the full expressions give:
+\begin{center}\small
+\begin{tabular}{@{}crrr@{}}\toprule
+$\lambda$ & $\delta_1^{\rm same}$ & $\delta_1^{\rm head}$ &
+Largest asymptotic error\\\midrule
+$10^{-3}$ & $7.20781548$ & $14.13419003$ & $1.02\times10^{-5}$\\
+$10^{-6}$ & $13.80423817$ & $25.12821386$ & $1.96\times10^{-11}$\\
+$10^{-9}$ & $20.40065856$ & $36.12224784$ & $2.90\times10^{-17}$\\\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Why the proposed order of limits fails}
+From \eqref{eq:dp}, with $y=\alpha^2/\hbar$,
+\begin{equation}
+ \frac{\hbar\Delta P}{P}
+ =\frac{3}{2\pi y}(\log\alpha+c)
+ +O\!\left(\frac{\alpha^2|\log\alpha|}{y}\right).\label{eq:nonuniform}
+\end{equation}
+At fixed finite $y$ this ratio is unbounded as $\alpha\to0$. A necessary
+condition for this perturbative momentum conversion is instead
+$y\gg|\log\alpha|$. The nested limit ``edge first at fixed $y$, then
+$y\to\infty$'' leaves its domain of validity before the second step.
+Even the zero-amplitude edge subtraction of the full good-equation coefficient
+requires care, since \eqref{eq:darboux} is singular at that endpoint.
+
+This is a failure of a \emph{termwise comparison}, not a prediction that an
+exact physical scattering amplitude diverges. A resummation or a quantum
+dictionary could change the conclusion; none is selected or assumed here. \Ld
+
+\section{Independent Toda scan}
+\scr{toda} retains the existing digamma-kernel solver and computes
+\begin{equation}
+ R_h(Y,r)=\frac{\Psi_T}{\hbar_T}
+ -Y(1-r^2)\log A_0(r),\qquad (y_1,y_2)=(Y,r^2Y).
+\end{equation}
+This definition subtracts the limiting classical phase, not a fitted
+polynomial or a candidate quantum amplitude. A fit in $\hbar_T$ at fixed
+$(Y,r)$ removes finite-amplitude corrections before examining large $Y$.
+The values $Y=4,8,16,32$ and $r=0.4,0.5,0.6$ keep the first comparison
+away from both the equal-velocity and zero-amplitude endpoints.
+
+\input{matching_tables.tex}
+
+\paragraph{Interpretation (\Lc\ numerical / \Ld\ identification).}
+The tabulated residual is a property of the existing Toda phase extraction,
+including its classical frame conversion. A finite, ratio-dependent residual
+is numerical evidence, not an analytical determination of its large-$Y$
+limit. Neither adding a constant nor changing the overall overtaking sign
+can repair the nonuniform physical-momentum expansion in
+\eqref{eq:nonuniform}. We therefore do not fit the Toda residual to a new
+quantum dilogarithm or claim that it confirms the good-equation phonon phase.
+
+\section{Outcome, checks, and next dependency}
+The proposed matching test has a reproducible negative outcome: the current
+formulas do not supply a controlled common quantum limit. This conclusion is
+more specific than a disagreement between two plotted curves. It identifies
+the divergent momentum conversion, preserves the distinction between the two
+equations, and corrects a definite algebraic sign error. \Lc
+
+The next dependency is to derive the quantum label-frame and momentum
+dictionary in a common scaling regime, checking whether the logarithmic terms
+are absorbed, survive, or signal inequivalent quantum limits. That question
+must precede using the Toda residual to constrain a finite-amplitude exact
+$S$-matrix. A joint limit satisfying $y\gg|\log\alpha|$ is a possible test,
+but is not the nested limit previously proposed. \Ld
+
+\begin{center}\small
+\begin{tabular}{@{}L{6.3cm}L{2cm}L{4.7cm}@{}}\toprule
+Claim & Label & Check\\\midrule
+Classical ordering and slow-time dictionary & (c) & \scr{conventions}\\
+Full logarithmic coefficients and ratio derivatives & (c) & \scr{conventions}, 60 digits\\
+Correction to pure-chi cancellation & (c) & \scr{conventions}\\
+Nonuniform momentum expansion & (c) & \scr{conventions}\\
+Toda edge residuals and error diagnostics & (c), numerical & \scr{toda}; \scr{analysis}\\
+Existence of a common exact quantum limit & (d), unresolved & Not assumed\\\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures and limitations recorded.}
+\begin{itemize}
+\item The expected direct matching fails its convention and uniformity check:
+the full physical-momentum coefficient has no finite fixed-$y$ edge limit.
+\item The pure-chi cancellation asserted in Phase 2e fails by about $0.970$
+at $r=1/2$. The new regression check verifies the corrected expression;
+it does not weaken the old checks or change their signs.
+\item Mesh refinement, different edge fits and different large-$Y$ fits
+measure different errors. Fit spreads below are diagnostics, not rigorous
+confidence intervals, and do not resolve an unknown quantum frame term.
+\item The original 6397-node run took about 27 minutes. A redundant fine-grid
+run with alternative node construction was stopped once that result was
+available; no unfinished fine-grid result is used. The alternative method
+was separately completed at $\hbar_T=0.01$ for the node-method comparison.
+\item The good-equation formulas are accepted as inputs. Their algebra and
+limits are tested here, but the FK determinant derivation is not re-proved.
+\end{itemize}
+
+\clearpage
+\section*{Reproduction and provenance}
+The saved JSON files allow the analytic checks and all extrapolations to be
+reproduced without repeating the expensive dense solves. From the repository
+root, run:
+\begin{verbatim}
+cd phase2/scripts
+python3 matching_conventions.py
+python3 matching_analysis.py
+\end{verbatim}
+To regenerate the raw Toda data as well, run the following from
+\texttt{phase2/scripts/}. The node-method check and mesh refinement are
+independent computations; the fine-grid run can take tens of minutes.
+\begin{verbatim}
+export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+python3 matching_toda.py
+python3 matching_toda.py --hs .0025 \
+  --output matching_toda_fine.json
+python3 matching_toda.py --hs .01 --factor 1.4 \
+  --output matching_toda_nodes.json
+python3 matching_toda.py --hs .01 --fast-nodes \
+  --output matching_toda_fast.json
+python3 matching_analysis.py
+\end{verbatim}
+Each completed checking script ends in \texttt{ALL CHECKS PASSED}.
+The existing \path{oneloop_good_twosoliton_phase.py} and
+\path{oneloop_good_limits_cusp_resonance.py} were also rerun successfully.
+The analytic checks use 60-digit \texttt{mpmath}; the dense Bethe solves use
+double-precision NumPy/SciPy. Raw data retain node counts, ground-state
+normalisation residuals, phases, and elapsed times. Derived JSON records the
+alternative fits as well as the central estimates.
+
+To build the report after regenerating the tables:
+\begin{verbatim}
+cd ..
+pdflatex matching.tex
+pdflatex matching.tex
+\end{verbatim}
+
+The sources inspected for this work are the project reports
+\texttt{report.tex}, \texttt{toda\_route.tex}, \texttt{toda\_edge.tex},
+\texttt{oneloop\_phase.tex}, and their relevant scripts. No new external
+literature result or bibliographic reference is introduced.
+\end{document}

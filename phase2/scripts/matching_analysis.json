@@ -1,0 +1,215 @@
+{
+  "mesh_difference": 2.319922032256727e-12,
+  "mesh_h": 0.01,
+  "mesh_n": [
+    1824,
+    2554
+  ],
+  "node_method_difference": 1.0320633236915455e-12,
+  "h_sequence": [
+    0.04,
+    0.02,
+    0.01,
+    0.005,
+    0.0025
+  ],
+  "node_sequence": [
+    681,
+    1062,
+    1824,
+    3348,
+    6397
+  ],
+  "same": [
+    {
+      "Y": 4.0,
+      "r": 0.4,
+      "residual": -0.011162393719191145,
+      "edge_fit_spread": 3.009959185009195e-06,
+      "linear_quadratic_difference": 1.5049795925037301e-06,
+      "cubic": -0.011162370470473923,
+      "h_log_h_intercept": -0.011159383760006136
+    },
+    {
+      "Y": 4.0,
+      "r": 0.5,
+      "residual": -0.02483136199770957,
+      "edge_fit_spread": 4.955308272762415e-06,
+      "linear_quadratic_difference": 2.4776541363707993e-06,
+      "cubic": -0.024831319590273532,
+      "h_log_h_intercept": -0.02482640668943681
+    },
+    {
+      "Y": 4.0,
+      "r": 0.6,
+      "residual": -0.04809746140529826,
+      "edge_fit_spread": 6.821794510628032e-06,
+      "linear_quadratic_difference": 3.4108972552862604e-06,
+      "cubic": -0.04809739433854519,
+      "h_log_h_intercept": -0.04809063961078763
+    },
+    {
+      "Y": 8.0,
+      "r": 0.4,
+      "residual": -0.010497107045355381,
+      "edge_fit_spread": 5.132515652192526e-06,
+      "linear_quadratic_difference": 2.56625782608412e-06,
+      "cubic": -0.010496945235242127,
+      "h_log_h_intercept": -0.010491974529703189
+    },
+    {
+      "Y": 8.0,
+      "r": 0.5,
+      "residual": -0.02219126029888526,
+      "edge_fit_spread": 4.620701955573847e-06,
+      "linear_quadratic_difference": 2.3103509777765152e-06,
+      "cubic": -0.02219096225927525,
+      "h_log_h_intercept": -0.022186639596929687
+    },
+    {
+      "Y": 8.0,
+      "r": 0.6,
+      "residual": -0.04161456757517124,
+      "edge_fit_spread": 3.3535681011193086e-06,
+      "linear_quadratic_difference": 7.438276193941218e-07,
+      "cubic": -0.041614088494013435,
+      "h_log_h_intercept": -0.0416160552304099
+    },
+    {
+      "Y": 16.0,
+      "r": 0.4,
+      "residual": -0.01008956709032325,
+      "edge_fit_spread": 3.198232090064618e-05,
+      "linear_quadratic_difference": 1.5991160450357783e-05,
+      "cubic": -0.010088458248895262,
+      "h_log_h_intercept": -0.010121549411223896
+    },
+    {
+      "Y": 16.0,
+      "r": 0.5,
+      "residual": -0.02085683311720277,
+      "edge_fit_spread": 9.811955390870084e-05,
+      "linear_quadratic_difference": 4.9059776954456236e-05,
+      "cubic": -0.020854738960527298,
+      "h_log_h_intercept": -0.02095495267111147
+    },
+    {
+      "Y": 16.0,
+      "r": 0.6,
+      "residual": -0.03850920339527886,
+      "edge_fit_spread": 0.00022903020958853215,
+      "linear_quadratic_difference": 0.00011451510479443955,
+      "cubic": -0.03850571352552506,
+      "h_log_h_intercept": -0.03873823360486739
+    },
+    {
+      "Y": 32.0,
+      "r": 0.4,
+      "residual": -0.009868315306957816,
+      "edge_fit_spread": 0.0005391125621039758,
+      "linear_quadratic_difference": 0.000269556281052144,
+      "cubic": -0.00986154537812322,
+      "h_log_h_intercept": -0.010407427869061792
+    },
+    {
+      "Y": 32.0,
+      "r": 0.5,
+      "residual": -0.02020085534582486,
+      "edge_fit_spread": 0.0013109299158836352,
+      "linear_quadratic_difference": 0.000655464957942057,
+      "cubic": -0.02018714125159867,
+      "h_log_h_intercept": -0.021511785261708494
+    },
+    {
+      "Y": 32.0,
+      "r": 0.6,
+      "residual": -0.03700234830207007,
+      "edge_fit_spread": 0.0026833034169204545,
+      "linear_quadratic_difference": 0.00134165170846072,
+      "cubic": -0.0369773561915661,
+      "h_log_h_intercept": -0.03968565171899052
+    },
+    {
+      "Y": 16.0,
+      "r": 0.49,
+      "residual": -0.01951426221384625,
+      "edge_fit_spread": 8.895445693465898e-05,
+      "linear_quadratic_difference": 4.447722846739541e-05,
+      "cubic": -0.019512284341462356,
+      "h_log_h_intercept": -0.01960321667078091
+    },
+    {
+      "Y": 16.0,
+      "r": 0.51,
+      "residual": -0.022267213395413897,
+      "edge_fit_spread": 0.00010794201925063557,
+      "linear_quadratic_difference": 5.397100962529697e-05,
+      "cubic": -0.022264998829739924,
+      "h_log_h_intercept": -0.022375155414664533
+    }
+  ],
+  "head": [
+    {
+      "y1": 1.0,
+      "y2": 1.0,
+      "residual": -1.5382449541041467e-08,
+      "edge_fit_spread": 8.360378441980325e-06,
+      "linear_quadratic_difference": 4.180189220998234e-06,
+      "cubic": -2.7654864859724595e-10,
+      "h_log_h_intercept": -8.375760891521367e-06
+    },
+    {
+      "y1": 4.0,
+      "y2": 1.0,
+      "residual": -1.6129692130538044e-07,
+      "edge_fit_spread": 1.4983092632075156e-05,
+      "linear_quadratic_difference": 7.491546316031174e-06,
+      "cubic": -4.8764513041096335e-09,
+      "h_log_h_intercept": 1.4821795710769775e-05
+    },
+    {
+      "y1": 16.0,
+      "y2": 4.0,
+      "residual": -3.2285011286710864e-05,
+      "edge_fit_spread": 0.0013459158391314582,
+      "linear_quadratic_difference": 0.0006729579195655537,
+      "cubic": -2.6234533157661126e-06,
+      "h_log_h_intercept": 0.0013136308278447473
+    }
+  ],
+  "large_y": [
+    {
+      "r": 0.4,
+      "linear": -0.00964706352359238,
+      "quadratic": -0.009635408986359473,
+      "cubic": -0.009635882262046805,
+      "model_spread": 1.1654537232907297e-05,
+      "propagated_edge_spread": 0.0015033089792959586
+    },
+    {
+      "r": 0.5,
+      "linear": -0.019544877574446944,
+      "quadratic": -0.019552368120755836,
+      "cubic": -0.019558017607434326,
+      "model_spread": 7.4905463088928426e-06,
+      "propagated_edge_spread": 0.00369359245082562
+    },
+    {
+      "r": 0.6,
+      "linear": -0.03549549320886128,
+      "quadratic": -0.035526044540019557,
+      "cubic": -0.03553054218304613,
+      "model_spread": 3.055133115827807e-05,
+      "propagated_edge_spread": 0.007614654053665316
+    }
+  ],
+  "ratio_derivative": {
+    "Y": 16,
+    "r": 0.5,
+    "step": 0.01,
+    "value": -0.1376475590783823,
+    "coarse_step": 0.1,
+    "coarse_value": -0.14209818152477802,
+    "edge_fit_spread": 0.009844823809264727
+  }
+}

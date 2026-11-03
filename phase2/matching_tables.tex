@@ -1,0 +1,52 @@
+\paragraph{Resolution and order of limits.}
+The edge sequence is $\hbar_T=0.04,0.02,0.01,0.005,0.0025$,
+with 681, 1062, 1824, 3348, 6397 quadrature nodes, respectively.
+At $\hbar_T=0.01$, increasing the node count from 1824 to 2554 changes all sampled phases by at most $2.3\times10^{-12}$ radians. This mesh test is at one fixed $\hbar_T$;
+it is not a convergence guarantee at every smaller $\hbar_T$.
+The edge sequence uses the original NumPy Gauss--Legendre nodes.
+At $\hbar_T=0.01$ and 1824 nodes, the NumPy/SciPy phase difference is $1\times10^{-12}$ radians.
+The central edge estimate is the quadratic intercept from the three
+smallest $\hbar_T$. The stated fit spread is the largest change on using
+the preceding quadratic window, the four-smallest-point cubic fit, or
+a fit to $1,\hbar_T,\hbar_T\log\hbar_T$ at the three smallest points.
+The last-two-point linear fit is stored separately in the JSON diagnostics.
+\begin{center}\small
+\begin{tabular}{@{}ccrr@{}}\toprule
+$Y$ & $r$ & Edge residual $R_0$ & Edge fit spread\\\midrule
+4 & 0.4 & -0.011162 & $3.0\times10^{-6}$\\
+4 & 0.5 & -0.024831 & $5.0\times10^{-6}$\\
+4 & 0.6 & -0.048097 & $6.8\times10^{-6}$\\
+8 & 0.4 & -0.010497 & $5.1\times10^{-6}$\\
+8 & 0.5 & -0.022191 & $4.6\times10^{-6}$\\
+8 & 0.6 & -0.041615 & $3.4\times10^{-6}$\\
+16 & 0.4 & -0.010090 & $3.2\times10^{-5}$\\
+16 & 0.5 & -0.020857 & $9.8\times10^{-5}$\\
+16 & 0.6 & -0.038509 & $2.3\times10^{-4}$\\
+32 & 0.4 & -0.009868 & $5.4\times10^{-4}$\\
+32 & 0.5 & -0.020201 & $1.3\times10^{-3}$\\
+32 & 0.6 & -0.037002 & $2.7\times10^{-3}$\\
+\bottomrule\end{tabular}\end{center}
+\paragraph{Large-$Y$ diagnostic, not an exact limit.}
+A quadratic fit in $1/Y$ to $Y=8,16,32$ gives the following exploratory
+intercepts. The model spread compares a linear fit to the largest two
+$Y$ values and a cubic fit to all four; edge-extrapolation uncertainty
+is propagated with the absolute interpolation weights and shown separately.
+\begin{center}\small\begin{tabular}{@{}crrr@{}}\toprule
+$r$ & Exploratory $Y\to\infty$ intercept & Model spread & Edge spread\\\midrule
+0.4 & -0.00964 & $1.2\times10^{-5}$ & $1.5\times10^{-3}$\\
+0.5 & -0.01955 & $7.5\times10^{-6}$ & $3.7\times10^{-3}$\\
+0.6 & -0.03553 & $3.1\times10^{-5}$ & $7.6\times10^{-3}$\\
+\bottomrule\end{tabular}\end{center}
+\paragraph{Derivative and head-on controls.}
+At $Y=16,r=0.5$, the central ratio derivative is $-0.13765$ with step $0.01$, versus $-0.14210$ with step $0.1$.
+The propagated edge-fit spread for the finer derivative is $9.8\times10^{-3}$.
+This supports nonconstant ratio dependence independently of an additive phase.
+The head-on residuals after subtracting $4\sqrt{y_1y_2}$ are:
+\begin{center}\small\begin{tabular}{@{}crr@{}}\toprule
+$(y_1,y_2)$ & Edge residual & Edge fit spread\\\midrule
+$(1,1)$ & $-1.54\times10^{-8}$ & $8.4\times10^{-6}$\\
+$(4,1)$ & $-1.61\times10^{-7}$ & $1.5\times10^{-5}$\\
+$(16,4)$ & $-3.23\times10^{-5}$ & $1.3\times10^{-3}$\\
+\bottomrule\end{tabular}\end{center}
+These controls support the previous numerical head-on result in the
+Toda extraction convention. They do not establish the full good-equation match.
