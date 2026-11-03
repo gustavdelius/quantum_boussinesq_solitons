@@ -75,6 +75,11 @@ code,.m{font-family:var(--mono);font-size:.92em}
       <span><span class="sw" style="background:var(--defect)"></span>defect</span>
     </div>
     <canvas id="heat" aria-label="Space-time diagram"></canvas>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--wave)"></span>u &gt; 0 (shaded by size)</span>
+      <span><span class="sw" style="background:var(--bad)"></span>u &lt; 0 (shaded by size)</span>
+      <span><span class="sw" style="background:var(--ink)"></span>singularity: τ = 0, where u → −∞</span>
+    </div>
     <div class="caption">Space–time diagram: horizontal axis <span class="m">x ∈ [−40, 40]</span>, time runs upward over <span class="m">t ∈ [−40, 40]</span>. The orange line marks the current time. A kink in a soliton track at the defect is the time delay; a track that ends at the defect is absorption.</div>
   </section>
 
@@ -190,6 +195,13 @@ function field(terms, x, t){
   if(T===0) return NaN;
   const r1=T1/T; return 2*(T2/T - r1*r1);
 }
+// sign of tau (scaled by exp(-max exponent)); tau changes sign exactly on the singular curve
+function tauSign(terms, x, t){
+  let m=-Infinity;
+  for(const q of terms){ const e=q.K*x-q.W*t+q.p; if(q.a!==0 && e>m) m=e; }
+  let T=0; for(const q of terms){ if(q.a!==0) T+=q.a*Math.exp(q.K*x-q.W*t+q.p-m); }
+  return T>=0?1:-1;
+}
 function uAt(B, x, t, ghost){ return (ghost || x<0) ? field(B.left,x,t) : field(B.right,x,t); }
 
 // ---- drawing ----
@@ -227,12 +239,22 @@ function drawHeat(){
   if(key!==heatKey){
     const nx=Math.min(360,pw), nt=Math.min(180,ph);
     const off=document.createElement('canvas'); off.width=nx; off.height=nt; const oc=off.getContext('2d'); const img=oc.createImageData(nx,nt);
-    const lo=hex(css('--heat-lo')), hi=hex(css('--wave')), bad=hex(css('--bad'));
+    const lo=hex(css('--heat-lo')), hi=hex(css('--wave')), bad=hex(css('--bad')), ink=hex(css('--ink'));
     const umax = st.mode===3?0.9:0.5;
+    const sgn=new Int8Array(nx*nt);
     for(let j=0;j<nt;j++){ const t=TMAX-(j+0.5)/nt*(TMAX-TMIN);
       for(let i=0;i<nx;i++){ const x=XMIN+(i+0.5)/nx*(XMAX-XMIN); const u=uAt(B,x,t,false);
-        let col; if(!isFinite(u)||u<-0.05||u>umax*1.6) col=bad; else { const f=Math.max(0,Math.min(1,u/umax))**0.7; col=lo.map((v,k)=>v+(hi[k]-v)*f); }
+        sgn[j*nx+i]=tauSign(x<0?B.left:B.right,x,t);
+        // diverging scale: blue for u > 0, red for u < 0, both shaded by magnitude (saturating at umax)
+        let col; if(!isFinite(u)) col=bad;
+        else if(u>=0){ const f=Math.min(1,u/umax)**0.7; col=lo.map((v,k)=>v+(hi[k]-v)*f); }
+        else { const f=Math.min(1,-u/umax)**0.7; col=lo.map((v,k)=>v+(bad[k]-v)*f); }
         const p=4*(j*nx+i); img.data[p]=col[0]; img.data[p+1]=col[1]; img.data[p+2]=col[2]; img.data[p+3]=255; } }
+    // singular curve: tau = 0 where its sign flips between neighbouring pixels (same side of the defect)
+    const xi0=Math.floor((0-XMIN)/(XMAX-XMIN)*nx);
+    for(let j=0;j<nt;j++) for(let i=0;i<nx;i++){ const k=j*nx+i;
+      const flip=(i+1<nx && i+1!==xi0 && sgn[k]!==sgn[k+1]) || (j+1<nt && sgn[k]!==sgn[k+nx]);
+      if(flip){ const p=4*k; img.data[p]=ink[0]; img.data[p+1]=ink[1]; img.data[p+2]=ink[2]; } }
     oc.putImageData(img,0,0); heatImg=off; heatKey=key;
   }
   c.clearRect(0,0,W,H); c.imageSmoothingEnabled=true; c.drawImage(heatImg,L,T,pw,ph);
