@@ -1,0 +1,307 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/#1}}
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
+
+\title{Towards quantisation of Boussinesq solitons:\\ Phase 2 report (bad equation first)}
+\author{Project \emph{quantum\_boussinesq\_solitons}}
+\date{3 November 2026}
+\begin{document}\maketitle
+
+\begin{abstract}
+Following the PI's decision, we quantise the \emph{bad} Boussinesq equation first:
+\[
+v_{tt}=v_{xx}+v_{xxxx}+3(v^2)_{xx}.
+\]
+Its soliton sector is regular and purely elastic, it has regular breathers, and it is the continuum limit of the quantum Toda chain (Phase~1).
+
+The main result comes from Route~A. Two-soliton scattering is an exactly symplectic map for the canonical structure of the field theory, but \emph{only} once ordering-dependent ``topological'' cross terms $d\Pi_i\wedge dM_j$ are included. These terms come from the kink in the potential $\phi$. With them we obtain a closed-form semiclassical two-soliton phase, $S\simeq e^{i\delta/\hbar}$:
+\[
+\delta(1,2)=\tfrac29(\ell_1-\ell_2)\log A_{12}+\tfrac23M_1M_2(v_1-v_2),\qquad \ell=\epsilon\cosh3\beta,\quad k=\sinh\beta .
+\]
+\begin{itemize}
+\item $\delta$ is antisymmetric (unitarity).
+\item It obeys a crossing-type relation under $\beta\to\beta+i\pi$.
+\item Continued to complex conjugate rapidities, $i\cdot\tfrac29(\ell_1-\ell_2)$ reproduces \emph{exactly} the adiabatic invariant of the Boussinesq breather computed independently by Bogdan and Charkina \cite{BC}.
+\end{itemize}
+Breather quantisation thus becomes a string condition on the spectral parameters.
+
+Routes B, C and D give structural results (non-ultralocality; a factorisation of $A_{12}$ into $\mathfrak{sl}_3$ Toda and sine-Gordon blocks of $\beta_1\pm\beta_2$; the quantum Toda chain as a regularisation) but no exact S-matrix. \emph{No exact quantum S-matrix is obtained.} We end with a ranked list of next steps.
+\end{abstract}
+\tableofcontents
+
+\section{Setting}
+Throughout, $v=2(\log\tau)_{xx}$ and $k=\sinh\beta$. A soliton has velocity $v=\epsilon\cosh\beta$, with $\epsilon=+1$ for right-movers and $\epsilon=-1$ for left-movers. The potential is $v=\phi_x$ and the Lagrangian is
+\[
+\mathcal L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\tfrac12\phi_{xx}^2+\phi_x^3 ,
+\]
+with $\pi=\phi_t$ and canonical symplectic form $\Omega=\int\delta\pi\wedge\delta\phi$.
+
+On one soliton the charges are:
+\begin{itemize}
+\item mass $M=\int v=2k$;
+\item $\phi$-shift charge $\Pi=\int\pi=-vM$, conserved because $\phi\to\phi+c$ is a symmetry;
+\item momentum $P=-\int\pi\phi_x=\tfrac23\epsilon k^3\cosh\beta$;
+\item energy $E=\tfrac2{15}k^3(5+4k^2)$.
+\end{itemize}
+These satisfy $dE/dP=v$. \La~\cite{BC}/\Lc
+
+The two-soliton constants are
+\[
+A_{\rm ov}=\frac{1+3\coth^2\frac{\beta_1+\beta_2}{2}}{1+3\coth^2\frac{\beta_1-\beta_2}{2}},\qquad A_{\rm ho}=\frac{1+3\tanh^2\frac{\beta_1-\beta_2}{2}}{1+3\tanh^2\frac{\beta_1+\beta_2}{2}} ,
+\]
+both in $(0,1)$, and the position shifts are $\Delta x_1=-k_1^{-1}\log A$, $\Delta x_2=+k_2^{-1}\log A$ (soliton 1 starts on the left). \Lc~(Phase~1)
+
+\paragraph{What a soliton S-matrix would mean here.} The model has no boost symmetry and is gapless (phonons with $\omega\simeq|k|$). The natural object is therefore the non-relativistic two-body S-matrix $S(P_1,P_2)$ of soliton asymptotic states, in the sense of Faddeev--Korepin \cite{FK}. Classical scattering is purely transmissive and diagonal, so $S$ is a phase; for two species (left and right movers) $S$ is diagonal.
+
+For diagonal scattering the Yang--Baxter equation is automatic. The non-trivial requirements are:
+\begin{itemize}
+\item unitarity;
+\item the correct semiclassical limit;
+\item analyticity and a crossing substitute;
+\item a bound-state (breather) spectrum consistent with poles.
+\end{itemize}
+
+%=====================================================================
+\section{Route A: semiclassical quantisation}\label{sec:A}
+
+\subsection{The symplectic structure of soliton scattering}
+
+\begin{proposition}[\Lc]\label{prop:Omega}
+Consider two well-separated solitons, with $\phi$ normalised by $\phi(-\infty)=c$. Up to exponentially small terms,
+\[
+\Omega=d\Pi_{\rm tot}\wedge dc+\sum_{j}dP_j\wedge dX_j+\big[X_i>X_j\big]\,d\Pi_i\wedge dM_j .
+\]
+\end{proposition}
+
+The argument is as follows. $\pi_i$ is localised at $X_i$, and there $\phi_j$ equals $0$ or $M_j$ according to whether soliton $i$ is to the left or right of soliton $j$. The self-term $dP\wedge dX$ was derived in Phase~1. In sine-Gordon the analogous cross term vanishes, because the kink height $2\pi/\beta$ is fixed. Here $M=2k$ varies with the soliton parameter.
+
+\begin{proposition}[\Lc, \script{symplectic\_scattering.py}]\label{prop:symp}
+The classical scattering map $X_j\mapsto X_j+\Delta x_j$ (with $k_j$ and $c$ fixed) preserves $\Omega$, i.e.
+\[
+\sum_jdP_j\wedge d\Delta x_j=(\text{cross term})_{\rm in}-(\text{cross term})_{\rm out}.
+\]
+This was verified to 40 digits for overtaking and head-on collisions at five parameter points each. It was also verified for the \emph{good} equation in its regular region (\script{consistency\_checks.py}). Without the cross terms the identity fails by $O(1)$ amounts; for example, the left side equals $19.79$ at $\beta=(0.9,0.3)$.
+\end{proposition}
+
+This is a non-trivial confirmation of the classical picture. It also shows that a semiclassical S-matrix built from the naive rule ``$\Delta x_j=-\partial\delta/\partial P_j$'' does not exist: the shifts are not curl-free in the canonical momenta.
+
+\subsection{The semiclassical phase}
+
+In each ordering region we choose Darboux coordinates by the rule
+\[
+X_j'=X_j+\gamma_j\sum_{i\text{ left of }j}M_i,\qquad \gamma_j=\frac{d\Pi_j/dk_j}{dP_j/dk_j}.
+\]
+The mirrored rule (normalising $\phi$ at $+\infty$) gives the same in--out differences. The shifts $\Delta x_j'$ are then curl-free. Their potential is the semiclassical phase $\delta$, with $\Delta x_j'=-\partial\delta/\partial P_j$ and $S\simeq\exp(i\delta/\hbar)$, by stationary phase on two-particle wave packets \cite{FK}.
+
+\begin{proposition}[\Lc, \script{semiclassical\_phase.py}, \script{consistency\_checks.py}]\label{prop:delta}
+\begin{enumerate}
+\item $\dfrac{dP}{d\beta}=\tfrac23\,k\,\sinh3\beta$ for the bad equation. For the good equation, $\dfrac{dP}{d\alpha}=\tfrac23\,k\sin3\alpha$ with $k=\sin\alpha$; this vanishes at the cusp $\alpha=\pi/3$ found in Phase~1.
+\item For both overtaking and head-on collisions, and both equations,
+\begin{equation}\label{eq:delta}
+\boxed{\ \delta(1,2)=\tfrac29\,(\ell_1-\ell_2)\,\log A_{12}+\tfrac23\,M_1M_2\,(v_1-v_2)\ }
+\end{equation}
+with $\ell=\epsilon\cosh3\beta$ (bad) or $\ell=-\epsilon\cos3\alpha$ (good). The remainder was first found by symbolic integration, then identified as $\tfrac23M_1M_2(v_1-v_2)=-\tfrac23(\Pi_1M_2-\Pi_2M_1)$ by exact matching.
+\item \emph{Unitarity:} $\delta(1,2)=-\delta(2,1)$.
+\item \emph{Crossing-type relation:} $\delta_{\rm ov}(\beta_1,\beta_2+i\pi)=-\delta_{\rm ho}(\beta_1,\beta_2)$. The shift $\beta\to\beta+i\pi$ maps a right-mover to a left-mover with $M\to-M$.
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}
+\begin{itemize}
+\item $\ell$ is proportional to the spectral parameter of the third-order Lax operator. In the uniformisation of \cite{CL-WW}, $\lambda=\tfrac12(k^3+k^{-3})$, with $k^3$ playing the role of $e^{3\beta}$.
+\item The dynamical part of $\delta$ is (difference of spectral parameters)$\times\log A$.
+\item The second part is a ``mutual statistics'' phase: an Aharonov--Bohm-like phase $\propto\Pi_1M_2-\Pi_2M_1$ between objects carrying $\phi$-shift charge and $\phi$-winding. \Ld\ (interpretation)
+\end{itemize}
+\end{remark}
+
+\begin{remark}[KdV limit, \Lc]
+For small amplitudes the topological term is of the \emph{same order} as the KdV-type term $2\beta_1\log A$ in $\partial\delta/\partial\beta_1$. Numerically, their ratio tends to $0.564$ for $\beta_1/\beta_2=1.7$. The heuristic of Bonnemain and Doyon \cite{BD} identifies the quantum phase derivative with $P'_{\rm GHD}\Delta$, with $P_{\rm GHD}=\eta^2/2$. That identification reproduces our dynamical term but \emph{misses the topological term}. The classical generalised hydrodynamics, which uses only $\Delta x$, is unaffected. \Lc
+\end{remark}
+
+\subsection{Bohr--Sommerfeld: breathers as spectral-parameter strings}
+
+Bogdan and Charkina quantise the Tajiri--Murakami breather of the bad equation by Bohr--Sommerfeld, $I_{\rm br}=N\hbar$, with an independently computed adiabatic invariant $I_{\rm br}$ \La~\cite[(64)--(65)]{BC}.
+
+\begin{proposition}[\Lc]\label{prop:breather}
+Set $\beta_{1,2}=a\pm ib$, which is Bogdan--Charkina's parametrisation $\kappa\pm ik=\sinh(a\pm ib)$. Then:
+\begin{enumerate}
+\item $A_{12}$ equals their $a_{12}$ \cite[(33)]{BC}. Regularity $A>1$ holds if and only if $b>\pi/3$, which is their existence boundary.
+\item $i\cdot\tfrac29(\ell_1-\ell_2)=I_{\rm br}$ \emph{exactly}, with $I_{\rm br}=-\tfrac49\sinh3a\sin3b$, in agreement with \cite[(64)]{BC}.
+\end{enumerate}
+Hence the coefficient of $\log A$ in~\eqref{eq:delta} is the breather action. Bohr--Sommerfeld quantisation reads
+\begin{equation}\label{eq:string}
+\ell_1-\ell_2=-\tfrac{9i}{2}\,N\hbar,\qquad N\in\mathbb N ,
+\end{equation}
+which is a string condition in the spectral parameter $\ell$.
+\end{proposition}
+
+This is the strongest cross-check in this report. It ties our two-soliton phase, built from Hirota shifts and the canonical symplectic form, to an independent quasiclassical calculation in the literature. Item~2 was checked at three parameter points to $10^{-16}$.
+
+Equation~\eqref{eq:string} is the form in which bound states appear in Bethe-ansatz solvable models. It suggests that $\ell$ is the variable in which an exact S-matrix has poles: $\ell_1-\ell_2\in-\tfrac{9i}2\hbar\mathbb N$, possibly with $\hbar$ renormalised. \Ld
+
+\subsection{What Route A gives and where it stalls}
+
+\begin{itemize}
+\item \emph{Obtained.} The leading semiclassical phase~\eqref{eq:delta}, which is unitary, crossing-type covariant and consistent with breather quantisation. Also an asymptotic Bethe-ansatz quantisation of $N$ solitons on a ring, $P_j\Lambda+\sum_{k\ne j}\delta(j,k)=2\pi\hbar n_j$. \Ld: the twisted boundary conditions forced by $\phi$-winding on a ring have not been worked out.
+\item \emph{Stalls at} the $O(\hbar^0)$ (one-loop) corrections, which need the soliton fluctuation spectrum and a renormalisation of $\hbar$. Without them the leading phase cannot be promoted to an exact S-matrix by consistency alone. Unlike in the relativistic Toda case \cite{Hol93,Johnson}, $\delta$ is \emph{elementary}: no dilogarithm appears, because $dP\propto k\sinh3\beta\,d\beta$ and integration by parts closes. Johnson's ``$q$-deformation of the dilogarithm'' step therefore has no direct analogue.
+\end{itemize}
+
+%=====================================================================
+\section{Route B: quantum inverse scattering on the line}
+
+\emph{What would have to be true.} The Lax matrix $U(x,\lambda)$ would need an ultralocal $r$-matrix Poisson algebra, so that it can be regularised on a lattice and quantised à la Faddeev--Korepin--Sklyanin. Then a Bethe ansatz over a pseudo-vacuum with soliton excitations would give $S$.
+
+\begin{proposition}[\Lc, \script{routes\_BC\_checks.py}]
+In canonical variables the Lax data of Phase~1 are $q=\tfrac32\phi_x-\tfrac14$ and $r=\tfrac12q_x+\tfrac{\sqrt3}4\pi$ (good-equation real form; the bad one differs by $i$'s). Their brackets are
+\[
+\{q(x),r(y)\}=\tfrac{3\sqrt3}{8}\,\delta'(x-y),\qquad\{q,q\}=\{r,r\}=0 .
+\]
+So the companion-matrix Lax connection is \emph{non-ultralocal}.
+\end{proposition}
+
+\emph{Where it stalls.} There are two known ways out, and neither yet gives a theory on the line.
+\begin{enumerate}
+\item Maillet's $r/s$ formalism with lattice regularisation \cite{Maillet}. No construction exists for Boussinesq.
+\item The Miura (free-field) map. This is the route of Bazhanov--Hibberd--Khoroshkin \cite{BHK} and Hikami \cite{Hikami}. It yields $U_q(\widehat{\mathfrak{sl}}_3)$ T- and Q-operators, but in the chiral conformal setting on a circle, with no particle sector.
+\end{enumerate}
+
+Dimakis et al.'s Yang--Baxter maps \cite{DMHC} concern polarisations in the matrix case and are vacuous for the scalar equation. The ``beyond Yang--Baxter'' remark there is therefore not an obstruction here. For diagonal scattering, Yang--Baxter holds trivially. \Lc
+
+%=====================================================================
+\section{Route C: $W_3$, sl$_3$ affine Toda and the $U_q(\widehat{\mathfrak{sl}}_3)$ R-matrix}
+
+\emph{What would have to be true.} Boussinesq solitons would have to be identifiable as a limit of $a_2^{(1)}$ (complex) affine Toda solitons, whose S-matrices are the $U_q(\widehat{\mathfrak{sl}}_3)$ intertwiners of Hollowood \cite{Hol93} and Gandenberger \cite{Gand}.
+
+\begin{proposition}[\Lc, \script{routes\_BC\_checks.py}]\label{prop:fact}
+Take Hollowood's $a_2^{(1)}$ interaction constant \cite[(1.19)]{Hol92}, $A^{(12)}(\theta)=\frac{2\cosh\theta+1}{2(1+\cosh\theta)}$, between the two fundamental species. With $S=\beta_1+\beta_2$ and $D=\beta_1-\beta_2$,
+\[
+A^{\rm bad}_{\rm ov}(\beta_1,\beta_2)=\frac{A^{(12)}(S)}{A^{(12)}(D)}\cdot\frac{\tanh^2(D/2)}{\tanh^2(S/2)},\qquad A^{\rm bad}_{\rm ho}(\beta_1,\beta_2)=\frac1{A^{\rm bad}_{\rm ov}(\beta_1,\beta_2+i\pi)} .
+\]
+Here $\tanh^2(\theta/2)$ is the sine-Gordon soliton--soliton constant. Equivalently,
+\[
+A_{\rm ov}=\frac{G(S/2)}{G(D/2)},\qquad G(y)=\frac{16\prod_{a=1,2}\sinh\frac{y+ia\pi/3}{2}\sinh\frac{y-ia\pi/3}{2}}{\sinh^2y}.
+\]
+\end{proposition}
+
+So the Boussinesq interaction is built from exactly the $\mathfrak{sl}_3$ blocks, but in the form ``$F(\beta_1-\beta_2)/F(\beta_1+\beta_2)$''. This is the structure of scattering off a particle \emph{and its mirror image}. It suggests that a Boussinesq S-matrix might take the form
+\[
+S(\beta_1,\beta_2)=\mathcal S(\beta_1-\beta_2)\,\mathcal S(\beta_1+\beta_2+i\pi)^{\pm1}
+\]
+with $\mathcal S$ built from $U_q(\widehat{\mathfrak{sl}}_3)$ and sine-Gordon factors. Such a form is reminiscent of boundary (reflection) amplitudes. That would connect to the ``boundary affine Toda'' structure in Bazhanov--Hibberd--Khoroshkin \cite{BHK}. \Ld
+
+The obstruction is that the semiclassical phase~\eqref{eq:delta} is not of this product form. Its weight $\tfrac29(\ell_1-\ell_2)$ is not a sum of functions of $S$ and $D$, and its topological part has no Toda analogue.
+
+Further obstructions:
+\begin{itemize}
+\item Toda solitons are relativistic with fixed masses $m_a$. In the Toda constant the mass term $4m^2\sin^2(\pi a/3)$ appears where Boussinesq has $K^4$, so the species label is ``replaced'' by the wavenumber. There is no limit of fixed-species Toda solitons that yields Boussinesq solitons. \Lc
+\item Takács and Watts show that $a_2^{(1)}$ soliton--breather scattering is flawed both classically and quantum mechanically \Lb~\cite{TW}.
+\end{itemize}
+\emph{Route C stalls}: the structural similarity is precise, but no dictionary is available. What is lost in the non-relativistic reduction is the difference form, and with it the standard crossing.
+
+%=====================================================================
+\section{Route D: discrete models}
+
+\emph{(i) Quantum discrete Boussinesq (Hikami \cite{Hikami}).} This is the Belov--Chaltikian lattice $W_3$ chain, periodic, with a Baxter $Q$-operator. A soliton/particle sector would require a thermodynamic limit with an identified ground state and excitations. That has not been done in the literature, and we did not attempt it. \emph{Stalls immediately}; it is a research project in itself.
+
+\emph{(ii) Quantum Toda chain.} This is our recommended route. The required ingredients are:
+\begin{enumerate}
+\item The exact quantum Toda chain \La~\cite{Gutzwiller,Sklyanin} and its asymptotic Bethe ansatz \La/\Lb~\cite{Sutherland,Mertens,SS}. Its particle excitations become solitons in the classical limit \Lb~\cite{Mertens,PM}.
+\item The dressed particle--particle S-matrix in the finite-density ground state. This is computable from linear integral equations. \emph{Not done.}
+\item Its classical limit should reproduce the Toda soliton phase, obtained by the symplectic construction of §\ref{sec:A} applied to the lattice. The lattice has the same structure: displacement $x_n\leftrightarrow\phi$, $p_n\leftrightarrow\pi$, compression $\sum r_n\leftrightarrow M$, $\sum p_n\leftrightarrow\Pi$. So the same cross terms arise. \Lc\ (structure only)
+\item The small-amplitude scaling limit should give~\eqref{eq:delta}. Phase~1 verified $\log A^{\rm Toda}/\log A^{\rm bad}\to1$. The weight and topological terms remain to be compared.
+\end{enumerate}
+If steps 2--4 succeed, the Toda dressed S-matrix in the scaling limit \emph{is} a candidate exact quantum Boussinesq soliton S-matrix, because it carries a definite $\hbar$-dependence. \Ld
+
+%=====================================================================
+\section{Consistency checks on the candidate}
+
+The only candidate is the semiclassical phase~\eqref{eq:delta}.
+
+\begin{center}\small
+\begin{tabular}{@{}p{4.3cm}p{7.6cm}p{2.6cm}@{}}\toprule
+Condition & Result & Status\\\midrule
+Unitarity & $\delta(1,2)=-\delta(2,1)$, exact & \Lc\ passed\\
+Crossing (substitute) & $\delta_{\rm ov}(\beta_1,\beta_2+i\pi)=-\delta_{\rm ho}(\beta_1,\beta_2)$ & \Lc\ passed\\
+Yang--Baxter / factorisation & diagonal scattering, so YBE is trivial; classical shifts pairwise additive (Hirota condition, $N\le4$) & \Lc\ passed\\
+Semiclassical limit vs.\ time delays & by construction, with the symplectic consistency of Prop.~\ref{prop:symp} & \Lc\ passed\\
+Bound states / bootstrap & breather existence boundary and action reproduced (Prop.~\ref{prop:breather}); no exact pole structure, so the bootstrap cannot be tested & \Lc\ partial\\
+Good equation & formula~\eqref{eq:delta} holds in the regular region; behaviour at the cusp and resonances not analysed & \Lc\ partial\\
+\bottomrule\end{tabular}\end{center}
+
+%=====================================================================
+\section{Conclusions and ranked open problems}
+
+\paragraph{Conclusions.}
+\begin{enumerate}
+\item No route yields an exact soliton S-matrix. The furthest-developed result is the semiclassical phase~\eqref{eq:delta}. \Lc
+\item The topological cross term is unavoidable. Any quantisation must treat the $\phi$ zero mode and the kink charge $M$ (a continuous ``winding'') properly. This is absent from sine-Gordon and Toda, and is the most important structural difference we found. \Lc
+\item The spectral parameter $\ell\propto\lambda$ organises everything: the phase weight, the breather action and the string condition. \Lc/\Ld
+\end{enumerate}
+
+\paragraph{Ranked next steps, with reasons.}
+\begin{enumerate}
+\item \textbf{Quantum Toda dressing in the scaling limit} (Route D, steps 2--4). This is the only route with an exactly solvable quantum theory whose classical limit is our model. It would test~\eqref{eq:delta}, including the topological term, and provide $\hbar$-exact data.
+\item \textbf{One-loop corrections for breathers and solitons} (Dashen--Hasslacher--Neveu-style): the fluctuation spectrum around a soliton of the bad equation. This would fix the $\hbar$ renormalisation in~\eqref{eq:string} and test the ``string'' interpretation. It is feasible because the linearised operators are reflectionless (integrability).
+\item \textbf{An exact ansatz in the variables $\mu$ (roots of the cubic).} $A_{12}$ is a KP cross-ratio of the roots (verified, \script{consistency\_checks.py}), so a product of $\Gamma$-function factors in root differences is a natural candidate. Test it against~\eqref{eq:delta}, the string condition~\eqref{eq:string} and unitarity.
+\item \textbf{The mirror-image structure} of Prop.~\ref{prop:fact} and the possible link to boundary affine Toda \cite{BHK}.
+\item \textbf{The good equation}: semiclassics near the cusp $\alpha=\pi/3$ (where $dP/d\alpha=0$) and near the resonance lines (where $\log A\to\pm\infty$). Do the attractive head-on channels give quantum bound states that are absent classically?
+\item \textbf{Non-ultralocal quantum inverse scattering} (Maillet) for the Boussinesq Lax pair. This is hard, and we place it lowest.
+\end{enumerate}
+
+\paragraph{What changed in our understanding.} We expected the main difficulty to be the singular or resonant solutions. For the bad equation the real issue is instead the topological, ordering-dependent part of the symplectic structure. We also found that the semiclassical data are far more rigid than expected: the breather action match is a non-trivial check.
+
+\paragraph{Least sure.}
+\begin{itemize}
+\item The physical status of the Darboux convention. We showed that the two natural conventions agree, but have not classified all allowed ones.
+\item Whether $S\simeq e^{i\delta/\hbar}$ is complete at leading order. A Maslov-type constant phase could be missing.
+\item The ring quantisation with $\phi$-winding.
+\end{itemize}
+
+\appendix\section{Scripts}
+All are in \texttt{phase2/scripts}; each ends with \texttt{ALL CHECKS PASSED}.
+\begin{itemize}
+\item \texttt{symplectic\_scattering.py}: Prop.~\ref{prop:symp}.
+\item \texttt{semiclassical\_phase.py}: derivation of $\nabla\delta$ and of the closed form.
+\item \texttt{fit\_R.py}: hyperbolic form of the remainder.
+\item \texttt{consistency\_checks.py}: Props~\ref{prop:delta}--\ref{prop:breather}, the cross-ratio, the KdV-limit finding, and the good equation.
+\item \texttt{routes\_BC\_checks.py}: Prop.~\ref{prop:fact} and the non-ultralocal brackets.
+\end{itemize}
+
+\emph{Failures along the way.}
+\begin{itemize}
+\item The direct symbolic simplification of the symplectic identity timed out, so we switched to 40-digit numerics.
+\item The good-equation phase first used the wrong sign of $\ell$, and the test failed until it was corrected.
+\item A tolerance set below double precision caused spurious failures.
+\item The KdV-limit comparison with Bonnemain--Doyon \emph{does not} agree. This is recorded as a finding, not a passed test.
+\end{itemize}
+
+\begin{thebibliography}{99}\small
+\bibitem{BC} M.~M.~Bogdan, O.~V.~Charkina, arXiv:2502.14695, \emph{Low Temp. Phys.} 51 (2025).
+\bibitem{BD} T.~Bonnemain, B.~Doyon, \emph{SciPost Phys.} 18 (2025) 075, arXiv:2402.08669.
+\bibitem{BHK} V.~V.~Bazhanov, A.~N.~Hibberd, S.~M.~Khoroshkin, \emph{Nucl. Phys. B} 622 (2002) 475, arXiv:hep-th/0105177.
+\bibitem{CL-WW} C.~Charlier, J.~Lenells, arXiv:2204.02365.
+\bibitem{DMHC} A.~Dimakis, F.~Müller-Hoissen, X.-M.~Chen, \emph{Phys. Scr.} 94 (2019) 035206, arXiv:1805.09711.
+\bibitem{FK} L.~D.~Faddeev, V.~E.~Korepin, Quantum theory of solitons, \emph{Phys. Rep.} 42 (1978) 1, doi:10.1016/0370-1573(78)90058-3.
+\bibitem{Gand} G.~M.~Gandenberger, arXiv:hep-th/9703158.
+\bibitem{Gutzwiller} M.~C.~Gutzwiller, \emph{Ann. Phys.} 133 (1981) 304.
+\bibitem{Hikami} K.~Hikami, \emph{Nucl. Phys. B} 604 (2001) 580, arXiv:nlin/0102021.
+\bibitem{Hol92} T.~J.~Hollowood, \emph{Nucl. Phys. B} 384 (1992) 523, arXiv:hep-th/9110010.
+\bibitem{Hol93} T.~J.~Hollowood, \emph{IJMPA} 8 (1993) 947, arXiv:hep-th/9203076.
+\bibitem{Johnson} P.~R.~Johnson, \emph{Nucl. Phys. B} 496 (1997) 505, arXiv:hep-th/9611117.
+\bibitem{Maillet} J.-M.~Maillet, Kac--Moody algebra and extended Yang--Baxter relations in the O(N) non-linear sigma model, \emph{Phys. Lett. B} 162 (1985) 137, doi:10.1016/0370-2693(85)91075-5. [not read]
+\bibitem{Mertens} F.~G.~Mertens, \emph{Z. Phys. B} 55 (1984) 353.
+\bibitem{PM} M.~Pustilnik, K.~A.~Matveev, \emph{Phys. Rev. B} 92 (2015) 195146, arXiv:1507.05639.
+\bibitem{Sklyanin} E.~K.~Sklyanin, \emph{Lect. Notes Phys.} 226 (1985) 196. [not machine-verified]
+\bibitem{SS} R.~Siddharthan, B.~S.~Shastry, \emph{Phys. Rev. B} 55 (1997) 12196, arXiv:cond-mat/9611221.
+\bibitem{Sutherland} B.~Sutherland, \emph{Rocky Mountain J. Math.} 8 (1978) 413.
+\bibitem{TW} G.~Takács, G.~M.~T.~Watts, \emph{Nucl. Phys. B} 547 (1999) 538, arXiv:hep-th/9810006.
+\end{thebibliography}
+\end{document}

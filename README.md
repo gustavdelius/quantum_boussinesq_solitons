@@ -31,7 +31,7 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
 |---|---|
 | `phase0/literature_map.md` | Phase 0: annotated map of the field and verdict on prior results |
 | `phase1/` | Phase 1: review of classical Boussinesq solitons (`review.tex` / `review.pdf`), `scripts/`, `figures/` |
-| `phase2/` | Phase 2: report on quantisation routes (to come) |
+| `phase2/` | Phase 2: report on quantisation routes (`report.tex` / `report.pdf`), `scripts/` |
 | `literature/` | Full texts used (local only, **git-ignored**, so PDFs are not redistributed) |
 
 **Document format.** Phase 1 and Phase 2 are written in **LaTeX** (compiled to PDF), suitable for heavy mathematics. Computations are in **Python/SymPy** scripts that the documents reference.
@@ -41,4 +41,7 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
 - **Phase 0, done.** No prior soliton S-matrix for Boussinesq was found. The only prior soliton quantisation is the one-body Bohr–Sommerfeld quantisation of the breather of the ill-posed equation (Bogdan–Charkina, arXiv:2502.14695). See the map for details and caveats.
 - **Phase 1, done.** The review is [`phase1/review.pdf`](phase1/review.pdf), source `phase1/review.tex`. The verification scripts are in `phase1/scripts/`; each ends with `ALL CHECKS PASSED`. Rebuild with
   `cd phase1 && pdflatex review.tex`, and run the checks with `cd phase1/scripts && for f in *.py; do python3 $f; done`.
-- Phase 2: not started.
+- **Phase 2, first pass done (bad equation, chosen by the PI).** The report is [`phase2/report.pdf`](phase2/report.pdf), with checks in `phase2/scripts/`.
+  - No exact S-matrix was obtained.
+  - Main result: a closed-form semiclassical two-soliton phase δ = (2/9)(ℓ₁−ℓ₂) log A₁₂ + (2/3)M₁M₂(v₁−v₂). It rests on exact symplecticity of scattering once topological cross terms are included, and it matches the Bogdan–Charkina breather action.
+  - The report ends with a ranked list of next steps.
