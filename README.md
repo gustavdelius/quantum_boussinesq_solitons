@@ -51,3 +51,4 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
   - In the Boussinesq scaling limit δ_T → 3b·δ_bad, for overtaking and head-on collisions.
   - O(ħ) quantum corrections were computed at finite ħ.
   - Limitation: Toda reaches only small-amplitude Boussinesq solitons.
+- **Phase 2c, candidate exact S-matrix (bad equation).** [`phase2/smatrix_ansatz.pdf`](phase2/smatrix_ansatz.pdf); scripts `phase2/scripts/smatrix_*.py`. A guess, (d): Γ(1±iη)/Γ(1∓iη) in η = (2/9)(ℓ₁−ℓ₂)/ħ, times a power of the root cross-ratio and the topological factor. It passes the semiclassical limit (up to ±π/2), unitarity, crossing, and has poles exactly at the Bogdan–Charkina levels. Gamma functions of root differences and mirror forms F(β₁−β₂)G(β₁+β₂) are excluded. O(ħ⁰) ambiguities (CDD, ħ renormalisation) remain.
