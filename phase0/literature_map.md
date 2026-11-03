@@ -29,7 +29,8 @@ Project convention (fixed, see `README.md`): **u_tt = u_xx − u_xxxx − 3(u²)
 |---|---|---|
 | Bonnemain–Doyon 2402.08669 | Hirota form, soliton speed √(1−η²), η∈(0,1); bad case in their App. A | good |
 | Corrigan–Zambon 2306.03772 | c⁻²w_tt − w_xx − λ(w²)_xx + κ²w_xxxx = 0 | good |
-| Charlier–Lenells 2302.14593, 2303.10485 | good Boussinesq, 3×3 RH problem | good |
+| Charlier–Lenells 2204.02365, 2302.14593, 2303.10485 | u_tt = u_xx + (u²)_xx + u_xxxx (3×3 RH problem, solitons, breathers) | **bad** |
+| Charlier–Lenells 2003.02777 | u_tt + (4/3)(u²)_xx + (1/3)u_xxxx = 0 (no solitons treated) | good |
 | Dimakis–Müller-Hoissen–Chen 1805.09711 | matrix "good" Boussinesq | good |
 | Rasin–Schiff 1701.00243 | "good" Boussinesq | good |
 | Bogdan–Charkina 2502.14695 | φ_tt − φ_xx − φ_xxxx + 6φ_xφ_xx = 0 | **bad** |
@@ -42,8 +43,14 @@ The good/bad choice is the sign of u_xxxx relative to u_tt. Equivalently it is t
 
 - **Integrability and inverse scattering.**
   - Zakharov (1973/74) found the Lax pair. The direct and inverse scattering theory is Deift–Tomei–Trubowitz, *CPAM* 35 (1982) 567, doi:10.1002/cpa.3160350502 (Abs).
-  - Charlier–Lenells, 2302.14593 (FT), give a rigorous 3×3 Riemann–Hilbert problem with solitons, and in 2303.10485 (FT) prove soliton resolution away from transition zones. (a)
-  - The solitons correspond to zeros of the scattering coefficients in prescribed sectors of the spectral plane. Only some placements give global (nonsingular) solutions. (a, Charlier–Lenells; details deferred to Phase 1)
+  - Charlier–Lenells work with the **bad** equation for everything involving solitons, all FT:
+    - 2204.02365: IST, global existence when there are no unstable modes, and solutions that blow up at any prescribed time T;
+    - 2302.14593: IST with solitons;
+    - 2303.10485: soliton resolution away from transition zones.
+
+    Their "good" paper, 2003.02777 (FT), is solitonless and only gives a conditional representation. (a)
+  - In the bad equation, solitons and breathers correspond to zeros of s₁₁ (and s^A₁₁). Real zeros give solitons. Non-real zeros give breathers, which are regular in a region D_reg and **singular for every t** in D_sing. Real zeros can also give singular solitons, depending on the sign of the residue constant. (a: 2302.14593, Lemmas A.3–A.4)
+  - *Correction (made during Phase 1).* An earlier version of this map wrongly listed the Charlier–Lenells soliton papers as treating the good equation.
 - **Hirota N-soliton.** Hirota, *J. Math. Phys.* 14 (1973) 810, doi:10.1063/1.1666400 (Abs). The explicit two-soliton phase shift for left/right movers is Bonnemain–Doyon eq. (16) (FT). It reduces to the KdV phase shift for small amplitudes. Head-on shifts can have either sign: attractive or repulsive. (a)
 - **Resonances and number-changing solutions.**
   - Lambert–Musette–Kesteloot, *Inverse Problems* 3 (1987) 275 (Abs): soliton resonances.
@@ -100,8 +107,9 @@ All of this is on a *circle* (or a torus) in a highest-weight module. There is n
 1. **No two-body S-matrix exists for any Boussinesq soliton species.** The classical ingredients exist: the Hirota phase shift in two kinematic regimes (overtaking and head-on), and the IST action variables via Charlier–Lenells. → Route A is feasible at leading semiclassical order. (d)
 2. The **choice of equation** is not cosmetic:
    - the physically realised quantum lattice regularisation (Toda) gives the *bad* sign;
-   - the rigorous inverse scattering and the GHD work use the *good* sign;
-   - the only existing quantisation (Bogdan–Charkina) uses the *bad* sign.
+   - the rigorous inverse scattering *with solitons*, including global existence on a restricted class of data (Charlier–Lenells), uses the *bad* sign;
+   - the only existing quantisation (Bogdan–Charkina) uses the *bad* sign;
+   - the GHD work (Bonnemain–Doyon) and the defect work (Corrigan–Zambon) use the *good* sign.
 
    This needs your decision before Phase 2 (I flag it, but do not need it for Phase 1).
 3. **Number-changing classical solutions** (merging solitons, resonances, virtual solitons) have no counterpart in KdV or sine-Gordon. They put pure elastic factorised scattering in doubt. (b, Corrigan–Zambon) (d, my assessment)

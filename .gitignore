@@ -4,3 +4,10 @@
 .Ruserdata
 quantum_boussinesq_solitons.Rproj
 literature
+
+# LaTeX build products
+*.aux
+*.log
+*.toc
+*.out
+__pycache__/

@@ -30,7 +30,7 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
 | Path | Contents |
 |---|---|
 | `phase0/literature_map.md` | Phase 0: annotated map of the field and verdict on prior results |
-| `phase1/` | Phase 1: review of classical Boussinesq solitons (LaTeX) and verification scripts (to come) |
+| `phase1/` | Phase 1: review of classical Boussinesq solitons (`review.tex` / `review.pdf`), `scripts/`, `figures/` |
 | `phase2/` | Phase 2: report on quantisation routes (to come) |
 | `literature/` | Full texts used (local only, **git-ignored**, so PDFs are not redistributed) |
 
@@ -39,5 +39,6 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
 ## Status
 
 - **Phase 0, done.** No prior soliton S-matrix for Boussinesq was found. The only prior soliton quantisation is the one-body Bohr–Sommerfeld quantisation of the breather of the ill-posed equation (Bogdan–Charkina, arXiv:2502.14695). See the map for details and caveats.
-- Phase 1: not started.
+- **Phase 1, done.** The review is [`phase1/review.pdf`](phase1/review.pdf), source `phase1/review.tex`. The verification scripts are in `phase1/scripts/`; each ends with `ALL CHECKS PASSED`. Rebuild with
+  `cd phase1 && pdflatex review.tex`, and run the checks with `cd phase1/scripts && for f in *.py; do python3 $f; done`.
 - Phase 2: not started.
