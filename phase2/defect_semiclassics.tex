@@ -21,7 +21,7 @@ We apply the symplectic (Darboux-coordinate) method of the Phase~2 report to sol
 The defect's spectral parameter is $\ell(q)=(3s-s^3)/2$, and $(M_D,\Pi_D)$ are effective defect charges.
 \item The type-I defect has no continuous degrees of freedom and adds no cross terms to $\Omega$. Two-soliton--defect scattering is symplectic with exactly the Phase~2 cross terms. It factorises: the total phase is $\delta_{12}+\delta_{1D}+\delta_{2D}$, whether the solitons collide before or after crossing the defect.
 \item Absorption of a soliton by the defect happens exactly when $q$ coincides with one of its roots. The defect then moves to another of its vacua, and we verify exact energy--momentum balance. Phases stay finite on absorption and resonance lines, while delays diverge logarithmically.
-\item Defect fusion gives an exact leading-order bootstrap, $\delta_D^{(q')}-\delta_D^{(q)}=\pm[\delta(3,S)+M_S\Pi_3]$. The bad-equation candidate S-matrix, continued to the good equation, fails the resulting triangle closure at $O(\hbar^0)$, by $e^{\pm i\pi/2}$; the pure exponential $e^{i\delta/\hbar}$ passes it exactly (Section~\ref{sec:cont}).
+\item Defect fusion gives an exact leading-order bootstrap, $\delta_D^{(q')}-\delta_D^{(q)}=\pm[\delta(3,S)+M_S\Pi_3]$. The bad-equation candidate S-matrix, continued to the good equation, fails the resulting triangle closure at $O(\hbar^0)$, by $e^{\pm i\pi/2}$; the pure exponential $e^{i\delta/\hbar}$ passes it exactly (Section~\ref{sec:cont}). However, a defect vacuum is linearly stable iff $\eta\sigma<-1$, so exactly one vacuum per triple is stable. The triangle argument therefore rests on an unstable intermediate state and is only heuristic (Section~\ref{sec:stab}).
 \end{enumerate}
 All checks are at 40 digits and are in \script{defect\_transmission\_phase.py} and \script{defect\_two\_soliton\_symplectic.py}; both end with \texttt{ALL CHECKS PASSED}.
 \end{abstract}
@@ -136,7 +136,7 @@ This is the semiclassical analogue of the sine-Gordon defect story, but with one
 
 \subsection{Absorption and decay into one soliton}
 
-The defect vacua are $\sigma\rho(\sigma)=0$, that is $\sigma\in\{s,\,0,\,\sigma_\pm\}$ with $\sigma_\pm^2+s\sigma_\pm+s^2=3$. Write $\sigma=-2\sqrt3\,q'$. Then the condition for $\sigma_\pm$ reads
+The static defect vacua satisfy $\rho(\sigma)=0$ (which implies $\tau'=0$), that is $\sigma\in\{s,\,\sigma_\pm\}$ with $\sigma_\pm^2+s\sigma_\pm+s^2=3$. (An earlier version also listed $\sigma=0$. That is wrong: it solves $\tau'=0$ but violates the $u_{xx}$ sewing condition, Section~\ref{sec:stab}.) Write $\sigma=-2\sqrt3\,q'$. Then the condition for $\sigma_\pm$ reads
 \[
 q'^2+qq'+q^2=\tfrac14 .
 \]
@@ -259,6 +259,44 @@ Every Hirota breather of the good equation is singular (Phase~1, Prop.~\emph{nob
   \end{itemize}
 \end{enumerate}
 
+\section{Linear stability of the defect vacua}\label{sec:stab}
+
+The exact-bootstrap argument of Section~\ref{sec:cont} assumes that excited defect vacua are stable asymptotic states. We tested this classically, by linearising the sewing conditions about each static vacuum. The bulk equation becomes $a_{tt}=a_{xx}-a_{xxxx}$. Everything here is \Lc, from \script{defect\_vacuum\_stability.py}.
+
+\begin{proposition}[\Lc]\label{prop:stab}
+\begin{enumerate}
+\item \emph{Vacua.} The static vacua are exactly $\sigma\in\{s,\sigma_\pm\}$ (check~1).
+\item \emph{Phonons.} On every real vacuum, stable or not, phonons are purely transmitted: $R=0$ and $|T|=1$. Moreover $T$ equals CZ's linear-defect formula~(4.6) with $\sigma_0\to\sigma_{\rm vac}$ and $\alpha+\beta=\sqrt3\eta$:
+\[
+T_{\rm ph}=-\frac{\sqrt3\eta k^2+i\sigma k+i\omega}{\sqrt3\eta k^2-i\sigma k-i\omega},
+\]
+to $10^{-30}$ (check~2).
+\item \emph{Localised modes.} The spectrum depends on $(\eta,\sigma_{\rm vac})$ only, not on $s$. A vacuum has a localised growing mode ($\operatorname{Im}\omega>0$) iff
+\[
+\eta\,\sigma_{\rm vac}>-1 .
+\]
+\begin{itemize}
+\item The growth rate tends to $0$ at $\eta\sigma=-1$; for example $\gamma=0.029$ at $\eta\sigma=-0.95$ and $\gamma=0.4999$ at $\eta\sigma=0.5$.
+\item A second mode appears for $\eta\sigma>1$, and a complex pair for $\eta\sigma>2$.
+\item Every growing mode on the imaginary axis has zero conserved energy, to $10^{-20}$ relative. This is a necessary condition for growth and an independent check of the linearisation. The defect's quadratic energy $-H_2$ is indefinite, which is what allows the instability.
+\end{itemize}
+(Check~3. The root search is a fine scan of the imaginary axis plus Newton iteration from a complex grid. It is numerical, not a proof of completeness. The branch point $\omega=i/2$, where the two decay rates coincide, gives a spurious zero and is excluded.)
+\item \emph{One stable vacuum per triple.} The vacua of one defect are $\sigma=-2\sqrt3\,q'$ for the three roots of one KP triple. Exactly one root has $\eta q'>1/(2\sqrt3)$, so \emph{exactly one vacuum per triple is linearly stable} (check~4).
+\end{enumerate}
+\end{proposition}
+
+\paragraph{Consequences.}
+\begin{itemize}
+\item A CZ defect with ground vacuum $\sigma=s$ is linearly stable iff $\eta s<-1$.
+\item CZ's illustrative example ($\theta=1$, $s=0.5$, and $z=0.05836$, which requires $\eta=+1$) has a linearly unstable ground vacuum, with growth rate $\approx0.4999$. Its exact soliton solutions are unaffected, but generic small perturbations of the defect grow. \Lc. The nonlinear fate of the instability was not studied.
+\item For a stable ground defect ($\eta s<-1$), \emph{both} excited vacua are unstable. Absorption is possible only for $-2<\eta s<-1$, and the absorbed soliton leaves the defect in an unstable state. That state is presumably a resonance that re-emits rather than a bound state. \Ld
+\item The hypothesis of the exact triangle closure in Section~\ref{sec:cont} therefore fails at the linear level. The $O(\hbar^0)$ objection to the continued Gamma candidate is downgraded from a conditional \Lc\ statement to a heuristic \Ld. The leading-order fusion identity~\eqref{eq:fusion} is unaffected: it is a classical identity.
+\item The semiclassical transmission phase~\eqref{eq:dD}, symplecticity and factorisation are classical scattering statements and remain valid. A quantum defect requires a stable vacuum, so they are physically relevant for $\eta s<-1$.
+\item The reflectionless phonon transmission $T_{\rm ph}$ is exactly what a one-loop (DHN-type) treatment of soliton--defect scattering needs.
+\end{itemize}
+
+\paragraph{Next step.} The $O(\hbar^0)$ question (the Maslov-type $\pm\pi/2$ of the Gamma candidate versus the pure exponential) must be decided directly by the one-loop two-soliton phase of the good equation. The defect bootstrap no longer decides it.
+
 \section{Summary of labels and checks}
 
 \begin{center}\begin{tabular}{lll}\toprule
@@ -274,7 +312,8 @@ Factorisation $\delta_{12}+\delta_{1D}+\delta_{2D}$ & \Lc & two-soliton script 4
 Finite phases on resonance/absorption lines; cusp & \Lc & two-soliton script 5\\
 Bound-state poles, reflection as resonance, cusp uniformisation & \Ld & ---\\
 Fusion~\eqref{eq:fusion}; continued candidate fails triangle closure by $e^{\pm i\pi/2}$ & \Lc & \texttt{defect\_smatrix\_good\_continuation.py}\\
-Good S-matrix must differ from continued bad one at $O(\hbar^0)$ & \Ld & ---\\\bottomrule
+Good S-matrix must differ from continued bad one at $O(\hbar^0)$ & \Ld & ---\\
+Vacua; phonon $T$; stable iff $\eta\sigma<-1$; one stable vacuum per triple & \Lc & \texttt{defect\_vacuum\_stability.py}\\\bottomrule
 \end{tabular}\end{center}
 
 \paragraph{Failures recorded.}

@@ -15,7 +15,8 @@ Checks:
       ell = -eps cos 3 alpha = ell(p_a) = ell(p_b),  ell(p) = -3 sqrt3 p (1 - 4 p^2),
       ell_D = ell(q) = (3 s - s^3)/2,  M_D = eps eta q,  Pi_D = eps eta (s^2 - 2)/(2 sqrt3),
     satisfies Dx = -d delta_D/dP   (40 digits, all four (eps, eta))
- 5. defect vacua sigma in {s, 0, sigma_+-}, sigma_+-^2 + s sigma + s^2 = 3  <=>  roots q' with
+ 5. defect vacua sigma in {s, sigma_+-} (rho(sigma) = 0; sigma = 0 is not one, see defect_vacuum_stability.py),
+    sigma_+-^2 + s sigma + s^2 = 3  <=>  roots q' with
     q'^2 + q q' + q^2 = 1/4 (same triple as q); absorption (z = 0 or infinity) iff q = p_a or p_b, and
     then the soliton's (E, P) equals the jump in the defect's (E_D, P_D) between vacua s and sigma_+-.
  6. type-I defect contributes Omega_D = (f_v - g_u) du ^ dv at x0 which vanishes on every vacuum sector
@@ -138,8 +139,8 @@ for s in (mp.mpf('0.7'), mp.mpf('-1.3'), mp.mpf('1.9')):
         EDf = lambda sg: mp.quad(lambda x: beta*x*rho(x)/2/mu, [s, sg])     # -tau, d sigma = mu dw
         PDf = lambda sg: mp.quad(lambda x: -(beta - alCZ)*rho(x)/mu, [s, sg])
         sigs = [(-s + e*mp.sqrt(12 - 3*s**2))/2 for e in (1, -1)]
-        for sg in sigs + [0]:
-            assert abs(sg*rho(sg)) < 1e-30                                  # vacua: tau'(w) = 0
+        for sg in sigs:
+            assert abs(rho(sg)) < 1e-30                                     # vacua: rho = tau' = 0
         q = -s/(2*r3)
         for sg in sigs:
             qp = -sg/(2*r3); assert abs(qp**2 + q*qp + q**2 - mp.mpf(1)/4) < 1e-30
