@@ -71,7 +71,7 @@ Run: `python3 defect_check.py`, which ends with `ALL CHECKS PASSED`.
 
 ## Interactive explorer
 
-`app/defect_explorer.html` is a standalone page. Open it in any browser, or use the published copy at https://claude.ai/artifact/Qw4Skejo6Q4MWmdmVYE4Ts (private by default). It animates the exact soliton–defect solutions of CZ §5: one soliton, two solitons, and merging/splitting solitons.
+[`docs/index.html`](../docs/index.html) is a standalone page, ready for GitHub Pages (serve from `main` / `docs`). Open it in any browser, or use the published copy at https://claude.ai/artifact/Qw4Skejo6Q4MWmdmVYE4Ts (private by default). It animates the exact soliton–defect solutions of CZ §5: one soliton, two solitons, and merging/splitting solitons.
 
 `verify_defect_solutions.py` checks these solutions against the sewing conditions derived from the action. They hold to 10⁻²⁸–10⁻³¹, or to about 10⁻¹⁵ when evaluated near a pole in the singular z < 0 cases.
 
