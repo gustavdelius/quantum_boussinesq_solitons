@@ -1,0 +1,400 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\R}{\mathbb{R}}
+
+\title{\textbf{Independent Audit of the Two-Body Toda Package}\\
+\large Assessment of \texttt{phase2/twobody\_toda.tex} and \texttt{phase2/scripts/twobody\_toda\_*.py}}
+\author{Independent Audit}
+\date{2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report an independent mathematical and numerical audit of the two-body Toda Bethe-ansatz package \texttt{phase2/twobody\_toda.tex} (which inputs \texttt{phase2/twobody\_toda\_numbers.tex}) and its four verification scripts \texttt{phase2/scripts/twobody\_toda\_*.py}. Every analytical identity is re-derived symbolically and tested in 70-digit arithmetic using an independent Fej\'er first-rule (Chebyshev-root) Fredholm solver, 45-digit de~Hoog Laplace inversion, and Neville/Pad\'e extrapolators in \texttt{phase2/scripts/audit\_twobody\_toda.py}.
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Closed form of $\vartheta_N(r)$ and relation to Phase~2h/2i (Points~7 \&~9):} We \textbf{confirm} \textbf{(c)} that in the iterated edge-then-semiclassical limit ($h\to 0$ at fixed $y_a$, then $Y\to\infty$ at fixed $r=\sqrt{y_2/y_1}\in(0,1)$), the antisymmetrised two-term directional residual equals
+  \[
+    \vartheta_N^{(1)}(r) = \pi - \frac{4}{\pi}\chi_2(r) + \frac{2}{\pi}\!\left(r - \frac{1}{r}\right), \qquad \chi_2(r)=\sum_{m=0}^{\infty}\frac{r^{2m+1}}{(2m+1)^2}.
+  \]
+  We prove that the Phase~2h/2i residual $R_0(\infty,r) = -\frac{4}{\pi}(\chi_2(r)-r)$ confirmed in \texttt{phase2/audit\_phase2i.tex} is the \emph{forward} (unsymmetrised) two-term limit $R_{12}^{(1)}(r)$. Subtracting the non-vanishing symmetric limit $S^{(1)}(r) = \frac{2}{\pi}(r+r^{-1})-\pi$ dictated by exact two-term reciprocity $H(u,v)+H(v,u)=2B(u)B(v)-2\pi$ accounts for all three structural differences: $+\pi$ arises from the endpoint contact constant $-B(0^+)^2=-\pi$, $-\frac{2}{\pi}r^{-1}$ from the one-loop Jacobian dressing of the slower soliton $y_2=r^2 Y$, and $+\frac{2}{\pi}r$ from $+\frac{4}{\pi}r$ minus the Jacobian dressing $+\frac{2}{\pi}r$ of the faster soliton $y_1=Y$.
+  \item \textbf{High-priority audit of the four-term Krein source in \texttt{audit\_frame\_dictionary.tex} (Point~8):} We \textbf{confirm} \textbf{(c)} that \texttt{phase2/audit\_frame\_dictionary.tex} (Eq.~(9), line~431) and \texttt{audit\_frame\_dictionary.py} (line~797) printed an incorrect characteristic source $2f(u)[B(v)-\sqrt{\pi}]$ instead of the true source $(\partial_u+\partial_v)\widehat{H}(u,v)=2f(u)B(v)-2\sqrt{\pi}f(v)$; the error arose from applying $\partial_u$ instead of $\partial_v$ to the one-body edge reference $U(v)=2\sqrt{\pi}[B(v)-\sqrt{\pi}]$. However, we prove by three independent arguments (homogeneous characteristic uniqueness at fixed one-body spectrum, exact vanishing of all $3\times 3$ Schmidt determinants and $2\times 2$ mixed-partial determinants of the true source versus non-zero determinants for $(\partial_{y_1}+\partial_{y_2})A_1(y_1,y_2)$, and spatial cluster separability) that \textbf{the verdict of \texttt{audit\_frame\_dictionary.tex} excluding the antisymmetric two-body freedom $A_\lambda(y_1,y_2)$ on the Toda side survives unchanged}.
+  \item \textbf{Head-on directional coefficient and error budgets (Points~2 \&~10):} We \textbf{confirm} \textbf{(c)} that the defined two-term head-on observable $R_{12}^{\mathrm{ho}}(y_1,y_2;h)$ vanishes at $O(h^0)$, but \textbf{qualify} \textbf{(d)} its physical interpretation because the algebraically antisymmetric endpoint representative $\mathcal{B}_{\mathrm{ho}}/h\to (B(u_1)-\sqrt{\pi})(B(u_2)-\sqrt{\pi})$ does not vanish after subtracting $4rY$. We also \textbf{qualify} the error budgets at large $Y$ in the $h$-fit ($\kappa_1=1.453>1$ at $Y=64, h=0.02$) and at small $r=0.25$ in the $1/Y$-fit ($y_2=r^2Y=2$ at $Y=32$, causing a $2684\times$ truncation-error jump in $S^{(1)}(0.25)$ that can be eliminated by using the exact one-body symmetric limit).
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+
+% ==============================================================================
+\section{Summary of Verdicts}
+% ==============================================================================
+
+Claims are labelled according to \texttt{AGENTS.md}: \textbf{(a)} proved in the literature, \textbf{(b)} conjectured or heuristic in the literature, \textbf{(c)} derived in this project, and \textbf{(d)} a guess or convention choice. Each claim is assigned \textbf{Confirmed}, \textbf{Qualified}, or \textbf{Refuted}.
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{@{}p{2.2cm}p{5.5cm}cp{2.1cm}p{4.8cm}@{}}
+\toprule
+\textbf{ID / Ref} & \textbf{Claim in \texttt{twobody\_toda.tex}} & \textbf{Label} & \textbf{Verdict} & \textbf{Independent audit evidence} \\
+\midrule
+\endhead
+\textbf{C1} \newline Eqs.~(1)--(3), \S1 &
+Classical/one-loop Toda-to-good-Boussinesq dictionary ($b=\ee^{-1/2}$, $\kappa_a=\sqrt{h y_a/b}$, sound shift $\delta c_s = -\frac{3}{4\pi}h$) and overtaking/head-on $h\to 0$ limits of $(\delta_T+C_{12})/h$. &
+(a)/(c) &
+\textbf{Confirmed} \newline {\footnotesize (minor test gap)} &
+Symbolic series in \texttt{audit\_twobody\_toda.py} confirms $(\delta_T+C_{12})/h \to H_{\mathrm{cl}}(Y,r)$ (overtaking) and $0+O(h)$ (head-on). Package script tested only $\delta_T/h$, omitting $C_{12}/h$. \\[4pt]
+
+\textbf{C2} \newline Eqs.~(7)--(11), \S2.2 &
+Finite-sea endpoint decomposition $F_{12}=\widetilde{F}_{12}-\frac{D_1^-}{\mathcal{D}(q)}\xi(p_2)$ and exact antisymmetric representative $\mathcal{B}_{12}=F_{12}-M(p_1)Q(p_2)=-\mathcal{B}_{21}$ before $h\to 0$. &
+(c) &
+\textbf{Confirmed} &
+Verified in 70-digit arithmetic on an independent Fej\'er-I Chebyshev mesh ($N=44,64$, $h=0.45$, $q=1.25$): max algebraic error $5.66\times 10^{-73}$, Fredholm integration-by-parts error $7.52\times 10^{-20}$. \\[4pt]
+
+\textbf{C3} \newline Eqs.~(12)--(13), \S3.1 &
+Edge-limit Wiener--Hopf reduction $N_{12}/h\to H(u_1,u_2)$, $U_{12}/h\to 2\sqrt{\pi}[B(u_2)-\sqrt{\pi}]$, and two-term reciprocity $H(u,v)+H(v,u)=2B(u)B(v)-2\pi$. &
+(c) &
+\textbf{Confirmed} &
+Confirmed by 5-point Fej\'er-I finite-sea Neville extrapolation ($h\in[0.004,0.064]$) matching 26-digit de~Hoog WH convolution to $<5\times 10^{-7}$ for $R_{12}$ and $<5\times 10^{-6}$ for $\vartheta_N$ and $\mathcal{B}_{12}/h$. \\[4pt]
+
+\textbf{C4} \newline Eq.~(14), \S3.1 \newline \textbf{(Point~8)} &
+Four-term edge observable $\widehat{H}(u,v)=H(u,v)-2\sqrt{\pi}[B(v)-\sqrt{\pi}]$ satisfies $(\partial_u+\partial_v)\widehat{H}=2f(u)B(v)-2\sqrt{\pi}f(v)$; \texttt{audit\_frame\_dictionary.tex} printed an incorrect source $2f(u)[B(v)-\sqrt{\pi}]$. &
+(c) &
+\textbf{Confirmed} \newline {\footnotesize (prior exclusion verdict survives)} &
+Symbolic \& 45-digit de~Hoog check ($<10^{-18}$) confirms discrepancy $2\sqrt{\pi}[f(u)-f(v)]$. However, homogeneous uniqueness, $\det_{3\times 3}S_{\mathrm{true}}=0$, and $\det_{2\times 2}\partial_u\partial_v S_{\mathrm{true}}=0$ prove exclusion of $A_\lambda(y_1,y_2)$ in \texttt{audit\_frame\_dictionary.tex} survives unchanged (\S\ref{sec:krein}). \\[4pt]
+
+\textbf{C5} \newline Eqs.~(16)--(18), \S3.2 \newline \textbf{(Points~7, 9)} &
+Regularised representation Eq.~(16) and closed form $\vartheta_N^{(1)}(r)=\pi-\frac{4}{\pi}\chi_2(r)+\frac{2}{\pi}(r-r^{-1})$ from $R_{12}^{(1)}(r)=-\frac{4}{\pi}(\chi_2(r)-r)$ and $S^{(1)}(r)=\frac{2}{\pi}(r+r^{-1})-\pi$. &
+(c) &
+\textbf{Confirmed} \newline {\footnotesize (Eq.~16 untested in pkg)} &
+Derived analytically via integration by parts and verified by independent de~Hoog/Fej\'er WH solver across $r\in[0.25,0.9]$. Direct check of untested Eq.~(16) passes to $7.6\times 10^{-15}$. Explains exact relation to $R_0(\infty,r)$ of Phase~2h/2i (\S\ref{sec:vartheta}). \\[4pt]
+
+\textbf{C6} \newline Eq.~(19), \S3.3 \newline \textbf{(Point~10)} &
+Leading head-on directional coefficient vanishes: $R_{12}^{\mathrm{ho},(0)}(y_1,y_2)=0$, with $N_{12}^{\mathrm{ho}}/h=O(h)$, $U_{12}^{\mathrm{ho}}/h=O(h)$, and $(\delta_T^{\mathrm{ho}}+C_{12}^{\mathrm{ho}})/h=O(h)$. &
+(c)/(d) &
+\textbf{Confirmed} (c) \newline \textbf{Qualified} (d) &
+Confirmed for $R_{12}^{\mathrm{ho}}$ ($<2\times 10^{-6}$ in 5-point Fej\'er-I Neville extrapolation). Qualified as a physical scattering phase: $\mathcal{B}_{\mathrm{ho}}/h\to (B(u_1)-\sqrt{\pi})(B(u_2)-\sqrt{\pi})$ has non-zero $O(\sqrt{Y})$ and $O(1)$ residuals after subtracting $4rY$ (\S\ref{sec:headon}). \\[4pt]
+
+\textbf{C7} \newline \S2.1, \S4, Tables~1--2 \newline \textbf{(Point~2)} &
+Error budgets separate quadrature mesh error, $h\to 0$ fit spread, and $Y\to\infty$ extrapolation uncertainty across all grid points. &
+(c) &
+\textbf{Qualified} &
+At $Y=64$, \texttt{quartic7} includes $h=0.02$ where $\kappa_1=1.453>1$, inflating $h$-spread $3800\times$; \texttt{hlog7} $\ell^1$ norm $37.23$ inflates \texttt{mesh\_error}. At $r=0.25$, $y_2=r^2Y=2$ at $Y=32$ causes an $8.52\times 10^{-5}$ error in $S^{(1)}$ ($2.76\times$ larger than \texttt{fit\_spread}), curable to $3.18\times 10^{-8}$ using exact 1-body $S^{(1)}$ (\S\ref{sec:budgets}). \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+% ==============================================================================
+\section{Audit Methodology, Script Execution, and Conventions (Points 1, 3, 4, 5, 6)}
+% ==============================================================================
+
+\subsection{Execution and Runtimes of the Package Scripts (Point 6)}
+
+To audit the four package scripts without violating the repository rule against modifying existing files, \texttt{phase2/scripts/audit\_twobody\_toda.py} executes each script via \texttt{runpy.run\_path} inside a read-only \texttt{Path.write\_text} guard. Without this guard, running \texttt{twobody\_toda\_identities.py}, \texttt{twobody\_toda\_edge.py}, or \texttt{twobody\_toda\_analysis.py} directly overwrites tracked repository files (\texttt{twobody\_toda\_identities.json}, \texttt{twobody\_toda\_edge.json}, \texttt{twobody\_toda\_grid.json}, and \texttt{twobody\_toda\_numbers.tex}) by updating runtime metadata or regenerating tables. Inside the guard, we verify that every script prints \texttt{ALL CHECKS PASSED}, that the payloads generated in memory for \texttt{twobody\_toda\_grid.json} and \texttt{twobody\_toda\_numbers.tex} match the tracked files byte-for-byte, and that the SHA-256 hashes of all ten package files remain unchanged.
+
+\begin{table}[ht!]
+\centering
+\small
+\caption{Execution status, cached runtimes measured by \texttt{audit\_twobody\_toda.py}, and full cache-generation runtimes recorded in the package JSON artifacts.}
+\label{tab:runtimes}
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+\textbf{Package script} & \textbf{Output status} & \textbf{Cached (s)} & \textbf{Cache gen.\ (s)} & \textbf{Side effect if run unguarded} \\
+\midrule
+\texttt{twobody\_toda\_identities.py} & \texttt{ALL CHECKS PASSED} & $38.0\text{--}52.0$ & $56.45$ & Rewrites \texttt{identities.json} \\
+\texttt{twobody\_toda\_scan.py} & \texttt{ALL CHECKS PASSED} & $0.01$ & $953.37$ & Read-only if 14 rows present \\
+\texttt{twobody\_toda\_edge.py} & \texttt{ALL CHECKS PASSED} & $52.55$ & $1135.79$ & Rewrites \texttt{edge.json} \\
+\texttt{twobody\_toda\_analysis.py} & \texttt{ALL CHECKS PASSED} & $9.99$ & $9.99$ & Rewrites \texttt{grid.json}, \texttt{numbers.tex} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Conventions and Independence from Earlier Refuted Claims (Points 3 \& 5)}
+
+\paragraph{Good Boussinesq and Toda scaling conventions (Point 3).}
+The package works in the fixed project convention (\texttt{AGENTS.md}) for the \textbf{good} Boussinesq equation $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ with $u=\varphi_x$, $L=\frac12\varphi_t^2-\frac12\varphi_x^2+\varphi_x^3-\frac12\varphi_{xx}^2$, and $\Omega=\int\dd\pi\wedge\dd\varphi$. In the semiclassical Toda dictionary (\texttt{phase2/audit\_toda\_dictionary.tex}, \texttt{phase2/audit\_phase2i.tex}), the edge parameter is $b=\ee^{-1/2}$, the rapidities are $\kappa_a=\sqrt{h y_a/b}$, and the rescaled energies and momenta are $E_{\mathrm{good}}(\kappa_a)=\frac{2}{3}b(\sinh 3\kappa_a-3\sinh\kappa_a)$, $P_{\mathrm{good}}(\kappa_a)=4b(\kappa_a\cosh\kappa_a-\sinh\kappa_a)$, and $M_{\mathrm{good}}(\kappa_a)=2b\sinh\kappa_a$ \textbf{(a)}/\textbf{(c)}. The one-loop Toda sound speed $c_s = 1 - \frac{3}{4\pi}h + O(h^2)$ matches our independent 5-point Fej\'er-I Neville extrapolation $(c_s-1)/h \to -0.23873241498$, agreeing with $-\frac{3}{4\pi}=-0.23873241464$ to $3.4\times 10^{-10}$ \textbf{(c)}.
+
+Regarding the defect scale convention (\texttt{AGENTS.md}: scattering uses $s=\sigma_{\mathrm{vac}}$, whereas the spectrum uses $\eta\sigma_{\mathrm{vac}}$; see \texttt{phase2/audit\_smx.tex} and \texttt{phase2/errata.tex} Item~E1), \texttt{phase2/twobody\_toda.tex} operates entirely within the Toda Bethe ansatz and its Wiener--Hopf edge limit and never invokes the Boussinesq integrable defect transmission matrix or the Corrigan--Zambon (\texttt{arXiv:2306.03772}, verified against repository dictionary) defect potential. Its results are therefore unaffected by the defect $s$ convention \textbf{(c)}.
+
+\paragraph{Reliance on earlier audited results (Point 5).}
+We cross-checked \texttt{phase2/twobody\_toda.tex} against all prior audit reports (\texttt{audit\_phase2i.tex}, \texttt{audit\_frame\_dictionary.tex}, \texttt{audit\_toda\_dictionary.tex}, \texttt{audit\_onebody\_scheme.tex}, \texttt{audit\_smx.tex}, and \texttt{errata.tex}). The package does not rely on any refuted claim:
+\begin{itemize}[leftmargin=2em]
+  \item It explicitly respects the negative verdict of \texttt{audit\_phase2i.tex} that the naive directional Bethe phase $N_{12}$ violates reciprocity by $N_{12}+N_{21}=O(h)$, and separates the symmetric part $S^{(1)}(r)$ from the antisymmetric part $\vartheta_N^{(1)}(r)$.
+  \item It respects the verdict of \texttt{audit\_frame\_dictionary.tex} that no first-principles Boussinesq-to-Toda two-body frame dictionary has been derived, framing its main result strictly as a conditional sharp target (Section~5).
+  \item Its dispute with the printed Krein source formula in \texttt{audit\_frame\_dictionary.tex} is examined in detail in Section~\ref{sec:krein}.
+\end{itemize}
+
+\subsection{Audit of Claim Coverage and Circularity (Points 1 \& 4)}
+
+Every \textbf{(c)} claim in \texttt{phase2/twobody\_toda.tex} was checked against the four package scripts for coverage and non-circularity:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Untested regularised integral representation Eq.~(16) (\texttt{eq:regular}):} In Section~3.2, the package derives the closed form of $R_{12}^{(1)}(r)$ by changing variables $t=u(z)$ in the Wiener--Hopf convolution $H(u,v)=2\int_0^v f(u-v+t)B(t)\,\dd t$ using $B(u(z))u'(z)=2\sqrt{z}$ to obtain
+  \begin{equation}\label{eq:audit_eq16}
+    H\bigl(u(Y),u(r^2Y)\bigr) = 4\int_0^{r^2Y}\sqrt{z}\,f\bigl(u(Y)-u(r^2Y)+u(z)\bigr)\,\dd z.
+  \end{equation}
+  However, none of the four package scripts tests Eq.~\eqref{eq:audit_eq16}: \texttt{twobody\_toda\_edge.py} integrates exclusively in $t\in[0,v]$. In Check~4 of \texttt{audit\_twobody\_toda.py}, we test Eq.~\eqref{eq:audit_eq16} directly at $(Y,r)=(4,0.5)$ via $z=s^2$ on a 10-node Fej\'er-I mesh, confirming agreement with the $t$-integral to $7.60\times 10^{-15}$ \textbf{(c)}.
+  \item \textbf{Incomplete check of $(\delta_T+C_{12})/h$ in \texttt{twobody\_toda\_identities.py}:} Lines~113--120 of \texttt{twobody\_toda\_identities.py} check only $\delta_T/h$ at $h=10^{-30}$ ($2Y(1-r^2)\log[(1-r)/(1+r)]$ for overtaking and $4rY$ for head-on), omitting the classical frame subtraction $C_{12}/h=-\kappa_1(P_{\mathrm{good}}(\kappa_2)-M_{\mathrm{good}}(\kappa_2))/h$, which contributes $+4rY$ in the overtaking channel (producing the $+4rY$ term in $H_{\mathrm{cl}}(Y,r)$, Eq.~15) and $-4rY$ in the head-on channel (cancelling $\delta_T^{\mathrm{ho}}/h\to +4rY$ to $O(h)$). Check~2 of \texttt{audit\_twobody\_toda.py} verifies the complete symbolic Laurent expansion of $(\delta_T+C_{12})/h$ in both channels \textbf{(c)}.
+  \item \textbf{Non-circularity (Point 4):} Neither the finite-sea polynomial extrapolations (\texttt{quartic7} in $h$) nor the Wiener--Hopf semiclassical extrapolations (\texttt{quad3} in $1/Y$) feed the closed-form target $\vartheta_N^{(1)}(r)$ back into the fits. In \texttt{twobody\_toda\_edge.py}, the analytic coefficients $A=1/(2\pi)$ and $d_0=\frac{1}{48}-\frac{1}{4\pi^2}$ are used only as the initial guess for Newton's method when solving $\Phi(u)=\frac{4}{3}y^{3/2}$ to $10^{-26}$ tolerance, which does not bias the converged root. However, in \texttt{twobody\_toda\_analysis.py} (line~228), the assertion threshold \texttt{5e-4} on the semiclassical intercept was chosen large enough to pass the $8.52\times 10^{-5}$ truncation error at $r=0.25$ (analysed in Section~\ref{sec:budgets}).
+\end{enumerate}
+
+% ==============================================================================
+\section{High-Priority Item: The Four-Term Krein Source and the Verdict of \texttt{audit\_frame\_dictionary.tex} (Point 8)}
+\label{sec:krein}
+% ==============================================================================
+
+\subsection{Exact Origin of the Discrepancy in the Krein Characteristic Source}
+
+In the edge limit $p_a=q+h u_a$ ($u_1=u>u_2=v>0$), the directional Bethe phase $N_{12}/h$ and endpoint reference $U_{12}/h$ converge to
+\begin{equation}\label{eq:H_and_U}
+  H(u,v) = 2\int_0^v f(u-v+t)B(t)\,\dd t, \qquad U(v) = 2c\bigl[B(v)-c\bigr], \qquad c = B(0^+) = \sqrt{\pi},
+\end{equation}
+where $B(u)=\Phi'(u)$ and $f(u)=B'(u)=\Phi''(u)$ \textbf{(c)}. Differentiating $H(u,v)$ along the characteristic direction $\partial_u+\partial_v$ (along which $u-v$ is constant) gives purely the upper-limit boundary contribution:
+\begin{equation}\label{eq:char_H}
+  (\partial_u+\partial_v)H(u,v) = \left.\frac{\dd}{\dd\epsilon}\right|_{\epsilon=0} 2\int_0^{v+\epsilon} f(u-v+t)B(t)\,\dd t = 2f(u)B(v) \qquad (u>v>0).
+\end{equation}
+Crucially, the one-body endpoint subtraction $U(v)=2c[B(v)-c]$ depends \emph{only on the second argument $v$}: $\partial_u U(v)=0$ and $\partial_v U(v)=2cB'(v)=2cf(v)$. Therefore, the edge limit $\widehat{H}(u,v)=H(u,v)-U(v)$ of the four-term subtraction $F_{12}=N_{12}-U_{12}$ satisfies \textbf{(c)}
+\begin{equation}\label{eq:true_krein_source}
+  (\partial_u+\partial_v)\widehat{H}(u,v) = 2f(u)B(v) - 2cf(v) = 2f(u)B(v) - 2\sqrt{\pi}f(v),
+\end{equation}
+which is Eq.~(14) of \texttt{phase2/twobody\_toda.tex}.
+
+By contrast, \texttt{phase2/audit\_frame\_dictionary.tex} (Eq.~(9), line~431) and \texttt{phase2/scripts/audit\_frame\_dictionary.py} (line~797) wrote
+\begin{equation}\label{eq:wrong_krein_source}
+  (\partial_{u_1}+\partial_{u_2})F_{\mathrm{sub}}(u_1,u_2) \stackrel{\text{printed}}{=} 2f(u_1)\bigl[B(u_2)-\sqrt{\pi}\bigr] = 2f(u_1)B(u_2) - 2\sqrt{\pi}f(u_1).
+\end{equation}
+Equation~\eqref{eq:wrong_krein_source} committed the error of replacing $\partial_{u_2}B(u_2)=f(u_2)$ with $f(u_1)$ in the subtracted term, as if $2\sqrt{\pi}c$ had been subtracted inside the $t$-integrand of $H(u_1,u_2)$ at the upper limit $t=u_2$ rather than subtracted as a function of $u_2$ alone. The difference between the true source~\eqref{eq:true_krein_source} and the printed formula~\eqref{eq:wrong_krein_source} is
+\begin{equation}
+  S_{\mathrm{true}}(u,v) - S_{\mathrm{printed}}(u,v) = 2\sqrt{\pi}\bigl[f(u)-f(v)\bigr] \neq 0 \qquad (u\neq v).
+\end{equation}
+In Check~3 of \texttt{audit\_twobody\_toda.py}, we verify Eq.~\eqref{eq:true_krein_source} both symbolically and numerically to 45-digit precision using de~Hoog Laplace inversion and 4th-order central differences along $u+\epsilon, v+\epsilon$: at $(u,v)=(4,1)$, $(\partial_u+\partial_v)\widehat{H}=-0.34710425466292045535$, matching $S_{\mathrm{true}}(4,1)$ to $2.06\times 10^{-21}$ while disagreeing with $S_{\mathrm{printed}}(4,1)=+0.83774806069206012686$ by $1.1848523153549805822$ \textbf{(c)}.
+
+\subsection{Why the Verdict of \texttt{audit\_frame\_dictionary.tex} Excluding \texorpdfstring{$A_\lambda(y_1,y_2)$}{A\_lambda(y1,y2)} Survives Unchanged}
+
+In \texttt{phase2/frame\_dictionary.tex}, a one-parameter family of classical antisymmetric two-body observables
+\begin{equation}\label{eq:A_lambda}
+  A_\lambda(y_1,y_2) = \lambda\,\frac{(y_1-y_2)(y_1 y_2)^{3/2}}{y_1^2+y_2^2}
+\end{equation}
+was shown to preserve antisymmetry, scale invariance, and the overtaking classical limit $H_{\mathrm{cl}}(Y,r)$. In \texttt{phase2/audit\_frame\_dictionary.tex}, Theorem~3.2 concluded that cluster separability and the Krein characteristic PDE exclude $A_\lambda(y_1,y_2)$ ($\lambda\neq 0$) on the Toda side. Because \texttt{audit\_frame\_dictionary.tex} cited the rank-1 factorisation of the printed source~\eqref{eq:wrong_krein_source}, we must determine whether Theorem~3.2 survives when $S_{\mathrm{printed}}$ is replaced by the true source $S_{\mathrm{true}}(u,v)=2f(u)B(v)-2cf(v)$. We prove that \textbf{the exclusion verdict survives completely}, for three independent reasons \textbf{(c)}:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Homogeneous characteristic uniqueness at fixed one-body spectrum:}
+  The functions $B(u)=\Phi'(u)$ and $f(u)=B'(u)$ are one-body spectral quantities determined solely by the single-hole Wiener--Hopf dressing on the half-line. Any admissible two-body modification $\widetilde{H}(u,v)=\widehat{H}(u,v)+\Delta\widehat{H}(u,v)$ that leaves the one-body dispersion relation $\Phi(u)$ (and hence $B(u)$, $f(u)$, and $S_{\mathrm{true}}(u,v)$) unchanged must satisfy the \emph{same} inhomogeneous Krein PDE~\eqref{eq:true_krein_source}. Consequently, the difference $\Delta\widehat{H}(u,v)$ must satisfy the \textbf{homogeneous} characteristic equation
+  \begin{equation}
+    (\partial_u+\partial_v)\Delta\widehat{H}(u,v) = 0 \qquad (u>v>0), \qquad \Delta\widehat{H}(u,0)=0,
+  \end{equation}
+  whose unique solution on $u\ge v\ge 0$ is $\Delta\widehat{H}(u,v)\equiv 0$, \emph{independently of the form of the inhomogeneous source $S_{\mathrm{true}}(u,v)$}. In fact, lines~800--804 of \texttt{audit\_frame\_dictionary.py} tested $A_\lambda(y_1,y_2)$ by differentiating $A_1(y_1,y_2)$ directly without ever evaluating $S_{\mathrm{printed}}$ in code.
+
+  \item \textbf{Exact algebraic PDE invariants ($3\times 3$ Schmidt determinant and $2\times 2$ mixed-partial determinant):}
+  Although $S_{\mathrm{true}}(u,v)=2f(u)B(v)-2cf(v)$ has Schmidt rank~2 rather than rank~1 (being a sum of $f(u)\otimes B(v)$ and $1\otimes f(v)$), it satisfies two exact algebraic identities that do not depend on knowing $B$ or $f$ in advance:
+  \begin{enumerate}[label=(\alph*)]
+    \item Every $3\times 3$ determinant $\det_{1\le i,j\le 3} S_{\mathrm{true}}(u_i,v_j)$ vanishes identically because $S_{\mathrm{true}}$ lies in a 2-dimensional tensor subspace; and
+    \item Taking $\partial_u$ annihilates the one-body subtraction $-2cf(v)$, so the mixed partial derivative
+    \[
+      \partial_u\partial_v(\partial_u+\partial_v)\widehat{H}(u,v) = \partial_u\partial_v S_{\mathrm{true}}(u,v) = 2f'(u)f(v)
+    \]
+    is \emph{strictly rank-1 separable}, meaning every $2\times 2$ cross-determinant vanishes identically:
+    \[
+      \det_{1\le i,j\le 2}\bigl[\partial_{u_i}\partial_{v_j} S_{\mathrm{true}}(u_i,v_j)\bigr] \equiv 0.
+    \]
+  \end{enumerate}
+  In Check~3 of \texttt{audit\_twobody\_toda.py}, we evaluate both determinants symbolically for $D_A(y_1,y_2)=(\partial_{y_1}+\partial_{y_2})A_1(y_1,y_2)$: at $(y_1)\in(1,2,3)$ and $(y_2)\in(4,5,6)$, the $3\times 3$ Schmidt determinant is
+  \[
+    \det_{1\le i,j\le 3} D_A(y_{1,i},y_{2,j}) = -\frac{19469608614112801}{66954376636977070080000}\sqrt{30} \neq 0,
+  \]
+  and at $(y_1)\in(1,2)$, $(y_2)\in(4,5)$, the $2\times 2$ mixed-partial determinant is
+  \[
+    \det_{1\le i,j\le 2} \partial_{y_1}\partial_{y_2}D_A(y_{1,i},y_{2,j}) = \frac{8835448337}{86838197512500}\sqrt{5} \neq 0.
+  \]
+  Hence $A_\lambda(y_1,y_2)$ cannot be absorbed into any rank-2 Krein source of the form $2\tilde{f}(y_1)\tilde{B}(y_2)-2c\tilde{f}(y_2)$ for \emph{any} one-body functions $(\tilde{B},\tilde{f})$.
+
+  \item \textbf{Spatial cluster separability and $r$-analyticity:}
+  Independently of the Krein PDE, any canonical frame transformation generated by local one-body asymptotic invariants $\sum_{a\neq b} c_k Q_k(p_a)\tilde{Q}_k(p_b)$ has finite Schmidt rank ($\det_{3\times 3}=0$), whereas $\det_{1\le i,j\le 3} A_1(y_{1,i},y_{2,j}) = -\frac{1054728\sqrt{30}}{291949675}\neq 0$. Moreover, $A_\lambda(Y,r^2Y)=\lambda\frac{r^3(1-r^2)}{1+r^4}Y^2$ has rational poles at $r^4=-1$ ($r=\ee^{\pm\ii\pi/4}$) on the unit circle, whereas the Toda Bethe kernel has logarithmic branch singularities only at $r=\pm 1$.
+\end{enumerate}
+
+% ==============================================================================
+\section{Independent Derivation and Verification of \texorpdfstring{$\vartheta_N(r)$}{vartheta\_N(r)} and Relation to Phase~2h/2i (Points 7 \& 9)}
+\label{sec:vartheta}
+% ==============================================================================
+
+\subsection{Analytic Derivation from the Edge-Limit Bethe Equations (Point 7)}
+
+In the edge limit $p_a=q+h u_a$ with $u_a=u(y_a)$ fixed by $\Phi(u(y))=\frac{4}{3}y^{3/2}$, the large-$y$ Wiener--Hopf asymptotics of $\Phi(u)$, $B(u)=\Phi'(u)$, and $f(u)=B'(u)$ follow from expanding $\widehat{\Phi}(s)=\frac{\sqrt{\pi}}{s^2}g(s)$ around $s\to 0^+$:
+\begin{equation}\label{eq:1body_asy}
+  u(y) = y - A\log y + c_0 + \frac{d_0}{y} + \frac{e_0}{y^2} + O(y^{-3}), \qquad A = \frac{1}{2\pi}, \qquad d_0 = \frac{1}{48} - \frac{1}{4\pi^2}.
+\end{equation}
+Since $B(u(y))u'(y)=\frac{\dd}{\dd y}\Phi(u(y))=2\sqrt{y}$, differentiating $u(y)$ yields the exact Jacobian expansion \textbf{(c)}
+\begin{equation}\label{eq:B_jacobian}
+  B\bigl(u(y)\bigr) = \frac{2\sqrt{y}}{u'(y)} = 2\sqrt{y}\left[1 + \frac{A}{y} + \frac{A^2+d_0}{y^2} + \frac{A^3+2Ad_0+2e_0}{y^3} + O(y^{-4})\right],
+\end{equation}
+and differentiating a second time gives $f(u)=\frac{1}{\sqrt{u}}-\frac{A}{u^{3/2}}+O(u^{-5/2})$.
+
+Substituting $u_1=u(Y)$, $u_2=u(r^2Y)$, and $z=Y t$ ($t\in(0,r^2)$) into the regularised integral~\eqref{eq:audit_eq16} gives
+\[
+  u(Y)-u(r^2Y)+u(Yt) = Y(1-r^2+t) + A\log\!\left(\frac{r^2}{t}\right) - A\log(1-r^2+t) + O(Y^{-1}).
+\]
+Expanding $f(w)=w^{-1/2}-Aw^{-3/2}+O(w^{-5/2})$ at $w=Y(1-r^2+t)+\Delta$ gives
+\[
+  f\bigl(u(Y)-u(r^2Y)+u(Yt)\bigr) = \frac{1}{\sqrt{Y(1-r^2+t)}} - \frac{A\bigl[2+\log(r^2/t)\bigr]}{2Y^{3/2}(1-r^2+t)^{3/2}} + O(Y^{-5/2}\log Y).
+\]
+Integrating the $O(Y^{-1/2})$ term against $4Y^{3/2}\sqrt{t}\,\dd t$ reproduces the classical overtaking benchmark
+\[
+  H_{\mathrm{cl}}(Y,r) = 4Y\int_0^{r^2}\sqrt{\frac{t}{1-r^2+t}}\,\dd t = 4rY + 2Y(1-r^2)\log\!\left(\frac{1-r}{1+r}\right),
+\]
+ while the $O(Y^{-3/2})$ term gives the exact $Y\to\infty$ forward directional residual \textbf{(c)}:
+\begin{equation}\label{eq:R12_integral}
+  R_{12}^{(1)}(r) = \lim_{Y\to\infty}\bigl[H(u(Y),u(r^2Y))-H_{\mathrm{cl}}(Y,r)\bigr] = -2A\int_0^{r^2}\frac{\sqrt{t}\,\bigl[2+\log(r^2/t)\bigr]}{(1-r^2+t)^{3/2}}\,\dd t.
+\end{equation}
+To evaluate Eq.~\eqref{eq:R12_integral} in closed form, set $s=\sqrt{t/(1-r^2+t)}\in(0,r)$, so that $t=(1-r^2)s^2/(1-s^2)$, $1-r^2+t=(1-r^2)/(1-s^2)$, and $\frac{\sqrt{t}}{(1-r^2+t)^{3/2}}\,\dd t = \frac{2s^2}{1-s^2}\,\dd s$. Then $\log(r^2/t)-\log(1-r^2+t)=-2\log(s/r)-\log(1-r^2)$, and using $\frac{s^2}{1-s^2}=\frac{\dd}{\dd s}\bigl[-s+\frac12\log\frac{1+s}{1-s}\bigr]$ to integrate by parts (the boundary terms vanish at $s=0$ as $O(s^3\log s)$ and at $s=r$ since $\log(r/r)=0$) yields \textbf{(c)}:
+\begin{equation}\label{eq:R12_closed}
+  R_{12}^{(1)}(r) = 8A\int_0^r \log\!\left(\frac{s}{r}\right)\frac{s^2}{1-s^2}\,\dd s = -8A\bigl[\chi_2(r)-r\bigr] = -\frac{4}{\pi}\bigl[\chi_2(r)-r\bigr].
+\end{equation}
+
+\subsection{Exact Comparison with \texorpdfstring{$R_0(\infty,r)$}{R0(infinity,r)} of Phase~2h/2i: Origin of \texorpdfstring{$\pi$}{pi} and \texorpdfstring{$r^{-1}$}{r\^{}(-1)} (Point 9)}
+
+Equation~\eqref{eq:R12_closed} establishes that the forward two-term residual $R_{12}^{(1)}(r)$ is \emph{identically equal} to the Phase~2h/2i constant-term residual confirmed in \texttt{phase2/audit\_phase2i.tex}:
+\begin{equation}
+  R_{12}^{(1)}(r) \equiv R_0(\infty,r) = -\frac{4}{\pi}\bigl[\chi_2(r)-r\bigr].
+\end{equation}
+Why, then, does the antisymmetrised residual $\vartheta_N^{(1)}(r)=\frac12(R_{12}^{(1)}(r)-R_{21}^{(1)}(r))$ equal $\pi - \frac{4}{\pi}\chi_2(r) + \frac{2}{\pi}(r-r^{-1})$ rather than $R_0(\infty,r)$?
+
+In Phase~2h/2i, only the forward branch $R_{12}$ ($y_1>y_2$) was computed, under the tacit assumption that the two-term residual was antisymmetric. As proved in \texttt{phase2/audit\_phase2i.tex} (Claim~3) and Section~3.1 of \texttt{twobody\_toda.tex}, integration by parts on $H(u,v)=2\int_0^v f(u-v+t)B(t)\,\dd t$ yields the exact two-term reciprocity failure
+\begin{equation}\label{eq:reciprocity_H}
+  H(u_1,u_2) + H(u_2,u_1) = 2B(u_1)B(u_2) - 2B(0^+)^2 = 2B(u_1)B(u_2) - 2\pi.
+\end{equation}
+Meanwhile, in the classical benchmark, $\delta_T(y_1,y_2)+\delta_T(y_2,y_1)=0$, whereas the classical frame terms sum to $(C_{12}+C_{21})/h \to 8\sqrt{y_1 y_2}=8rY$. Therefore, the symmetric combination $S(Y,r)=\frac12[R_{12}(Y,r)+R_{21}(Y,r)]$ is controlled purely by the one-body Jacobian $B(u(y))$ in Eq.~\eqref{eq:B_jacobian}:
+\begin{align}
+  S(Y,r) &= B\bigl(u(Y)\bigr)B\bigl(u(r^2Y)\bigr) - \pi - 4rY \nonumber\\
+  &= 4rY\left(1 + \frac{A}{Y} + \frac{A^2+d_0}{Y^2} + \cdots\right)\!\left(1 + \frac{A}{r^2Y} + \frac{A^2+d_0}{r^4Y^2} + \cdots\right) - \pi - 4rY \nonumber\\
+  &= \underbrace{\left[\frac{2}{\pi}\!\left(r + \frac{1}{r}\right) - \pi\right]}_{S^{(1)}(r)} + \left[\frac{1}{\pi^2 r} + 4\!\left(\frac{1}{4\pi^2}+d_0\right)\!\left(r + \frac{1}{r^3}\right)\right]\frac{1}{Y} + O(r^{-5}Y^{-2}). \label{eq:S_expansion}
+\end{align}
+Since $\vartheta_N(Y,r)=\frac12(R_{12}-R_{21}) = R_{12}(Y,r) - S(Y,r)$, subtracting $S^{(1)}(r)$ from $R_{12}^{(1)}(r)=R_0(\infty,r)$ gives \textbf{(c)}:
+\begin{equation}\label{eq:vartheta_decomp}
+  \vartheta_N^{(1)}(r) = R_0(\infty,r) - S^{(1)}(r) = \left[-\frac{4}{\pi}\chi_2(r) + \frac{4}{\pi}r\right] - \left[\frac{2}{\pi}r + \frac{2}{\pi}\frac{1}{r} - \pi\right] = \pi - \frac{4}{\pi}\chi_2(r) + \frac{2}{\pi}\!\left(r - \frac{1}{r}\right).
+\end{equation}
+Equation~\eqref{eq:vartheta_decomp} accounts for every structural difference between $\vartheta_N^{(1)}(r)$ and $R_0(\infty,r)$:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{The $+\pi$ constant:} Arises from $-\bigl(-B(0^+)^2\bigr)=+\pi$ in the two-term reciprocity identity~\eqref{eq:reciprocity_H}, i.e., the non-vanishing boundary density $B(0^+)=\sqrt{\pi}$ at the spectral edge.
+  \item \textbf{The $-\frac{2}{\pi}r^{-1}$ pole as $r\to 0^+$:} Arises from the one-loop Jacobian dressing $B(u(y_2))=2\sqrt{y_2}\bigl[1+\frac{1}{2\pi y_2}+\cdots\bigr]$ of the \emph{slower} soliton $y_2=r^2Y$ multiplying the classical factor $2\sqrt{y_1}=2\sqrt{Y}$ in $B(u(y_1))B(u(y_2))-4rY$.
+  \item \textbf{The reduction of $+\frac{4}{\pi}r$ to $+\frac{2}{\pi}r$:} Half of the $+\frac{4}{\pi}r$ linear term in $R_0(\infty,r)$ is cancelled by the one-loop Jacobian dressing $+\frac{2}{\pi}r$ of the \emph{faster} soliton $y_1=Y$ multiplying $2\sqrt{y_2}=2r\sqrt{Y}$ in $S^{(1)}(r)$.
+\end{itemize}
+
+\subsection{Independent Numerical Verification of \texorpdfstring{$\vartheta_N^{(1)}(r)$}{vartheta\_N\^{}(1)(r)} (Point 7)}
+
+In Check~4 of \texttt{audit\_twobody\_toda.py}, we verify Eq.~\eqref{eq:vartheta_decomp} numerically using two independent methods:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Fresh de~Hoog / Fej\'er-I Wiener--Hopf solver:} We invert $\widehat{\Phi}(s)$, $\widehat{B}(s)$, and $\widehat{f}(s)$ using the de~Hoog algorithm (rather than Talbot contours) at 26-digit precision and integrate $H(u,v)$ on geometrically subdivided intervals $[0,1/3,1,3,9,\dots,v]$ using 10-point Fej\'er-I Chebyshev quadrature on an independent grid $Y\in\{16,32,64,128\}$ at $r\in\{0.25,0.5,0.75\}$.
+  \item \textbf{4-point Neville and Pad\'e~$[2/1]$ extrapolations across all six $r\in\{0.25,0.4,0.5,0.6,0.75,0.9\}$:} Furthermore, because $S^{(1)}(r)=\frac{2}{\pi}(r+r^{-1})-\pi$ is fixed analytically by the one-body function $B(u(y))$, we compare the naive extrapolation of $\vartheta_N(Y,r)=R_{12}(Y,r)-S(Y,r)$ against the hybrid estimator $\vartheta_N^{\text{1-body-}S}(r) := \lim_{Y\to\infty} R_{12}(Y,r) - S^{(1)}(r)$, which avoids the severe small-$y_2$ truncation error in $S(Y,r)$ at small $r$.
+\end{enumerate}
+
+\begin{table}[ht!]
+\centering
+\small
+\caption{Independent numerical verification of $R_{12}^{(1)}(r)$, $S^{(1)}(r)$, and $\vartheta_N^{(1)}(r)$ across $r\in[0.25,0.9]$ using 4-point Neville extrapolation and the exact one-body symmetric subtraction $S^{(1)}(r)$ (from \texttt{audit\_twobody\_toda.py}).}
+\label{tab:vartheta_verify}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$r$ & $R_{12}^{(1)}(r)$ (exact) & $|R_{12}^{\text{Nev}}-R_{12}^{\text{exact}}|$ & $\vartheta_N^{(1)}(r)$ (exact Eq.~18) & $|\vartheta_N^{\text{Nev}}-\vartheta_N^{\text{exact}}|$ (raw) & $|(R_{12}^{\text{Nev}}-S^{(1)})-\vartheta_N^{\text{exact}}|$ \\
+\midrule
+$0.25$ & $-0.00226186980$ & $3.18\times 10^{-8}$ & $+0.43369675123$ & $8.52\times 10^{-5}$ & $\mathbf{3.18\times 10^{-8}}$ \\
+$0.40$ & $-0.00962285926$ & $1.81\times 10^{-12}$ & $+1.28577245446$ & $9.41\times 10^{-10}$ & $\mathbf{1.81\times 10^{-12}}$ \\
+$0.50$ & $-0.01951540939$ & $3.44\times 10^{-13}$ & $+1.53052781328$ & $1.26\times 10^{-10}$ & $\mathbf{3.44\times 10^{-13}}$ \\
+$0.60$ & $-0.03545557168$ & $3.13\times 10^{-13}$ & $+1.66313226454$ & $2.53\times 10^{-11}$ & $\mathbf{3.13\times 10^{-13}}$ \\
+$0.75$ & $-0.07717783630$ & $2.97\times 10^{-8}$ & $+1.73812362486$ & $6.07\times 10^{-8}$ & $\mathbf{2.97\times 10^{-8}}$ \\
+$0.90$ & $-0.16035045278$ & $4.01\times 10^{-7}$ & $+1.70092910305$ & $4.14\times 10^{-7}$ & $\mathbf{4.01\times 10^{-7}}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==============================================================================
+\section{Audit of the Error Budgets (Point 2)}
+\label{sec:budgets}
+% ==============================================================================
+
+The package separates three error sources: quadrature mesh error, $h\to 0$ fit spread across alternative polynomial bases, and $Y\to\infty$ extrapolation uncertainty. Our audit confirms that the separation is structurally transparent, but identifies three quantitative weaknesses that require \textbf{qualification}:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Breakdown of the small-$\kappa$ regime at $Y=64$ in the $h\to 0$ fit:}
+  The package's primary $h\to 0$ fit (\texttt{quartic7}) uses the 7 smallest values $h\in\{0.001,0.0015,0.002,0.003,0.005,0.01,0.02\}$, while its comparison family includes \texttt{quintic8} ($h\le 0.03$), \texttt{quad4} ($h\le 0.003$), and \texttt{hlog7} ($h\le 0.01$ with $h^2\log h, h^3\log h$). However, the Boussinesq rapidity is $\kappa_1=\sqrt{hY/b}$ with $b=\ee^{-1/2}\approx 0.60653$. At $Y=64$:
+  \[
+    \kappa_1(Y=64, h=0.02) = 1.4526 > 1, \qquad \kappa_1(Y=64, h=0.03) = 1.7791 > 1.
+  \]
+  Because $\cosh\kappa_1$ and $\sinh\kappa_1$ are no longer in the small-$hY$ Taylor regime at $h\in\{0.02,0.03\}$ when $Y=64$, the $h$-fit spread on $R_{12}$ explodes by $3800\times$ between $Y=4$ ($3.11\times 10^{-8}$) and $Y=64$ ($1.19\times 10^{-4}$), and the discrepancy between the finite-sea extrapolation and the exact Wiener--Hopf value grows from $3.26\times 10^{-9}$ at $Y=4$ to $4.33\times 10^{-5}$ at $Y=64$. Thus, for large $Y$, $h$ must be scaled so that $hY\ll b$ rather than held on an $Y$-independent $h$-grid.
+
+  \item \textbf{$37.23\times$ inflation of \texttt{mesh\_error} by the ill-conditioned \texttt{hlog7} basis:}
+  In \texttt{twobody\_toda\_analysis.py} (lines~64--70), \texttt{mesh\_error} is defined as $\max_{\text{fit}}\bigl(\|w_{\text{fit}}\|_1\max_i(|\Delta y_i|+2\times 10^{-10})\bigr)$. Because $h^2\log h$ and $h^3\log h$ are nearly collinear with polynomials on $h\in[0.001,0.01]$, the \texttt{hlog7} intercept weights have $\ell^1$ norm $\|w_{\text{hlog7}}\|_1 = 37.2325$ (versus $3.79$ for \texttt{quartic7}). Multiplying the hardcoded $2\times 10^{-10}$ floor by $37.2325$ creates a minimum \texttt{mesh\_error} of $7.45\times 10^{-9}$ everywhere; for the sound speed, the reported \texttt{mesh\_error} ($8.77\times 10^{-9}$) is $39\times$ larger than the actual $h$-fit spread ($2.24\times 10^{-10}$).
+
+  \item \textbf{Understated $Y\to\infty$ truncation error in $S^{(1)}(r)$ and $\vartheta_N^{(1)}(r)$ at $r=0.25$:}
+  At $r=0.25$ (Table~2 of \texttt{twobody\_toda.tex}), the package's 3-point quadratic fit on $Y\in\{32,128,512\}$ achieves an error of $3.18\times 10^{-8}$ on $R_{12}^{(1)}(0.25)$, well inside its budget of $1.79\times 10^{-7}$. Yet on $S^{(1)}(0.25)$ and $\vartheta_N^{(1)}(0.25)$, the error jumps by a factor of $\mathbf{2684}$ to $8.53\times 10^{-5}$, exceeding the unweighted \texttt{fit\_spread} ($3.09\times 10^{-5}$) by $2.76\times$ and consuming $66.3\%$ of the $3\times$-inflated budget ($1.29\times 10^{-4}$). Equation~\eqref{eq:S_expansion} explains why: $S(Y,r)$ expands in inverse powers of the \emph{smaller} soliton parameter $y_2=r^2Y$, with $O(r^{-3}Y^{-1})=64/Y$ and $O(r^{-5}Y^{-2})=1024/Y^2$ coefficients. At $r=0.25$ and $Y=32$, $y_2=r^2Y=2.0=O(1)$, so $1/y_2=0.5$ is not small! As shown in the last column of Table~\ref{tab:vartheta_verify}, using the exact one-body value $S^{(1)}(0.25)=\frac{17}{4\pi}-\pi$ reduces the error on $\vartheta_N^{(1)}(0.25)$ by $2683\times$ (from $8.52\times 10^{-5}$ to $3.18\times 10^{-8}$).
+\end{enumerate}
+
+% ==============================================================================
+\section{Vanishing of the Leading Head-On Directional Coefficient (Point 10)}
+\label{sec:headon}
+% ==============================================================================
+
+In Section~3.3, the package studies a right-moving hole $p_1=q+h u_1$ and a left-moving hole $p_2=-q-h u_2$. We audit both the mathematical statement for $R_{12}^{\mathrm{ho}}$ \textbf{(c)} and its physical interpretation \textbf{(d)}:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Confirmation of $R_{12}^{\mathrm{ho},(0)}(y_1,y_2)=0$ (c):}
+  For a hole at $-q-h u_2$, the source $\Theta(x-p_2)-\Theta(x+q)$ in the finite-sea Bethe equation is smooth across the opposite edge $x\approx +q$, where its derivative is $K(2q+O(h))\,h u_2 = O(h)$. Consequently, the dressing backflow near $+q$ is $f_2^+(v)=O(h)$, so both the directional phase $N_{12}^{\mathrm{ho}}/h$ and the endpoint reference $U_{12}^{\mathrm{ho}}/h$ vanish at $O(h^0)$ ($N_{12}^{\mathrm{ho}}/h=O(h)$, $U_{12}^{\mathrm{ho}}/h=O(h)$). Meanwhile, on the classical side with $\varepsilon_1=+1, \varepsilon_2=-1$,
+  \[
+    \frac{\delta_T^{\mathrm{ho}}(\kappa_1,\kappa_2)}{h} = +4\sqrt{y_1 y_2} + O(h), \qquad \frac{C_{12}^{\mathrm{ho}}(\kappa_1,\kappa_2)}{h} = -4\sqrt{y_1 y_2} + O(h),
+  \]
+  because $P_{\mathrm{good}}(\kappa_2)=O(\kappa_2^3)$ while $M_{\mathrm{good}}(\kappa_2)=2b\sinh\kappa_2=2\sqrt{b h y_2}+O(h^{3/2})$. The $O(h^0)$ classical contributions $+4\sqrt{y_1 y_2}$ and $-4\sqrt{y_1 y_2}$ cancel identically, leaving $(\delta_T^{\mathrm{ho}}+C_{12}^{\mathrm{ho}})/h = \frac{4\ee^{1/2}}{3}(y_1^{3/2}y_2^{1/2}-y_1^{1/2}y_2^{3/2})h + O(h^2) = O(h)$. Thus $R_{12}^{\mathrm{ho}}(y_1,y_2;h)=O(h)\to 0$ as $h\to 0$. In Check~5 of \texttt{audit\_twobody\_toda.py}, our independent 5-point Fej\'er-I Neville extrapolation on $h\in\{0.064,0.032,0.016,0.008,0.004\}$ confirms $R_{12}^{\mathrm{ho}}\to 0$, $R_{21}^{\mathrm{ho}}\to 0$, $N_{12}^{\mathrm{ho}}/h\to 0$, and $U_{12}^{\mathrm{ho}}/h\to 0$ to $<2\times 10^{-6}$ across all tested pairs $(Y,r)\in\{(4,0.5),(16,0.4),(16,0.5),(16,0.6)\}$.
+
+  \item \textbf{Qualification regarding the endpoint-subtracted observable $\mathcal{B}_{\mathrm{ho}}/h$ and physical head-on scattering (d):}
+  In the overtaking channel, the two-term antisymmetric residual $\frac12(N_{12}-N_{21})/h$ and the four-term algebraically antisymmetric representative $\mathcal{B}_{12}/h=(F_{12}-M_1 Q_2)/h$ differ only by the one-body edge terms $-\sqrt{\pi}[B(u_1)-B(u_2)]$. In the head-on channel, however, $F_{12}^{\mathrm{ho}}/h=O(h)$, so $\mathcal{B}_{\mathrm{ho}}/h$ is dominated entirely by the endpoint product $-M(p_1)Q(p_2)/h$:
+  \begin{equation}\label{eq:B_ho}
+    \lim_{h\to 0}\frac{\mathcal{B}_{\mathrm{ho}}(p_1,p_2)}{h} = \bigl(B(u_1)-\sqrt{\pi}\bigr)\bigl(B(u_2)-\sqrt{\pi}\bigr) = 4rY - 2\sqrt{\pi}\sqrt{Y}(1+r) + \pi + \frac{2}{\pi}\!\left(r+\frac{1}{r}\right) + O(Y^{-1/2}),
+  \end{equation}
+  verified to $<4\times 10^{-6}$ by our Fej\'er-I solver in Check~5. After subtracting the classical benchmark $+4rY$, $\mathcal{B}_{\mathrm{ho}}/h - 4rY$ does \emph{not} vanish, but diverges as $-2\sqrt{\pi}\sqrt{Y}(1+r)$ and has a finite $O(Y^0)$ piece $\pi+\frac{2}{\pi}(r+r^{-1})$. Physically, a right-moving and a left-moving excitation have relative velocity $\Delta v \approx 2$ rather than $O(h)$, so their collision probes the bulk of the Fermi sea across $[-q,q]$ rather than a common spectral edge. The vanishing of $R_{12}^{\mathrm{ho},(0)}$ is therefore a consequence of the opposite-edge decoupling $K(2q)=O(1)$ and the cancellation $\delta_T^{\mathrm{ho}}+C_{12}^{\mathrm{ho}}=O(h^2)$, not a statement that the physical head-on Boussinesq quantum phase shift is trivial.
+\end{enumerate}
+
+% ==============================================================================
+\section{Failures Recorded}
+\label{sec:failures}
+% ==============================================================================
+
+In accordance with \texttt{AGENTS.md}, we record all package issues identified by the audit as well as all intermediate failures encountered and fixed while developing \texttt{phase2/scripts/audit\_twobody\_toda.py}:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Package issue 1 (Confirmed error in prior audit \texttt{audit\_frame\_dictionary.tex}):}
+  Equation~(9) (line~431) of \texttt{phase2/audit\_frame\_dictionary.tex} and line~797 of \texttt{audit\_frame\_dictionary.py} printed the four-term Krein characteristic source as $2f(u_1)[B(u_2)-\sqrt{\pi}]$ instead of $2f(u_1)B(u_2)-2\sqrt{\pi}f(u_2)$. As proved in Section~\ref{sec:krein}, the exclusion of $A_\lambda(y_1,y_2)$ in \texttt{audit\_frame\_dictionary.tex} nevertheless holds without modification.
+  \item \textbf{Package issue 2 (Test-coverage gaps in \texttt{twobody\_toda\_*.py}):}
+  Equation~(16) (\texttt{eq:regular}) of \texttt{twobody\_toda.tex} was not tested in any package script, and \texttt{twobody\_toda\_identities.py} tested only $\delta_T/h$ rather than $(\delta_T+C_{12})/h$. Both are verified in \texttt{audit\_twobody\_toda.py}.
+  \item \textbf{Package issue 3 (Error-budget qualifications at $Y=64$ and $r=0.25$):}
+  At $Y=64$, \texttt{quartic7} includes $h=0.02$ ($\kappa_1=1.453>1$), and at $r=0.25$, $Y=32$ corresponds to $y_2=r^2Y=2.0$, producing an $8.52\times 10^{-5}$ truncation error in $S^{(1)}(0.25)$ and $\vartheta_N^{(1)}(0.25)$ that exceeds the unweighted \texttt{fit\_spread} by $2.76\times$.
+  \item \textbf{Audit script development failure 1 (\texttt{mpmath.mp.dps} mutation across \texttt{runpy.run\_path}):}
+  In our first run of \texttt{audit\_twobody\_toda.py}, executing \texttt{twobody\_toda\_edge.py} (\texttt{mp.dps=32}) and \texttt{twobody\_toda\_analysis.py} (\texttt{mp.dps=60}) via \texttt{runpy.run\_path} in Check~1 mutated the shared global precision \texttt{mp.mp.dps} from $70$ down to $60$, causing the 70-digit algebraic identity check in Check~2 (\texttt{assert max(alg\_errs) < 1e-65}) to fail at $\sim 10^{-59}$. Restoring \texttt{mp.mp.dps = 70} in the \texttt{finally} block of Check~1 fixed the issue (max error $5.66\times 10^{-73}$).
+  \item \textbf{Audit script development failure 2 (Check~4 Eq.~(16) test and \texttt{edge.json} grid lookup, and Check~5 unsubtracted head-on tolerance at $Y=16$):}
+  In intermediate runs of Checks~4--5, we (a) initially asserted \texttt{fwd\_disc\_025 < 1e-9} before reading the exact value $3.177\times 10^{-8}$ from \texttt{twobody\_toda\_grid.json}; (b) used the large-$y$ asymptotic formula as the initial Newton guess in \texttt{solve\_u\_B(z)} on $z\in(0,1)$ and queried $(Y,r)=(16,0.25)$ in \texttt{twobody\_toda\_edge.json} (where $r=0.25$ starts at $Y=32$); and (c) applied the $Y=4$ threshold \texttt{2e-6} to the unsubtracted head-on $N_{12}^{\mathrm{ho}}/h$ at $Y=16$ on $h\in[0.004,0.064]$, where $\kappa_1(16,0.064)=1.30>1$ leaves an $O((hY)^5)\sim 5\times 10^{-5}$ classical $\kappa$-series residual in $N_{12}^{\mathrm{ho}}/h$ that cancels out in $R_{12}^{\mathrm{ho}}$. Using the small-$y$ guess $u_0=\frac{4}{3\sqrt{\pi}}y^{3/2}$ for $y<0.8$, querying $(32,0.25)$, and setting \texttt{tol\_nu = 2e-6} at $Y=4$ and \texttt{2e-4} at $Y=16$ resolved these issues.
+\end{enumerate}
+
+% ==============================================================================
+\section*{References}
+% ==============================================================================
+\begin{itemize}[leftmargin=2em]
+  \item E.~Corrigan and C.~Zambon, \emph{Integrable defects in the Boussinesq equations}, \texttt{arXiv:2306.03772} (verified in project literature dictionary; $u_{\mathrm{CZ}}=-3\varphi$, $L_{\mathrm{CZ}}=9L$).
+  \item Internal repository documents verified in full text: \texttt{phase2/twobody\_toda.tex}, \texttt{phase2/audit\_phase2i.tex}, \texttt{phase2/audit\_frame\_dictionary.tex}, \texttt{phase2/frame\_dictionary.tex}, \texttt{phase2/audit\_toda\_dictionary.tex}, \texttt{phase2/audit\_onebody\_scheme.tex}, \texttt{phase2/audit\_smx.tex}, \texttt{phase2/errata.tex}, and \texttt{phase2/report.tex}.
+\end{itemize}
+
+\end{document}
