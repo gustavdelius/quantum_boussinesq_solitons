@@ -1,0 +1,829 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\emergencystretch=2em
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\hb}{\hbar}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\script}[1]{\texttt{phase2/\allowbreak scripts/\allowbreak #1}}
+\newcommand{\sclass}{\texttt{phase2/\allowbreak scripts/\allowbreak defq\_\allowbreak classical\_\allowbreak charges.py}}
+\newcommand{\sren}{\texttt{phase2/\allowbreak scripts/\allowbreak defq\_\allowbreak oneloop\_\allowbreak renorm.py}}
+\newcommand{\sfus}{\texttt{phase2/\allowbreak scripts/\allowbreak defq\_\allowbreak absorption\_\allowbreak fusion.py}}
+
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{\textbf{Boundary Charges, One-Loop Renormalisation,\\
+and Obstructions to Quantum Defect Fusion\\
+for the Corrigan--Zambon Boussinesq Defect}}
+\author{Project \emph{quantum\_boussinesq\_solitons} (Route E, next step \#3) --- PI: Gustav Delius}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We carry out ranked next step~\#3 of the revised Phase~2 master report
+(\texttt{phase2/\allowbreak report.pdf}): deriving the localised classical and one-loop
+boundary charges and renormalisation structure of the Corrigan--Zambon (CZ)
+type-I integrable defect \cite{CZ} for the good Boussinesq equation before
+making any physical claim of quantum defect fusion. Every nontrivial claim is
+labelled \La\ (literature), \Lb\ (literature heuristic), \Lc\ (derived and
+verified in this project), or \Ld\ (guess/open physical identification).
+
+Our main results \Lc\ are:
+\begin{enumerate}
+\item \textbf{Classical localised defect charges and exact conservation laws (\sclass).}
+Starting from the total action in fixed project conventions ($u_{\mathrm{CZ}}=-3\varphi$,
+$\mathcal{L}_{\mathrm{CZ}}=9\mathcal{L}$), we derive the four nonlinear sewing
+conditions and the exact localised defect energy $E_D$, modified momentum $P_D$,
+$\varphi$-shift charge $\Pi_D$, and topological mass jump $M_D = \varphi_R(0^+)-\varphi_L(0^-)$.
+We prove symbolically that $\frac{\dd}{\dd t}(E_{\mathrm{bulk}}+E_D)=0$,
+$\frac{\dd}{\dd t}(P_{\mathrm{bulk}}+P_D)=0$,
+$\frac{\dd}{\dd t}(\Pi_{\mathrm{bulk}}+\Pi_D)=0$, and
+$\frac{\dd}{\dd t}(M_{\mathrm{bulk}}+M_D)=0$ hold off-shell on the sewing
+manifold, that the vacuum jumps across any KP triple edge $S_i=\{q_i,q_{i+1}\}$
+factorise modulo $q_i^2+q_i q_{i+1}+q_{i+1}^2=\frac{1}{4}$ into
+$\Delta(E_D,P_D,\Pi_D,M_D)_{q_i\to q_{i+1}} = \rho_i(E,P,\Pi,M)_{S_i}$ with
+$\rho_i = \eta\sgn(q_i-q_{i+1})$, and we verify time-independent total charges
+to $10^{-50}$ on exact transmitting and absorbing soliton--defect solutions.
+\item \textbf{Corrected sewing determinant, admissible growing-mode branch switch, and exact spectral trace of $P_{D,2}$ (\sren).}
+Incorporating the independent audit (\texttt{audit\_frames\_defects.pdf}), we
+verify symbolically that the reduced $4\times 4$ linearised sewing determinant
+carries the prefactor $-\frac{2}{3}$ (sixteen times the Phase~2g prefactor
+$-\frac{1}{24}$) and that its continuum-threshold values factorise as
+$P_-(1;s)=\frac{1}{2}(s+1)(s-\sqrt{3})$ and
+$P_+(1;s)=\frac{1}{2}(s-1)(s-\sqrt{3})$ ($s=\eta\sigma_{\mathrm{vac}}$). This
+proves an exact admissible-branch switch ($S=\kappa_1+\kappa_2>1$) at
+$s=+\sqrt{3}$, where $S_{-,+}(s)$ exits the physical sheet and $S_{+,-}(s)$
+enters from $P_+$, before coalescing with $S_{+,+}(s)$ at $s=2$. On the
+reflectionless continuum phonon basis, we prove the \textbf{exact pointwise
+identity}
+\[
+  \langle P_{D,2}\rangle_q + \langle P_{D,2}\rangle_{-q}
+  \equiv \frac{q}{4\pi}\Big(\theta_D'(q;s,\eta) - \theta_D'(-q;s,\eta)\Big),
+\]
+resolving the open question in \texttt{audit\_charges\_action.pdf} by showing
+directly from the quadratic boundary operator $P_{D,2}$ that
+$\int_{-\infty}^\infty \dd q\,\langle P_{D,2}\rangle_q = \Delta P_D(q_D,\eta)$.
+Similarly, Euler's theorem on the quadratic sewing Lagrangian $D_2 = a_t F_1 + b_t G_1 - E_{D,2}$
+proves that $\langle E_{D,2}+J_{\mathrm{bulk},2}\rangle_q = \langle a_t F_1+b_t G_1\rangle_q$
+and $-\big(\langle a_t F_1+b_t G_1\rangle_q+\langle a_t F_1+b_t G_1\rangle_{-q}\big) = \frac{\omega(q)}{4\pi}\big(\theta_D'(q)+\theta_D'(-q)\big)$.
+\item \textbf{Boundary UV renormalisation and three sharp obstructions to physical quantum defect fusion (\sfus).}
+With equal-mode-count cutoff $\Lambda$ in the asymptotic phase gauge
+$\theta_D(\pm\infty)=0$, the Casimir energy $E_D^{\mathrm{mode}}(\Lambda)=E_D^{\mathrm{dens}}(\Lambda)-B_D(\Lambda)$
+diverges linearly as $\frac{S_D}{\pi}(\sqrt{1+\Lambda^2}-1)+\Delta E_D^{\mathrm{ren}}+O(\Lambda^{-1})$
+with $S_D = -\frac{\eta\sqrt{3}\sigma_{\mathrm{vac}}}{2} = 3\eta q_D$. Because
+the bulk normal-ordering counterterm $\propto \int_{x\ne 0}\varphi_x\,\dd x$
+vanishes on constant defect vacua, cancelling the defect UV divergence requires
+either a distributional boundary tadpole counterterm $\propto (\varphi_R(0^+)-\varphi_L(0^-))$
+or a boundary renormalisation of the defect parameters $(s,\rho_0,\tau_0,h_0)$.
+Across KP triples we establish three obstructions to physical $O(\hb^0)$
+triangle fusion:
+\begin{itemize}
+\item[(i)] \emph{Stability obstruction:} Every nondegenerate KP triple has
+growing-mode counts $(0,1,2)$ generically (and $(0,1,1)$ at the branch-switch
+locus $s_{\mathrm{eff}}=\sqrt{3}$), so \textbf{zero} single-soliton
+absorption/emission edges connect two linearly stable defect vacua.
+\item[(ii)] \emph{Canonical-charge holonomy no-go theorem:} While the mode-sum
+charges $(\Delta E_1^{\mathrm{ren}},\Delta P_{\mathrm{mode}})$ have zero
+directed sum around every KP triangle, the co-moving canonical
+collective-coordinate charges $(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$
+have a \textbf{non-zero triangle holonomy}
+$\sum_{i=1}^3\rho_i(\Delta E_{\mathrm{can}}(S_i),\Delta P_{\mathrm{can}}(S_i)) \ne (0,0)$.
+Hence \emph{no} single-valued assignment of renormalised defect vacuum charges
+$(E_D^{\mathrm{quant}}(q_i),P_D^{\mathrm{quant}}(q_i))$---regardless of boundary
+counterterms---can balance $(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$
+at unshifted classical absorption rapidities across all three edges of a KP
+triangle.
+\item[(iii)] \emph{Absorbed-soliton momentum-renormalisation obstruction:}
+Holding both soliton physical momenta $(P_3^{\mathrm{phys}},P_{S_i}^{\mathrm{phys}})$
+fixed in $S(3,S_i)$ adds the second Taylor term
+$\Delta X_{S_i}(3,S_i)\Delta P(S_i)$, whose directed sum around a KP triangle
+equals $\sum_{i=1}^3\big(\frac{\Delta P(S_{i-1})}{k_{S_{i-1}}}-\frac{\Delta P(S_i)}{k_{S_i}}\big)\ln|z_t(3;q_i,\eta)| \ne 0$
+for both $\Delta P_{\mathrm{mode}}$ and $\Delta P_{\mathrm{can}}$.
+\end{itemize}
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+
+% ==============================================================================
+\section{Conventions, CZ dictionary, and scope}
+\label{sec:setup}
+% ==============================================================================
+
+We work throughout in the fixed project conventions (\texttt{AGENTS.md},
+\texttt{README.md}) for the \textbf{good} Boussinesq equation \La:
+\begin{equation}\label{eq:good_bq}
+  u_{tt} = u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad
+  u = \varphi_x = 2(\ln\tau)_{xx},
+\end{equation}
+with bulk Lagrangian density on the left ($x<0$, $\varphi_L$) and right ($x>0$,
+$\varphi_R$) half-lines and canonical symplectic form
+\begin{equation}\label{eq:bulk_action}
+  \mathcal{L}(\varphi) = \frac{1}{2}\varphi_t^2 - \frac{1}{2}\varphi_x^2
+  + \varphi_x^3 - \frac{1}{2}\varphi_{xx}^2, \qquad
+  \Omega_{\mathrm{bulk}} = \int_{-\infty}^0 \dd\pi_L\wedge\dd\varphi_L
+  + \int_0^\infty \dd\pi_R\wedge\dd\varphi_R, \quad \pi_{L,R} = \varphi_{L,R,t}.
+\end{equation}
+Planck's constant $\hb$ refers to this normalisation.
+
+A one-soliton with amplitude parameter $\alpha \in (0,\pi/2)$ and propagation
+direction $\epsilon \in \{+1,-1\}$ has \La/\Lc:
+\begin{align}\label{eq:sol_data}
+  k &= \sin\alpha, \quad v = \epsilon\cos\alpha, \quad \ell = -\epsilon\cos 3\alpha, \quad
+  M = 2k, \nonumber\\
+  \Pi &= -Mv, \quad P = \frac{2}{3}\epsilon k^3\cos\alpha, \quad
+  E = \frac{2}{15}k^3(5-4k^2),
+\end{align}
+and KP roots $p_a > p_b$ satisfying $p_a - p_b = k$, $p_a + p_b = v/\sqrt{3}$,
+and $4p^3 - p = -\frac{\epsilon}{3\sqrt{3}}\cos 3\alpha = \frac{\ell}{3\sqrt{3}}$
+\Lc\ (\texttt{defect\_semiclassics.pdf}).
+
+\paragraph{Corrigan--Zambon dictionary.}
+Corrigan and Zambon (CZ) \cite{CZ} (with $c=\lambda=\kappa=1$) write $u_{\mathrm{CZ}}$
+for $x<0$ and $v_{\mathrm{CZ}}$ for $x>0$ with bulk Lagrangian
+$\mathcal{L}_{\mathrm{CZ}} = \frac{1}{2}u_{\mathrm{CZ},t}^2 - \frac{1}{2}u_{\mathrm{CZ},x}^2 - \frac{1}{3}u_{\mathrm{CZ},x}^3 - \frac{1}{2}u_{\mathrm{CZ},xx}^2$.
+The explicit dictionary to project variables is \Lc\ (\sclass):
+\begin{equation}\label{eq:cz_dict}
+  u_{\mathrm{CZ}} = -3\varphi_L, \qquad v_{\mathrm{CZ}} = -3\varphi_R, \qquad
+  \mathcal{L}_{\mathrm{CZ}} = 9\,\mathcal{L}, \qquad
+  D_{\mathrm{proj}} = \frac{1}{9}D_{\mathrm{CZ}}, \qquad
+  (E_{\mathrm{CZ}},P_{\mathrm{CZ}}) = 9\,(E,P).
+\end{equation}
+We do not rely on any results from Phase~2i (\texttt{toda\_wh\_and\_kp\_synthesis.pdf}),
+which is under separate audit.
+
+% ==============================================================================
+\section{Classical localised defect charges and exact conservation laws}
+\label{sec:classical}
+% ==============================================================================
+
+\subsection{Sewing conditions and localised charges in project conventions}
+
+In CZ variables \cite{CZ} \La, the type-I defect at $x=0$ has orientation
+$\eta \in \{+1,-1\}$, $\alpha_{\mathrm{CZ}} = \eta/\sqrt{3}$,
+$\beta_{\mathrm{CZ}} = 2\alpha_{\mathrm{CZ}} = 2\eta/\sqrt{3}$,
+$\mu = \frac{2}{3\beta_{\mathrm{CZ}}} = \eta/\sqrt{3}$, and bare parameter
+$s = \sigma_0 \in \mathbb{R}$ (with KP vertex $q_D = -\frac{s}{2\sqrt{3}}$).
+In terms of the potential jump at $x=0$,
+\begin{equation}\label{eq:w_phi_def}
+  w_\varphi := \varphi_L(0^-,t) - \varphi_R(0^+,t) = -M_D, \qquad
+  w_{\mathrm{CZ}} = u_{\mathrm{CZ}}(0^-,t) - v_{\mathrm{CZ}}(0^+,t) = -3w_\varphi = 3M_D,
+\end{equation}
+the dynamical defect field $\sigma$ and auxiliary polynomials $\rho(\sigma)$,
+$\tau(\sigma)$, and $h(\sigma)$ are \La/\Lc\ (\sclass):
+\begin{align}
+  \sigma(w_\varphi) &= s + \mu w_{\mathrm{CZ}} = s - \sqrt{3}\,\eta\,w_\varphi, \qquad
+  \rho_0 = -\frac{\sqrt{3}\,\eta}{2}\,s\!\left(1 - \frac{s^2}{3}\right) = \frac{\eta}{\sqrt{3}}\,\ell_D, \label{eq:sigma_rho0}\\
+  \rho(\sigma) &= \rho_0 + \frac{\sqrt{3}\,\eta}{2}\!\left(\sigma - \frac{\sigma^3}{3}\right)
+  = \frac{\sqrt{3}\,\eta}{6}\,(\sigma - s)\big(3 - (\sigma^2 + s\sigma + s^2)\big), \label{eq:rho_def}\\
+  \tau(\sigma) &= -\int_s^\sigma \frac{\beta_{\mathrm{CZ}}}{2\mu}\,x\,\rho(x)\,\dd x
+  = -\int_s^\sigma x\,\rho(x)\,\dd x, \label{eq:tau_def}\\
+  h(\sigma) &= -\int_s^\sigma \frac{\beta_{\mathrm{CZ}}-\alpha_{\mathrm{CZ}}}{\mu}\,\rho(x)\,\dd x
+  = -\int_s^\sigma \rho(x)\,\dd x. \label{eq:h_def}
+\end{align}
+In the shift-invariant gauge $f = g = -\frac{\sigma^2}{4\mu} = -\frac{\sqrt{3}\,\eta}{4}\sigma^2$
+(which satisfies $f_{v_{\mathrm{CZ}}} - g_{u_{\mathrm{CZ}}} = \sigma$ and preserves
+$\varphi \mapsto \varphi + c$ \Lc, \texttt{defect\_semiclassics.pdf}), the
+project-normalised defect Lagrangian at $x=0$ is
+\begin{equation}\label{eq:D_proj}
+  D_{\mathrm{proj}} = \varphi_{L,t} F_{\mathrm{proj}} + \varphi_{R,t} G_{\mathrm{proj}} - E_D,
+\end{equation}
+where \Lc\ (\sclass):
+\begin{align}
+  F_{\mathrm{proj}} &= \frac{\eta}{\sqrt{3}}\big(\varphi_{L,x} + 2\varphi_{R,x}\big) + \frac{\sqrt{3}\,\eta}{12}\,\sigma^2, \qquad
+  G_{\mathrm{proj}} = \frac{\eta}{\sqrt{3}}\big(2\varphi_{L,x} + \varphi_{R,x}\big) + \frac{\sqrt{3}\,\eta}{12}\,\sigma^2, \label{eq:FG_proj}\\
+  E_D &= -\frac{H_{\mathrm{CZ}}}{9}
+  = -\frac{\eta}{\sqrt{3}}\,\sigma\big(\varphi_{L,x}^2 + \varphi_{L,x}\varphi_{R,x} + \varphi_{R,x}^2\big)
+    + \frac{1}{3}\,\rho(\sigma)\big(\varphi_{L,x} + \varphi_{R,x}\big) - \frac{1}{9}\,\tau(\sigma). \label{eq:ED_proj}
+\end{align}
+
+\begin{proposition}[Classical localised defect charges and off-shell conservation, \Lc, \sclass]\label{prop:classical_charges}
+Varying $S = \int_{x<0}\mathcal{L}(\varphi_L)\,\dd x\,\dd t + \int_{x>0}\mathcal{L}(\varphi_R)\,\dd x\,\dd t + \int D_{\mathrm{proj}}\,\dd t$
+yields the four sewing conditions at $x=0$:
+\begin{align}
+  \varphi_{L,xx} &= \frac{\partial D_{\mathrm{proj}}}{\partial \varphi_{L,x}}, &
+  \varphi_{L,xxx} &= \varphi_{L,x} - 3\varphi_{L,x}^2 - \frac{\partial D_{\mathrm{proj}}}{\partial \varphi_L} + \frac{\dd F_{\mathrm{proj}}}{\dd t}, \label{eq:sew_L}\\
+  \varphi_{R,xx} &= -\frac{\partial D_{\mathrm{proj}}}{\partial \varphi_{R,x}}, &
+  \varphi_{R,xxx} &= \varphi_{R,x} - 3\varphi_{R,x}^2 + \frac{\partial D_{\mathrm{proj}}}{\partial \varphi_R} - \frac{\dd G_{\mathrm{proj}}}{\dd t}. \label{eq:sew_R}
+\end{align}
+For any smooth solution of the bulk equation \eqref{eq:good_bq} on $x \ne 0$
+satisfying \eqref{eq:sew_L}--\eqref{eq:sew_R} at $x=0$, the four total charges
+\begin{equation}\label{eq:tot_charges}
+  E_{\mathrm{tot}} = E_{\mathrm{bulk}} + E_D, \quad
+  P_{\mathrm{tot}} = P_{\mathrm{bulk}} + P_D, \quad
+  \Pi_{\mathrm{tot}} = \Pi_{\mathrm{bulk}} + \Pi_D, \quad
+  M_{\mathrm{tot}} = M_{\mathrm{bulk}} + M_D,
+\end{equation}
+are conserved identically ($\frac{\dd}{\dd t}(E_{\mathrm{tot}},P_{\mathrm{tot}},\Pi_{\mathrm{tot}},M_{\mathrm{tot}}) = (0,0,0,0)$),
+where $E_D$ is given by \eqref{eq:ED_proj} and the localised defect momentum
+$P_D$, shift charge $\Pi_D$, and mass jump $M_D$ in project normalisation are:
+\begin{align}
+  P_D &= \frac{P_{D,\mathrm{CZ}}}{9}
+  = -\frac{\eta}{2\sqrt{3}}\big(\varphi_{L,x}^2 + 4\varphi_{L,x}\varphi_{R,x} + \varphi_{R,x}^2\big) + \frac{1}{9}\,h(\sigma), \label{eq:PD_proj}\\
+  \Pi_D &= F_{\mathrm{proj}} + G_{\mathrm{proj}}
+  = \sqrt{3}\,\eta\big(\varphi_{L,x} + \varphi_{R,x}\big) + \frac{\sqrt{3}\,\eta}{6}\,\sigma^2, \label{eq:PiD_proj}\\
+  M_D &= \varphi_R(0^+,t) - \varphi_L(0^-,t) = -w_\varphi = \frac{\sigma - s}{\sqrt{3}\,\eta}. \label{eq:MD_proj}
+\end{align}
+\end{proposition}
+
+\begin{remark}[Avoiding double-subtraction in $P_D$, \Lc]
+In CZ \cite[(3.11)]{CZ}, the modified momentum is introduced in the intermediate
+form $P_{\mathrm{bulk},\mathrm{CZ}} - u_{\mathrm{CZ},x}F_{\mathrm{CZ}} - v_{\mathrm{CZ},x}G_{\mathrm{CZ}} + \tilde{P}_D$,
+and in their final formula \cite[(3.49)]{CZ} the derivative terms
+$-u_{\mathrm{CZ},x}F_{\mathrm{CZ}} - v_{\mathrm{CZ},x}G_{\mathrm{CZ}}$ have
+already been combined with $\tilde{P}_D$ to produce
+$P_{D,\mathrm{CZ}} = -\frac{\alpha_{\mathrm{CZ}}}{2}(u_{\mathrm{CZ},x}^2+v_{\mathrm{CZ},x}^2) - \beta_{\mathrm{CZ}}u_{\mathrm{CZ},x}v_{\mathrm{CZ},x} + h(\sigma)$,
+which is free of time derivatives. Subtracting $u_{\mathrm{CZ},x}F_{\mathrm{CZ}} + v_{\mathrm{CZ},x}G_{\mathrm{CZ}}$
+a second time leaves a non-zero time-derivative remainder (recorded in
+Section~\ref{sec:failures}, Failure~1).
+\end{remark}
+
+\subsection{Exact conservation through soliton absorption \texorpdfstring{$D(q_i) + S_i \to D(q_{i+1})$}{D(q\_i) + S\_i -> D(q\_{i+1})}}
+
+On a static defect vacuum ($\varphi_{L,x} = \varphi_{R,x} = 0$), the sewing
+condition \eqref{eq:sew_L} requires $\rho(\sigma) = 0$, whose three roots
+$\sigma_i = -2\sqrt{3}\,q_i$ correspond to the three roots $\{q_1,q_2,q_3\}$ of
+the KP cubic $q_i^2 + q_i q_j + q_j^2 = \frac{1}{4}$ containing $q_D = -\frac{s}{2\sqrt{3}}$
+\Lc\ (\texttt{defect\_semiclassics.pdf}). Evaluating \eqref{eq:ED_proj} and
+\eqref{eq:PD_proj}--\eqref{eq:MD_proj} on $\varphi_{L,x}=\varphi_{R,x}=0$ gives
+the vacuum charges of vertex $q_i$ \Lc\ (\sclass):
+\begin{equation}\label{eq:vac_charges}
+  E_D^{\mathrm{vac}}(q_i) = -\frac{1}{9}\tau(\sigma_i), \;
+  P_D^{\mathrm{vac}}(q_i) = \frac{1}{9}h(\sigma_i), \;
+  \Pi_D^{\mathrm{vac}}(q_i) = \frac{\sqrt{3}\,\eta}{6}\sigma_i^2 = 2\sqrt{3}\,\eta\,q_i^2, \;
+  M_D^{\mathrm{vac}}(q_i) = 2\eta(q_D - q_i).
+\end{equation}
+
+\begin{proposition}[Symbolic and 50-digit time-dependent conservation in absorption, \Lc, \sclass]\label{prop:classical_absorption}
+Let $\{q_1,q_2,q_3\}$ be a KP triple ($q_i^2 + q_i q_{i+1} + q_{i+1}^2 = \frac{1}{4}$),
+$S_i = \{q_i,q_{i+1}\}$ the soliton with KP roots $p_a = \max(q_i,q_{i+1})$ and
+$p_b = \min(q_i,q_{i+1})$, and $\rho_i := \eta\sgn(q_i - q_{i+1}) \in \{+1,-1\}$.
+\begin{enumerate}
+\item Modulo the KP triple polynomial $q_i^2 + q_i q_{i+1} + q_{i+1}^2 - \frac{1}{4} = 0$,
+the vacuum jumps of all four defect charges \eqref{eq:vac_charges} equal $\rho_i$
+times the classical soliton charges \eqref{eq:sol_data} identically:
+\begin{equation}\label{eq:vac_jump_all4}
+  \boxed{\;
+  \big(E_D^{\mathrm{vac}},P_D^{\mathrm{vac}},\Pi_D^{\mathrm{vac}},M_D^{\mathrm{vac}}\big)\big|_{q_i}^{q_{i+1}}
+  = \rho_i\,\big(E(S_i),\,P(S_i),\,\Pi(S_i),\,M(S_i)\big).
+  \;}
+\end{equation}
+\item On the exact time-dependent CZ one-soliton solutions---both in regular
+transmission ($z>0$) and in exact absorption $D(q_1)+S_1 \to D(q_2)$ ($z=0$ on
+$x>0$)---direct spatial quadrature of $(E_{\mathrm{bulk}}(t),P_{\mathrm{bulk}}(t),\Pi_{\mathrm{bulk}}(t),M_{\mathrm{bulk}}(t))$
+plus the localised defect charges $(E_D(t),P_D(t),\Pi_D(t),M_D(t))$ at $x=0$ is
+independent of $t \in [-8,+8]$ to $9.35\times 10^{-51}$ (transmission) and
+$5.35\times 10^{-51}$ (absorption).
+\end{enumerate}
+\end{proposition}
+
+% ==============================================================================
+\section{One-loop defect charges, spectral branches, and boundary renormalisation}
+\label{sec:oneloop}
+% ==============================================================================
+
+\subsection{Corrected sewing determinant and the admissible branch switch at \texorpdfstring{$s_{\mathrm{eff}} = \sqrt{3}$}{s\_eff = sqrt(3)}}
+
+Linearising the sewing conditions \eqref{eq:sew_L}--\eqref{eq:sew_R} around a
+static defect vacuum $\sigma_{\mathrm{vac}}$ with effective parameter
+$s_{\mathrm{eff}} := \eta\sigma_{\mathrm{vac}} = -2\sqrt{3}\,\eta\,q_{\mathrm{vac}}$
+and seeking localised growing modes of frequency $\omega = \ii g$ ($g>0$) and
+spatial decay exponents $\kappa_{1,2} > 0$ ($\kappa_1^2+\kappa_2^2=1$,
+$\kappa_1\kappa_2=g$, $S := \kappa_1+\kappa_2 = \sqrt{1+2g} > 1$,
+$d := \kappa_1-\kappa_2 = \sqrt{2-S^2}$) yields a $4\times 4$ sewing matrix
+$M_{4\times 4}(g;\sigma_{\mathrm{vac}},\eta)$. Following the independent audit
+\texttt{audit\_frames\_defects.pdf}, we verify its exact off-shell polynomial
+factorisation and determine the complete admissible branch structure \Lc\
+(\sren).
+
+\begin{proposition}[Corrected sewing determinant and admissible branch switch, \Lc, \sren]\label{prop:det_branches}
+\begin{enumerate}
+\item Off-shell for all $(S,s_{\mathrm{eff}})$, the reduced $4\times 4$
+linearised sewing determinant is
+\begin{equation}\label{eq:det_corrected}
+  \frac{\det M_{4\times 4}(g;\sigma_{\mathrm{vac}},\eta)}{(\kappa_1-\kappa_2)^2}
+  = -\frac{2}{3}\,S^2(S^2-1)\,P_-(S;s_{\mathrm{eff}})\,P_+(S;s_{\mathrm{eff}}),
+\end{equation}
+where $P_\mp(S;s_{\mathrm{eff}}) = S^2 - \frac{\sqrt{3}\mp 1}{2}s_{\mathrm{eff}}S + \frac{s_{\mathrm{eff}}^2-2\mp\sqrt{3}}{2}$.
+(The coefficient $-\frac{1}{24}$ printed in Phase~2g is sixteen times too small
+because column replacement $M_{\cdot,1}\pm M_{\cdot,2}$ multiplies the
+determinant by $4$.)
+\item At the continuum threshold $S = 1$ ($g = 0$), the two quadratic factors
+factorise exactly as
+\begin{equation}\label{eq:P_at_S1}
+  P_-(1;s_{\mathrm{eff}}) = \frac{1}{2}(s_{\mathrm{eff}}+1)(s_{\mathrm{eff}}-\sqrt{3}), \qquad
+  P_+(1;s_{\mathrm{eff}}) = \frac{1}{2}(s_{\mathrm{eff}}-1)(s_{\mathrm{eff}}-\sqrt{3}).
+\end{equation}
+\item Retaining only admissible decaying half-line roots ($S > 1$ for
+$s_{\mathrm{eff}} \in (-2,2)$):
+\begin{itemize}
+\item For $s_{\mathrm{eff}} \le -1$ ($\eta q_{\mathrm{vac}} \ge \frac{1}{2\sqrt{3}}$):
+\textbf{zero} growing modes exist; these are the only linearly stable defect
+vacua, and the only vacua admissible as external quantum states.
+\item For $-1 < s_{\mathrm{eff}} \le 1$: exactly \textbf{one} growing mode exists,
+given by $S_{-,+}(s_{\mathrm{eff}}) > 1$ from $P_- = 0$, with growth rate
+$g_-(s_{\mathrm{eff}}) = \frac{s_{\mathrm{eff}}\sqrt{4-s_{\mathrm{eff}}^2}+\sqrt{3}(2-s_{\mathrm{eff}}^2)}{8} > 0$.
+\item For $1 < s_{\mathrm{eff}} < 2$: a second growing mode $S_{+,+}(s_{\mathrm{eff}}) > 1$
+emerges from $P_+ = 0$ at $s_{\mathrm{eff}} = 1$ with growth rate
+$g_{+,+}(s_{\mathrm{eff}}) = \frac{s_{\mathrm{eff}}\sqrt{4-s_{\mathrm{eff}}^2}-\sqrt{3}(2-s_{\mathrm{eff}}^2)}{8} > 0$.
+At $s_{\mathrm{eff}} = \sqrt{3}$, both $P_-(1;\sqrt{3})=0$ and $P_+(1;\sqrt{3})=0$:
+the root $S_{-,+}(s_{\mathrm{eff}})$ of $P_-$ decreases through $S=1$ ($g=0$) and
+leaves the admissible sheet $S>1$, while the second root
+$S_{+,-}(s_{\mathrm{eff}}) = \frac{(\sqrt{3}+1)s_{\mathrm{eff}}-(\sqrt{3}-1)\sqrt{4-s_{\mathrm{eff}}^2}}{4}$
+of $P_+$ simultaneously increases through $S=1$ and enters the admissible sheet
+for $\sqrt{3} < s_{\mathrm{eff}} < 2$. Thus on $(1,2)$ the two non-negative
+admissible growth rates are (verified to $55$ digits)
+\begin{equation}\label{eq:g_admissible}
+  g_1(s_{\mathrm{eff}}) = \frac{s_{\mathrm{eff}}\sqrt{4-s_{\mathrm{eff}}^2} - \sqrt{3}(2-s_{\mathrm{eff}}^2)}{8} > 0, \quad
+  g_2(s_{\mathrm{eff}}) = \frac{\big|s_{\mathrm{eff}}\sqrt{4-s_{\mathrm{eff}}^2} + \sqrt{3}(2-s_{\mathrm{eff}}^2)\big|}{8} \ge 0,
+\end{equation}
+which both belong to $P_+(S;s_{\mathrm{eff}})=0$ for $\sqrt{3}<s_{\mathrm{eff}}\le 2$
+and coalesce at $s_{\mathrm{eff}}=2$ to $g_1(2)=g_2(2)=\frac{\sqrt{3}}{4}$.
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\subsection{Direct operator derivation of \texorpdfstring{$\Delta P_D$ and $\Delta E_D$ from $P_{D,2}$ and $D_2$}{Delta P\_D and Delta E\_D from P\_{D,2} and D\_2}}
+
+Expanding the project-normalised defect Lagrangian \eqref{eq:D_proj} and
+localised momentum \eqref{eq:PD_proj} to quadratic order in potential
+fluctuations $(a,b) = (\delta\varphi_L,\delta\varphi_R)$ about a constant vacuum
+$\sigma_0$ gives \Lc\ (\texttt{audit\_charges\_action.pdf}, \sren):
+\begin{align}
+  D_2 &= a_t F_1 + b_t G_1 - E_{D,2}, \qquad
+  F_1 = \alpha a_x + \beta b_x - \frac{\sigma_0}{2}(a-b), \qquad
+  G_1 = \beta a_x + \alpha b_x - \frac{\sigma_0}{2}(a-b), \label{eq:D2_F1G1}\\
+  E_{D,2} &= -H_2 = -\sigma_0\!\left[\frac{\beta}{2}(a_x^2+b_x^2) + \alpha a_x b_x\right]
+  - \frac{1-\sigma_0^2}{2}(a-b)(a_x+b_x) + \frac{\beta\sigma_0(1-\sigma_0^2)}{8}(a-b)^2, \label{eq:ED2}\\
+  P_{D,2} &= -\frac{\alpha}{2}(a_x^2+b_x^2) - \beta a_x b_x - \frac{\alpha}{4}(1-\sigma_0^2)(a-b)^2, \label{eq:PD2}
+\end{align}
+where $\alpha = \eta/\sqrt{3}$ and $\beta = 2\alpha$. In
+\texttt{audit\_charges\_action.pdf} (Section~4), it was noted as an open issue
+\Ld\ that staticity alone does not prove why the expectation value of the
+conserved momentum including $P_{D,2}$ equals the phase-shift integral
+$\int_{-\infty}^\infty \frac{\dd q}{4\pi}\,q\,\theta_D'(q)$. We now supply this
+derivation \Lc.
+
+On any constant defect vacuum, the continuum phonon eigenmodes are reflectionless
+plane waves all the way to $x=0^\mp$ (with zero evanescent tails \Lc, Claim~2.1
+of \texttt{oneloop\_\allowbreak defect\_\allowbreak phase.pdf}). With canonical bulk field normalisation
+($[\varphi(x),\pi(y)] = \ii\hb\delta(x-y)$, zero-point weight $\frac{1}{2}\hb$ per
+mode), a mode of wavenumber $q \in \mathbb{R}\setminus\{0\}$ and frequency
+$\omega(q) = |q|\sqrt{1+q^2}$ has
+\begin{align}\label{eq:canon_phonon}
+  a_q(x,t) &= \frac{1}{\sqrt{\pi\omega(q)}}\,\Rea\!\big(\ee^{\ii(qx-\omega(q)t)}\big) \quad (x<0), \nonumber\\
+  b_q(x,t) &= \frac{1}{\sqrt{\pi\omega(q)}}\,\Rea\!\big(z_{\mathrm{ph}}(q;q_D,\eta)\,\ee^{\ii(qx-\omega(q)t)}\big) \quad (x>0),
+\end{align}
+so that $\langle a^2\rangle_q = \langle b^2\rangle_q = \frac{1}{4\pi\omega(q)}$,
+$\langle a_x^2\rangle_q = \langle b_x^2\rangle_q = \frac{q^2}{4\pi\omega(q)}$,
+$\langle a_x b_x\rangle_q = \frac{q^2\Rea z_{\mathrm{ph}}(q)}{4\pi\omega(q)}$,
+$\langle (a-b)^2\rangle_q = \frac{2(1-\Rea z_{\mathrm{ph}}(q))}{4\pi\omega(q)}$,
+and $\langle (a-b)(a_x+b_x)\rangle_q = -\frac{2q\Ima z_{\mathrm{ph}}(q)}{4\pi\omega(q)}$
+at $x=0$. Because $|z_{\mathrm{ph}}(q)| = 1$ everywhere on $x>0$, the bulk
+momentum density $-\varphi_t\varphi_x$ on mode $q$ is spatially constant and
+identical to its free-vacuum value, so its vacuum-subtracted bulk integral and
+its $\pm q$ symmetric bulk sum vanish identically. All vacuum-subtracted
+momentum of the mode pair $(+q,-q)$ is therefore localised in $P_{D,2}$ at $x=0$.
+
+\begin{proposition}[Exact pointwise identity between $\langle P_{D,2}\rangle_q$ and $\frac{q}{4\pi}\theta_D'(q)$, \Lc, \sren]\label{prop:PD2_identity}
+For every $q > 0$, every $\sigma_0 \in \mathbb{R}$, and $\eta \in \{+1,-1\}$:
+\begin{enumerate}
+\item As $q \to \infty$, $z_{\mathrm{ph}}(q;q_D,\eta) \to \ee^{-\ii\eta\sgn(q)\frac{2\pi}{3}}$
+ has $\Rea z_{\mathrm{ph}}(q) \to -\frac{1}{2}$. Because $\beta = 2\alpha$, the
+leading $O(q^0)$ derivative combination $-\frac{\alpha}{2}(a_x^2+b_x^2) - \beta a_x b_x \propto 1 + 2\Rea z_{\mathrm{ph}}(q) \to 0$
+cancels identically at $O(1)$, leaving $\langle P_{D,2}\rangle_q = -\frac{\sqrt{3}\eta\sigma_0}{8\pi q} + \frac{\sqrt{3}\eta(\sigma_0^2-2)}{16\pi q^2} + O(q^{-3})$.
+\item Symmetrising over $+q$ and $-q$ cancels the odd $O(q^{-1})$ tail and gives
+the \textbf{exact pointwise algebraic identity}
+\begin{equation}\label{eq:PD2_pointwise}
+  \boxed{\;
+  \begin{aligned}
+  \langle P_{D,2}\rangle_q + \langle P_{D,2}\rangle_{-q}
+  &\equiv \frac{q}{4\pi}\Big(\theta_D'(q;s,\eta) - \theta_D'(-q;s,\eta)\Big) \\
+  &= \frac{\sqrt{3}\,\eta\,q\big(2(\sigma_0^2-2)q^2 + \sigma_0^2 - 1\big)}
+         {\pi\sqrt{1+q^2}\big(16q^4 + 4(\sigma_0^2+2)q^2 + (\sigma_0^2-1)^2\big)}.
+  \end{aligned}
+  \;}
+\end{equation}
+Consequently, the vacuum expectation value of the localised quadratic defect
+momentum operator is UV finite and equals $\Delta P_D(q_D,\eta)$ identically:
+\begin{equation}\label{eq:PD2_integral}
+  \langle P_{D,2}\rangle_{\mathrm{vac}} := \int_{-\infty}^\infty \dd q\,\langle P_{D,2}\rangle_q
+  = \int_{-\infty}^\infty \frac{\dd q}{4\pi}\,q\,\theta_D'(q;s,\eta) = \Delta P_D(q_D,\eta).
+\end{equation}
+\item For the quadratic energy, integrating the bulk potential energy
+$\frac{1}{2}\int_{x\ne 0}(\varphi_x^2+\varphi_{xx}^2)\,\dd x$ by parts at $x=0^\mp$
+produces the boundary jump $J_{\mathrm{bulk},2} := \frac{1}{2}[a(a_x-a_{xxx})+a_x a_{xx}]_{0^-} - \frac{1}{2}[b(b_x-b_{xxx})+b_x b_{xx}]_{0^+}$.
+By Euler's homogeneous function theorem on $D_2 = a_t F_1 + b_t G_1 - E_{D,2}$
+and the linearised sewing equations, every harmonic sewing mode satisfies
+$\langle E_{D,2} + J_{\mathrm{bulk},2}\rangle_q = \langle a_t F_1 + b_t G_1\rangle_q$,
+and the symmetric sum over $\pm q$ obeys the \textbf{exact pointwise identity}
+\begin{equation}\label{eq:ED2_pointwise}
+  \boxed{\;
+  -\Big(\langle a_t F_1 + b_t G_1\rangle_q + \langle a_t F_1 + b_t G_1\rangle_{-q}\Big)
+  \equiv \frac{\omega(q)}{4\pi}\Big(\theta_D'(q;s,\eta) + \theta_D'(-q;s,\eta)\Big).
+  \;}
+\end{equation}
+\end{enumerate}
+\end{proposition}
+
+\subsection{Cutoff Casimir energy, boundary UV divergence, and counterterm analysis}
+
+On any linearly stable defect vacuum ($s_{\mathrm{eff}} = \eta\sigma_{\mathrm{vac}} < -1$),
+there are no bound or growing discrete modes. In the equal-mode-count Gaussian
+quantisation prescription \cite[App.~6]{FK} (audited for the bulk soliton in
+\texttt{audit\_charges\_action.pdf}), integrating the mode-shift sum by parts on
+$[-\Lambda,0^-] \cup [0^+,\Lambda]$ requires the \textbf{asymptotic scattering
+branch} $\theta_D^{\mathrm{asympt}}(q;s,\eta) := \sum_{s'=1}^2 c_{D,s'}\Theta(q;\psi_{s'})$,
+which satisfies $\theta_D^{\mathrm{asympt}}(\pm\infty;s,\eta) = 0$ (whereas the
+zero-endpoint branch $\theta_D^{\mathrm{phys}}(q)$ with $\theta_D^{\mathrm{phys}}(0^\pm)=0$
+approaches $\pm\pi\eta$ at $q\to\pm\infty$ for $s_{\mathrm{eff}}<-1$; its nonzero
+jump at $q=0^\pm$ is multiplied by $\omega(0)=0$ in the energy integration by
+parts and therefore drops out \Lc, Section~\ref{sec:failures}, Failure~3).
+
+\begin{proposition}[Regulated defect Casimir energy and boundary counterterm structure, \Lc, \sren]\label{prop:cutoff_renorm}
+Let $s_{\mathrm{eff}} = \eta\sigma_{\mathrm{vac}} < -1$,
+$S_D := \sum_{s'=1}^2 c_{D,s'}\sin\psi_{s'} = -\frac{\eta\sqrt{3}\sigma_{\mathrm{vac}}}{2} = 3\eta q_{\mathrm{vac}} > \frac{\sqrt{3}}{2}$,
+and $T := \sqrt{1+\Lambda^2}$. Then:
+\begin{enumerate}
+\item As $\Lambda \to \infty$, the phase-density integral $E_D^{\mathrm{dens}}(\Lambda)$
+and cutoff endpoint $B_D(\Lambda)$ in the asymptotic branch $\theta_D^{\mathrm{asympt}}(\pm\infty)=0$
+satisfy (verified to $<10^{-20}$ at $\Lambda=10^{22}$)
+\begin{align}
+  E_D^{\mathrm{dens}}(\Lambda) &:= \int_{-\Lambda}^\Lambda \frac{\dd q}{4\pi}\,\omega(q)\theta_D'(q)
+  = \frac{S_D}{2\pi}(T - 1) + \left(\Delta E_D^{\mathrm{ren}} - \frac{S_D}{2\pi}\right) + O(\Lambda^{-1}), \label{eq:ED_dens}\\
+  B_D(\Lambda) &:= \frac{\Lambda\sqrt{1+\Lambda^2}}{4\pi}\Big[\theta_D^{\mathrm{asympt}}(\Lambda) - \theta_D^{\mathrm{asympt}}(-\Lambda)\Big]
+  = -\frac{S_D}{2\pi}\,T + O(\Lambda^{-1}), \label{eq:BD_end}\\
+  E_D^{\mathrm{mode}}(\Lambda) &:= E_D^{\mathrm{dens}}(\Lambda) - B_D(\Lambda)
+  = \frac{S_D}{\pi}(T - 1) + \Delta E_D^{\mathrm{ren}} + O(\Lambda^{-1}), \label{eq:ED_mode}
+\end{align}
+where $\frac{T-1}{2\pi} = \int_{-\Lambda}^\Lambda \frac{\dd q}{2\pi}\frac{|q|}{2\sqrt{1+q^2}} = \langle\varphi_x^2\rangle_{\mathrm{vac}}(\Lambda)$
+is the exact one-loop bulk tadpole integral and $\Delta E_D^{\mathrm{ren}}$ is
+the finite 2-root dipole formula of Phase~2g. The momentum endpoint
+$\frac{\Lambda}{4\pi}[\theta_D^{\mathrm{asympt}}(\Lambda)+\theta_D^{\mathrm{asympt}}(-\Lambda)]$
+vanishes as $O(\Lambda^{-1})$.
+\item \textbf{Need for a boundary counterterm:} Because the open-half-line bulk
+normal-ordering counterterm $\delta E_{\mathrm{bulk}}^{\mathrm{ct}} = \frac{3(T-1)}{2\pi}\big(\int_{-\infty}^0 \varphi_{L,x}\,\dd x + \int_0^\infty \varphi_{R,x}\,\dd x\big)$
+vanishes identically on every spatially constant defect vacuum ($\varphi_{L,x}^{(0)}=\varphi_{R,x}^{(0)}=0$),
+cancelling the UV divergence $-\frac{S_D}{\pi}(T-1) = \frac{\eta\sqrt{3}\sigma_{\mathrm{vac}}}{2\pi}(T-1)$
+of $E_D^{\mathrm{mode}}(\Lambda)$ requires an explicit localised boundary
+counterterm at $x=0$:
+\begin{equation}\label{eq:delta_ED_ct}
+  \delta E_D^{\mathrm{ct}}(\sigma_{\mathrm{vac}};\Lambda)
+  = -\frac{S_D}{\pi}(T - 1) + \delta E_{D,\mathrm{fin}}(\sigma_{\mathrm{vac}})
+  = \frac{\eta\sqrt{3}(T-1)}{2\pi}\big(s + \sqrt{3}\,\eta\,M_D\big) + \delta E_{D,\mathrm{fin}}(\sigma_{\mathrm{vac}}).
+\end{equation}
+Notice that the $M_D$-dependent part of \eqref{eq:delta_ED_ct},
+$+\frac{3(T-1)}{2\pi}M_D = \frac{3(T-1)}{2\pi}(\varphi_R(0^+)-\varphi_L(0^-))$,
+is precisely the boundary jump required to complete the open-half-line bulk
+integral $\int_{x\ne 0}\varphi_x\,\dd x = (\varphi_R(+\infty)-\varphi_L(-\infty)) - M_D$
+into the topological total-derivative counterterm $\frac{3(T-1)}{2\pi}(\varphi_R(+\infty)-\varphi_L(-\infty))$!
+\item \textbf{Integrability constraint on finite boundary counterterms:}
+Adding a shift-invariant zero-derivative potential $\delta\tau_{\mathrm{fin}}(w_\varphi)$
+to $H_{\mathrm{CZ}}$ without modifying the derivative sewing terms changes the
+momentum flux balance on the sewing manifold by
+$-(u_{\mathrm{CZ},x}-v_{\mathrm{CZ},x})\delta\tau_{\mathrm{fin}}'(w_{\mathrm{CZ}})$,
+which cannot equal a total time derivative $\frac{\dd}{\dd t}\delta h_{\mathrm{fin}}(w_{\mathrm{CZ}}) = (u_{\mathrm{CZ},t}-v_{\mathrm{CZ},t})\delta h_{\mathrm{fin}}'(w_{\mathrm{CZ}})$
+for independent boundary jets unless $\delta\tau_{\mathrm{fin}}' = \delta h_{\mathrm{fin}}' = 0$.
+Thus an off-shell integrable one-loop boundary renormalisation must take the form
+of a one-loop shift of the integrable CZ defect parameters
+\begin{equation}\label{eq:param_renorm}
+  (s,\,\rho_0,\,\tau_0,\,h_0) \;\longmapsto\;
+  (s + \hb\,\delta s_1,\;\rho_0 + \hb\,\delta\rho_{0,1},\;\tau_0 + \hb\,\delta\tau_{0,1},\;h_0 + \hb\,\delta h_{0,1}).
+\end{equation}
+Here $(\delta\tau_{0,1},\delta h_{0,1})$ are vacuum-independent additive constants
+that cancel in vacuum jumps; keeping $w_\varphi = 0$ ($\sigma = s$) as a static
+vacuum requires $\rho(s)=0$, which ties $\delta\rho_{0,1}$ to $\delta s_1$ and
+leaves \textbf{one free finite parameter renormalisation $\delta s_1$} (or two
+parameters $(\delta s_1,\delta\rho_{0,1})$ if the vacuum jump $w_\varphi^{(0)} = O(\hb)$
+is allowed to shift at one loop).
+\end{enumerate}
+\end{proposition}
+
+% ==============================================================================
+\section{Quantum absorption and fusion test at \texorpdfstring{$O(\hb^0)$}{O(hbar\^0)}}
+\label{sec:fusion}
+% ==============================================================================
+
+We now test what the classical and one-loop boundary charges imply for soliton
+absorption and KP-triangle defect fusion at $O(\hb^0)$
+(\sfus).
+
+\subsection{Obstruction 1: No elementary single-soliton absorption connects two stable vacua}
+
+\begin{proposition}[Complete growing-mode count on KP triples, \Lc, \sfus]\label{prop:stability_obstruction}
+Parametrise any nondegenerate KP triple $\{q_1,q_2,q_3\}$ ($q_1+q_2+q_3=0$,
+$q_1 q_2 + q_2 q_3 + q_3 q_1 = -\frac{1}{4}$) by
+$q_j = -\frac{1}{\sqrt{3}}\cos(\vartheta + \frac{2\pi j}{3})$ with
+$\vartheta \in (0,\pi)\setminus\{\frac{\pi}{3},\frac{2\pi}{3}\}$. For either
+defect orientation $\eta \in \{+1,-1\}$, the three effective defect parameters
+$s_{\mathrm{eff},j} = -2\sqrt{3}\,\eta\,q_j = 2\eta\cos(\vartheta+\frac{2\pi j}{3})$
+lie in $(-2,-1)$, $(-1,1)$, and $(1,2)$ respectively. By Proposition~\ref{prop:det_branches}(3):
+\begin{enumerate}
+\item The sorted number of strictly positive admissible growing modes ($S>1$) on
+the three vertices $\{q_1,q_2,q_3\}$ is $(0,1,2)$ for all
+$\vartheta \not\equiv \frac{\pi}{6} \pmod{\frac{\pi}{3}}$, and $(0,1,1)$ at the
+isolated branch-switch angles $\vartheta \equiv \frac{\pi}{6} \pmod{\frac{\pi}{3}}$
+where the $(1,2)$ vertex hits $s_{\mathrm{eff}} = \sqrt{3}$ ($g_2(\sqrt{3})=0$ at
+threshold $S=1$, while $g_1(\sqrt{3}) = \frac{2\sqrt{3}-1}{8} \approx 0.3080 > 0$).
+\item In every nondegenerate KP triple (checked across $594$ directed edges),
+\textbf{exactly one vertex $q_{\mathrm{st}}$ is linearly stable} ($s_{\mathrm{eff}} < -1$),
+and \textbf{both excited vertices are linearly unstable}. Consequently, \textbf{no}
+elementary single-soliton absorption or emission process
+$D(q_i) + S_i \leftrightarrow D(q_{i+1})$ connects two linearly stable external
+defect states.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Obstruction 2: Non-zero KP-triangle holonomy of canonical collective-coordinate charges}
+
+Even if one continues the one-loop defect vacuum charges
+$(\Delta E_D^{\mathrm{ren}}(q_i,\eta),\Delta P_D(q_i,\eta))$ analytically from
+the stable region $s_{\mathrm{eff}}<-1$ to the two unstable vertices of a KP
+triple, a second obstruction arises from the bulk soliton velocity anomaly
+(\texttt{charge\_frame\_master.pdf}, \texttt{audit\_charges\_action.pdf}). Recall
+that for a bulk soliton $S = (\alpha,\epsilon)$, the fixed-profile mode-sum
+charges $(\Delta E_1^{\mathrm{ren}}(\alpha),\Delta P_{\mathrm{mode}}(\alpha,\epsilon))$
+violate $\dd E = v\,\dd P$ by $\mathcal{A}_v(\alpha) = \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha} - v\frac{\dd\Delta P_{\mathrm{mode}}}{\dd\alpha} \ne 0$,
+whereas the co-moving canonical collective-coordinate derivatives
+$\Delta P_{\mathrm{can}} = \frac{\partial L_1}{\partial v}$ and
+$\Delta E_{\mathrm{can}} = v\Delta P_{\mathrm{can}} - L_1$ ($L_1 = v\Delta P_{\mathrm{mode}}-\Delta E_1^{\mathrm{ren}}$)
+satisfy $\dd\Delta E_{\mathrm{can}} = v\,\dd\Delta P_{\mathrm{can}}$ \Lc.
+
+\begin{proposition}[KP-triangle holonomy no-go theorem for canonical soliton charges, \Lc, \sfus]\label{prop:holonomy_nogo}
+Let $\{q_1,q_2,q_3\}$ be a nondegenerate KP triple with edges $S_i = \{q_i,q_{i+1}\}$
+($i=1,2,3$, $q_4\equiv q_1$) and absorption signs $\rho_i = \eta\sgn(q_i-q_{i+1})$.
+\begin{enumerate}
+\item Under minimal tadpole subtraction ($\delta s_1 = 0$), the 2-root dipole
+defect shifts match the \textbf{mode-sum} soliton charges on every edge,
+$\Delta(E_D^{\mathrm{ren}},P_D)_{q_i\to q_{i+1}} = \rho_i(\Delta E_1^{\mathrm{ren}}(S_i),\Delta P_{\mathrm{mode}}(S_i))$,
+and their directed sum around the closed KP triangle vanishes identically
+(verified to $8.02\times 10^{-51}$):
+\begin{equation}\label{eq:mode_holonomy_zero}
+  \sum_{i=1}^3 \rho_i\,\Delta E_1^{\mathrm{ren}}(S_i) = 0, \qquad
+  \sum_{i=1}^3 \rho_i\,\Delta P_{\mathrm{mode}}(S_i) = 0.
+\end{equation}
+\item By contrast, the co-moving canonical collective-coordinate charges
+$(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$ have a \textbf{non-zero
+directed holonomy around every generic KP triangle}:
+\begin{equation}\label{eq:can_holonomy_nonzero}
+  \boxed{\;
+  \mathcal{C}_E(q_1,q_2,q_3) := \sum_{i=1}^3 \rho_i\,\Delta E_{\mathrm{can}}(S_i) \ne 0, \qquad
+  \mathcal{C}_P(q_1,q_2,q_3) := \sum_{i=1}^3 \rho_i\,\Delta P_{\mathrm{can}}(S_i) \ne 0.
+  \;}
+\end{equation}
+For example, for $\eta=+1$:
+\begin{center}\small
+\begin{tabular}{@{}ccc@{}}\toprule
+KP seed root $q_1$ & $\mathcal{C}_E(q_1,q_2,q_3)$ & $\mathcal{C}_P(q_1,q_2,q_3)$ \\\midrule
+$-0.20$ & $+0.3175373286$ & $+0.1655848943$ \\
+$+0.10$ & $+0.4898832009$ & $-0.1111527059$ \\
+$+0.45$ & $-0.5020709674$ & $+0.09965754968$ \\\bottomrule
+\end{tabular}
+\end{center}
+\item \textbf{No-go consequence:} Because any single-valued assignment of
+renormalised defect vacuum charges $(E_D^{\mathrm{quant}}(q_i),P_D^{\mathrm{quant}}(q_i))$
+on the vertices $\{q_1,q_2,q_3\}$---regardless of what finite or divergent
+boundary counterterms $\delta E_D^{\mathrm{ct}}(q_i),\delta P_D^{\mathrm{ct}}(q_i)$
+are added at the defect---satisfies $\sum_{i=1}^3\big(Q_D^{\mathrm{quant}}(q_{i+1})-Q_D^{\mathrm{quant}}(q_i)\big) \equiv 0$,
+\textbf{no boundary counterterm or defect state-charge assignment can balance
+$(\Delta E_{\mathrm{can}}(S_i),\Delta P_{\mathrm{can}}(S_i))$ at the unshifted
+classical absorption rapidities across all three edges of a KP triangle.}
+\item Only if each absorption rapidity shifts at $O(\hb)$ relative to the defect
+vertex by the conditional kinematic shift of
+\texttt{audit\_charges\_action.pdf},
+\begin{equation}\label{eq:a1_shift}
+  \alpha_{S_i}^{\mathrm{abs}} = \alpha_{S_i} + \hb\,a_{1,i}, \qquad
+  a_{1,i} = \frac{\Delta P_{\mathrm{mode}}(S_i) - \Delta P_{\mathrm{can}}(S_i)}{P_{\mathrm{cl}}'(S_i)},
+\end{equation}
+do the shifted canonical soliton charges
+$E_{\mathrm{cl}}(S_i)+\hb(E_{\mathrm{cl}}'(S_i)a_{1,i}+\Delta E_{\mathrm{can}}(S_i)) = E_{\mathrm{cl}}(S_i)+\hb\Delta E_1^{\mathrm{ren}}(S_i)$
+and $P_{\mathrm{cl}}(S_i)+\hb(P_{\mathrm{cl}}'(S_i)a_{1,i}+\Delta P_{\mathrm{can}}(S_i)) = P_{\mathrm{cl}}(S_i)+\hb\Delta P_{\mathrm{mode}}(S_i)$
+reduce back to the mode-sum charges and close around the triangle (verified to
+$<10^{-49}$). Establishing \eqref{eq:a1_shift} physically would require a
+one-loop quantum sewing/bound-state pole calculation \Ld.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Obstruction 3: Absorbed-soliton momentum renormalisation in fixed-momentum fusion}
+
+In Phase~2g (\texttt{oneloop\_defect\_phase.pdf}, Claim~6.1), one-loop defect
+fusion for a test soliton $3 = (\alpha_3,\epsilon_3)$ was written as the sum of
+the continuum integral identity
+\begin{equation}\label{eq:ISD_fusion}
+  I_{SD}(3;q_{i+1},\eta) - I_{SD}(3;q_i,\eta) = \rho_i\,I_{SS}(3,S_i)
+\end{equation}
+and the test-soliton momentum-renormalisation shift
+$-\big(\Delta x_D(3;q_{i+1},\eta)-\Delta x_D(3;q_i,\eta)\big)\Delta P(3) = -\rho_{\mathrm{tree},i}\Delta X_3(3,S_i)\Delta P(3)$
+($\rho_{\mathrm{tree},i} = \epsilon_3\rho_i$), both of which sum to zero around
+a closed KP triangle \Lc.
+
+However, when the two-soliton S-matrix $S(P_3^{\mathrm{phys}},P_{S_i}^{\mathrm{phys}})$
+is expressed at fixed physical momenta of \textbf{both} colliding solitons $3$
+and $S_i$, expanding the tree-level phase $\delta_0(3,S_i)$ around
+$(P_3^{\mathrm{phys}},P_{S_i}^{\mathrm{phys}})$ produces two Taylor terms:
+\begin{align}\label{eq:two_taylor_terms}
+  \delta_{12,\mathrm{renorm}}(3,S_i)
+  &= -\frac{\partial\delta_0(3,S_i)}{\partial P_3}\Delta P(3)
+    - \frac{\partial\delta_0(3,S_i)}{\partial P_{S_i}}\Delta P(S_i) \nonumber\\
+  &= \Delta X_3(3,S_i)\,\Delta P(3) + \Delta X_{S_i}(3,S_i)\,\Delta P(S_i),
+\end{align}
+where $\Delta X_{S_i}(3,S_i) = +k_{S_i}^{-1}\ln|A_{12}(3,S_i)|$.
+
+\begin{proposition}[Non-closure of the absorbed-soliton momentum shift around a KP triangle, \Lc, \sfus]\label{prop:absorbed_renorm}
+Using $\ln|A_{12}(3,S_i)| = \rho_{\mathrm{tree},i}\big(\ln|z_t(3;q_{i+1},\eta)| - \ln|z_t(3;q_i,\eta)|\big)$
+and summing by parts around any closed KP triangle $\{q_1,q_2,q_3\}$ gives the
+exact identity (verified to $2.41\times 10^{-50}$):
+\begin{equation}\label{eq:sbp_absorbed}
+  \boxed{\;
+  \sum_{i=1}^3 \rho_{\mathrm{tree},i}\,\Delta X_{S_i}(3,S_i)\,\Delta P(S_i)
+  = \sum_{i=1}^3 \left(\frac{\Delta P(S_{i-1})}{k_{S_{i-1}}} - \frac{\Delta P(S_i)}{k_{S_i}}\right)\ln\big|z_t(3;q_i,\eta)\big| \ne 0.
+  \;}
+\end{equation}
+Because $\Delta P(S_i)/k_{S_i}$ varies across the three edges $S_1,S_2,S_3$, the
+right-hand side of \eqref{eq:sbp_absorbed} is a non-zero function of the test
+soliton rapidity $\alpha_3$ with logarithmic singularities at $p_{3,a/b}=q_i$
+(e.g.\ at $q_1=-0.2,\alpha_3=0.35,\epsilon_3=\eta=+1$, it equals $-0.7742169719$
+for $\Delta P_{\mathrm{mode}}$ and $-1.737010868$ for $\Delta P_{\mathrm{can}}$).
+Moreover, because $\frac{\partial}{\partial q_i}\delta_D^{\mathrm{trans}}(3;q_i,\eta)$
+has simple poles $\frac{\ell_3-\ell(q_i)}{p_{3,a/b}-q_i}$ that are absent from
+\eqref{eq:sbp_absorbed}, no $\alpha_3$-independent one-loop shift $q_i \mapsto q_i + \hb\,\delta q_i$
+of the defect vertices can cancel \eqref{eq:sbp_absorbed} for all test solitons $3$.
+\end{proposition}
+
+\subsection{What survives at \texorpdfstring{$O(\hb^0)$}{O(hbar\^0)}: precise statement}
+
+Combining Propositions~\ref{prop:det_branches}--\ref{prop:absorbed_renorm}, we
+state precisely what holds \Lc\ and what does not survive as a physical
+bootstrap selection rule \Ld:
+\begin{enumerate}
+\item \textbf{Well-posed one-loop transmission on the stable defect ground state \Lc:}
+For any defect in its unique linearly stable vacuum $q_{\mathrm{st}}$
+($s_{\mathrm{eff}} = \eta\sigma_{\mathrm{st}} < -1$), the linearised spectrum has
+no growing modes, phonon scattering is reflectionless ($|z_{\mathrm{ph}}(q)|=1$),
+the localised momentum operator expectation value equals $\Delta P_D(q_{\mathrm{st}},\eta)$
+(Proposition~\ref{prop:PD2_identity}), the linear Casimir UV divergence is
+absorbed by the boundary counterterm \eqref{eq:delta_ED_ct} up to one integrable
+parameter shift $\delta s_1$ (Proposition~\ref{prop:cutoff_renorm}), and
+$N$-soliton transmission factorises at one loop into pairwise phases.
+\item \textbf{Surviving algebraic KP-chord identities \Lc:}
+At fixed bare KP root parameters $(p_{j,a},p_{j,b},q_i)$, the continuum phase
+integrals obey the exact algebraic chord difference \eqref{eq:ISD_fusion} and
+closed-triangle identity $\sum_{i=1}^3\rho_i\,I_{SS}(3,S_i)=0$, together with
+test-soliton delay closure $\sum_{i=1}^3\rho_{\mathrm{tree},i}\Delta X_3(3,S_i)\Delta P(3)=0$
+and mode-sum charge balance \eqref{eq:mode_holonomy_zero}. Likewise, a composite
+two-soliton process $D(q_{\mathrm{st}}) + S_{12} + S_{23} \to D(q_{\mathrm{st}}) + S_{13}$
+begins and ends on the unique stable defect vacuum $q_{\mathrm{st}}$.
+\item \textbf{Why physical KP-triangle fusion does not fix the $O(\hb^0)$ two-soliton S-matrix \Lc/\Ld:}
+Promoting the algebraic triangle identities to a physical quantum bootstrap
+selection rule (e.g.\ to exclude $\pm\frac{\pi}{2}$ exchange constants or
+$\Gamma$-factors in $S_{12}$) is obstructed at $O(\hb^0)$ because:
+(i) factoring the composite process into elementary steps traverses the two
+linearly unstable defect vacua $q_2,q_3$ ($\eta\sigma_{2,3}>-1$), which are not
+asymptotic quantum states;
+(ii) canonical soliton charges $(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$
+have non-zero KP-triangle holonomy \eqref{eq:can_holonomy_nonzero} unless the
+absorption locus shifts at $O(\hb)$ by \eqref{eq:a1_shift}; and
+(iii) holding the absorbed solitons' physical momenta fixed introduces the
+non-closing remainder \eqref{eq:sbp_absorbed}.
+\end{enumerate}
+
+% ==============================================================================
+\section{Summary of claims, verification scripts, and failures recorded}
+\label{sec:failures}
+% ==============================================================================
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\begin{tabular}{@{}p{4.8cm} c p{4.6cm} p{3.8cm}@{}}
+\toprule
+\textbf{Claim / Formula} & \textbf{Label} & \textbf{Verification script} & \textbf{Precision / Result} \\
+\midrule
+Classical defect charges $(E_D,P_D,\Pi_D,M_D)$ \eqref{eq:ED_proj}, \eqref{eq:PD_proj}--\eqref{eq:MD_proj} and off-shell conservation (Prop.~\ref{prop:classical_charges}) &
+\Lc & \sclass &
+Exact symbolic SymPy identity \\
+\addlinespace
+KP-triple vacuum jump factorisation \eqref{eq:vac_jump_all4} and time-dependent conservation in transmission and absorption (Prop.~\ref{prop:classical_absorption}) &
+\Lc & \sclass &
+Exact symbolic + $50$-digit quadrature ($<10^{-50}$) \\
+\addlinespace
+Corrected $4\times 4$ sewing determinant prefactor $-\frac{2}{3}$ \eqref{eq:det_corrected}, threshold factorisation \eqref{eq:P_at_S1}, and branch switch at $s_{\mathrm{eff}}=\sqrt{3}$ \eqref{eq:g_admissible} (Prop.~\ref{prop:det_branches}) &
+\Lc & \sren &
+Exact symbolic + $55$-digit root check \\
+\addlinespace
+Pointwise operator identities $\langle P_{D,2}\rangle_{\mathrm{sym}} = \frac{q}{4\pi}\theta_{D,\mathrm{odd}}'$ \eqref{eq:PD2_pointwise} and $-\langle a_t F_1+b_t G_1\rangle_{\mathrm{sym}} = \frac{\omega}{4\pi}\theta_{D,\mathrm{even}}'$ \eqref{eq:ED2_pointwise} (Prop.~\ref{prop:PD2_identity}) &
+\Lc & \sren &
+Exact symbolic SymPy identity \\
+\addlinespace
+Cutoff Casimir asymptotics \eqref{eq:ED_dens}--\eqref{eq:ED_mode}, boundary counterterm \eqref{eq:delta_ED_ct}, and off-shell integrability constraint (Prop.~\ref{prop:cutoff_renorm}) &
+\Lc & \sren &
+Exact symbolic + $60$-digit check at $\Lambda=10^{22}$ ($<10^{-20}$) \\
+\addlinespace
+Growing-mode count $(0,1,2)$ (and $(0,1,1)$ at $s_{\mathrm{eff}}=\sqrt{3}$); zero stable-to-stable absorption edges (Prop.~\ref{prop:stability_obstruction}) &
+\Lc & \sfus &
+Checked across $594$ directed KP edges \\
+\addlinespace
+Non-zero KP-triangle holonomy of $(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$ \eqref{eq:can_holonomy_nonzero} vs zero holonomy of mode-sum and $a_{1,i}$-shifted charges (Prop.~\ref{prop:holonomy_nogo}) &
+\Lc & \sfus &
+$50$-digit mpmath ($<10^{-49}$) \\
+\addlinespace
+Non-closure of absorbed-soliton momentum shift \eqref{eq:sbp_absorbed} and summation-by-parts identity (Prop.~\ref{prop:absorbed_renorm}) &
+\Lc & \sfus &
+$50$-digit mpmath ($<2.5\times 10^{-50}$) \\
+\addlinespace
+Quantum derivation of shifted absorption pole \eqref{eq:a1_shift} and unstable-resonance continuation &
+\Ld & --- &
+Open physical problem \\
+\bottomrule
+\end{tabular}
+\caption{Summary of claims, labels, and verification scripts in this write-up.}
+\label{tab:summary}
+\end{table}
+
+\paragraph{Failures recorded.}
+In accordance with \texttt{AGENTS.md}, we record all failed checks and errors
+encountered during this investigation:
+\begin{enumerate}
+\item \textbf{Double-subtraction of $-u_{\mathrm{CZ},x}F_{\mathrm{CZ}} - v_{\mathrm{CZ},x}G_{\mathrm{CZ}}$ in $P_D$ and unsimplified $1/\eta$ in SymPy.}
+In the first version of \sclass, we defined the
+total defect momentum as $\frac{1}{9}(-u_{\mathrm{CZ},x}F_{\mathrm{CZ}} - v_{\mathrm{CZ},x}G_{\mathrm{CZ}} + P_{D,\mathrm{CZ}})$
+and substituted $\eta^2 \mapsto 1$ without simplifying $1/\eta \mapsto \eta$.
+The off-shell check $\frac{\dd}{\dd t}(P_{\mathrm{bulk}}+P_D)=0$ failed because
+CZ's $P_{D,\mathrm{CZ}}$ in \cite[(3.49)]{CZ} already incorporates
+$-u_{\mathrm{CZ},x}F_{\mathrm{CZ}} - v_{\mathrm{CZ},x}G_{\mathrm{CZ}} + \tilde{P}_D$.
+Using $P_D = P_{D,\mathrm{CZ}}/9$ and testing $\eta=\pm 1$ gave zero off-shell
+remainder identically.
+\item \textbf{Sequential dictionary substitution order in SymPy and singular transmission test point.}
+In Check~2 of \sclass, a single dict call
+\texttt{.subs(\{s: s\_i, pL: -w\_CZ\_f/3, eta: eta\_val\})} left $\eta$ unreplaced
+inside \texttt{w\_CZ\_f} when SymPy evaluated $\eta$ before \texttt{pL};
+splitting the substitutions fixed the symbolic check. In Check~3(a), our first
+numerical test point $(s=-1.5,\alpha=0.55,\epsilon=+1,\eta=+1)$ had
+$q_D = \frac{\sqrt{3}}{4} \in (p_b,p_a)$, so $z < 0$ (singular soliton on $x>0$)
+and $\ln z$ was complex, raising a \texttt{TypeError} in \texttt{mpmath}
+quadrature; choosing regular transmission points ($s=-2.5,\epsilon=+1$ and
+$s=-1.5,\epsilon=-1$, where $z>0$) and using $\tanh/\operatorname{sech}$ jet
+evaluations to avoid large-argument overflow gave conservation to $<10^{-50}$.
+\item \textbf{Zero-endpoint vs asymptotic branch in $B_D(\Lambda)$ and sign of $\sigma_0(a-b)/2$ in $F_1,G_1$.}
+In the first run of \sren, evaluating the cutoff
+endpoint $B_D(\Lambda)$ with $\theta_D^{\mathrm{phys}}$ ($\theta_D^{\mathrm{phys}}(0^\pm)=0$)
+failed because $\theta_D^{\mathrm{phys}}(\pm\infty) = \pm\pi\eta$ for $s<-1$;
+using the asymptotic branch $\theta_D^{\mathrm{asympt}}(\pm\infty)=0$ (where the
+$q=0^\pm$ jump is killed by $\omega(0)=0$) and accounting for the $+\frac{S_D}{2\pi}$
+rational term in $\Delta E_D^{\mathrm{ren}}$ gave agreement to $<10^{-20}$. In
+Part~3, writing $+\frac{\sigma_0}{2}(a-b)$ instead of $-\frac{\sigma_0}{2}(a-b)$
+in $F_1,G_1$ broke quadratic momentum conservation $\frac{\dd}{\dd t}(P_{\mathrm{bulk},2}+P_{D,2})=0$;
+fixing the sign from $\delta(\frac{\sigma^2}{12\mu}) = -\frac{\sigma_0}{2}(a-b)$
+and correcting the $-q$ derivative sign in $\theta_D'(-q)$ made all quadratic
+identities pass identically.
+\item \textbf{Threshold/branch-switch mode counts in \sfus.}
+In Check~1 of \sfus, we initially excluded
+$n=67$ instead of $n=68$ ($2\times 102/3 = 68$) on the grid $\vartheta = \pi n/102$
+and expected growing-mode counts $(0,1,2)$ at all nondegenerate angles. The
+script returned $\{(0,1,2),(0,0,2),(0,1,1)\}$, exposing both the typo $67\to 68$
+(where $\vartheta=2\pi/3$ is a degenerate threshold triple) and the genuine physical
+branch-switch point at $n \in \{17,51,85\}$ ($\vartheta \equiv \frac{\pi}{6}\pmod{\frac{\pi}{3}}$,
+$s_{\mathrm{eff}}=\sqrt{3}$), where the second growing mode touches $g_2(\sqrt{3})=0$
+($S=1$) while $g_1(\sqrt{3}) = \frac{2\sqrt{3}-1}{8} > 0$ remains strictly unstable,
+giving mode count $(0,1,1)$ and confirming zero stable-to-stable edges everywhere.
+\end{enumerate}
+
+\begin{thebibliography}{9}\small
+\bibitem{CZ}
+E.~Corrigan and C.~Zambon,
+\emph{Adding integrable defects to the Boussinesq equation},
+J.~Phys.~A \textbf{56} (2023) 405202,
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}.
+[arXiv abstract read online for this task; bulk/defect equations and exact
+solutions rederived and verified symbolically from the action in
+\texttt{corrigan-zambon/defect\_check.py},
+\texttt{corrigan-zambon/verify\_defect\_solutions.py}, and
+\sclass; sections 2--3 and 5.1 previously checked in
+\texttt{audit\_charges\_action.pdf}.]
+
+\bibitem{FK}
+L.~D.~Faddeev and V.~E.~Korepin,
+\emph{Quantum theory of solitons},
+Phys.~Rep.\ \textbf{42} (1978) 1--87,
+\href{https://doi.org/10.1016/0370-1573(78)90058-3}{doi:10.1016/0370-1573(78)90058-3}.
+[Relevant equal-mode-count passages in Appendix~6 (eqs.~A.6.11--A.6.14) verified
+in \texttt{audit\_charges\_action.pdf}.]
+\end{thebibliography}
+
+\end{document}
