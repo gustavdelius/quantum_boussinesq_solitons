@@ -1,0 +1,574 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,enumitem}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\emergencystretch=3em
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\test}[1]{\textit{Independent check:} \file{review_draft3_checks.py}, group #1.}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Independent cross-review of paper draft 3}
+\author{Review for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\C The draft incorporates most audited corrections: the bad-equation
+one-body matching, corrected Wiener--Hopf normalisation, finite-sea endpoint
+identities, Gamma candidate poles and conditional ring algebra survive.
+There are \textbf{11 required corrections} below. The principal failures are
+the four-term Krein source and its claimed physical consequences, the signs
+of the collective symplectic matrices and definitions of projector sources,
+and inconsistent one-loop units. Passing paper scripts do not certify those
+statements. \D Acceptance as an audited consolidation should await the
+corrections; neither an exact S-matrix nor a physical projected determinant
+is established by this review.
+\end{abstract}
+
+\section{Scope, conventions and evidence}
+\C Reviewed source: \file{paper/boussinesq_soliton_scattering.tex}, draft 3,
+including the coordinator's revised Section 10. The source SHA-256 is
+\begin{quote}\small\ttfamily
+81d98ad5a437ab876df7f6b359ffd9c5800\newline
+df84bd5c9087238bd19b8432f2d03
+\end{quote}
+All line locators below refer to that snapshot. The required
+\file{git log --format='--- \%h \%s\%n\%b' a111f8c^..HEAD}
+digests were read, including the later warning in commit \file{38f5b2d}.
+No pull, index update, commit, stash or branch change was performed.
+
+Labels mean (a) literature proof, (b) literature heuristic, (c) project
+derivation or reproducible source observation, and (d) unresolved physical
+identification or research judgment. All source-comparison findings and table
+entries below are (c), with physical limitations explicitly (d).
+No external paper or abstract was newly read, no external bibliography was
+reverified, and no new arXiv ID or DOI is asserted. Literature names refer
+to the formulas and attribution already recorded in the local packages.
+The controlling internal texts are the relevant sections of
+\file{phase2/audit_defq.tex}, \file{audit_det_projected.tex},
+\file{audit_projected_measure.tex}, \file{audit_toda_dictionary.tex},
+\file{audit_frame_dictionary.tex}, \file{audit_phase2i.tex},
+\file{audit_onebody.tex}, \file{audit_onebody_scheme.tex},
+\file{audit_smx.tex}, their packages, \file{phase2/errata.tex},
+\file{phase2/twobody_toda.tex}, and \file{phase2/report.tex}.
+Audit verdicts override package prose; the later explicit reference-term
+calculation also requires reconsidering the older frame audit.
+
+\C The independent checker uses exact SymPy and 60-digit mpmath, imports
+no project implementation, and writes no files. Its group names G, E, W,
+K, F, C, S, R, D and I are used below. Source checks are distinguished from
+fresh computations. The four pre-existing \file{paper/scripts/*.py} files
+were all executed; the new review checker is also executed. Phase-2 scripts
+were inspected, not indiscriminately rerun, since many write existing data.
+Only the requested three deliverables are added to the repository.
+
+\section{Required corrections}
+\begin{enumerate}[label=\textbf{R\arabic*.},leftmargin=*,itemsep=1.2em]
+
+\item \textbf{Replace the four-term Krein source; weaken the physical exclusion.}
+\C \textit{Location:} Section 8.3, lines 805--821; summary item 8;
+Appendix A's antisymmetric-function row; the rank-two route in Section 10(2).
+The equation imported from \file{audit_frame_dictionary.tex} is wrong.
+Use notation that avoids the draft's overloaded $f$: let
+$B=F'$, $b=B'$, $c=\sqrt\pi$, and, for $u>v>0$,
+\begin{align}
+ H(u,v)&=2\int_0^v b(u-w)B(v-w)\,dw,\qquad
+ \widehat H(u,v)=H(u,v)-2c[B(v)-c],\label{rev:H}\\
+ (\partial_u+\partial_v)H&=2b(u)B(v),\\
+ (\partial_u+\partial_v)\widehat H&=2b(u)B(v)-2c\,b(v).
+ \label{rev:source}
+\end{align}
+The old source, even granting its intended derivative convention,
+$2b(u)[B(v)-c]$, differs by $2c[b(u)-b(v)]$.
+At $(u,v)=(4,1)$ the corrected source is
+$-0.3471042546629204553\ldots$, versus
+$+0.8377480606920601269\ldots$ for the old source.
+\textit{Evidence:} \file{twobody_toda.tex}, equation \file{eq:PDE};
+fresh transform inversion and differentiated-convolution bookkeeping.
+\test{K}
+
+\C This repair does \emph{not} produce an arbitrary freedom in the
+specified microscopic Toda phase. With its source and boundary data fixed,
+the difference of two solutions obeys
+$(\partial_u+\partial_v)\Delta=0$ and vanishes at $v=0$;
+characteristics give $\Delta=0$ in $u>v>0$.
+The correct test of $A_\lambda(y_1,y_2)$ is
+\[
+ \left[\frac{B(u_1)}{2\sqrt{y_1}}\partial_{y_1}
+       +\frac{B(u_2)}{2\sqrt{y_2}}\partial_{y_2}\right]A_\lambda,
+\]
+not $(\partial_{y_1}+\partial_{y_2})A_\lambda$.
+The independent checker finds this weighted derivative nonzero at the
+actual WH coordinates corresponding to $(u_1,u_2)=(4,1)$.
+
+\C The nonzero $3\times3$ minor only excludes Schmidt rank at most two;
+it does not by itself prove infinite rank or restrict every admissible
+physical phase to a bilinear. Infinite rank of this particular rational
+function can instead be proved by its distinct moving poles at $y_1=-y_2$.
+The evenness in $r$ and poles at $r=\pm i$ are algebraic facts.
+\D Universal physical parity, a pole-free complex domain for the unknown
+quantum frame, and restriction of every frame correction to the specified
+one-body bilinear have not been established by those algebraic facts.
+The later directional residual even contains an additive $\pi$; its physical
+normalisation is explicitly open.
+
+\textit{Fix:} retain (c) for the counterexample to reciprocity alone and for
+uniqueness of the \emph{specified} Toda solution conditional on the corrected
+edge equation. Restrict the Schmidt statement to the stated finite-rank
+frame ansatz. Withdraw the blanket three-constraint physical exclusion and
+the inference that only a rank-two continuum operator problem remains.
+Keep the general continuum quantum map and physical phase (d).
+
+\item \textbf{Correct both symplectic matrices and the projector inputs.}
+\C \textit{Location:} Section 7.1, \file{eq:W3W4}, lines 605--613.
+For the printed order $(Z_v,Z_X,Z_C,Z_r)$ and
+$\Omega=\int d\pi\wedge d\phi$, the audited matrices are
+\[
+ W_3=\begin{pmatrix}0&P_v&\Pi_v\\-P_v&0&0\\-\Pi_v&0&0\end{pmatrix},\qquad
+ W_4=\begin{pmatrix}0&P_v&\Pi_v&0\\-P_v&0&0&0\\-\Pi_v&0&0&-1\\0&0&1&0\end{pmatrix}.
+\]
+Both printed matrices are their negatives. Rank, null vector and
+$\det W_4=P_v^2$ are unchanged, which explains why paper check 2b passes.
+The projector tail expression is correct with the \emph{corrected} matrix
+and
+\[
+ b_A=\Omega(Z_A,\eta),\qquad
+ b_r=\int w\eta_\phi\,d\xi,\qquad
+ b_X=\int(vu_0'\eta_\phi+u_0\eta_\pi)\,d\xi.
+\]
+The paper instead identifies $b_r$ with $\int\eta_\pi$ and $b_X$ with
+$\Omega(Z_v,\eta)$, both incorrectly. For $\eta=(w,0)$ its proposed $b_r$
+vanishes, whereas the actual constant tail is $\int w^2d\xi=3k/7$.
+\textit{Evidence:} \file{audit_det_projected.tex}, equations
+\file{eq:W3_audit}, \file{eq:Winv_tails}; direct field-pairing quadrature
+at both velocity signs. \textit{Fix:} use the displayed corrected matrices
+and component definitions; retain the endpoint obstruction. \test{G}
+
+\item \textbf{Use one loop-order convention and fix the finite-tadpole sign.}
+\C \textit{Location:} Section 7.1, lines 622--641, especially
+\file{eq:E1Pinv}, \file{eq:Fg} and assumptions (A),(B).
+The paragraph defines $E=E_0+\hbar E_1|_P+\cdots$, so $E_1|_P$ is a
+coefficient. It then divides that coefficient and $L_1$ by $\hbar_B$ in
+\file{eq:Fg}. The cutoff expression similarly adds $3C_\Lambda M$, which
+contains $\hbar$, to a trace and cutoff endpoint written without $\hbar$.
+\textit{Fix:} consistently write
+\[
+ E(P)=E_0(P)+\hbar_B F(P)+\cdots,\quad
+ L=L_0+\hbar_B\ell_1+\cdots,\quad F=e-vp=-\ell_1,
+\]
+with $e,p$ coefficient shifts and counterterm $3C_\Lambda M/\hbar_B$ in
+the coefficient trace. Alternatively put $\hbar_B$ on every physical
+trace and endpoint and call $\Delta E_1=\hbar_BF$ the correction.
+The analytic right-hand side of \file{eq:Fg} itself is correct.
+
+\C Adding $+2\hbar_Bc_{\rm fin}\sin\alpha$ to the physical $L_1$ changes
+$F$ by $-2c_{\rm fin}\sin\alpha$, so the leading change in $F/|P_0|$ is
+$-3c_{\rm fin}/\alpha^2$, not the printed positive sign.
+The audit's positive sign is for a term added to the \emph{energy}.
+\textit{Evidence:} \file{audit_det_projected.tex}, its finite-subtraction
+paragraph, and \file{audit_onebody_scheme.tex}'s explicit units. \test{E}
+
+\item \textbf{Differentiate the contact term in the paper's notation.}
+\C \textit{Location:} Section 8.2, line 795, immediately before
+\file{eq:R0c1}. The paper defines $f=F'=B$ in \file{eq:WHlap} and
+$\psi_-=f'/2$, but copies the audit's contact term while the audit uses
+$f=G''=B'$. With the paper's notation the contact term in
+$\partial_{u_2}\Phi_q$ is $2\sqrt\pi f'(u_1-u_2)$, equivalently
+$4\sqrt\pi\psi_-(u_1-u_2)$, not $2\sqrt\pi f(u_1-u_2)$.
+\textit{Evidence:} Leibniz differentiation of \eqref{rev:H} and
+\file{audit_phase2i.tex}, ``double Laplace formula'' paragraph.
+\textit{Fix:} change that derivative; retain the corrected double-transform
+prefactor $2\pi$ and its contact prescription. \test{K}
+
+\item \textbf{Repair the tau-zero witness, retaining the no-breather conclusion.}
+\C \textit{Location:} Section 9.2, line 856 after \file{eq:Agoodbr}.
+At $\cos I=-1$, $X=1/\sqrt A$ gives
+$\tau=2-2/\sqrt A$, not zero for $0<A<1$.
+Also the assertion of a positive root for \emph{every} $\cos I$ when
+$A\le0$ fails at $A=0$, $\cos I\ge0$.
+\textit{Fix:} choose $\cos I=-1$ and
+\[
+ X=\frac1{1+\sqrt{1-A}}\quad(A<1).
+\]
+This positive root covers negative $A$, $A=0$ and $0<A<1$ uniformly.
+The inequality $A<1/4$ and singularity of the specified good Hirota family
+survive; no general quantum-bound-state exclusion follows.
+\textit{Evidence:} direct polynomial substitution; controlling
+\file{audit_smx.tex} regularity argument. \test{S}
+
+\item \textbf{Make quantum crossing and the Gamma ansatz restrictions explicit.}
+\C \textit{Location:} Section 9.1, lines 828--834, and Section 9.4.
+The classical crossing-type identity in Proposition 4.2 does not establish
+that an exact nonrelativistic quantum amplitude ``must'' obey the same
+relation. \file{audit_smx.tex} stipulates crossing on compatible branches;
+it does not prove it for the unknown physical S-matrix.
+Likewise Stirling matching does not force \emph{any} single Gamma quotient
+to have the paper's argument if arbitrary two-body exponential prefactors
+are allowed. A compensating leading phase can cancel the Stirling phase
+for another real exchange-odd argument. The root-difference rejection
+script tests a particular finite basis, not that unrestricted theorem.
+\textit{Fix:} label the exact crossing postulate (d), and the ensuing
+family algebra (c) conditional on it. State the admissible prefactor class
+before a necessity claim; otherwise present the spectral Gamma quotient
+as the tested candidate. Preserve the correctly restricted mirror and
+nine-ratio dilogarithm exclusions. \test{S; the restricted residue proof
+is also checked in the existing paper script and \file{audit_smx.py}}
+
+\item \textbf{Restore equation attribution and physical qualifications in summaries.}
+\C \textit{Location:} summary item 7 (line 88), abstract, Section 5.7,
+and Section 10's introduction and items 3--4.
+The summary's \emph{both} tag includes $M(v)=2\sqrt{1-v^2}$ and the
+good-equation geometry; the bad profile instead has
+$M(v)=2\sqrt{v^2-1}$. The value $C-s_1=-1/(4\pi)$ is for Toda/continued
+bad, whereas good gives $+1/(4\pi)$. The detailed Section 7 distinction
+is correct and must govern the summary. The abstract and summary item 5
+must also say that the \emph{bulk-plus-defect totals} are conserved;
+localised defect charges alone change during absorption, as their nonzero
+vacuum jumps in Section 5.7 already show.
+
+\C Zero counted real growing modes does not prove complete linear
+stability: the controlling defect audit leaves off-axis completeness open.
+The abstract's ``strictly linearly stable'', Section 5.7's ``unique stable
+vacuum'', and Section 10(4)'s unqualified stability phrase exceed that
+status. The no-stable--stable-edge obstruction survives because every
+other vertex has a demonstrated growing mode.
+\D Keep the stronger spectral statement conditional on completeness.
+The possible \emph{quantum} inelastic channels in Section 10(3) are a
+project open question (d), not a literature heuristic (b) established by
+the locally recorded classical CZ result.
+
+\C Finally, Section 10's claim that the counterterm was traced to a
+specific short-wave band repeats the report's motivation more strongly
+than the vacuum-matching derivation supports. The scheme audit derives a
+homogeneous elastic difference; \file{good_renorm.tex} explicitly warns
+against inferring whole-trace support from light-root cancellation.
+\textit{Fix:} retain the PI's ranking but describe that band attribution
+as motivation, not an additional demonstrated mechanism. State the
+one-body and WH results as conditional traces/edge limits, and the good
+acoustic scheme as an available thermodynamic condition, not the selected
+physical prescription. \test{E; G; D. Completeness is not asserted.}
+
+\item \textbf{Specify the time-dependent two-soliton fluctuation operator.}
+\C \textit{Location:} Section 10(2), line 902, referring to
+``the fourth-order operator $\mathcal D_v$'' as the two-soliton operator.
+Section 7.1 defines $\mathcal D_v$ around a single stationary travelling
+profile in its co-moving frame. Two distinct velocities have no common
+stationary frame. Around the good two-soliton field $u_2(x,t)$ the lab-frame
+operator is
+\[
+ \mathcal D_{[u_2]}=\partial_t^2+\partial_x^4-\partial_x^2
+                      +6\partial_x u_2(x,t)\partial_x.
+\]
+\textit{Fix:} use this operator (or its fully time-dependent transform),
+with one-body $\mathcal D_v$ only as asymptotic input. This is not a choice
+of determinant prescription. \test{G, independent quadratic-action variation}
+
+\item \textbf{Define the auxiliary functions and the residual being expanded.}
+\C \textit{Location:} \file{eq:defcharges}, Section 5.7, and
+\file{eq:R0c1}, Section 8.2. The body never defines the defect polynomials
+$\rho(\sigma),\tau(\sigma),h(\sigma)$ and their integration constants;
+the isolated development note in Appendix A is insufficient.
+Using $A=\eta/\sqrt3$ (unrelated to the interaction constant), supply
+\[
+ \rho(\sigma)=\frac{\sigma-\sigma^3/3-s+s^3/3}{2A},\qquad
+ \tau'(\sigma)=-\sigma\rho(\sigma),\quad
+ h'(\sigma)=-\rho(\sigma),\quad \tau(s)=h(s)=0.
+\]
+These are the audited reference and gauge conventions, not new choices.
+\textit{Evidence:} \file{audit_defq.tex}, ``Classical charges rederived''.
+\test{D}
+
+\C Define the edge residual in the paper before using $R_0(Y,r)$:
+subtract $H_{\rm cl}=4rY+2Y(1-r^2)\log[(1-r)/(1+r)]$ from
+$H(u(Y),u(r^2Y))$, and identify $c_1$ as its formal $1/Y$ coefficient.
+This makes explicit that it is the \emph{two-term directional} residual,
+not the four-term phase or a physically normalised scalar phase.
+\textit{Evidence:} \file{audit_phase2i.tex}, saved-data definitions;
+\file{twobody_toda.tex}. \test{C, formal coefficient integrals;
+the asymptotic physical identification remains (d)}
+
+\item \textbf{Replace Appendix A's blanket formula-coverage claim with exact scopes.}
+\C \textit{Location:} Appendix A, line 929 and the new quantum rows.
+All 64 distinct cited script paths exist, but the opening claim that the
+paper scripts assert every new formula is false. For example:
+\begin{itemize}[nosep]
+\item draft-3 check 2b verifies determinants/moments, not field pairings,
+and accepts the wrong sign matrices; it does not test the stated projector;
+\item 4a's reciprocity test is an algebraic rewrite of the endpoint product,
+not a comparison with independently computed forward/reverse phases;
+\item 4d only tests minors of an assumed expression; it does not construct
+the four-term phase or test its actual PDE or physical parity;
+\item 5e asserts cancellation of scalar symbols after assuming a crossing
+law; it does not integrate $J$; 5d inserts the desired derivative identity;
+\item 1b does not construct the sewing matrix; 1c does not independently
+derive the quadratic energy operator; 5a does not compute a Gamma residue.
+\end{itemize}
+\C These are limits of the assigned checks, not reasons to discard
+independent audited results. Name the controlling audit and actual test
+group beside each claim. Direct field pairings, actual finite-sea reciprocity,
+Gamma residues and independently differentiated ring phases are added in
+this review. \test{G, F, S, R, I; source-inspection ledger below}
+
+\item \textbf{Update stale failure and script-status statements.}
+\C \textit{Location:} Appendix A's opening, Hirota row and failures item 2;
+the \file{audit_onebody.py} citations in Section 7.2 and Appendix A.
+The current Hirota script no longer contains an assertion bypassed by
+\file{or True}; the repair is recorded in \file{errata.tex}, N05, and
+\file{scripts_inventory.md}. Record that repair as historical, not current.
+\file{audit_onebody.py} still fails its unchanged line-383 tolerance:
+the saved discrepancy is $2.2546734882\times10^{-4}>3\times10^{-6}$.
+The later audit diagnoses truncation error in a true limiting identity;
+it does not make the old checker pass. Explicitly annotate its failed-run
+status and use \file{audit_onebody_scheme.py} for the surviving conclusion.
+Also classify \file{phase1/scripts/figures.py} as a generator, not a
+verification script. \file{toda_scaling_fast.py} gates its printed marker
+with a Boolean but does not raise on failure; a zero exit status alone is
+not evidence. \textit{Fix:} distinguish available source, asserted coverage,
+known historical failure, and actually rerun success. \test{I}
+\end{enumerate}
+
+\section{Display-by-display cross-check}
+\C The following ledger covers all \textbf{38 labelled displayed equations}
+in Sections 5.7, 7, 8 and 9. Labels are source labels, not newly assigned
+equation numbers. ``Agrees'' means comparison with the specified controlling
+audit or the fresh check, under the qualifications stated here. It is not
+an independent derivation of the full quantum theory. Internal audit names
+below abbreviate \file{phase2/audit_*.tex}; sources of new computations are
+the indicated groups in the review checker and the executed paper checkers.
+\small
+\begin{longtable}{@{}L{3.0cm}L{1.6cm}L{10.6cm}@{}}
+\toprule Paper equation label & Equation & Verdict, evidence and scope\\\midrule\endhead
+\file{eq:defcharges} & good & Agrees with defq, action-derived charges; add primitives (R9). Paper check 1a verifies vacuum jumps, not all conservation laws.\\
+\file{eq:detMdef} & good & Agrees with defq/frames\_defects, including prefactor and effective spectral parameter. D rechecks thresholds.\\
+\file{eq:PD2trace} & good & Agrees with defq: correct momentum numerator and positive symplectic-energy sign; continuum contractions, not complete quantum vacua.\\
+\file{eq:defUVct} & good & Agrees with defq. D rechecks decomposition; finite boundary subtraction remains open.\\
+\file{eq:Kvfact} & good & Agrees with det\_projected; executed paper 2a checks factorisation and modes.\\
+\file{eq:W3W4} & good & Wrong overall signs, though determinant/rank survive (R2); G checks field pairings.\\
+\file{eq:boxnorm} & good & Agrees with det\_projected, including finite constant; executed paper 2c checks quadrature.\\
+\file{eq:E1Pinv} & good & Correct coefficient-level Legendre identity; inconsistent later units (R3).\\
+\file{eq:Fg} & good & Analytic trace and series agree; left-hand normalisation needs R3. Conditional determinant identification. E.\\
+\file{eq:CEhdef} & Toda/bad & Agrees with onebody\_scheme and precision package's classical dictionary; $P_0$ is Toda momentum here.\\
+\file{eq:CTnum} & Toda/bad & Central value agrees. Quoted envelope is sensitivity, not a rigorous error bound; see optional rounding improvement.\\
+\file{eq:CvCE} & Toda/bad & Agrees with onebody\_scheme, conditional WH limit; F rechecks finite-sea identities, E the sound shift.\\
+\file{eq:CTdecomp} & Toda/bad & Correct $1/(2\pi)$ conditional edge coefficient; not a fixed-nonzero-momentum limit theorem. E/W.\\
+\file{eq:Fac} & bad & Algebraic continuation and $2/\pi$ correct. Physical unstable-mode determinant remains (d). E.\\
+\file{eq:Wg} & good & Agrees with onebody\_scheme; thermodynamic vacuum coefficient. E.\\
+\file{eq:Wbac} & bad & Correct formally continued strain energy and sound shift; physical bad vacuum qualified. E.\\
+\file{eq:WTB} & Toda/bad & Correct harmonic-lattice vacuum energy in stated classical units. E.\\
+\file{eq:DeltaHmatch} & bad & Correct homogeneous elastic matching, no soliton fit. Uniqueness is for the quadratic local coefficient. E.\\
+\file{eq:Cmatched} & bad & Correct conditional trace coefficient $1/(2\pi)$. E.\\
+\file{eq:schemeinv} & bad & Correct $-1/(4\pi)$ under common finite quadratic subtractions. E.\\
+\file{eq:Cgonshell} & good & Correct conditional $+1/(4\pi)$ in the stated acoustic scheme, not a forced scheme. E.\\
+\file{eq:endids} & Toda & Agrees with toda\_dictionary/frame\_dictionary; F solves fresh Fredholm equations.\\
+\file{eq:yjac} & Toda & Correct factors of $a,h$, including energy Jacobian; fresh inverted-momentum differentiation in F.\\
+\file{eq:MQresp} & Toda & Correct endpoint response and thermodynamic denominator, with edge subtraction; audited pressure response. F.\\
+\file{eq:recip4} & Toda & Correct four-term identity; F compares actual directional phases, not an assumed product.\\
+\file{eq:S0D0} & Toda & Agrees with frame\_dictionary, retaining endpoint terms and $a=1$. Paper 4b tests rectangular difference and large-$Y$ limit.\\
+\file{eq:WHsym} & Toda & Correct nonzero-frequency symbol and factor product. W. Zero-frequency matching not proved.\\
+\file{eq:WHlap} & Toda & Correct $\sqrt\pi$ momentum/derivative transforms; half-line matching conditional. W.\\
+\file{eq:duasymp} & Toda & Correct $c_{\rm edge},d_0,e_0$ under transform input; phase2i symbolic reversion and paper 4c, independently inverted in W.\\
+\file{eq:R0c1} & Toda & Formal integrals agree with phase2i and fresh C. Define residual (R9); uniform integrated asymptotics remain conditional.\\
+\file{eq:Alambda} & Toda & Correct rational counterexample and scaling; claimed physical exclusion needs R1. K.\\
+\file{eq:etadef} & bad & Definitions agree with smx; unrestricted necessity claim does not (R6).\\
+\file{eq:Sgamma} & bad & Correct baseline candidate algebra on consistent branches; candidate status (d). Executed paper 5a and smx.\\
+\file{eq:BCpoles} & bad & Correct candidate poles $N\ge1$, no zero-level Gamma pole; S tests full residues. Exact spectrum remains (d).\\
+\file{eq:Agoodbr} & good & Correct bound and sign boundary; subsequent root witness wrong (R5). S.\\
+\file{eq:ringBA} & both & Conditional directional derivative and summed twist agree with smx, including self term; R independently differentiates classical phase. Quantum holonomy (d).\\
+\file{eq:dilogres} & both & Correct audited diagonal residues, restricted constant-coefficient nine-ratio basis. No universal exclusion.\\
+\file{eq:thetares} & bad & Correct on stipulated compatible analytic crossing branches and loop expansion; extend to good using its angle dictionary, not $i\pi$. R6.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\C The target sections have no additional unlabelled display environments.
+Important inline formulas were also checked: defect threshold/asymptotic
+phase/holonomy examples; collective null vector, kinetic lower bound and
+heavy-mode profiles; cutoff and sound expansions; opposite-edge identity;
+the two-term convolution and its contact; Gamma Stirling/CDD algebra;
+ring self derivative and composite charges; and the restricted mixed
+dilogarithm argument. The failures among these are R1--R7 and R9.
+The corrected $+3e_0/y^2$ term in $C_E$ is adopted correctly.
+The good/bad stable-band distinction and stationary group-velocity resonance
+are also transcribed correctly; the resonance location quoted is its
+small-amplitude limiting value, not a formula at arbitrary $v$.
+
+\section{Section 10 and optional improvements}
+\C The order agrees with the PI's re-ranked \file{phase2/report.tex}:
+good renormalisation, good two-body phase, resonant/number-changing channels,
+quantum defect boundary theory, then candidate/ring selection; V1--V3 are
+validation tasks. No re-ranking is requested. The good acoustic coefficient
+and its scheme dependence are consistent with Section 7, and the ring
+holonomy remains open consistently with Section 9.
+V1's closed form is explicitly conditional and audit-pending, as required.
+It must remain a \emph{directional Toda} coefficient, distinct from a
+physical scalar phase and from a Gamma-relative continuum remainder.
+R1, R7 and R8 repair the remaining status/definition problems without
+changing the PI's scope.
+
+\begin{itemize}
+\item \C Round the numerical uncertainty upward to $8.24\times10^{-6}$,
+as in the coordinator digest and errata; the displayed components sum to
+$8.2298\times10^{-6}$ and a relative envelope slightly larger than
+$5\times10^{-5}$. Say ``about'' that relative precision.
+\item \C State $0<r<1$ immediately beside Section 10 V1's formula.
+The reverse ordering follows from the separately defined exchange operation;
+the $r\to1$ and $r\to0$ limits require their own control. The conditional
+coefficient is not an unrestricted global analytic continuation.
+\item \C Distinguish the many uses of $\eta$ (defect orientation, fluctuation,
+Fredholm energy weight, Gamma argument), $h$ (Planck constant or defect
+primitive), and $F$ (energy coefficient, momentum function, backflow).
+R4 demonstrates an actual error caused by derivative-name migration.
+\item \D Replace the long abstract's inventory with a smaller set of
+qualified conclusions after the mathematical corrections. This is editorial,
+not a prerequisite for retaining the independently verified coefficients.
+\end{itemize}
+
+\section{Appendix A: script-to-claim inspection ledger}
+\C Every one of the 64 cited paths exists and parses as Python. The table
+below records source coverage, not fresh executions of all 64 scripts.
+The four paper scripts were freshly run successfully; the other entries
+were inspected for their assigned calculations and compared with controlling
+audits. ``Limited'' means the stated package check is narrower than the
+paper claim; use the audit alongside it. A script can correctly test one
+claim and fail to test another. Grouping in Appendix A must not erase that
+distinction. Mathematical formulas in this review have direct script
+evidence; no source inspection is represented as a new physical proof.
+
+\small
+\begin{longtable}{@{}L{6.0cm}L{9.2cm}@{}}
+\toprule Script & Coverage and limitation (c)\\\midrule\endhead
+\file{corrigan-zambon/defect_check.py} & Action/sewing algebra and real type-I obstruction; applies to the stated ansatz.\\
+\file{corrigan-zambon/defect_transmission_phase.py} & Root transmission, delay derivatives, vacuum balances and defect symplectic term; tree level.\\
+\file{corrigan-zambon/defect_two_soliton_symplectic.py} & Cross-ratio, shifts and symplectic identities; some resonance diagnostics only. Paper checks supplement these.\\
+\file{corrigan-zambon/defect_vacuum_stability.py} & Sampled determinant roots and growth counts; not off-axis spectral completeness.\\
+\file{corrigan-zambon/verify_defect_solutions.py} & Sampled sewing residuals for explicit transmitting solutions.\\
+\file{paper/scripts/paper_conventions_check.py} & Fresh PASS. Sign dictionaries, charges, gradients and crossing samples. Historical diagnostic names are not current-source audits.\\
+\file{paper/scripts/paper_draft2_checks.py} & Fresh PASS. Prior corrections, canonical signs, dictionaries and classical identities; no quantum-completeness proof.\\
+\file{paper/scripts/paper_draft3_checks.py} & Fresh PASS. Many genuine algebraic tests, but important gaps in checks 1b, 1c, 2b, 4a, 4d, 5a, 5d and 5e: R10.\\
+\file{paper/scripts/review_draft1_checks.py} & Fresh PASS. Independent classical review checks; optional source-suite mode was not invoked here.\\
+\file{phase0/checks/convention_check.py} & Two actual symbolic assertions; no final success marker (legacy exception).\\
+\file{phase1/scripts/charges.py} & Hamiltonian/GD charges, energy and velocity identities; paper checks supply the explicit vacuum-subtraction dictionary.\\
+\file{phase1/scripts/figures.py} & Generator only: no scientific assertions; marker is DATA GENERATED (no checks).\\
+\file{phase1/scripts/hirota_solitons.py} & Active repaired sech/PDE and finite rational/complex Hirota checks. The reported current or-True bypass is stale.\\
+\file{phase1/scripts/interaction_regimes.py} & Sampled good/bad interaction and breather inequalities, resonance and shift tests; not a general quantum spectrum.\\
+\file{phase1/scripts/lax_zero_curvature.py} & Symbolic Lax compatibility and explicit real/imaginary-time dictionaries.\\
+\file{phase1/scripts/toda_limit.py} & Classical Toda expansion and bad-equation map, with finite-amplitude/scaling samples.\\
+\file{phase2/scripts/audit_charges_action.py} & Independent charge/Legendre and regulated-action checks; endpoint and boundary-variation qualifications remain.\\
+\file{phase2/scripts/audit_defq.py} & Controlling defect audit: fresh sewing action, genuine absorption, trace contractions, roots and UV checks.\\
+\file{phase2/scripts/audit_det_projected.py} & Controlling geometry/trace audit: field pairings, projector tails and conditional charges. Its matrices contradict the draft.\\
+\file{phase2/scripts/audit_frame_dictionary.py} & Endpoint and Jacobian checks survive. Its source/minor argument does not prove the physical exclusion: R1.\\
+\file{phase2/scripts/audit_frames_defects.py} & Independent nonlinear sewing determinant and admissibility/branch-switch tests; field-frame qualifications.\\
+\file{phase2/scripts/audit_onebody.py} & Known FAIL at line 383, documented rather than rerun. Several interpretations are superseded by the scheme audit.\\
+\file{phase2/scripts/audit_onebody_scheme.py} & Controlling vacuum/one-body audit; independent regularisations, refined edge checks, and diagnosis of the earlier failed tolerance.\\
+\file{phase2/scripts/audit_phase2i.py} & Controlling symbol, transform/reversion, convolution and finite-data audit; uniform limits and physical frame explicitly open.\\
+\file{phase2/scripts/audit_projected_measure.py} & Actual collective field geometry and collision quadrature; projector endpoint failure, not a full determinant.\\
+\file{phase2/scripts/audit_smx.py} & Controlling candidate audit: pole residues, ring derivatives and direct crossing quadrature, with restricted exclusions.\\
+\file{phase2/scripts/audit_toda_dictionary.py} & Fresh finite-sea endpoint/phase calculations and classical-frame obstruction; physical quantum map open.\\
+\file{phase2/scripts/charge_and_frame_audit.py} & Charge-pair algebra and numerical frame diagnostics; no physical determinant identification.\\
+\file{phase2/scripts/consistency_checks.py} & Multiple classical identities; bad crossing and some asymptotic comparisons are printed only and need paper-check supplementation.\\
+\file{phase2/scripts/defect_smatrix_good_continuation.py} & Candidate/fusion tests, including oriented zero-constant tree fusion; not quantum boundary normalisation.\\
+\file{phase2/scripts/defq_absorption_fusion.py} & Sampled holonomies and momentum remainders, not a universal no-go; controlling defq audit qualifies interpretation.\\
+\file{phase2/scripts/defq_classical_charges.py} & Classical charge algebra and transmission tests; original negative-orientation absorption input is wrong. Use audit\_defq.\\
+\file{phase2/scripts/defq_oneloop_renorm.py} & Determinant, UV and operator algebra; energy-sign/asymptotic printed descriptions require audit\_defq.\\
+\file{phase2/scripts/det_charges.py} & Trace/series and kernel calculations; some Legendre/frame checks are tautological. Use audit\_det\_projected for independent evidence.\\
+\file{phase2/scripts/det_geometry.py} & Instantaneous geometry and moments; abstract projector test does not test physical endpoint tails.\\
+\file{phase2/scripts/det_spectrum.py} & Mode calculations; formal pencil check includes tautologies. Audit supplies differentiated modes and completeness qualifications.\\
+\file{phase2/scripts/frame_analysis.py} & Saved-data fits, error sensitivity and mixed-remainder diagnostics; no physical phase selection.\\
+\file{phase2/scripts/frame_edge.py} & Finite-h solver scan at inverted momenta; saved numerical evidence, no uniform-limit theorem.\\
+\file{phase2/scripts/frame_identities.py} & Finite-sea endpoint tests and algebraic counterexample; generic fixed-momentum chain rule is tautological, repaired by audit.\\
+\file{phase2/scripts/onebody_continuum.py} & Good/formally continued/stable-band traces and asymptotic distinctions; physical bad determinant not established.\\
+\file{phase2/scripts/onebody_prec_analysis.py} & Unconstrained fits and deterministic sensitivity envelopes from saved data; central value is not a rigorous error bound.\\
+\file{phase2/scripts/onebody_prec_edge.py} & Corrected-transform inversion and conditional edge series/energy coefficients.\\
+\file{phase2/scripts/onebody_prec_identities.py} & Finite-sea dispersion derivative identity; default run validates cached residuals unless recompute is requested.\\
+\file{phase2/scripts/onebody_prec_scan.py} & Refined finite-h momentum/energy scan and mesh checks; writes data, not rerun here.\\
+\file{phase2/scripts/onebody_scheme_continuum.py} & Vacuum strain energies, finite quadratic matching, soliton moments and conditional trace slopes.\\
+\file{phase2/scripts/onebody_scheme_dictionary.py} & Unit factors, thermodynamic identities and harmonic Toda vacuum shift.\\
+\file{phase2/scripts/routes_BC_checks.py} & Affine Toda factorisation has numerical assertions; bracket algebra is supplemented by review smeared-bracket tests.\\
+\file{phase2/scripts/semiclassical_phase.py} & Classical phase-gradient identity; quantum candidate necessity does not follow.\\
+\file{phase2/scripts/smatrix_ansatz.py} & Candidate/root dictionary and phase algebra, with numerical conditions; ansatz remains conjectural.\\
+\file{phase2/scripts/smatrix_poles_bootstrap.py} & Full candidate breather residue and fusion-product tests; not an exact physical-spectrum proof.\\
+\file{phase2/scripts/smatrix_rejected_forms.py} & Finite root-difference least-squares basis and mirror mixed derivatives; no unrestricted Gamma-prefactor exclusion.\\
+\file{phase2/scripts/smatrix_semiclassical_unitarity_crossing.py} & Numerical candidate unitarity, continuation and Stirling checks; cannot prove physical quantum crossing.\\
+\file{phase2/scripts/smx_dictionary_and_families.py} & Family algebra and fits; broad exclusion proof is refuted. Use audit\_smx restricted residue proof.\\
+\file{phase2/scripts/smx_poles_good_vs_bad.py} & Candidate pole samples; original sign/positivity claims are not tested. Use audit\_smx and R5.\\
+\file{phase2/scripts/smx_residual_ambiguity_interface.py} & Original crossing offset is inserted into J, not obtained by independent quadrature; use audit\_smx.\\
+\file{phase2/scripts/smx_twisted_ring_bethe.py} & Assumes seam twist and substitutes pair derivative; use audit\_smx for independent gradients and self derivative.\\
+\file{phase2/scripts/symplectic_scattering.py} & Bad-equation symplectic identities with and without cross terms.\\
+\file{phase2/scripts/toda_ba_vs_label.py} & Sampled Bethe-versus-label phase derivative ratios; classical dictionary only.\\
+\file{phase2/scripts/toda_bethe_classical.py} & Classical dressed momentum/energy versus soliton charges.\\
+\file{phase2/scripts/toda_dressed_phase_check.py} & Dressed phase derivatives versus classical shifts; not quantum asymptotic completeness.\\
+\file{phase2/scripts/toda_label_symplectic.py} & Lattice soliton canonical pairings and label-frame symplectic identities.\\
+\file{phase2/scripts/toda_scaling_fast.py} & Printed Boolean-gated success for continuum scaling; no assertion/nonzero exit on failure.\\
+\file{phase2/scripts/toda_soliton_classical.py} & Lattice soliton mass, momentum and energy via sampled lattice sums.\\
+\file{phase2/scripts/toda_wh_and_kp_synthesis.py} & Conditional coefficient integrals/reversion. Printed symbol/contact/reference and physical claims exceed actual tests; use phase2i audit.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Runs and failures recorded}
+\C Fresh runs from \file{paper/scripts/}, with bytecode writing disabled,
+completed with exit code 0 and printed \file{ALL CHECKS PASSED}:
+\file{paper_conventions_check.py}, \file{paper_draft2_checks.py},
+\file{paper_draft3_checks.py}, and \file{review_draft1_checks.py}.
+The independent \file{review_draft3_checks.py} also prints
+\file{ALL CHECKS PASSED}. Its success means the corrected identities and
+the identified counterexamples passed, not that the draft is error-free.
+The supplied PDF is built twice with \file{pdflatex}; auxiliary files and
+rendered QA images are kept outside the repository.
+
+\begin{enumerate}[leftmargin=*]
+\item \C Draft failures reproduced: opposite matrix signs; erroneous
+projector source definitions; loop-order inconsistency and reversed finite
+tadpole sign; wrong four-term source and unweighted coordinate test; wrong
+contact derivative; and false tau-zero witness. None is hidden by a passing
+determinant, minor, or symbolic cancellation check.
+\item \C Unsupported scope claims are retained as failures of certification:
+physical rank-two reduction, exact crossing as a necessity, unrestricted
+Gamma-argument exclusion, stability completeness, universal formula coverage,
+and stale current-status statements. The corresponding narrower algebraic
+or conditional results are distinguished in the correction list.
+\item \C The earlier \file{audit_onebody.py} line-383 failure and Phase-2d
+successive-step-bound failure are preserved as recorded in the errata and
+inventory. They were not rerun here because doing so can write existing
+files. The true limiting one-body identity is not discredited by the crude
+extrapolation's failed tolerance.
+\item \C Review-check development: the first run compared the exact
+inverse-transform Krein source against the later package's rounded
+\emph{finite-difference convolution derivative} with tolerance $10^{-17}$.
+It failed by $2.0655\times10^{-17}$, matching the package's explicitly
+reported $2.07\times10^{-17}$ differentiation error. That comparison now
+uses $2.1\times10^{-17}$ and is named as a finite-difference-error comparison;
+an independent direct differentiation of the inverse transform is additionally
+required at $10^{-48}$. This tolerance change is disclosed, not presented
+as an exact equality or a repaired source formula.
+\item \C A second development run reached the final source-status check
+and failed because the review searched for a bare numeric threshold string,
+whereas the original assertion wraps the threshold in \file{mp.mpf}.
+The search was corrected to the actual assertion text; no numerical
+criterion or original file was changed.
+\item \C The first PDF build exposed an overfull line containing the
+unbroken SHA-256 digest. It was split across two lines before the final
+two-pass build. During prose QA, an intermediate sentence incorrectly said
+both proposed projector inputs vanish on $\eta=(w,0)$; only the proposed
+$b_r$ does. The sentence was corrected; the independent constant-tail
+counterexample and all mathematical checks are unchanged.
+One editorial patch attempt used mismatched context and applied no change;
+the intended addition was then applied against the actual text.
+\end{enumerate}
+
+\paragraph{Reproduction.}
+\C Run \file{python3 -B paper/scripts/review_draft3_checks.py}.
+Fresh Fredholm checks use 50 digits and 40 Gauss nodes with tolerance
+$10^{-27}$; their finite quadrature accuracy is not claimed to equal the
+working precision. Gamma residue checks compare displacements
+$10^{-15}$ and $10^{-20}$ with tolerance $10^{-12}$.
+WH coefficient checks use the explicitly conditional bound
+$|\mathrm{residual}|y^3<0.0004$ at two independent inversion points;
+they supplement the source's exact formal reversion, not a uniform theorem.
+All these tolerances are fixed in the checker.
+\D The physical two-body phase, uniform limits, full determinant,
+boundary state space and exact quantum spectrum remain unresolved.
+\end{document}
