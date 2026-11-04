@@ -1,0 +1,34 @@
+{
+  "resonance_expansions": {
+    "R_ov": {
+      "T_res": "0.89844153934494803277",
+      "c_ell": "-2.3342195906637637242",
+      "c_A": "0.074538040233095699939",
+      "coeff_h_lnh": "-0.51871546459194749427",
+      "fixed_P_lnA_coeff": "0.39293224257343200678"
+    },
+    "R_ho_plus": {
+      "T_res": "1.0762260343568617648",
+      "c_ell": "-2.796117257901679049",
+      "c_A": "0.41296386847477196331",
+      "coeff_h_lnh": "0.62135939064481756645",
+      "fixed_P_lnA_coeff": "1.2712242474906722738"
+    },
+    "R_ho_minus": {
+      "T_res": "0.78708864317910939686",
+      "c_ell": "-2.0449162800700025002",
+      "c_A": "1.2404901934218054826",
+      "coeff_h_lnh": "-0.45442584001555611116",
+      "fixed_P_lnA_coeff": "0.99225305348304295544"
+    }
+  },
+  "bulk_fusion_3body_tests": {
+    "phi": 0.23,
+    "alpha_test": 0.31,
+    "classical_A_product_error": "0.0",
+    "classical_delta_sum_error": "3.111507639e-61",
+    "gamma_candidate_fusion_phase_hbar_0_1": "1.5158110455271881045",
+    "gamma_candidate_fusion_phase_hbar_0_limit": "1.5707963267948966192",
+    "fixed_P_target_renorm_mismatch": "0.8755292547543045976"
+  }
+}

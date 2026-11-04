@@ -1,0 +1,17 @@
+{
+  "false_overtaking_resonance_check": {
+    "alpha_1": 0.2,
+    "alpha_2": 1.2471975511965978,
+    "A_ov": "0.3554654798490616496187723",
+    "ell_1_minus_ell_2": "-1.650671229819356594481905"
+  },
+  "kinematic_area_fractions": {
+    "overtaking_regular_fraction": "7/9",
+    "overtaking_singular_fraction": "2/9",
+    "overtaking_light_light_regular_fraction": "1",
+    "headon_regular_attractive_fraction": "2/9",
+    "headon_regular_repulsive_fraction": "1/9",
+    "headon_singular_fraction": "2/3",
+    "headon_light_light_regular_fraction": "1/2"
+  }
+}

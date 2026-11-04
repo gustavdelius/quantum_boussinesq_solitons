@@ -1,0 +1,1022 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,longtable,array,xcolor,xspace}
+\emergencystretch=2em
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\newcommand{\La}{\textsf{\textbf{(a)}}\xspace}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}\xspace}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}\xspace}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}\xspace}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\hb}{\hbar}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\skin}{\texttt{phase2/\allowbreak scripts/\allowbreak resonant\_\allowbreak channels\_\allowbreak kinematics.py}}
+\newcommand{\scons}{\texttt{phase2/\allowbreak scripts/\allowbreak resonant\_\allowbreak channels\_\allowbreak conservation.py}}
+\newcommand{\squant}{\texttt{phase2/\allowbreak scripts/\allowbreak resonant\_\allowbreak channels\_\allowbreak quantum.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}[proposition]{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{\textbf{The Quantum Fate of the Good Boussinesq Equation's\\
+Resonant and Number-Changing Channels}}
+\author{Project \emph{quantum\_boussinesq\_solitons} (Ranked next step \#3) --- PI: Gustav Delius}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We investigate ranked next step~\#3 of the Phase~2 master report
+(\texttt{phase2/\allowbreak report.pdf}): the classical kinematics, hierarchy
+conservation laws, and semiclassical/quantum implications of the resonant
+($A_{12}\to 0$ or $\infty$), number-changing ($2\to 1$ merging and $1\to 2$
+splitting Y-junctions), and singular ($A_{12}<0$ and $A_{\mathrm{br}}<1/4$)
+soliton channels of the \textbf{good} Boussinesq equation
+$u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$. Every nontrivial claim is labelled \La\
+(proved in the literature), \Lb\ (conjectured or heuristic in the literature),
+\Lc\ (derived and verified in this project), or \Ld\ (quantum interpretation,
+conjecture, or open physical question).
+
+Our main structural results \Lc\ and quantum conclusions \Ld\ are:
+\begin{enumerate}
+\item \textbf{KP-triangle unification of resonant kinematics and light-branch stability (\skin, \squant).}
+In KP root variables, a soliton $(\alpha,\epsilon)\in(0,\pi/2)\times\{\pm 1\}$
+carries an ordered chord $(p_a,p_b)$ of the cubic
+$4p^3-p=\frac{\ell}{3\sqrt{3}}$ ($\ell=-\epsilon\cos 3\alpha$) on the ellipse
+$p_a^2+p_a p_b+p_b^2=\frac{1}{4}$ \La/\Lc. Every nondegenerate real KP triple
+$q_1>q_2>q_3$ ($\ell\in(-1,1)$) spans \textbf{two opposite-moving light chords}
+$S_{12}=(q_1,q_2)$ ($\alpha_{12}\in(\pi/6,\pi/3),\,\epsilon_{12}=+1$) and
+$S_{23}=(q_2,q_3)$ ($\alpha_{23}\in(0,\pi/6),\,\epsilon_{23}=-1$, or with
+signs reversed) and \textbf{one heavy chord} $S_{13}=(q_1,q_3)$
+($\alpha_{13}=\alpha_{12}+\alpha_{23}+\frac{\pi}{3}\text{ or }\frac{2\pi}{3}-(\alpha_{12}-\alpha_{23})\in(\pi/3,\pi/2)$) \Lc.
+The three genuine codimension-one (measure-zero) resonance curves in
+$(\alpha_1,\alpha_2)\in(0,\pi/2)^2$---head-on $R_{\mathrm{ho}}^+$
+($\alpha_1+\alpha_2=\pi/3,\,A_{\mathrm{ho}}=\infty$), head-on $R_{\mathrm{ho}}^-$
+($|\alpha_1-\alpha_2|=\pi/3,\,A_{\mathrm{ho}}=0$), and overtaking
+$R_{\mathrm{ov}}$ ($\alpha_1+\alpha_2=2\pi/3,\,A_{\mathrm{ov}}=0$; we confirm
+\texttt{audit\_smx.pdf} that $|\alpha_1-\alpha_2|=\pi/3$ is \emph{not} an
+overtaking resonance)---are the three pairwise projections of this single
+family of KP triangles \Lc. On the light branch $\alpha\in(0,\pi/3)$
+($|P|\in(0,\sqrt{3}/8)$), $E_{\mathrm{light}}(P)$ is strictly concave in $|P|$
+with $\frac{\dd^2 E_{\mathrm{light}}}{\dd P^2}=-\frac{3}{2\sin 3\alpha}<0$, so
+$E_{\mathrm{light}}(P_1)+E_{\mathrm{light}}(P_2)>E_{\mathrm{light}}(P_1+P_2)$
+for all nonzero $(P_1,P_2)$ \Lc: \textbf{no light soliton can split into two
+solitons ($1_{\mathrm{light}}\not\to 2$), and no two light solitons can fuse
+into a light soliton ($2_{\mathrm{light}}\not\to 1_{\mathrm{light}}$)} \Lc.
+Conversely, \textbf{every heavy soliton ($\alpha\in(\pi/3,\pi/2)$) is embedded
+in the two-light-soliton head-on continuum} with non-vanishing $1\to 2$
+phase-space Jacobian $J_{1\to 2}=|v_{12}-v_{23}|^{-1}=(\sqrt{3}\,k_{13})^{-1}$ \Lc.
+
+\item \textbf{Confirmation of the KP-chord hypothesis for classical hierarchy charges, and its one-loop breakdown at fixed physical momentum (\scons).}
+Using the hyperbolic polynomial map $T=\tanh(kx/2)$, we integrate the
+Gelfand--Dickey densities $\Res L^{n/3}-\Res L_{\mathrm{vac}}^{n/3}$
+\textbf{symbolically} on the one-soliton profile through spin $n=8$ ($H_1,H_2,
+H_3=0,H_4,H_5,H_6=0,H_7,H_8$, extending Phase~1's numerical fit for $n\le 5$ to
+exact symbolic proofs through $n=8$, including the new exact decompositions
+$H_7=\Delta_7-\frac{7}{12}\Delta_5+\frac{7}{324}\Delta_1$ and
+$H_8=\Delta_8-\frac{7}{36}\Delta_4+\frac{11}{324}\Delta_2$ with
+$\Delta_m=(-p_b)^m-(-p_a)^m$) \Lc. Every physical charge ($M,\Pi,P,E$) and every
+hierarchy charge $H_n$ has the telescopic chord form $Q(p_a,p_b)=F_Q(p_b)-F_Q(p_a)$
+for an explicit polynomial $F_Q(p)$ \Lc. Consequently, chord concatenation
+$(q_1,q_2)+(q_2,q_3)\to(q_1,q_3)$ satisfies
+$Q(S_{12})+Q(S_{23})=Q(S_{13})$ \textbf{identically for the entire classical
+hierarchy} \Lc\ (verified to $10^{-50}$ by direct spatial quadrature on the
+exact 3-exponential Y-junction solution across collision). Unlike in
+sine-Gordon, the classical conservation laws do \textbf{not} forbid $2\leftrightarrow 1$
+fusion \Lc. At one loop, fixed-profile mode-sum shifts $(\Delta E_1^{\mathrm{ren}},
+\Delta P_{\mathrm{mode}})$ remain telescopic \Lc, but at fixed physical
+(dressed) momentum $P^{\mathrm{phys}}$ the dispersion shift
+$F|_P(S)=\Delta E_1^{\mathrm{ren}}(S)-v(S)\Delta P_{\mathrm{mode}}(S)=-L_1(S)$
+breaks the chord form because $v(S)=\sqrt{3}(p_a+p_b)$ multiplies
+$\Delta P_{\mathrm{mode}}(S)$, yielding a nonzero mismatch
+$\Delta(F|_P)=F|_P(S_{12})+F|_P(S_{23})-F|_P(S_{13})=0.38879244070035460274$
+at $\phi=0.23$ \Lc.
+
+\item \textbf{Semiclassical phase, unitarity deficit, and three-body factorisation near resonance (\squant).}
+At transverse distance $h\to 0^+$ from any of $R_{\mathrm{ov}},R_{\mathrm{ho}}^+,
+R_{\mathrm{ho}}^-$, both $\ell_1-\ell_2=c_\ell h+O(h^2)$ and
+$A_{12}=c_A h^{\sigma_{\mathrm{res}}}(1+O(h))$ ($\sigma_{\mathrm{res}}=\pm 1$)
+have simple zeros/poles, so the classical shift $\Delta x_j=\mp k_j^{-1}\ln A_{12}$
+diverges as $\mp\sigma_{\mathrm{res}}k_j^{-1}\ln h$, while the tree-level phase
+$\delta(1,2)=T_{12}|_{\mathrm{res}}+\frac{2}{9}\sigma_{\mathrm{res}}c_\ell\,h\ln h+O(h)$
+has a finite limit $T_{12}|_{\mathrm{res}}$ with a logarithmic branch-point
+slope $\partial_h\delta\propto\ln h$ \Lc\ (confirming \texttt{audit\_smx.pdf}).
+At fixed physical momenta, the $O(\hb^0)$ Taylor counterterm
+$-\big(\frac{\Delta P_1}{k_1}-\frac{\Delta P_2}{k_2}\big)\ln A_{12}$ diverges as
+$\ln h$ on the classical resonance curve \Lc. Continuing into the singular domain
+$A_{12}<0$ gives $\operatorname{Im}\delta=\frac{2\pi}{9}|\ell_1-\ell_2|>0$ on
+the physical sheet, so $|S_{2\to 2}^{\mathrm{WKB}}|^2=\exp(-\frac{4\pi}{9\hb}|\ell_1-\ell_2|)<1$
+violates elastic two-body unitarity \Lc. In 3-soliton collisions with a resonant
+pair $S_{12}+S_{23}\to S_{13}$, classical cross-ratios and phases factorise
+exactly ($A_{3,12}A_{3,23}=A_{3,13}$ and
+$\delta_{\mathrm{cl}}(3,S_{12})+\delta_{\mathrm{cl}}(3,S_{23})=\delta_{\mathrm{cl}}(3,S_{13})$)
+and bare one-loop phonon integrals telescope ($I_{SS}(3,S_{12})+I_{SS}(3,S_{23})=I_{SS}(3,S_{13})$),
+but the continued Gamma candidate fails the bulk fusion bootstrap by
+$\ee^{\mp\ii\frac{\pi}{2}\sgn\eta}(1+O(\hb))$ and the target-soliton momentum
+renormalisation fails to telescope \Lc.
+
+\item \textbf{Conclusion on elastic factorised scattering (\Ld\ based on \Lc).}
+Purely elastic, unitary, factorised two-soliton scattering is kinematically
+protected \textbf{only in the light-light overtaking sector}
+($\alpha_1,\alpha_2\in(0,\pi/3),\,\epsilon_1=\epsilon_2$) and in the
+sub-threshold **light-light attractive head-on triangle**
+($\alpha_1+\alpha_2<\pi/3,\,\epsilon_1=-\epsilon_2$), where $A_{12}>0$ and no
+real on-shell $2\to 1$ or $1\to 2$ channel exists \Lc/\Ld. Heavy solitons
+($\alpha\in(\pi/3,\pi/2)$) are quantum mechanically unstable resonance states
+embedded in the two-light-soliton head-on continuum \Ld, and at or beyond the
+resonant boundaries ($A_{12}=0,\infty$ and $A_{12}<0$) elastic 2-body unitarity
+must be augmented by the $2\leftrightarrow 1$ fusion/splitting channel \Ld.
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+% ==============================================================================
+\section{Scope, conventions, and audit precedence}
+\label{sec:setup}
+% ==============================================================================
+
+We work in the fixed project conventions (\texttt{AGENTS.md},
+\texttt{README.md}, \texttt{phase2/\allowbreak report.pdf}) for the
+\textbf{good} Boussinesq equation \La:
+\begin{equation}\label{eq:good_pde}
+  u_{tt} = u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad
+  u = \varphi_x = 2(\ln\tau)_{xx}, \qquad
+  (D_t^2 - D_x^2 + D_x^4)\,\tau\cdot\tau = 0,
+\end{equation}
+with Lagrangian density $\mathcal{L} = \frac{1}{2}\varphi_t^2 - \frac{1}{2}\varphi_x^2 + \varphi_x^3 - \frac{1}{2}\varphi_{xx}^2$
+and canonical symplectic form $\Omega = \int \dd\pi\wedge\dd\varphi$ ($\pi=\varphi_t$).
+A one-soliton with amplitude parameter $\alpha\in(0,\pi/2)$ and direction
+$\epsilon\in\{+1,-1\}$ has \La/\Lc:
+\begin{align}\label{eq:onesol}
+  k &= \sin\alpha, \quad v = \epsilon\cos\alpha, \quad
+  \omega = kv = \frac{\epsilon}{2}\sin 2\alpha, \quad
+  \ell = -\epsilon\cos 3\alpha, \nonumber\\
+  M &= 2k, \quad \Pi = -Mv = -2\epsilon k\cos\alpha, \quad
+  P = \frac{2}{3}\epsilon k^3\cos\alpha, \quad
+  E = \frac{2}{15}k^3(5-4k^2),
+\end{align}
+satisfying $\frac{\dd E}{\dd P} = v$ and $\frac{\dd P}{\dd\alpha} = \frac{2}{3}\epsilon k\sin 3\alpha = \frac{2}{9}k\,\ell'(\alpha)$ \Lc.
+At the momentum cusp $\alpha = \pi/3$ ($k = \sqrt{3}/2$, $|v| = 1/2$, $|\ell|=1$),
+$|P|$ attains its global maximum $P_{\max} = \sqrt{3}/8 \approx 0.21650635$ and
+$\frac{\dd P}{\dd\alpha} = 0$, dividing the one-soliton manifold into the
+\textbf{light branch} $\alpha\in(0,\pi/3)$ ($k<\sqrt{3}/2$, $|v|>1/2$) and the
+\textbf{heavy branch} $\alpha\in(\pi/3,\pi/2)$ ($k>\sqrt{3}/2$, $|v|<1/2$) \Lc\
+(\texttt{phase1/\allowbreak review.pdf}).
+
+\paragraph{Audit precedence.}
+Following the ground rules of the task, audit verdicts override package claims.
+In particular, we incorporate the corrections from \texttt{audit\_smx.pdf},
+\texttt{audit\_defq.pdf}, \texttt{audit\_det\_projected.pdf}, and
+\texttt{errata.pdf}:
+\begin{itemize}
+\item The line $|\alpha_1-\alpha_2|=\pi/3$ is \emph{not} an overtaking resonance
+(\texttt{audit\_smx.pdf}); we verify this directly in \skin.
+\item The tree-level S-matrix limit at a genuine resonance is continuous, not
+differentiably ($C^1$) smooth (\texttt{audit\_smx.pdf}); we derive the exact
+$h\ln h$ coefficient on all three genuine resonance lines in \squant.
+\item Every two-phase zero-background Hirota breather of the good equation has
+$A_{\mathrm{br}} = \frac{1-3\cot^2 a}{1+3\coth^2 b} < \frac{1}{4} < 1$ and is
+singular (\texttt{phase1/\allowbreak review.pdf}, \texttt{audit\_smx.pdf}); this
+does not by itself exclude quantum bound states beyond the two-phase Hirota
+ansatz \Ld.
+\item In \texttt{audit\_defq.pdf}, the classical KP-edge charge factorisation
+survives, while the canonical-charge triangle holonomy no-go theorem is
+qualified as conditional on fixed unshifted absorption rapidities and single-valued
+vertex counterterms.
+\end{itemize}
+
+% ==============================================================================
+\section{Question 1: Classical kinematics of resonant and number-changing channels}
+\label{sec:kinematics}
+% ==============================================================================
+
+\subsection{KP root/chord dictionary and the three genuine resonance loci}
+
+In the third-order Lax representation $L = \partial_x^3 + (\frac{3}{2}u - \frac{1}{4})\partial_x + r$
+\La~\cite{Zak,Dickey}, a soliton $(\alpha,\epsilon)$ corresponds to an ordered
+pair (chord) $(p_a,p_b)$ ($p_a > p_b$) of real roots of the KP spectral cubic \La/\Lc\
+(\texttt{phase1/\allowbreak review.pdf}, \texttt{errata.pdf} M06--M07, \skin):
+\begin{equation}\label{eq:kp_roots}
+  p_a = \frac{1}{2}\!\left(\frac{v}{\sqrt{3}} + k\right)
+      = \frac{\epsilon}{\sqrt{3}}\cos\!\left(\alpha - \frac{\epsilon\pi}{3}\right), \qquad
+  p_b = \frac{1}{2}\!\left(\frac{v}{\sqrt{3}} - k\right)
+      = \frac{\epsilon}{\sqrt{3}}\cos\!\left(\alpha + \frac{\epsilon\pi}{3}\right),
+\end{equation}
+so that $p_a - p_b = k > 0$, $p_a + p_b = \frac{v}{\sqrt{3}}$, and both roots
+satisfy
+\begin{equation}\label{eq:kp_cubic}
+  4p^3 - p = \frac{\ell}{3\sqrt{3}} = -\frac{\epsilon}{3\sqrt{3}}\cos 3\alpha, \qquad
+  p_a^2 + p_a p_b + p_b^2 = \frac{1}{4}.
+\end{equation}
+The Hirota two-soliton interaction coefficient
+$A_{12} = -\frac{\mathcal{P}(k_1-k_2,\omega_1-\omega_2)}{\mathcal{P}(k_1+k_2,\omega_1+\omega_2)}$
+($\mathcal{P}(K,W) = W^2 - K^2 + K^4$) equals the KP cross-ratio in both
+relative orientations \La~\cite{DMHC}, \Lc\ (\skin):
+\begin{equation}\label{eq:A12_crossratio}
+  A_{12} = \frac{(p_{1a} - p_{2a})(p_{1b} - p_{2b})}{(p_{1a} - p_{2b})(p_{1b} - p_{2a})}
+  = \begin{cases}
+    \dfrac{1 - 3\cot^2\!\big(\frac{\alpha_1+\alpha_2}{2}\big)}{1 - 3\cot^2\!\big(\frac{\alpha_1-\alpha_2}{2}\big)}
+    & (\text{overtaking, }\epsilon_1 = \epsilon_2), \\[10pt]
+    \dfrac{1 - 3\tan^2\!\big(\frac{\alpha_1-\alpha_2}{2}\big)}{1 - 3\tan^2\!\big(\frac{\alpha_1+\alpha_2}{2}\big)}
+    & (\text{head-on, }\epsilon_1 = -\epsilon_2).
+  \end{cases}
+\end{equation}
+
+\begin{proposition}[Exact resonance loci and KP-triangle unification, \Lc, \skin]\label{prop:resonances}
+Let $(\alpha_1,\alpha_2) \in Q := (0,\pi/2)^2$ with $\alpha_1 \ne \alpha_2$ when
+$\epsilon_1 = \epsilon_2$.
+\begin{enumerate}
+\item \textbf{Characterization by shared KP roots and equal $\ell$:}
+A resonant interaction $A_{12} = 0$ or $A_{12} = \infty$ occurs if and only if
+solitons $1$ and $2$ share a root of the KP cubic \eqref{eq:kp_cubic}, which in
+$Q = (0,\pi/2)^2$ implies $\ell_1 = \ell_2$ and defines three real-analytic
+codimension-one lines:
+\begin{itemize}
+\item \emph{Overtaking resonance $R_{\mathrm{ov}}$ ($\epsilon_1 = \epsilon_2$, $A_{\mathrm{ov}} = 0$):}
+\begin{equation}\label{eq:R_ov}
+  \alpha_1 + \alpha_2 = \frac{2\pi}{3}, \qquad \alpha_1,\alpha_2 \in \left(\frac{\pi}{6},\frac{\pi}{2}\right),
+\end{equation}
+where $p_{1a} = p_{2a}$ (for $\epsilon_1=\epsilon_2=+1$) or $p_{1b} = p_{2b}$
+(for $\epsilon_1=\epsilon_2=-1$), and $\ell_1 = \ell_2 = -\epsilon_1\cos 3\alpha_1 > 0$.
+The overtaking denominator $1 - 3\cot^2\!\big(\frac{\alpha_1-\alpha_2}{2}\big)$
+vanishes only at $|\alpha_1-\alpha_2| = \frac{2\pi}{3} \notin Q$, so
+$A_{\mathrm{ov}}$ has \textbf{no pole} in $Q$. In particular, on the false line
+$|\alpha_1-\alpha_2| = \frac{\pi}{3}$ (refuted in \texttt{audit\_smx.pdf}), the
+denominator equals $1 - 3\cot^2(\pi/6) = -8 \ne 0$; at $(\alpha_1,\alpha_2)=(0.2,0.2+\pi/3)$
+we have $A_{\mathrm{ov}} = 0.35546547984906164962$ and
+$\ell_1-\ell_2 = -2\cos(0.6) = -1.6506712298193565945 \ne 0$.
+
+\item \emph{Head-on attractive resonance $R_{\mathrm{ho}}^+$ ($\epsilon_1 = -\epsilon_2$, $A_{\mathrm{ho}} = \infty$):}
+\begin{equation}\label{eq:R_ho_plus}
+  \alpha_1 + \alpha_2 = \frac{\pi}{3}, \qquad \alpha_1,\alpha_2 \in \left(0,\frac{\pi}{3}\right),
+\end{equation}
+where $p_{1b} = p_{2a}$ (for $\epsilon_1=+1,\epsilon_2=-1$) or $p_{1a} = p_{2b}$
+(for $\epsilon_1=-1,\epsilon_2=+1$), and $\ell_1 = \ell_2 = -\epsilon_1\cos 3\alpha_1$.
+
+\item \emph{Head-on repulsive resonance $R_{\mathrm{ho}}^-$ ($\epsilon_1 = -\epsilon_2$, $A_{\mathrm{ho}} = 0$):}
+\begin{equation}\label{eq:R_ho_minus}
+  |\alpha_1 - \alpha_2| = \frac{\pi}{3}, \qquad
+  \min(\alpha_1,\alpha_2) \in \left(0,\frac{\pi}{6}\right), \quad
+  \max(\alpha_1,\alpha_2) \in \left(\frac{\pi}{3},\frac{\pi}{2}\right),
+\end{equation}
+where $p_{1b} = p_{2b}$ (for $\alpha_1 - \alpha_2 = \pi/3,\,\epsilon_1=+1,\epsilon_2=-1$)
+or $p_{1a} = p_{2a}$ (for $\alpha_2 - \alpha_1 = \pi/3,\,\epsilon_1=+1,\epsilon_2=-1$),
+and $\ell_1 = \ell_2$ because $\cos(3\alpha_2\pm\pi) = -\cos 3\alpha_2$
+compensates $\epsilon_1 = -\epsilon_2$.
+\end{itemize}
+
+\item \textbf{Unification via KP triangles and light/heavy branch assignment:}
+Every nondegenerate KP cubic $4q^3 - q = \frac{\ell}{3\sqrt{3}}$ with
+$\ell \in (-1,1)$ has three real roots ordered $q_1 > q_2 > q_3$, parametrised
+by $\phi \in (0,\pi/3)$ as
+\begin{align}\label{eq:kp_triple_param}
+  q_1 &= \frac{1}{\sqrt{3}}\cos\phi \in \left(\frac{1}{2\sqrt{3}},\frac{1}{\sqrt{3}}\right), \qquad
+  q_2 = \frac{1}{\sqrt{3}}\cos\!\left(\phi-\frac{2\pi}{3}\right) \in \left(-\frac{1}{2\sqrt{3}},\frac{1}{2\sqrt{3}}\right), \nonumber\\
+  q_3 &= \frac{1}{\sqrt{3}}\cos\!\left(\phi+\frac{2\pi}{3}\right) \in \left(-\frac{1}{\sqrt{3}},-\frac{1}{2\sqrt{3}}\right).
+\end{align}
+The three chords $S_{12}=(q_1,q_2)$, $S_{23}=(q_2,q_3)$, and $S_{13}=(q_1,q_3)$
+have wavenumbers and velocities:
+\begin{align}
+  S_{12}&:\ k_{12} = q_1-q_2 = \sin\!\left(\frac{\pi}{3}-\phi\right) < \frac{\sqrt{3}}{2}, &
+  v_{12} &= -\sqrt{3}\,q_3 = +\cos\!\left(\frac{\pi}{3}-\phi\right) > \frac{1}{2}
+  \ \ (\text{right \textbf{light}}), \nonumber\\
+  S_{23}&:\ k_{23} = q_2-q_3 = \sin\phi < \frac{\sqrt{3}}{2}, &
+  v_{23} &= -\sqrt{3}\,q_1 = -\cos\phi < -\frac{1}{2}
+  \ \ (\text{left \textbf{light}}), \label{eq:triple_chords}\\
+  S_{13}&:\ k_{13} = q_1-q_3 = \sin\!\left(\phi+\frac{\pi}{3}\right) > \frac{\sqrt{3}}{2}, &
+  v_{13} &= -\sqrt{3}\,q_2 = \cos\!\left(\phi+\frac{\pi}{3}\right) \in \left(-\frac{1}{2},\frac{1}{2}\right)
+  \ \ (\textbf{heavy},\ \phi\ne\tfrac{\pi}{6}). \nonumber
+\end{align}
+For $\phi \in (0,\pi/6)$ ($\ell > 0$), $S_{13}$ is a right-moving heavy soliton
+with $\alpha_{13} = \phi+\frac{\pi}{3} \in (\pi/3,\pi/2)$, and the three pairs
+of chords of the same KP triangle $\{S_{12},S_{23},S_{13}\}$ project precisely
+onto the three resonance lines:
+\begin{equation}\label{eq:three_projections}
+  (S_{12},S_{23}) \in R_{\mathrm{ho}}^+ \ (\text{light--light}), \quad
+  (S_{13},S_{23}) \in R_{\mathrm{ho}}^- \ (\text{heavy--light}), \quad
+  (S_{12},S_{13}) \in R_{\mathrm{ov}} \ (\text{light--heavy}).
+\end{equation}
+(For $\phi \in (\pi/6,\pi/3)$, $\ell < 0$ and $S_{13}$ is a left-moving heavy
+soliton with $\alpha_{13} = \frac{2\pi}{3}-\phi \in (\pi/3,\pi/2)$, giving the
+mirror-image projections.)
+\end{enumerate}
+\end{proposition}
+
+\subsection{Reachability from real asymptotic states and domain measure}
+
+On any of the three resonance curves, dropping the vanishing or divergent
+four-exponential term (after shifting $\theta_j$ when $A_{12}\to\infty$) yields
+the exact three-exponential Hirota Y-junction \La~\cite{HI,LMK,RS,DMHC,CZ}:
+\begin{equation}\label{eq:tau_Y}
+  \tau_Y(x,t) = c_1\,\ee^{\eta_1} + c_2\,\ee^{\eta_2} + c_3\,\ee^{\eta_3}, \qquad
+  \eta_i = \pm\big(q_i x - \sqrt{3}\,q_i^2 t\big) + \eta_{i,0} \quad (c_i > 0).
+\end{equation}
+Because $\mathcal{P}\big(q_i-q_j,\sqrt{3}(q_i^2-q_j^2)\big) = 4(q_i-q_j)^2\big(q_i^2+q_i q_j+q_j^2-\frac{1}{4}\big) = 0$
+for every pair $(i,j)$ of a KP triple \eqref{eq:kp_triple_param}, $\tau_Y(x,t)>0$
+solves $(D_t^2-D_x^2+D_x^4)\tau_Y\cdot\tau_Y = 0$ identically and $u_Y = 2(\ln\tau_Y)_{xx}$
+is globally smooth for all $(x,t)\in\mathbb{R}^2$ \La/\Lc\ (verified to $10^{-50}$
+against the nonlinear PDE in \skin).
+
+\begin{proposition}[Asymptotic reachability and measure of resonant/singular domains, \Lc, \skin]\label{prop:reachability}
+Let $q_1 > q_2 > q_3$ be a nondegenerate KP triple with velocities
+$v_{12} > v_{13} > v_{23}$ as in \eqref{eq:triple_chords}.
+\begin{enumerate}
+\item \textbf{Exact $1\to 2$ splitting and $2\to 1$ merging asymptotics:}
+Along the ray $x = v_{13} t + z$, $\eta_1 - \eta_3 = \pm(q_1-q_3)z$ is
+stationary while
+\begin{equation}\label{eq:transverse_exponent}
+  \eta_2 - \eta_1 = \pm\sqrt{3}\,(q_1 - q_2)(q_2 - q_3)\,t + O(z)
+                  = \pm\sqrt{3}\,k_{12}k_{23}\,t + O(z).
+\end{equation}
+Since $k_{12}k_{23} > 0$:
+\begin{itemize}
+\item For the $+$ sign in \eqref{eq:tau_Y}, as $t\to -\infty$ the middle
+exponential $\ee^{\eta_2}$ is suppressed by $\ee^{-\sqrt{3}k_{12}k_{23}|t|}$ and
+$u_Y(x,t)$ approaches a \textbf{single heavy soliton} $S_{13}$ moving along
+$x = v_{13}t$; as $t\to +\infty$, $u_Y(x,t)$ splits ($1\to 2$) into the
+\textbf{two well-separated light solitons} $S_{12}$ (moving right at $v_{12}>1/2$)
+and $S_{23}$ (moving left at $v_{23}<-1/2$).
+\item For the $-$ sign in \eqref{eq:tau_Y} (time reversal $t\mapsto -t,x\mapsto -x$),
+as $t\to -\infty$ the solution consists of \textbf{two real, smooth,
+exponentially separated incoming light solitons} $S_{12}$ (at $x\sim v_{12}t<0$)
+and $S_{23}$ (at $x\sim v_{23}t>0$) colliding head-on and \textbf{merging
+($2\to 1$)} into the single heavy soliton $S_{13}$ as $t\to +\infty$ (verified
+at $t=\pm 400$ to $10^{-48}$ in \skin).
+\end{itemize}
+Thus the resonant $2\to 1$ and $1\to 2$ channels are \textbf{directly reachable
+from real, nonsingular asymptotic soliton states}. What appears as an overtaking
+resonance $R_{\mathrm{ov}}$ ($S_{12}+S_{13}\leftrightarrow S_{23}$) or repulsive
+head-on resonance $R_{\mathrm{ho}}^-$ ($S_{13}+S_{23}\leftrightarrow S_{12}$) in
+two-soliton coordinates is the \emph{same} spatial Y-junction viewed by pairing
+the heavy leg $S_{13}$ with one of the two light legs.
+
+\item \textbf{Measure zero of resonant loci vs.\ positive measure of singular regions:}
+\begin{itemize}
+\item The resonant loci $R_{\mathrm{ov}}$, $R_{\mathrm{ho}}^+$, and
+$R_{\mathrm{ho}}^-$ are smooth 1D curves in the 2D kinematic square
+$Q = (0,\pi/2)^2$ (and in the four $(\text{light/heavy})\times(\text{light/heavy})$
+sheets over $(|P_1|,|P_2|)\in(0,\sqrt{3}/8)^2$), hence of \textbf{two-body
+Lebesgue measure zero} (codimension $1$).
+\item However, in the \textbf{one-body} kinematic domain of the heavy branch
+$\alpha_{13}\in(\pi/3,\pi/2)$, the $1\to 2$ decay channel $S_{13}\to S_{12}+S_{23}$
+is open on the \textbf{entire heavy branch} (full 1D measure, codimension $0$)!
+\item In the 2D two-body square $Q=(0,\pi/2)^2$ (area $\pi^2/4$), the open
+singular regions ($A_{12}<0$, where the 4-exponential Hirota solution has
+logarithmic poles $\tau=0$) have \textbf{positive area}: $\frac{2}{9}$ of $Q$
+for overtaking ($\alpha_1+\alpha_2>2\pi/3$) and $\frac{2}{3}$ of $Q$ for head-on
+($\alpha_1+\alpha_2>\pi/3$ with $|\alpha_1-\alpha_2|<\pi/3$). Crucially, inside
+the \textbf{light-light square} $(0,\pi/3)^2$ (area $\pi^2/9$, $\frac{4}{9}$ of
+$Q$), \textbf{$100\%$ of overtaking collisions} ($\alpha_1+\alpha_2<2\pi/3$)
+and \textbf{$50\%$ of head-on collisions} ($\alpha_1+\alpha_2<\pi/3$) are
+strictly regular ($A_{12}>0$) and non-resonant \Lc.
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+% ==============================================================================
+\section{Question 2: Conservation laws and the KP-chord hypothesis}
+\label{sec:conservation}
+% ==============================================================================
+
+\subsection{Exact symbolic proof of the chord form through spin \texorpdfstring{$8$}{8}}
+
+In the Gelfand--Dickey hierarchy \La~\cite{Dickey}, the conserved charges are
+$H_n = \int_{-\infty}^\infty \big(\Res L^{n/3} - \Res L_{\mathrm{vac}}^{n/3}\big)\,\dd x$,
+where $L = \partial_x^3 + q\,\partial_x + r$ has $q = \frac{3}{2}u - \frac{1}{4}$
+and $r = \frac{1}{2}q_x - \frac{v}{2\sqrt{3}}(q+\frac{1}{4})$ on a soliton
+moving at velocity $v$. For $n = 3m$, $L^m$ is a purely differential operator so
+$\Res L^m \equiv 0$ identically \La. In Phase~1 (\texttt{phase1/\allowbreak scripts/\allowbreak charges.py}),
+$H_n$ was integrated numerically for $n \in \{1,2,4,5\}$ and fitted to linear
+combinations of $\Delta_m := \mu_1^m - \mu_2^m = (-p_b)^m - (-p_a)^m$. Here we
+test the KP-chord hypothesis \textbf{symbolically} through $n = 8$ by mapping
+the one-soliton profile to a polynomial in $T = \tanh(kx/2) \in (-1,1)$ \Lc\ (\scons).
+
+\begin{theorem}[Symbolic chord-potential structure of the Boussinesq hierarchy, \Lc, \scons]\label{thm:chord_charges}
+Let $(p_a,p_b)$ ($p_a > p_b$) be the KP chord of a soliton $(\alpha,\epsilon)$ on
+$p_a^2 + p_a p_b + p_b^2 = \frac{1}{4}$, and define
+$\Delta_m := (-p_b)^m - (-p_a)^m = (-1)^{m-1}(p_a^m - p_b^m)$.
+\begin{enumerate}
+\item \textbf{Exact symbolic integration of $H_1,\dots,H_8$:}
+Under $T = \tanh(kx/2)$ ($u = \frac{k^2}{2}(1-T^2)$,
+$\partial_x = \frac{k}{2}(1-T^2)\frac{\dd}{\dd T}$,
+$\dd x = \frac{2}{k(1-T^2)}\,\dd T$), the vacuum-subtracted densities
+$\Res L^{n/3} - \Res L_{\mathrm{vac}}^{n/3}$ reduce to exact polynomials in $T$
+whose integrals over $T \in [-1,1]$ decompose modulo
+$p_a^2 + p_a p_b + p_b^2 - \frac{1}{4} = 0$ as:
+\begin{align}
+  H_1 &= \Delta_1, &
+  H_2 &= \Delta_2, &
+  H_3 &= 0, \nonumber\\
+  H_4 &= \Delta_4 - \frac{1}{3}\Delta_2, &
+  H_5 &= \Delta_5 - \frac{5}{72}\Delta_1, &
+  H_6 &= 0, \label{eq:H1_to_H8}\\
+  H_7 &= \Delta_7 - \frac{7}{12}\Delta_5 + \frac{7}{324}\Delta_1, &
+  H_8 &= \Delta_8 - \frac{7}{36}\Delta_4 + \frac{11}{324}\Delta_2. \nonumber
+\end{align}
+\item \textbf{Univariate chord potentials $Q(p_a,p_b) = F_Q(p_b) - F_Q(p_a)$:}
+Every hierarchy charge $H_n$ ($1\le n\le 8$) and every physical charge
+$M,\Pi,P,E$ has the exact chord-difference form $Q(p_a,p_b) = F_Q(p_b) - F_Q(p_a)$
+modulo $p_a^2 + p_a p_b + p_b^2 = \frac{1}{4}$, with univariate polynomials:
+\begin{align}
+  F_M(p) &= -2p, &
+  F_\Pi(p) &= 2\sqrt{3}\,p^2, \nonumber\\
+  F_P(p) &= -2\sqrt{3}\,p^4 + \frac{1}{\sqrt{3}}\,p^2, &
+  F_E(p) &= -\frac{24}{5}\,p^5 + \frac{1}{6}\,p, \label{eq:F_potentials}\\
+  F_{H_7}(p) &= -p^7 + \frac{7}{12}\,p^5 - \frac{7}{324}\,p, &
+  F_{H_8}(p) &= p^8 - \frac{7}{36}\,p^4 + \frac{11}{324}\,p^2. \nonumber
+\end{align}
+\item \textbf{Why all hierarchy charges have the chord form, and the spin-$3m$ gap:}
+On the zero-background KP hierarchy ($\tilde{L} = \partial_x^3 + \tilde{q}\partial_x + \tilde{r}$,
+$\tilde{q}_\infty = 0$), a line soliton with chord $(\mu_1,\mu_2)$ is generated
+by a Sato dressing transformation shifting $\ln\tau$ by $\ln\frac{\partial-\mu_1}{\partial-\mu_2}$,
+so $\int\Res\tilde{L}^{n/3}\,\dd x = \mu_1^n - \mu_2^n = \Delta_n$ \La~\cite{Dickey}.
+Shifting to the good Boussinesq constant background $L = \tilde{L} - \frac{1}{4}\partial_x$
+mixes $\tilde{L}^{n/3}$ only with lower powers $\tilde{L}^{(n-2j)/3}$ of the
+same parity, so every hierarchy charge $H_n$ on a one-soliton is a linear
+combination of $\Delta_m$ ($m\le n,\,m\equiv n\pmod 2$) and therefore has the
+chord form $F_{H_n}(p_b) - F_{H_n}(p_a)$ \La/\Lc.
+Crucially, however, \emph{not every} polynomial in $(k,v)$ is a chord difference
+of matching degree: because $\Delta_3 = \frac{1}{4}\Delta_1$ on
+$p_a^2+p_a p_b+p_b^2=\frac{1}{4}$, the space $\operatorname{span}\{\Delta_1,\Delta_5\}$
+contains $k^3(5-4k^2) = 36\big(\Delta_5 - \frac{5}{144}\Delta_1\big)$ (the exact
+functional form of $E$!), but does \textbf{not} contain pure $k^3$ \Lc\ (\scons).
+\end{enumerate}
+\end{theorem}
+
+\subsection{Telescoping in \texorpdfstring{$2\leftrightarrow 1$}{2<->1} fusion and one-loop fate at fixed momentum}
+
+\begin{proposition}[Classical conservation vs.\ one-loop fixed-momentum non-telescoping, \Lc, \scons]\label{prop:fusion_conservation}
+Let $q_1 > q_2 > q_3$ be any KP triple with chords $S_{12}=(q_1,q_2)$,
+$S_{23}=(q_2,q_3)$, and $S_{13}=(q_1,q_3)$.
+\begin{enumerate}
+\item \textbf{Exact classical conservation of the infinite hierarchy:}
+For every charge $Q$ of the chord form $Q(p_a,p_b) = F_Q(p_b) - F_Q(p_a)$
+(including $M,\Pi,P,E$ and all $H_n$), chord concatenation $(q_1,q_2)+(q_2,q_3)\to(q_1,q_3)$
+telescopes identically:
+\begin{equation}\label{eq:chord_telescope}
+  Q(S_{12}) + Q(S_{23}) = \big(F_Q(q_2) - F_Q(q_1)\big) + \big(F_Q(q_3) - F_Q(q_2)\big)
+  = F_Q(q_3) - F_Q(q_1) = Q(S_{13}).
+\end{equation}
+Direct 60-digit spatial quadrature of the nonlinear charge densities of $M,\Pi,P,E$
+on the exact 3-exponential Y-junction solution $u_Y(x,t)$ at $t \in \{-2,0,+2\}$
+agrees with $Q(S_{12})+Q(S_{23}) = Q(S_{13})$ to $< 10^{-50}$ \Lc.
+Thus \textbf{the classical conservation laws do not forbid $2\leftrightarrow 1$
+soliton fusion or splitting}, in sharp contrast to sine-Gordon (where kinks carry
+a fixed topological charge and a 1-parameter dispersion $Q_s = m^s\sinh(s\theta)$,
+so $Q_s(\theta_1)+Q_s(\theta_2)=Q_s(\theta_3)$ has no real solution).
+
+\item \textbf{Equivalence to the defect KP-triangle holonomy and one-loop breakdown at fixed $P^{\mathrm{phys}}$:}
+For a Corrigan--Zambon defect of orientation $\eta\in\{\pm 1\}$ on the KP
+triangle $\{q_1,q_2,q_3\}$ ($q_1>q_2>q_3$), the absorption signs on the three
+directed edges $(q_1\to q_2,q_2\to q_3,q_3\to q_1)$ are
+$\rho = (+\eta,+\eta,-\eta)$ (\texttt{defq\_charges\_fusion.pdf},
+\texttt{audit\_defq.pdf}). Hence the directed KP-triangle holonomy of any
+soliton observable $\mathcal{O}$ is literally the $2\to 1$ fusion balance:
+\begin{equation}\label{eq:holonomy_is_fusion}
+  \sum_{i=1}^3 \rho_i\,\mathcal{O}(S_i)
+  = \eta\,\Big(\mathcal{O}(S_{12}) + \mathcal{O}(S_{23}) - \mathcal{O}(S_{13})\Big).
+\end{equation}
+Consequently:
+\begin{itemize}
+\item In the \emph{fixed-profile mode-sum} one-loop prescription,
+$\Delta E_1^{\mathrm{ren}}(S)$ and $\Delta P_{\mathrm{mode}}(S)$ are 2-root
+dipole differences on the KP cubic and telescope to zero
+($\Delta E_1^{\mathrm{ren}}(S_{12})+\Delta E_1^{\mathrm{ren}}(S_{23})-\Delta E_1^{\mathrm{ren}}(S_{13}) = 0$
+to $10^{-61}$ at $\phi=0.23$) \Lc.
+\item However, in the \emph{fixed-physical-momentum} expansion
+$E^{\mathrm{phys}}(P^{\mathrm{phys}}) = E_{\mathrm{cl}}(P^{\mathrm{phys}}) + \hb\,F|_P(P^{\mathrm{phys}}) + O(\hb^2)$,
+the charge-pair-invariant one-loop shift
+$F|_P(S) = \Delta E_1^{\mathrm{ren}}(S) - v(S)\,\Delta P_{\mathrm{mode}}(S) = -L_1(S)$
+(\texttt{audit\_det\_projected.pdf}) is \textbf{not} a chord difference because
+$v(S) = \sqrt{3}(p_a+p_b)$ multiplies $\Delta P_{\mathrm{mode}}(S)$:
+\begin{align}\label{eq:delta_F_at_P}
+  \Delta(F|_P) &:= F|_P(S_{12}) + F|_P(S_{23}) - F|_P(S_{13}) \nonumber\\
+  &= -(v_{12}-v_{13})\,\Delta P_{\mathrm{mode}}(S_{12}) - (v_{23}-v_{13})\,\Delta P_{\mathrm{mode}}(S_{23}) \ne 0.
+\end{align}
+At $\phi = 0.23$, $\Delta(F|_P) = +0.38879244070035460274 \ne 0$ \Lc\ (\scons).
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Interpretation for quantum fusion, \Ld]\label{rem:quantum_conservation}
+For a single charge pair $(E^{\mathrm{phys}},P^{\mathrm{phys}})$, a nonzero
+one-loop shift $\Delta(F|_P) \ne 0$ does \emph{not} by itself forbid $2\to 1$
+fusion: because $v_{12} \ne v_{13}$ and $v_{23} \ne v_{13}$, shifting the
+resonant momenta by $P_j^{\mathrm{phys}} = P_j^{\mathrm{cl}} + \hb\,\delta P_j$
+with $(v_{12}-v_{13})\delta P_{12} + (v_{23}-v_{13})\delta P_{23} = -\Delta(F|_P)$
+(for instance $\delta P_j = \Delta P_{\mathrm{mode}}(S_j)$, corresponding to
+unshifted bare KP roots) restores $E^{\mathrm{phys}}(P_1^{\mathrm{phys}}) + E^{\mathrm{phys}}(P_2^{\mathrm{phys}}) = E^{\mathrm{phys}}(P_1^{\mathrm{phys}}+P_2^{\mathrm{phys}})$
+to $O(\hb)$ along a shifted 1D curve \Lc/\Ld. However, for the \emph{entire
+infinite tower} of quantum charges $\{\hat{H}_n\}$ to allow $2\to 1$ fusion on
+the \emph{same} shifted curve in $(P_1^{\mathrm{phys}},P_2^{\mathrm{phys}})$, all
+one-loop charge corrections $\Delta H_n|_P$ would have to be absorbed by a
+single renormalisation of the KP triple $\{q_1,q_2,q_3\}$. Whether the quantum
+Boussinesq hierarchy preserves this exact KP-chord elasticity at one loop and
+beyond remains open \Ld.
+\end{remark}
+
+% ==============================================================================
+\section{Question 3: Quantum and semiclassical implications}
+\label{sec:quantum}
+% ==============================================================================
+
+\subsection{Semiclassical phase \texorpdfstring{$\delta(1,2)$}{delta(1,2)} and divergent time delay as \texorpdfstring{$A_{12}\to 0$ or $\infty$}{A12 -> 0 or infty}}
+
+Recall the audited Darboux-frame semiclassical two-soliton phase \Lc\
+(\texttt{phase2/\allowbreak report.pdf} Prop.~2.3, \texttt{audit\_smx.pdf}):
+\begin{equation}\label{eq:delta_semi}
+  \delta(1,2) = \frac{2}{9}(\ell_1 - \ell_2)\ln A_{12} + T_{12}, \qquad
+  T_{12} = \frac{2}{3}M_1 M_2(v_1 - v_2) = -\frac{2}{3}(\Pi_1 M_2 - \Pi_2 M_1),
+\end{equation}
+whose canonical momentum derivatives give the Darboux shifts
+$\Delta X_1' = -\frac{\partial\delta}{\partial P_1} = -k_1^{-1}\ln A_{12} + \gamma_1 M_2$
+($\gamma_j = \frac{\dd\Pi_j/\dd\alpha_j}{\dd P_j/\dd\alpha_j}$).
+
+\begin{proposition}[Transverse $h\ln h$ branch point and divergent delay at resonance, \Lc, \squant]\label{prop:phase_resonance}
+Let $h \to 0^+$ be the transverse rapidity displacement into the regular domain
+($A_{12} > 0$) from any of the three genuine resonance lines $R_{\mathrm{ov}}$
+($\alpha_2 = \frac{2\pi}{3}-\alpha_1-h$, $\sigma_{\mathrm{res}}=+1$),
+$R_{\mathrm{ho}}^+$ ($\alpha_2 = \frac{\pi}{3}-\alpha_1-h$, $\sigma_{\mathrm{res}}=-1$),
+or $R_{\mathrm{ho}}^-$ ($\alpha_1 = \alpha_2+\frac{\pi}{3}+h$, $\sigma_{\mathrm{res}}=+1$).
+\begin{enumerate}
+\item \textbf{Simple zero/pole of $A_{12}$ and linear vanishing of $\ell_1-\ell_2$:}
+On all three lines, one KP root difference $p_{1r}-p_{2s} = O(h)$ vanishes to
+first order, so both $\ell_1-\ell_2$ and $A_{12}^{\sigma_{\mathrm{res}}}$ vanish
+linearly in $h$:
+\begin{equation}\label{eq:transverse_asympt}
+  \ell_1 - \ell_2 = c_\ell(\alpha_*)\,h + O(h^2), \qquad
+  A_{12}(h) = c_A(\alpha_*)\,h^{\sigma_{\mathrm{res}}}\big(1 + O(h)\big) \qquad (c_A > 0),
+\end{equation}
+with $c_\ell(\alpha_*) = -3\sin 3\alpha_* \ne 0$ for $\alpha_* \ne \pi/3$.
+Consequently, as $h \to 0^+$:
+\begin{equation}\label{eq:delta_hlnh}
+  \boxed{\;
+  \delta(1,2) = T_{12}\big|_{\mathrm{res}}
+  + \frac{2}{9}\sigma_{\mathrm{res}}\,c_\ell(\alpha_*)\,h\ln h + O(h), \qquad
+  \Delta x_1 = -\frac{\sigma_{\mathrm{res}}}{k_1}\ln h - \frac{\ln c_A}{k_1} + O(h).
+  \;}
+\end{equation}
+Thus $\delta(1,2)$ approaches the finite topological limit $T_{12}|_{\mathrm{res}}$
+continuously, while its transverse slope $\partial_h\delta \sim \frac{2}{9}\sigma_{\mathrm{res}}c_\ell\ln h$
+and the classical position shift $\Delta x_j$ (and Wigner time delay
+$\Delta t_{12} = \frac{\Delta x_1 - \Delta x_2}{v_1 - v_2}$) \textbf{diverge
+logarithmically as $\ln(1/h)$} \Lc.
+
+\item \textbf{Logarithmic divergence of the fixed-physical-momentum $O(\hb^0)$ phase:}
+While the bare fixed-rapidity one-loop phonon integral $I_{12}(\alpha_1,\alpha_2)$
+remains finite on all three resonance lines (\texttt{oneloop\_phase.pdf},
+\texttt{audit\_smx.pdf}), expressing the S-matrix at fixed physical momenta
+$P_j^{\mathrm{phys}} = P_j^{\mathrm{cl}} + \hb\,\Delta P_j$ introduces the
+$O(\hb^0)$ chain-rule counterterm
+\begin{equation}\label{eq:delta_renorm_div}
+  \delta_{12,\mathrm{renorm}}
+  = -\frac{\partial\delta_{\mathrm{cl}}}{\partial P_1}\Delta P_1
+    -\frac{\partial\delta_{\mathrm{cl}}}{\partial P_2}\Delta P_2
+  = -\left(\frac{\Delta P_1}{k_1} - \frac{\Delta P_2}{k_2}\right)\ln A_{12}
+    + \gamma_1 M_2\Delta P_1 - \gamma_2 M_1\Delta P_2,
+\end{equation}
+whose coefficient $-\big(\frac{\Delta P_1}{k_1}-\frac{\Delta P_2}{k_2}\big)$ is
+generically non-zero on all three resonance lines, producing a \textbf{logarithmic
+divergence $\propto \ln h$ at $O(\hb^0)$} \Lc:
+\begin{center}\footnotesize
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Resonance point & $T_{12}|_{\mathrm{res}}$ & $c_A$ & $\frac{2}{9}\sigma_{\mathrm{res}}c_\ell$ ($h\ln h$) & $-\big(\frac{\Delta P_1}{k_1}-\frac{\Delta P_2}{k_2}\big)$ ($\ln A_{12}$) \\\midrule
+$R_{\mathrm{ov}}$ ($\alpha_1=0.75$) & $+0.898441539345$ & $0.074538040233$ & $-0.518715464592$ & $+0.392932242573$ \\
+$R_{\mathrm{ho}}^+$ ($\alpha_1=0.40$) & $+1.076226034357$ & $0.412963868475$ & $+0.621359390645$ & $+1.271224247491$ \\
+$R_{\mathrm{ho}}^-$ ($\alpha_2=0.25$) & $+0.787088643179$ & $1.240490193422$ & $-0.454425840016$ & $+0.992253053483$ \\\bottomrule
+\end{tabular}
+\end{center}
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Physical meaning of the $\ln h$ divergence at $O(\hb^0)$, \Lc/\Ld]
+In the full resummed semiclassical amplitude, a one-loop shift of the spectral
+parameters $\ell_j^{\mathrm{phys}} = \ell_j + \hb\,\delta\ell_j$ shifts the
+resonance locus by $\delta h = O(\hb)$. Expanding
+$(\ell_1^{\mathrm{phys}}-\ell_2^{\mathrm{phys}})\ln|\ell_1^{\mathrm{phys}}-\ell_2^{\mathrm{phys}}|/\hb$
+at fixed unshifted $h \to 0$ produces $\delta\ell_{12}\ln h$: the $O(\hb^0)$
+logarithmic divergence \eqref{eq:delta_renorm_div} is the perturbative signature
+that the branch point $h=0$ is shifted by $O(\hb)$ in physical momentum space \Lc/\Ld.
+\end{remark}
+
+\subsection{Physical-region singularities and kinematic stability of the light branch}
+
+\begin{theorem}[Kinematic stability of the light branch and heavy-branch threshold embedding, \Lc, \squant]\label{thm:light_stability}
+\mbox{}
+\begin{enumerate}
+\item \textbf{Strict concavity and sub-additivity of $E_{\mathrm{light}}(P)$:}
+On the light branch $\alpha \in (0,\pi/3)$ ($|P| \in (0,P_{\max})$ with
+$P_{\max} = \sqrt{3}/8$), $E_{\mathrm{light}}(P)$ satisfies $E_{\mathrm{light}}(0)=0$,
+$\frac{\dd E_{\mathrm{light}}}{\dd|P|} = \cos\alpha \in (\frac{1}{2},1)$, and
+\begin{equation}\label{eq:d2E_dP2}
+  \frac{\dd^2 E_{\mathrm{light}}}{\dd P^2} = -\frac{3}{2\sin 3\alpha} < 0
+  \qquad \forall\,\alpha \in \left(0,\frac{\pi}{3}\right).
+\end{equation}
+By strict concavity on $[0,P_{\max}]$ (for same-sign momenta) and strict
+monotonicity $|P_1+P_2| < \max(|P_1|,|P_2|)$ (for opposite-sign momenta), any
+two nonzero light-branch momenta $P_1,P_2$ with $|P_1+P_2| \le P_{\max}$ obey
+\begin{equation}\label{eq:subadditivity}
+  \boxed{\;
+  E_{\mathrm{light}}(P_1) + E_{\mathrm{light}}(P_2) > E_{\mathrm{light}}(P_1 + P_2).
+  \;}
+\end{equation}
+Consequently, \textbf{$(E,P)$ conservation alone forbids any light soliton from
+decaying into two light solitons ($1_{\mathrm{light}}\not\to 2_{\mathrm{light}}$)
+and forbids any two light solitons from fusing into a light soliton
+($2_{\mathrm{light}}\not\to 1_{\mathrm{light}}$)} \Lc. Since every heavy soliton
+has $M = 2k > \sqrt{3}$, $M$-conservation ($k_1+k_2=k_3$) also forbids
+$1_{\mathrm{light}}\to\text{heavy}+\text{anything}$. Thus \textbf{light solitons
+are kinematically stable against all $1\to 2$ decays} \Lc.
+
+\item \textbf{Every heavy soliton is embedded in the two-light-soliton continuum:}
+Conversely, every heavy soliton $S_{13}$ with $\alpha_{13}\in(\pi/3,\pi/2)$ and
+direction $\epsilon_{13}\in\{\pm 1\}$ is degenerate in $(E,P,M,\Pi,H_n)$ with the
+unique head-on light-light pair $S_{12}$ ($\alpha_{12}=\frac{2\pi}{3}-\alpha_{13}\in(\pi/6,\pi/3)$,
+$\epsilon_{12}=+\epsilon_{13}$) and $S_{23}$ ($\alpha_{23}=\alpha_{13}-\frac{\pi}{3}\in(0,\pi/6)$,
+$\epsilon_{23}=-\epsilon_{13}$) on $R_{\mathrm{ho}}^+$. The 1+1D two-body
+phase-space integral at the heavy soliton's $(E_3,P_3)$ is non-vanishing:
+\begin{equation}\label{eq:phase_space_1to2}
+  \int \dd P_1\,\dd P_2\,\delta(P_1+P_2-P_3)\,\delta\big(E_1(P_1)+E_2(P_2)-E_3(P_3)\big)
+  = \frac{1}{|v_{12} - v_{23}|} = \frac{1}{\sqrt{3}\,k_{13}} \in \left[\frac{1}{\sqrt{3}},\frac{2}{3}\right).
+\end{equation}
+Across $R_{\mathrm{ho}}^+$ ($\alpha_2 = \frac{\pi}{3}-\alpha_1-h$), the on-shell
+energy denominator $\Delta E_{\mathrm{on\text{-}shell}}(h) := E_1(\alpha_1)+E_2(\alpha_2)-E_{\mathrm{heavy}}(P_1+P_2)$
+vanishes linearly with non-zero slope:
+\begin{equation}\label{eq:onshell_slope}
+  \left.\frac{\dd}{\dd h}\Big(E_1(\alpha_1) + E_2(\alpha_2) - E_{\mathrm{heavy}}(P_1+P_2)\Big)\right|_{h=0}
+  = -(v_2 - v_3)\,\frac{\dd P_2}{\dd\alpha_2} \ne 0
+\end{equation}
+(equal to $+0.24107867527655644$ at $\alpha_1=0.62$, verified to $10^{-28}$ by
+finite-step differentiation and $10^{-58}$ analytically in \squant) \Lc.
+\end{enumerate}
+\end{theorem}
+
+\paragraph{Physical-region singularities of the quantum two-body S-matrix (\Lc/\Ld).}
+Theorem~\ref{thm:light_stability} and Proposition~\ref{prop:phase_resonance}
+distinguish two types of physical-region singularities at the resonant loci:
+\begin{enumerate}
+\item \textbf{Logarithmic branch point $h^{\ii c h}$ in the WKB/Gamma elastic amplitude \Lc:}
+In the semiclassical candidate $S_{\mathrm{cand}} \propto \big(\frac{\Gamma(1+\ii\eta)}{\Gamma(1-\ii\eta)}\big)^\tau\big(\frac{\ee^2 A_{12}}{\eta^2}\big)^{\ii\eta}\ee^{\ii T_{12}/\hb}$
+with $\eta = \frac{2}{9\hb}(\ell_1-\ell_2)$, every resonance line has $\eta = 0$,
+where $\frac{\Gamma(1+\ii\eta)}{\Gamma(1-\ii\eta)} = 1$ has \textbf{no Gamma pole}
+(\texttt{audit\_smx.pdf}). Instead, $A_{12}^{\ii\eta} \sim h^{\ii\sigma_{\mathrm{res}}c_\ell h/(9\hb/2)}$
+produces a continuous \textbf{logarithmic branch point} at real rapidity $h=0$,
+across which $A_{12}$ changes sign \Lc.
+\item \textbf{Real-rapidity $s$-channel pole / resonance threshold from $2\leftrightarrow 1$ coupling \Ld:}
+Because $\Delta E_{\mathrm{on\text{-}shell}}(h) = E_1+E_2-E_{\mathrm{heavy}}(P_1+P_2)$
+vanishes linearly on $R_{\mathrm{ho}}^+$ \eqref{eq:onshell_slope}, any non-zero
+quantum $2\leftrightarrow 1$ transition vertex $g_{12\to 3}$ generates an
+on-shell $s$-channel propagator pole $\big(E_1+E_2-E_3(P_1+P_2) - \Sigma_3(E,P) + \ii\epsilon\big)^{-1}$
+directly on the real head-on scattering domain $R_{\mathrm{ho}}^+$ (and crossed
+$t/u$-channel singularities on $R_{\mathrm{ho}}^-$ and $R_{\mathrm{ov}}$) \Ld.
+By Dyson resummation of the two-light-soliton bubble \eqref{eq:phase_space_1to2},
+the embedded heavy soliton $S_{13}$ acquires a decay width
+$\Gamma_{13\to 12+23} = \frac{|g_{12\to 3}|^2}{2\sqrt{3}\,k_{13}} \ge 0$, turning
+the real pole into a Breit--Wigner resonance just below the real axis \Ld.
+\end{enumerate}
+
+\subsection{Two-soliton unitarity vs.\ coupled \texorpdfstring{$2\leftrightarrow 1$}{2<->1} channels}
+
+\begin{proposition}[WKB unitarity violation in the singular domain $A_{12}<0$, \Lc, \squant]\label{prop:unitarity_deficit}
+When the semiclassical phase \eqref{eq:delta_semi} (or the continued Gamma
+candidate) is continued across any of $R_{\mathrm{ov}},R_{\mathrm{ho}}^+,
+R_{\mathrm{ho}}^-$ into the singular region $A_{12} < 0$, $\ln A_{12} = \ln|A_{12}| \pm \ii\pi$
+acquires an imaginary part $\pm\ii\pi$. On the physical sheet where the elastic
+amplitude remains bounded ($\operatorname{Im}\delta > 0$),
+\begin{equation}\label{eq:wkb_deficit}
+  \boxed{\;
+  \big|S_{2\to 2}^{\mathrm{WKB}}(1,2)\big|^2
+  = \left|\ee^{\ii\delta(1,2)/\hb}\right|^2
+  = \exp\!\left(-\frac{4\pi}{9\hb}\,\big|\ell_1 - \ell_2\big|\right) < 1
+  \qquad (A_{12} < 0).
+  \;}
+\end{equation}
+For example, at the singular head-on point $(\alpha_1,\alpha_2)=(0.50,0.65)$
+($\epsilon_1=+1,\epsilon_2=-1$, where $A_{\mathrm{ho}} = -0.354784 < 0$ and
+$|\ell_1-\ell_2| = 0.295758$) with $\hb=0.1$, $|S_{2\to 2}^{\mathrm{WKB}}|^2 = 0.0160837 < 1$,
+leaving a two-body unitarity deficit $1 - |S_{2\to 2}^{\mathrm{WKB}}|^2 = 0.9839163 > 0$ \Lc.
+\end{proposition}
+
+\paragraph{Consequence for unitarity (\Lc/\Ld).}
+\begin{itemize}
+\item \textbf{At the resonance curve $R_{\mathrm{ho}}^+$ ($E_1+E_2=E_3(P_1+P_2)$):}
+Because the two-light-soliton state $|P_1,P_2\rangle$ and the heavy one-soliton
+state $|P_3=P_1+P_2\rangle$ share identical conserved charges, unitarity on the
+energy-momentum shell acts on the coupled two-dimensional space
+$\mathcal{H}_{E,P} \simeq \mathbb{C}|S_{12},S_{23}\rangle \oplus \mathbb{C}|S_{13}\rangle$ via a
+$2\times 2$ unitary block
+\begin{equation}\label{eq:coupled_S}
+  \mathbf{S}(E,P) = \begin{pmatrix} S_{2\to 2} & S_{1\to 2} \\ S_{2\to 1} & S_{1\to 1} \end{pmatrix}, \qquad
+  |S_{2\to 2}|^2 + |S_{2\to 1}|^2 = 1.
+\end{equation}
+Two-soliton unitarity alone ($|S_{2\to 2}|=1,\,S_{2\to 1}=0$) is only consistent
+if the quantum $2\leftrightarrow 1$ transition amplitude vanishes identically on
+$R_{\mathrm{ho}}^+$ despite the existence of the classical Y-junction trajectory
+connecting the two states \Ld.
+\item \textbf{In the singular region $A_{12}<0$:}
+Pure two-soliton elastic unitarity fails at the semiclassical level by
+\eqref{eq:wkb_deficit} \Lc. Because the classical 4-exponential solution blows up
+($\tau=0$) whenever $A_{12}<0$, two incoming solitons with $A_{12}<0$ cannot pass
+through one another as a regular classical two-soliton state; in the quantum
+theory \Ld, the absorption deficit $1 - \exp(-\frac{4\pi}{9\hb}|\ell_1-\ell_2|)$
+measures the suppression of direct elastic transmission in favour of
+inelastic/multi-soliton/radiation or resonant rearrangement channels.
+\end{itemize}
+
+\subsection{Three-soliton factorisation and bulk fusion bootstrap near resonance}
+
+In 1+1D diagonal scattering, the algebraic Yang--Baxter equation
+$S_{12}S_{13}S_{23} = S_{23}S_{13}S_{12}$ is trivial, but physical
+three-body factorisation requires that a three-soliton collision decompose into
+independent pairwise events regardless of chronological order, and---when two
+solitons fuse ($S_{12}+S_{23}\to S_{13}$)—that scattering a third soliton $3$
+off the pair before fusion equal scattering off the fused soliton $S_{13}$ after
+fusion (the bulk fusion bootstrap).
+
+\begin{proposition}[Classical and bare 1-loop fusion factorisation vs.\ $O(\hb^0)$ obstructions, \Lc, \squant]\label{prop:three_body}
+Let $S_{12}=(q_1,q_2)$, $S_{23}=(q_2,q_3)$, and $S_{13}=(q_1,q_3)$ be the three
+solitons of a KP triple ($q_1>q_2>q_3$, sharing $\ell_{\mathrm{res}}$), and let
+$3 = (\alpha_3,\epsilon_3)$ be any test soliton in the regular region
+($A(3,S_{ij}) > 0$).
+\begin{enumerate}
+\item \textbf{Exact classical cross-ratio and Darboux-phase fusion:}
+The shared intermediate root $q_2$ cancels identically in the product of KP
+cross-ratios,
+\begin{align}\label{eq:A_fusion}
+  A(3,S_{12})\,A(3,S_{23})
+  &= \frac{(p_{3a}-q_1)(p_{3b}-q_2)}{(p_{3a}-q_2)(p_{3b}-q_1)}\cdot
+     \frac{(p_{3a}-q_2)(p_{3b}-q_3)}{(p_{3a}-q_3)(p_{3b}-q_2)} \nonumber\\
+  &= \frac{(p_{3a}-q_1)(p_{3b}-q_3)}{(p_{3a}-q_3)(p_{3b}-q_1)}
+   = A(3,S_{13}),
+\end{align}
+and because $M(S_{12})+M(S_{23})=M(S_{13})$, $\Pi(S_{12})+\Pi(S_{23})=\Pi(S_{13})$,
+and $\ell(S_{12})=\ell(S_{23})=\ell(S_{13})=\ell_{\mathrm{res}}$, the full
+Darboux-frame semiclassical phase \eqref{eq:delta_semi} is \textbf{strictly
+additive across bulk fusion with zero topological remainder}:
+\begin{equation}\label{eq:delta_bulk_fusion}
+  \boxed{\;
+  \delta_{\mathrm{cl}}(3,S_{12}) + \delta_{\mathrm{cl}}(3,S_{23})
+  = \delta_{\mathrm{cl}}(3,S_{13}).
+  \;}
+\end{equation}
+Thus the pure WKB exponential $S = \ee^{\ii\delta_{\mathrm{cl}}/\hb}$ obeys the
+bulk fusion bootstrap $S(3,S_{12})\,S(3,S_{23}) = S(3,S_{13})$ identically \Lc.
+
+\item \textbf{Pointwise phonon phase telescoping and bare one-loop integral fusion:}
+For every phonon wavenumber $q \in \mathbb{R}\setminus\{0\}$, the one-soliton
+phonon phase derivatives telescope across the KP triple,
+\begin{equation}\label{eq:phonon_dt_telescope}
+  \theta_{\mathrm{sol}}'(q;S_{12}) + \theta_{\mathrm{sol}}'(q;S_{23})
+  = \theta_{\mathrm{sol}}'(q;S_{13}),
+\end{equation}
+and therefore the bare fixed-rapidity one-loop continuum phase integrals satisfy
+$I_{SS}(3,S_{12}) + I_{SS}(3,S_{23}) = I_{SS}(3,S_{13})$ identically \Lc.
+
+\item \textbf{Two $O(\hb^0)$ breakdowns of bulk fusion factorisation:}
+\begin{itemize}
+\item \emph{Maslov/Stirling mismatch in the continued Gamma candidate:}
+Because $S_{12}$ ($\epsilon_{12}=+1$) and $S_{23}$ ($\epsilon_{23}=-1$) move in
+opposite directions, their relative orientation signs $\tau(3,S_{12})+\tau(3,S_{23}) = (+1)+(-1) = 0$
+cancel, whereas $\tau(3,S_{13}) = \pm 1 \ne 0$. With common
+$\eta = \frac{2}{9\hb}(\ell_3-\ell_{\mathrm{res}})$, the continued Gamma candidate
+violates bulk fusion at $O(\hb^0)$ by:
+\begin{align}\label{eq:gamma_fusion_fail}
+  \frac{S_{\mathrm{cand}}(3,S_{12})\,S_{\mathrm{cand}}(3,S_{23})}{S_{\mathrm{cand}}(3,S_{13})}
+  &= \left[\frac{\Gamma(1+\ii\eta)}{\Gamma(1-\ii\eta)}\!\left(\frac{\ee^2}{\eta^2}\right)^{-\ii\eta}\right]^{-\tau(3,S_{13})} \nonumber\\
+  &= \ee^{-\ii\frac{\pi}{2}\tau(3,S_{13})\sgn\eta}\big(1 + O(\hb)\big) \ne 1
+\end{align}
+(at $\phi=0.23,\alpha_3=0.31,\hb=0.1$, the phase discrepancy is
+$+1.5158110455271881045$ vs.\ $+\frac{\pi}{2} = +1.5707963267948966192$ as
+$\hb\to 0^+$) \Lc.
+\item \emph{Fixed-physical-momentum target-soliton renormalisation mismatch:}
+When $S(3,S_{ij})$ is evaluated at fixed physical momenta
+$(P_3^{\mathrm{phys}},P_{S_{ij}}^{\mathrm{phys}})$, the test-soliton Taylor shifts
+$\Delta X_3(3,S_{ij})\Delta P_3$ cancel by \eqref{eq:A_fusion}, but the
+target-soliton Taylor shifts fail to telescope because $\Delta P(S_{ij})/k_{S_{ij}}$
+varies across the three chords:
+\begin{equation}\label{eq:target_P_mismatch}
+  \sum_{S\in\{S_{12},S_{23}\}} \frac{\ln A(3,S)}{k_S}\Delta P(S)
+  - \frac{\ln A(3,S_{13})}{k_{S_{13}}}\Delta P(S_{13}) \ne 0
+\end{equation}
+(equal to $+0.8755292547543045976$ at $\phi=0.23,\alpha_3=0.31$) \Lc.
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Wave-packet / Landau breakdown of 3-body chronological independence near resonance, \Ld]
+Classically, \eqref{eq:A_fusion}--\eqref{eq:delta_bulk_fusion} hold because the
+fused intermediate soliton $S_{13}$ carries the exact sum of the KP chords of
+$S_{12}$ and $S_{23}$. Quantum mechanically \Ld, near the resonance locus
+($|h|\ll 1$), the divergent time delay $\Delta t_{12} \sim \frac{1}{|v_1-v_2|k_1}\ln(1/|h|)$
+means that in a 3-body wave-packet collision with impact parameter separation
+$\Delta X \sim v\,\Delta t_{12}$, the intermediate state is an on-shell coherent
+superposition of $|S_{12},S_{23}\rangle$ and $|S_{13}\rangle$. Because the $O(\hb^0)$
+scattering phases off $|S_{12},S_{23}\rangle$ vs.\ $|S_{13}\rangle$ differ by the
+nonzero target-momentum renormalisation \eqref{eq:target_P_mismatch} (unless
+cancelled by a two-body quantum frame counterterm), chronological independence of
+$3\to 3$ scattering fails at $O(\hb^0)$ in the resonant transition zone \Ld.
+\end{remark}
+
+% ==============================================================================
+\section{Question 4: Conclusion---when is the quantum S-matrix elastic and factorised?}
+\label{sec:conclusion}
+% ==============================================================================
+
+Combining our exact structural results \Lc\ with their quantum implications \Ld,
+we answer Question~4 by partitioning the two-soliton kinematic space into four
+physically distinct regimes:
+
+\begin{enumerate}
+\item \textbf{Regime I: Light-light overtaking collisions ($\alpha_1,\alpha_2\in(0,\pi/3),\,\epsilon_1=\epsilon_2$).}\\
+\emph{Status:} \textbf{Elastic and factorised} (\Lc\ for kinematic protection, \Ld\ for full quantum theory).
+\begin{itemize}
+\item Every soliton has $|P_j| < P_{\max} = \sqrt{3}/8$ on the KdV-like light
+branch, $\alpha_1+\alpha_2 < 2\pi/3$ everywhere, so $0 < A_{\mathrm{ov}} < 1$ is
+strictly regular and bounded away from $R_{\mathrm{ov}}$ except at the double-cusp
+corner $(\pi/3,\pi/3)$ \Lc.
+\item By Theorem~\ref{thm:light_stability}(1), $1_{\mathrm{light}}\to 2$ decay and
+$2_{\mathrm{light}}\to 1_{\mathrm{light}}$ fusion are strictly forbidden by
+$(E,P)$ conservation, and $2_{\mathrm{light}}\to 1_{\mathrm{heavy}}$ overtaking
+fusion is forbidden by $(M,P,E)$ conservation ($\alpha_1+\alpha_2 < 2\pi/3$) \Lc.
+\item No resonant or number-changing classical channel is reachable; a unitary,
+diagonal, factorised quantum two-soliton S-matrix is fully consistent here \Ld.
+\end{itemize}
+
+\item \textbf{Regime II: Sub-threshold light-light head-on collisions ($\alpha_1+\alpha_2 < \pi/3,\,\epsilon_1=-\epsilon_2$).}\\
+\emph{Status:} \textbf{Elastic below the heavy-soliton threshold $R_{\mathrm{ho}}^+$} (\Lc/\Ld).
+\begin{itemize}
+\item In this triangle ($\frac{1}{2}$ of the light-light square, $\frac{2}{9}$
+of $Q$), $A_{\mathrm{ho}} > 1$ is strictly regular and attractive \Lc.
+\item The total energy lies strictly below the heavy-soliton threshold:
+$E_1(\alpha_1) + E_2(\alpha_2) < E_{\mathrm{heavy}}(P_1+P_2)$ (since
+$\Delta E_{\mathrm{on\text{-}shell}}(h) > 0$ for $h=\pi/3-(\alpha_1+\alpha_2)<0$
+and $<0$ for $h>0$ when $\alpha_1>\pi/6$, or vanishes only on $R_{\mathrm{ho}}^+$),
+and $(M,P,E)$ conservation forbids $2\to 1$ fusion anywhere off $R_{\mathrm{ho}}^+$ \Lc.
+\item As $\alpha_1+\alpha_2 \to (\pi/3)^-$, the collision approaches the
+on-shell heavy-soliton resonance $R_{\mathrm{ho}}^+$, where the classical delay
+diverges as $\ln(1/h)$ and the $s$-channel heavy-soliton pole/branch point sits
+on the boundary of the elastic domain \Lc/\Ld.
+\end{itemize}
+
+\item \textbf{Regime III: Heavy-soliton channels ($\alpha_j \in (\pi/3,\pi/2)$) and the resonant loci $R_{\mathrm{ho}}^+,R_{\mathrm{ho}}^-,R_{\mathrm{ov}}$.}\\
+\emph{Status:} \textbf{Inelastic $1\leftrightarrow 2$ and resonant rearrangement channels open} (\Lc\ for kinematics/conservation, \Ld\ for quantum amplitudes).
+\begin{itemize}
+\item Every heavy soliton $S_{13}$ ($\alpha_{13}\in(\pi/3,\pi/2)$) is an embedded
+state in the two-light-soliton head-on continuum with exact conservation of
+$M,\Pi,P,E$ and all $H_n$ into $S_{12}+S_{23}$ and non-zero 1+1D phase space
+$J_{1\to 2}=(\sqrt{3}\,k_{13})^{-1}$ \Lc. Unless a hidden quantum selection rule
+forces the $1\leftrightarrow 2$ matrix element to vanish identically, heavy
+solitons are unstable quantum resonances ($S_{13}\to S_{12}+S_{23}$) rather than
+stable asymptotic particles \Ld.
+\item Semiclassically, near $R_{\mathrm{ho}}^+$ ($h = \pi/3 - (\alpha_1+\alpha_2) \to 0$),
+the $2\to 2$ amplitude couples to the $2\to 1$ fusion channel via the on-shell
+energy denominator $\Delta E_{\mathrm{on\text{-}shell}}(h) \propto h$, while
+across the resonance curve ($h < 0$, entering $A_{12} < 0$) the direct WKB
+elastic transmission amplitude is suppressed by the barrier-penetration factor \Lc/\Ld:
+\begin{equation}\label{eq:inelastic_amp}
+  \big|S_{2\to 2}^{\mathrm{WKB}}\big| = \exp\!\left(-\frac{2\pi}{9\hb}|\ell_1-\ell_2|\right), \qquad
+  P_{\mathrm{inelastic}}^{\mathrm{WKB}} = 1 - \big|S_{2\to 2}^{\mathrm{WKB}}\big|^2
+  = 1 - \exp\!\left(-\frac{4\pi}{9\hb}|\ell_1-\ell_2|\right).
+\end{equation}
+\end{itemize}
+
+\item \textbf{Regime IV: Open singular two-soliton domains ($A_{12} < 0$) and complex Hirota breathers ($A_{\mathrm{br}} < 1/4$).}\\
+\emph{Status:} \textbf{Non-elastic / outside the regular soliton sector} (\Lc/\Ld).
+\begin{itemize}
+\item For $\alpha_1+\alpha_2 > 2\pi/3$ (overtaking) and $\alpha_1+\alpha_2 > \pi/3,\,|\alpha_1-\alpha_2| < \pi/3$
+(head-on), $A_{12} < 0$: the classical 4-exponential solution develops $\tau=0$
+poles, and the continued WKB elastic amplitude violates $|S_{2\to 2}|=1$ by
+\eqref{eq:wkb_deficit} \Lc. Even in the light-light head-on square $(0,\pi/3)^2$,
+the upper triangle $\alpha_1+\alpha_2 \in (\pi/3,2\pi/3)$ lies in $A_{\mathrm{ho}} < 0$,
+so \textbf{even restricting external states to the light branch $\alpha<\pi/3$
+does not make head-on scattering globally elastic for $\alpha_1+\alpha_2 > \pi/3$} \Lc/\Ld!
+\item Every two-phase zero-background Hirota breather of the good equation has
+$A_{\mathrm{br}} < 1/4 < 1$ and is classically singular (\texttt{phase1/\allowbreak review.pdf},
+\texttt{audit\_smx.pdf}), so there is no regular classical breather family to
+require Bohr--Sommerfeld bound-state poles on the physical sheet \Lc/\Ld.
+\end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+\section{Summary of claims, labels, and verification scripts}
+\label{sec:summary_table}
+% ==============================================================================
+
+All three verification scripts in \texttt{phase2/\allowbreak scripts/} run in
+under 25~seconds total and terminate with \texttt{ALL CHECKS PASSED}.
+
+\small
+\begin{longtable}{@{}L{4.8cm}L{1.2cm}L{4.3cm}L{4.2cm}@{}}\toprule
+Claim / Formula & Label & Script & Precision / Check \\\midrule\endhead
+KP chord dictionary \eqref{eq:kp_roots}--\eqref{eq:A12_crossratio}, cross-ratio $=$ Hirota $=$ trig forms & \La/\Lc & \skin & Exact symbolic over $\mathbb{Q}(\sqrt{3})[t_1,t_2]$ \\
+Exact resonance lines $R_{\mathrm{ov}},R_{\mathrm{ho}}^+,R_{\mathrm{ho}}^-$; refutation of $|\alpha_1-\alpha_2|=\pi/3$ for overtaking & \Lc & \skin & 60-digit mpmath ($<10^{-48}$) \\
+KP-triangle unification \eqref{eq:triple_chords}--\eqref{eq:three_projections}: 2 light chords $+$ 1 heavy chord & \Lc & \skin & Symbolic $+$ 60-digit mpmath \\
+Exact 3-exponential Y-junction PDE solution and $1\leftrightarrow 2$ asymptotic limits & \La/\Lc & \skin & 60-digit PDE jet ($<10^{-50}$) and $t=\pm 400$ ($<10^{-48}$) \\
+Kinematic area fractions ($\frac{7}{9}$ reg.\ ov., $\frac{1}{3}$ reg.\ ho., $100\%$ light-light ov.) & \Lc & \skin & Exact rational geometry \\
+Symbolic integration of $H_1,\dots,H_8$ via $T=\tanh(kx/2)$ \eqref{eq:H1_to_H8} & \Lc & \scons & Exact symbolic polynomial integration \\
+Univariate chord potentials $F_Q(p)$ \eqref{eq:F_potentials} for $M,\Pi,P,E$ and $H_1,\dots,H_8$ & \Lc & \scons & Exact polynomial division mod $p_a^2+p_a p_b+p_b^2-\frac{1}{4}$ \\
+Spin-3 gap: pure $k^3 \notin \operatorname{span}\{\Delta_1,\Delta_5\}$, while $E\in\operatorname{span}\{\Delta_1,\Delta_5\}$ & \Lc & \scons & Exact symbolic linear system \\
+Classical telescoping $Q(S_{12})+Q(S_{23})=Q(S_{13})$ and Y-junction quadrature across $t\in\{-2,0,2\}$ & \Lc & \scons & Exact symbolic $+$ 60-digit quadrature ($<10^{-50}$) \\
+One-loop mode-sum telescoping vs.\ fixed-$P$ mismatch $\Delta(F|_P)=0.3887924407\ldots$ \eqref{eq:delta_F_at_P} & \Lc & \scons & 60-digit mpmath ($<10^{-48}$) \\
+Transverse $h\ln h$ branch point \eqref{eq:delta_hlnh} and fixed-$P$ $\ln A_{12}$ divergence \eqref{eq:delta_renorm_div} & \Lc & \squant & 60-digit asymptotic extraction ($<10^{-18}$) \\
+Strict concavity $\frac{\dd^2 E_{\mathrm{light}}}{\dd P^2}=-\frac{3}{2\sin 3\alpha}<0$ and $1_{\mathrm{light}}\not\leftrightarrow 2_{\mathrm{light}}$ \eqref{eq:subadditivity} & \Lc & \squant & Exact symbolic $+$ 60-digit grid check \\
+Heavy-branch $1\to 2$ Jacobian \eqref{eq:phase_space_1to2} and linear on-shell energy zero \eqref{eq:onshell_slope} & \Lc & \squant & 60-digit analytic $+$ finite-step ($<10^{-28}$) \\
+WKB unitarity deficit $|S_{2\to 2}^{\mathrm{WKB}}|^2 = \ee^{-\frac{4\pi}{9\hb}|\ell_1-\ell_2|} < 1$ for $A_{12}<0$ \eqref{eq:wkb_deficit} & \Lc & \squant & 60-digit evaluation \\
+Classical bulk fusion $A_{3,12}A_{3,23}=A_{3,13}$ and $\delta_{\mathrm{cl}}(3,S_{12})+\delta_{\mathrm{cl}}(3,S_{23})=\delta_{\mathrm{cl}}(3,S_{13})$ & \Lc & \squant & 60-digit mpmath ($<10^{-48}$) \\
+Pointwise phonon telescoping \eqref{eq:phonon_dt_telescope}; Gamma candidate $\ee^{\mp\ii\pi/2}$ and target-$\Delta P$ obstructions & \Lc & \squant & 60-digit mpmath ($<10^{-48}$) \\
+Physical elasticity conditions, heavy-soliton decay width, and inelastic regime partition & \Ld & --- & Conditional on quantum vertex and frame map \\\bottomrule
+\end{longtable}
+\normalsize
+
+% ==============================================================================
+\section{Failures recorded during development}
+\label{sec:failures}
+% ==============================================================================
+
+In accordance with \texttt{AGENTS.md}, we record every failed check or error
+encountered during the development of this package and how it was resolved
+without weakening any check:
+
+\begin{enumerate}
+\item \textbf{SymPy trigonometric cube simplification and rational GCD hang in \skin:}
+In the initial version of \skin, \texttt{sp.simplify(sp.expand\_trig(4*p\_root**3 - p\_root - ell1/(3*sp.sqrt(3))))}
+returned a non-zero unexpanded expression containing \texttt{sin(alpha\_1 + pi/6)**3},
+and \texttt{sp.cancel} over $\mathbb{Q}(\sqrt{3})[t_1,t_2]$ hung on rational
+cross-ratio differences. Clearing polynomial denominators using the homogeneous
+Weierstrass parametrization $S_j = 2t_j,\,C_j = 1-t_j^2,\,D_j = 1+t_j^2$
+reduced all identities to pure polynomial expansions in $\mathbb{Q}(\sqrt{3})[t_1,t_2]$
+that vanish identically in $<0.1\,\mathrm{s}$.
+
+\item \textbf{Trailing-digit fabrication on the false overtaking resonance value in \skin, and insufficient asymptotic time $T=60$:}
+In \skin, an initial assertion compared $A_{\mathrm{ov}}(0.2,0.2+\pi/3)$ to a
+20-digit string obtained by appending arbitrary digits to the 12-digit number
+$0.355465479849$ quoted in \texttt{audit\_smx.tex}; the assertion failed because
+the true 25-digit value is $0.3554654798490616496187723$. It was replaced by an
+exact $10^{-48}$ check against the closed form $\frac{1-3\cot^2(\alpha_1+\pi/6)}{-8}$
+together with a $10^{-12}$ check against the rounded audit figure. In the same
+script, checking the $t\to\pm\infty$ peak height of the Y-junction at $T=60$
+failed the $10^{-25}$ tolerance because the transverse exponent
+$\sqrt{3}k_{12}k_{23}T \approx 17.3$ gives $\ee^{-17.3}\approx 3\times 10^{-8}$;
+evaluating at $T=400$ ($\ee^{-115} < 10^{-49}$) passed the stricter $10^{-48}$
+tolerance.
+
+\item \textbf{Initial mental guess for the rational coefficients of $H_7$ and $H_8$ in \scons:}
+Before running the symbolic integrator in \scons, the docstring contained a
+tentative hand-estimated decomposition for $H_7$ and $H_8$. Exact symbolic
+integration of $\Res L^{7/3}$ and $\Res L^{8/3}$ via $T=\tanh(kx/2)$ yielded the
+unique exact coefficients $H_7 = \Delta_7 - \frac{7}{12}\Delta_5 + \frac{7}{324}\Delta_1$
+and $H_8 = \Delta_8 - \frac{7}{36}\Delta_4 + \frac{11}{324}\Delta_2$, which
+pass exact polynomial division modulo $p_a^2+p_a p_b+p_b^2-\frac{1}{4}$.
+
+\item \textbf{Unbracketed Newton overshoot across the cusp $\alpha=\pi/3$, sign of $P_1+P_2$ on $R_{\mathrm{ho}}^+$, and an extra $\sin\alpha$ factor in $\dd P/\dd\alpha$ in \squant:}
+In the first run of \squant, inverting $P(\alpha) = P_{\mathrm{target}}$ on the
+light branch by unbracketed Newton iteration from $\alpha_0=0.5$ overshot the
+cusp $\alpha=\pi/3$ (where $P'(\pi/3)=0$) onto the heavy branch when
+$P_1+P_2$ was near $P_{\max}$, causing the sub-additivity assertion
+$E_{\mathrm{light}}(P_1)+E_{\mathrm{light}}(P_2) > E_{\mathrm{light}}(P_1+P_2)$
+to fail. Replacing unbracketed Newton by bracketed bisection on $[0,\pi/3]$
+(light) and $[\pi/3,\pi/2]$ (heavy) followed by Newton polishing resolved the
+branch jump. In the same test, choosing $\alpha_1=0.42 < \pi/6$ ($\epsilon_1=+1$)
+and $\alpha_2=\pi/3-0.42 > \pi/6$ ($\epsilon_2=-1$) gave $P_1+P_2 < 0$, so the
+fused heavy soliton had $\epsilon_3 = -1$ rather than $+1$; and the Newton
+polishing step initially wrote $\frac{\dd P}{\dd\alpha} = \frac{2}{3}\sin^2\alpha\sin 3\alpha$
+instead of the correct $\frac{2}{3}\sin\alpha\sin 3\alpha$, which degraded the
+finite-step derivative check of $\Delta E_{\mathrm{on\text{-}shell}}'(0)$.
+Correcting $\frac{\dd P}{\dd\alpha}$ and testing $\alpha_1=0.62 \in (\pi/6,\pi/3)$
+($P_1+P_2 > 0,\,\epsilon_3=+1$) passed at $10^{-28}$ (finite-step) and $10^{-48}$
+(analytic).
+\end{enumerate}
+
+% ==============================================================================
+\paragraph{Reference verification and reading scope.}
+All references below are inherited from the verified repository bibliography
+(\texttt{phase2/\allowbreak report.tex} and \texttt{phase2/\allowbreak errata.tex});
+no new external reference is introduced. Reading scope follows the project
+ledger: relevant full-text sections read in the project for \cite{BC,BD,CZ,DMHC,FK,RS};
+abstract/metadata verified in \texttt{errata.tex} for \cite{Dickey,HI,LMK,Zak}.
+
+\begin{thebibliography}{99}\footnotesize\setlength{\itemsep}{1pt}
+\bibitem{BC} M.~M.~Bogdan, O.~V.~Charkina, \emph{Quasiclassical quantization of the Boussinesq breather emerging from the kink localized mode}, \emph{Low Temp. Phys.} 51 (2025) 763--773, arXiv:2502.14695, doi:\url{10.1063/10.0036799}. [relevant full-text passages read; bad equation]
+\bibitem{BD} T.~Bonnemain, B.~Doyon, \emph{Soliton gas of the integrable Boussinesq equation and its generalised hydrodynamics}, \emph{SciPost Phys.} 18 (2025) 075, arXiv:2402.08669. [full text read]
+\bibitem{CZ} E.~Corrigan, C.~Zambon, \emph{Adding integrable defects to the Boussinesq equation}, \emph{J. Phys. A: Math. Theor.} 56 (2023) 385701, arXiv:2306.03772, doi:\url{10.1088/1751-8121/aceec9}. [full text read]
+\bibitem{Dickey} L.~A.~Dickey, \emph{Soliton Equations and Hamiltonian Systems}, 2nd ed., World Scientific (2003), doi:\url{10.1142/5108}. [metadata verified; not read in full]
+\bibitem{DMHC} A.~Dimakis, F.~M\"uller-Hoissen, X.-M.~Chen, \emph{ Soliton solutions of the matrix Boussinesq equation and beyond Yang--Baxter maps}, \emph{Phys. Scr.} 94 (2019) 035206, arXiv:1805.09711, doi:\url{10.1088/1402-4896/aaf6da}. [full text read]
+\bibitem{FK} L.~D.~Faddeev, V.~E.~Korepin, \emph{Quantum theory of solitons}, \emph{Phys. Rep.} 42 (1978) 1--87, doi:\url{10.1016/0370-1573(78)90058-3}. [full text read]
+\bibitem{HI} R.~Hirota, M.~Ito, \emph{Resonance of solitons in one dimension}, \emph{J. Phys. Soc. Jpn.} 52 (1983) 744--748, doi:\url{10.1143/JPSJ.52.744}. [abstract/metadata only]
+\bibitem{LMK} F.~Lambert, M.~Musette, E.~Kesteloot, \emph{Soliton resonances for the good Boussinesq equation}, \emph{Inverse Problems} 3 (1987) 275--288, doi:\url{10.1088/0266-5611/3/2/010}. [abstract/metadata only]
+\bibitem{RS} A.~G.~Rasin, J.~Schiff, \emph{B\"acklund transformations for the Boussinesq equation and merging solitons}, \emph{J. Phys. A: Math. Theor.} 50 (2017) 325202, arXiv:1701.00243, doi:\url{10.1088/1751-8121/aa7942}. [full text read]
+\bibitem{Zak} V.~E.~Zakharov, \emph{On sto\-chastic\-i\-za\-tion of one-dimensional chains of nonlinear oscillators}, \emph{Sov. Phys. JETP} 38 (1974) 108--110. [abstract/citation record only]
+\end{thebibliography}
+
+\end{document}
