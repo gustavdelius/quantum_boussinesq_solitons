@@ -1,0 +1,406 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=2.3cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\sech}{\operatorname{sech}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Tr}{\operatorname{Tr}}
+
+\title{Independent Audit of \texttt{phase2/good\_twobody.tex}:\\
+Two-Soliton Conditional Ingredients, Counterterm Responses, Three-Body Clustering, and Near-Resonance Asymptotics}
+\author{Independent Audit Report \\ Project: Quantum Boussinesq Solitons (PI: Gustav Delius)}
+\date{November 4, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present an independent mathematical and numerical audit of \texttt{phase2/good\_twobody.tex} (and \texttt{phase2/good\_twobody.pdf}) together with its five verification scripts \texttt{phase2/scripts/good\_twobody\_*.py} and six cached JSON artefacts. All analytic derivations have been re-derived from scratch in \texttt{SymPy} and all numerical quantities have been recomputed at 70--90 decimal digits in \texttt{mpmath} by the standalone script \texttt{phase2/scripts/audit\_good\_twobody.py}, which imports no code from the audited package and verifies via SHA-256 digests that no existing repository file is modified. Of the thirteen claims and audit items examined, \textbf{nine are confirmed} and \textbf{four are qualified} (due to coordinate-frame dependence of the counterterm antisymmetry, script-coverage shortcuts in three package scripts, the distinction between scalar/Darboux clustering and the Toda Krein--Wiener--Hopf PDE, and the $O(h\ln h)+O(h)$ subleading Taylor structure near the head-on Y-resonance). \textbf{Zero claims are refuted}, and all five package scripts as well as \texttt{audit\_good\_twobody.py} print \texttt{ALL CHECKS PASSED}.
+\end{abstract}
+
+\tableofcontents
+
+\section{Executive Summary and Verdict Table}
+
+Following \texttt{AGENTS.md}, every nontrivial claim is labelled:
+\begin{itemize}
+\item \textbf{(a)} proved in the literature;
+\item \textbf{(b)} conjectured or heuristic in the literature;
+\item \textbf{(c)} derived and verified in this project;
+\item \textbf{(d)} a guess or open hypothesis.
+\end{itemize}
+For each claim in \texttt{phase2/good\_twobody.tex} (Table~1 and text), we assign an independent audit verdict: \textbf{Confirmed}, \textbf{Qualified}, or \textbf{Refuted}.
+
+\begin{center}
+\footnotesize
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{@{}p{2.9cm}p{0.8cm}p{1.9cm}p{9.9cm}@{}}
+\toprule
+\textbf{Claim / Item} & \textbf{Label} & \textbf{Verdict} & \textbf{Independent Audit Summary \& Evidence} \\
+\midrule
+\endhead
+C1. Classical Darboux shifts \& $\partial_{P_j}\delta_0 = -\Delta X'_j$ (Eqs.~(3)--(10)) & (c) & \textbf{Qualified} (math confirmed; script check numerical) & Confirmed symbolically across all four orientation branches $(\epsilon_1,\epsilon_2)\in\{\pm 1\}^2$ via canonical exponential reduction in \texttt{audit\_good\_twobody.py}. \emph{Qualification}: \texttt{good\_twobody\_counterterms.py:54--58} only tested $\partial_{P_j}\delta_0 = -\Delta X'_j$ numerically via \texttt{mp.diff} at $(0.3,0.6)$ rather than symbolically in \texttt{SymPy}. \\
+\addlinespace
+C2. Continuum integrals $I_{12}, J_{12}$ \& dilogarithm form (Eqs.~(11)--(14)) & (c) & \textbf{Confirmed} & Re-derived from the Hirota four-wave phonon shift $\theta(q)$ and verified by independent hyperbolic-sinh quadrature ($q=\sinh u$) against the $\chi_2(z)=\tfrac{1}{2}(\operatorname{Li}_2(z)-\operatorname{Li}_2(-z))$ formula across all four sign branches; max difference $4.81\times 10^{-72}$. \\
+\addlinespace
+C3. One-body charges $E_{\mathrm{m}}, p_{\mathrm{m}}, L_1, p_{\mathrm{can}}$ \& recoil $R[p]$ (Eqs.~(15)--(17)) & (c) & \textbf{Qualified} (formulas confirmed; mode-trace shortcut) & Closed forms $E_{\mathrm{m}} = (4-3\sqrt{3}\sin\alpha)/(6\pi)$, $p_{\mathrm{m}}=-vE_{\mathrm{m}}$, and $p_{\mathrm{can}}=\partial_v L_1 = p_{\mathrm{m}} - v\sin\alpha(\tfrac{2}{3}-\tfrac{\sqrt{3}}{4}\sin\alpha)/\pi$ confirmed to $<10^{-68}$. \emph{Qualification}: \texttt{good\_twobody\_kernels.py:136--141} checks $E_{\mathrm{m}}$ using an algebraically pre-subtracted integrand with $-3k/(2\pi)$ inserted by hand; \texttt{audit\_good\_twobody.py} supplies the missing cutoff-regulated trace check with $B_\Lambda$ and $C_\Lambda M$. \\
+\addlinespace
+C4. Counterterm responses $K_\lambda, K_\eta, K_\zeta, K_\kappa$ at fixed $P_j$ (Eqs.~(18)--(20), Point~7) & (c) & \textbf{Qualified} (values confirmed; frame \& PDE-test qualification) & Re-derived directly from the deformed Hirota bilinear equation $(\tfrac{1}{a}D_t^2 - bD_x^2 + dD_x^4)\tau\cdot\tau=0$ without coordinate rescaling. At $(\alpha_1,\alpha_2)=(0.3,0.6)$: $K_\lambda^{++} = +0.050081404868418910$ and $K_\lambda^{+-} = -0.225173938683341758$ (confirmed to 80 digits). \emph{Qualifications}: (i) \texttt{good\_twobody\_counterterms.py:62--78} differentiates the already-scaled expression $s\,\delta_0(P_1/p_*,P_2/p_*)$ rather than deformed PDE profiles; (ii) pure antisymmetry $K_\lambda(1,2)+K_\lambda(2,1)=0$ relies on the chamber-reversing Darboux frame where the symmetric coboundary $S_{\mathrm{cb}}=\tfrac{1}{2}(\Pi_1 M_2 + \Pi_2 M_1)$ was subtracted; in a fixed-chamber incoming frame, $K_\lambda^{\mathrm{sym}} = 3S_{\mathrm{cb}} - 4\sum_j P_j\partial_{P_j}S_{\mathrm{cb}} = +0.271191727118\dots \neq 0$ at $(0.3,0.6,++)$. \\
+\addlinespace
+C5. Connected insertion $\int (u_{12}^2 - u_1^2 - u_2^2)\,\dd x\,\dd t = \frac{4}{3}(v_2-v_1)\ln A_{12} + 2T_{12}$ (Eq.~(21)) & (c) & \textbf{Confirmed} & Derived via the B\"acklund telescoping density $u = \partial_x(\varphi_+ - \varphi_-)$ and verified by independent 2D Gauss--Legendre spacetime integration of the exact two-soliton profile $u_{12}(x,t) = 2\partial_x^2\ln\tau_2(x,t)$; $T=3000$ error is $4.74\times 10^{-51}$ for $(++)$ and $<10^{-70}$ for $(+-)$. \\
+\addlinespace
+C6. One-loop $n$-insertion Feynman ring UV finiteness for $n\ge 2$ & (c) & \textbf{Qualified} (true; untested in package scripts) & Confirmed symbolically in \texttt{audit\_good\_twobody.py}: the $n$-insertion ring integrand has denominator $(\omega_{\mathrm{E}}^2 + q^2 + q^4)^n$, giving UV superficial degree $3-2n$ (convergent for $n\ge 2$), with exact $\omega_{\mathrm{E}}$-integral $-\frac{(2n-3)!!}{2n\,(2n-2)!!}\frac{(6U)^n q^{2n}}{(q^2+q^4)^{n-1/2}}$. \emph{Qualification}: asserted in \texttt{good\_twobody.tex:240--244} without a script check in \texttt{good\_twobody\_*.py}. \\
+\addlinespace
+C7. Three-soliton Hirota 4-wave phonon transmission factorisation $T_{123}=T_1 T_2 T_3$ (Point~8) & (c) & \textbf{Confirmed} & All $3^4=81$ bilinear polynomial coefficients of $\mathcal{P}(\sum_{\alpha=1}^4 \sigma_\alpha K_\alpha, \sum_{\alpha=1}^4 \sigma_\alpha W_\alpha)$ in the four-wave Hirota ansatz (3 solitons + 1 linearized phonon) vanish identically in \texttt{SymPy}, confirming $A_{j4} = -P(K_j-\ii q, W_j-\ii\omega)/P(K_j+\ii q, W_j+\ii\omega)$ and $T_{123}(q)=T_1(q)T_2(q)T_3(q)$. \\
+\addlinespace
+C8. Three-body clustering vs.\ antisymmetric pair phase $F_{12}$ (Point~8) & (c) & \textbf{Qualified} (reconciled with Toda audit; line 94--95 tautology) & Scalar clustering $S_3=S_{12}S_{13}S_{23}$ leaves any pair phase $F_{ij}$ unfixed; Darboux $3\times 3$ minor clustering ($\det_{3\times 3}\Phi=0$ in \texttt{audit\_frame\_dictionary.tex}) kills infinite-rank $A_\lambda(y_1,y_2)$ ($\det_{3\times 3}\neq 0$) but \emph{not} the rank-2 bilinear $F_{12}=c(P_1 M_2 - P_2 M_1)$ ($\det_{3\times 3}=0$). On the Toda side, the finite-density Fermi sea and linear dressing enforce the inhomogeneous Krein PDE $(\partial_1+\partial_2)\widehat{\Phi}_q = \text{rank }1$, which excludes $F_{12}$ ($\det_{2\times 2}=27\sqrt{10}/80\neq 0$). Also, \texttt{good\_twobody\_threebody.py:94--95} only checks an addition tautology $(f_{12}+f_{13}+f_{23})-(f_{23}+f_{13}+f_{12})=0$. \\
+\addlinespace
+C9. Head-on Y-resonance $A_{12}\to\infty$ ($\alpha_1+\alpha_2=\pi/3-h$, Eqs.~(22)--(25), Point~10) & (c) & \textbf{Qualified} (limits confirmed; $O(h\ln h)+O(h)$ remainder) & Finite limits $J_*$, $B_{p_{\mathrm{m}}}$, $B_\lambda$ and logarithmic slopes $C_{p_{\mathrm{m}}}, C_{p_{\mathrm{can}}}, C_\lambda$ confirmed to $<10^{-53}$. \emph{Qualification}: the remainder written as $o(1)$ in Eqs.~(22)--(25) is $\sim 1.9\times 10^{-11}$ at $h=10^{-12}$ because of the exact subleading Taylor terms $-h[(\partial_{\alpha_2}C)\ln A_{12}(h) + \partial_{\alpha_2}B] = O(h\ln h)+O(h)$; subtracting both first-order terms reduces the $h=10^{-12}$ residual to $<3.1\times 10^{-23}$. \\
+\addlinespace
+C10. Overtaking limits $A_{12}\to 0^+$ \& refutation of $|\alpha_1-\alpha_2|=\pi/3$ (Point~10) & (c) & \textbf{Confirmed} & At the light equal-velocity threshold $\alpha_2=\alpha_1+h$ ($A_{12}\propto h^2\to 0^+$), identical-particle cancellation yields $K_\lambda = -\tfrac{4}{3}\sin\alpha_1\,h\ln h + O(h)\to 0$. On the heavy Y-line $\alpha_1+\alpha_2=2\pi/3-h$ ($\alpha_2^*>\pi/3$), $v_2^*\neq v_1$ so $K_\lambda \sim \tfrac{2}{3}(v_2^*-v_1)\ln h \to +\infty$, and \texttt{quantum\_phase} is rightly \texttt{null}. At $(\alpha_1,\alpha_2)=(0.2,0.2+\pi/3)$ overtaking, $A_{12}=0.355465479849\dots \neq 0,\infty$, confirming the refutation of the false $|\alpha_1-\alpha_2|=\pi/3$ resonance. \\
+\addlinespace
+C11. 270-row grid JSON \& honest \texttt{null} entries (Point~9) & (c)/(d) & \textbf{Confirmed} & All 270 rows (180 overtaking + 90 head-on) have \texttt{physical\_symmetric: null} and \texttt{physical\_antisymmetric: null}; \texttt{good\_twobody\_threebody.json} has \texttt{full\_threebody\_determinant: null}; \texttt{good\_twobody\_resonance.json} has \texttt{quantum\_phase: null} on the heavy branch. All 10 independent 80-digit spot checks across $(++,--,+-, -+)$ agree to $\le 3.81\times 10^{-54}$. \\
+\addlinespace
+C12. Conventions \& non-reliance on refuted results (Points~3, 5) & (a)/(c) & \textbf{Confirmed} & Strict adherence to the \texttt{AGENTS.md} good-equation convention, the Corrigan--Zambon dictionary ($u_{\mathrm{CZ}}=-3\varphi$, $L_{\mathrm{CZ}}=9L$), and the defect $s$ convention (scattering $s=\sigma_{\mathrm{vac}}$, spectrum $\eta\sigma_{\mathrm{vac}}$). Zero reliance on any claim refuted in \texttt{phase2/audit\_*.tex} or \texttt{phase2/errata.tex}. \\
+\addlinespace
+C13. Script execution \& cache safety (Point~6) & (c) & \textbf{Confirmed} & All 5 package scripts and \texttt{audit\_good\_twobody.py} run cleanly in the foreground, print \texttt{ALL CHECKS PASSED}, and leave \texttt{git status} of all tracked files untouched. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\section{Script Execution, Runtimes, and Non-Modification Check (Point 6)}
+
+Each of the five package scripts and our standalone audit script \texttt{phase2/scripts/audit\_good\_twobody.py} was executed individually in the foreground from the repository root (\texttt{python3 phase2/scripts/xxx.py}). Before and after running \texttt{audit\_good\_twobody.py}, SHA-256 digests of all 13 audited files (\texttt{good\_twobody.tex}, \texttt{good\_twobody.pdf}, the 5 scripts, and the 6 JSON files) were computed and verified to be identical.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lrrll@{}}
+\toprule
+\textbf{Script} & \textbf{Wall time (s)} & \textbf{Exit} & \textbf{Key diagnostic printed} & \textbf{Final line} \\
+\midrule
+\texttt{good\_twobody\_kernels.py} & 36.00 & 0 & \texttt{max independent quadrature error 5.9347298e-66} & \texttt{ALL CHECKS PASSED} \\
+\texttt{good\_twobody\_counterterms.py} & 5.00 & 0 & \texttt{max fixed-momentum finite-difference error 1.8697038e-35} & \texttt{ALL CHECKS PASSED} \\
+\texttt{good\_twobody\_local\_insertion.py} & 9.00 & 0 & \texttt{elapsed seconds 8.62} & \texttt{ALL CHECKS PASSED} \\
+\texttt{good\_twobody\_threebody.py} & 11.00 & 0 & \texttt{Exact four-wave bilinear coefficients checked: 81} & \texttt{ALL CHECKS PASSED} \\
+\texttt{good\_twobody\_grid.py} & 71.75 & 0 & \texttt{grid rows 270 max precision difference 8.3000235e-55} & \texttt{ALL CHECKS PASSED} \\
+\midrule
+\texttt{audit\_good\_twobody.py} & 47.71 & 0 & \texttt{all 13 audited file SHA-256 digests unchanged} & \texttt{ALL CHECKS PASSED} \\
+\bottomrule
+\end{tabular}
+\caption{Foreground execution runtimes and outputs of the five audited package scripts and the standalone audit script.}
+\label{tab:runtimes}
+\end{table}
+
+\section{Conventions and Non-Reliance on Refuted Results (Points 3 and 5)}
+
+\subsection{Good/Bad Dictionary, Corrigan--Zambon Rescaling, and Defect $s$ Convention (Point 3)}
+
+In Check~1 of \texttt{audit\_good\_twobody.py}, we verified symbolically in \texttt{SymPy} that \texttt{good\_twobody.tex} adheres throughout to the fixed \texttt{AGENTS.md} convention for the \textbf{good} Boussinesq equation:
+\begin{equation}
+u_{tt} = u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad u = \varphi_x = 2(\ln\tau)_{xx}, \qquad
+\mathcal{L} = \frac{1}{2}\varphi_t^2 - \frac{1}{2}\varphi_x^2 + \varphi_x^3 - \frac{1}{2}\varphi_{xx}^2,
+\end{equation}
+with canonical symplectic form $\Omega = \int \dd\pi \wedge \dd\varphi$ ($\pi = \varphi_t$) defining the normalisation of $\hbar$. The one-soliton family with angle $\alpha \in (0,\pi/3)$ (the spectrally stable light branch where $V''(0) > 0$) and direction sign $\epsilon \in \{\pm 1\}$ has:
+\begin{equation}
+\begin{aligned}
+k &= \sin\alpha, \qquad v = \epsilon\cos\alpha, \qquad \ell = -\epsilon\cos 3\alpha = -v(1 - 4k^2), \qquad M = 2k, \qquad \Pi = -Mv, \\
+P &= \frac{2}{3}v k^3 = \frac{2}{3}\epsilon\sin^3\alpha\cos\alpha, \qquad E = \frac{2}{15}k^3(5 - 4k^2), \qquad
+\frac{\partial P}{\partial\alpha} = \frac{2}{3}\epsilon\sin\alpha\sin 3\alpha,
+\end{aligned}
+\end{equation}
+satisfying $\partial_\alpha E = v\,\partial_\alpha P$ and $\partial_k \Pi = -2\ell/M = -\ell/k$.
+
+We also checked the three external convention dictionaries referenced in the repository:
+\begin{enumerate}
+\item \textbf{Good vs.\ bad analytic continuation}: Under $\alpha = \ii\beta$, $\sin\alpha = \ii\sinh\beta$, $\cos\alpha = \cosh\beta$, and $\cos 3\alpha = \cosh 3\beta$, the good dispersion polynomial $\mathcal{P}_{\mathrm{good}}(K,W) = W^2 - K^2 + K^4$ maps up to overall sign to the bad dispersion polynomial $\mathcal{P}_{\mathrm{bad}}(\kappa,\Omega) = \Omega^2 - \kappa^2 - \kappa^4$ with $k_{\mathrm{bad}}=\sinh\beta$, $v_{\mathrm{bad}}=\epsilon\cosh\beta$, $\ell_{\mathrm{bad}}=\epsilon\cosh 3\beta$.
+\item \textbf{Corrigan--Zambon dictionary}: Under $u_{\mathrm{CZ}} = -3\varphi$, $\mathcal{L}_{\mathrm{CZ}} = \frac{1}{2}(u_{\mathrm{CZ},t}^2 - u_{\mathrm{CZ},x}^2 - \frac{2}{3}u_{\mathrm{CZ},x}^3 - u_{\mathrm{CZ},xx}^2) = 9\mathcal{L}$ identically.
+\item \textbf{Defect $s$ convention}: As established in \texttt{phase2/errata.tex} and \texttt{phase2/audit\_phase2i.tex}, defect scattering matrices use the bare vacuum parameter $s = \sigma_{\mathrm{vac}}$, whereas the bound-state/spectral polynomial uses the sign-dressed combination $\eta\sigma_{\mathrm{vac}}$. The package \texttt{good\_twobody.tex} does not conflate the two.
+\end{enumerate}
+
+\subsection{Non-Reliance on Refuted Claims from Earlier Audits (Point 5)}
+
+We cross-checked \texttt{good\_twobody.tex} and \texttt{good\_twobody\_*.py} against all prior audit reports (\texttt{audit\_phase2i.tex}, \texttt{audit\_smx.tex}, \texttt{audit\_det\_projected.tex}, \texttt{audit\_projected\_measure.tex}, \texttt{audit\_determinant\_foundations.tex}, \texttt{audit\_onebody\_scheme.tex}, \texttt{audit\_frame\_dictionary.tex}, and \texttt{errata.tex}). The package was specifically engineered to replace the refuted shortcuts of earlier exploratory notes:
+\begin{itemize}
+\item It does \emph{not} assume the refuted claim that the counterterm $\Delta H = \lambda\hbar\int u^2\,\dd x$ vanishes on two-soliton scattering at fixed physical momenta (it proves $K_\lambda \neq 0$).
+\item It does \emph{not} use the refuted overt resonance condition $|\alpha_1-\alpha_2|=\pi/3$ (it explicitly refutes it in \S7 and \texttt{good\_twobody\_resonance.json}).
+\item It does \emph{not} set the uncomputed boundary-compatible two-body functional determinant or collective-radiation Schur complement $\det(A-BC^{-1}B^{\mathsf{T}})$ to zero; instead, it records \texttt{physical\_symmetric: null} and \texttt{physical\_antisymmetric: null} across all 270 grid rows and leaves the unknown antisymmetric boundary/projection phase $B_{12}$ explicit in Eq.~(17).
+\item It does \emph{not} import any code or cached data from legacy \texttt{phase1/} or \texttt{phase2/} scripts.
+\end{itemize}
+
+\section{Audit of Claims, Error Budgets, and Script Circularity (Points 1, 2, 4)}
+
+\subsection{Error Budgets (Point 2)}
+
+The numerical error budgets in \texttt{good\_twobody\_*.py} are separated by source and are not artificially loosened:
+\begin{itemize}
+\item \textbf{Working precision vs.\ closed-form/quadrature}: \texttt{good\_twobody\_kernels.py} works at 80 decimal digits and compares the closed-form $\chi_2$ formula for $I_{12}$ against numerical quadrature to $<10^{-62}$ (actual max error $5.93\times 10^{-66}$; our independent hyperbolic quadrature $q=\sinh u$ agrees to $4.81\times 10^{-72}$).
+\item \textbf{Dual-precision grid verification}: \texttt{good\_twobody\_grid.py} computes every one of the 270 grid rows twice, at \texttt{workdps(55)} and \texttt{workdps(75)}, recording \texttt{precision\_recheck\_max\_abs\_difference} on every row (worst case $8.30\times 10^{-55}$, asserted $<10^{-48}$).
+\item \textbf{Finite-difference step error}: \texttt{good\_twobody\_counterterms.py} uses central differences at step $\varepsilon = 10^{-18}$ at 80 digits (truncation error $O(\varepsilon^2) \sim 10^{-36}$, measured max error $1.87\times 10^{-35}$, asserted $<10^{-30}$). In \texttt{audit\_good\_twobody.py}, we improved this with two-step Richardson extrapolation ($\varepsilon = 10^{-14}$ and $\varepsilon/2$), reducing the finite-difference error to $3.05\times 10^{-54}$.
+\item \textbf{Spacetime domain truncation error}: \texttt{good\_twobody\_local\_insertion.py} separates spatial quadrature from finite-time truncation $t \in [-T,T]$ by recording errors at $T=800$ and $T=1600$ (where tail corrections scale as $\ee^{-2\min(k_1,k_2)|v_1-v_2|T}$), achieving $5.13\times 10^{-18}$ at $T=800$ and $9.03\times 10^{-36}$ at $T=1600$ for $(++)$. In \texttt{audit\_good\_twobody.py}, we used 2D Gauss--Legendre integration on $x\in[-110,110]$ with $T=2000$ and $T=3000$, reaching $2.29\times 10^{-34}$ ($T=2000$) and $4.74\times 10^{-51}$ ($T=3000$) for $(++)$, and $<10^{-70}$ for $(+-)$.
+\end{itemize}
+
+\subsection{Circularity and Coverage Qualifications (Points 1 and 4)}
+
+While no formula in the package is false, our line-by-line inspection of the five package scripts uncovered \textbf{four script-coverage / near-circularity shortcuts} where a script tested a simplified surrogate rather than the full derivation claimed in \texttt{good\_twobody.tex}. All four gaps have been closed by explicit symbolic or regulated checks in \texttt{audit\_good\_twobody.py}:
+
+\begin{enumerate}
+\item \textbf{Scale-ansatz shortcut in \texttt{good\_twobody\_counterterms.py:62--78}}: To verify Eq.~(19) ($K_\lambda = 3\delta_0 + 4D$, etc.), the package script defines \texttt{scaled\_phase(P1, P2, a=1, b=1, d=1, g=1)} by evaluating the undeformed function $\delta_0(P_1/p_*, P_2/p_*)$ and multiplying by $s = d b^{3/2}/(\sqrt{a}g^2)$, then finite-differentiates with respect to $a,b,d,g$. That only tests Euler's homogeneous-function chain rule on $(s, p_*)$, assuming the scale dictionary $(s, p_*)$ as an input! In Check~2a of \texttt{audit\_good\_twobody.py}, we instead solve the deformed Hirota bilinear dispersion $W_j^2/a - b K_j^2 + d K_j^4 = 0$ and one-soliton momentum integral $P_j = \frac{2 b^{3/2}}{3\sqrt{a}g^2}\epsilon_j\sin^3\alpha_j\cos\alpha_j$ directly for the deformed wave numbers $K_j(P_j; a,b,d,g)$, frequencies $W_j(P_j; a,b,d,g)$, and Hirota two-soliton shift $\tilde{A}_{12} = -\tilde{\mathcal{P}}(K_1-K_2,W_1-W_2)/\tilde{\mathcal{P}}(K_1+K_2,W_1+W_2)$ without any coordinate rescaling. Differentiating the resulting deformed phase by Richardson extrapolation reproduces $(K_\lambda, K_\eta, K_\zeta, K_\kappa)$ to $3.05\times 10^{-54}$.
+\item \textbf{Numerical-only check of $\partial_{P_j}\delta_0 = -\Delta X'_j$ in \texttt{good\_twobody\_counterterms.py:54--58}}: The package checks the Darboux gradient identity $\partial_{P_j}\delta_0 = -\Delta X'_j$ only numerically at $(\alpha_1,\alpha_2)=(0.3,0.6)$ using \texttt{mp.diff}. In Check~1b of \texttt{audit\_good\_twobody.py}, we proved symbolically in \texttt{SymPy} across all four orientation sectors $(\epsilon_1,\epsilon_2) \in \{\pm 1\}^2$ that
+\begin{equation}
+\frac{1}{\partial_{\alpha_1}P_1}\frac{\partial\delta_0}{\partial\alpha_1} + \Delta X'_1 = 0, \qquad
+\frac{1}{\partial_{\alpha_2}P_2}\frac{\partial\delta_0}{\partial\alpha_2} + \Delta X'_2 = 0
+\end{equation}
+hold as exact trigonometric identities, by proving that $\partial_{\alpha_1}\ln A_{12} = \frac{6\sin\alpha_1\sin 3\alpha_1\cos 3\alpha_2}{\cos 3\alpha_1 - \epsilon_1\epsilon_2\cos 3\alpha_2}$.
+\item \textbf{Pre-subtracted integrand in \texttt{good\_twobody\_kernels.py:136--141}}: The package checks the one-body mode energy $E_{\mathrm{m}} = (4-3\sqrt{3}\sin\alpha)/(6\pi)$ against the integral $\int_0^\infty [\sqrt{1+q^2}\,\theta'(q)/(2\pi) - 3k/(2\pi)]\,\dd q$ in which the counterterm subtraction $-3k/(2\pi)$ has already been inserted by hand. In Check~3b of \texttt{audit\_good\_twobody.py}, we evaluate the raw cutoff-regulated mode trace on $[0,\Lambda]$ at $\Lambda = 500$ and $\Lambda = 1000$,
+\begin{equation}
+E_{\mathrm{reg}}(\Lambda) = \int_0^\Lambda \frac{\dd q}{2\pi}\sqrt{1+q^2}\,\theta'(q) + C_\Lambda M, \qquad C_\Lambda = -\frac{3\Lambda}{4\pi},
+\end{equation}
+confirming that $B_\Lambda$ cancels when subtracting the vacuum, $C_\Lambda M = -\frac{3k}{2\pi}\Lambda$ cancels the linear divergence of the phase-shift trace, and the $O(\Lambda^{-2})$ Richardson combination $(4E_{\mathrm{reg}}(2\Lambda) - E_{\mathrm{reg}}(\Lambda))/3$ matches $E_{\mathrm{m}}$ to $<10^{-17}$.
+\item \textbf{Unchecked UV ring power-counting and addition tautology in \texttt{good\_twobody\_threebody.py:94--95}}: The one-loop $n$-insertion ring UV finiteness claim in \texttt{good\_twobody.tex:240--244} had no test in the package scripts (supplied symbolically in Check~2c of \texttt{audit\_good\_twobody.py}), and lines 94--95 of \texttt{good\_twobody\_threebody.py} test \texttt{sp.simplify((f12+f13+f23)-(f23+f13+f12)) == 0}, which is commutative addition in $\mathbb{C}$ rather than a nontrivial clustering constraint (replaced by our three-level hierarchy analysis in Check~4 of \texttt{audit\_good\_twobody.py}).
+\end{enumerate}
+
+\section{Independent Re-Derivation of $K_\lambda$ and Frame Analysis (Point 7)}
+
+\subsection{Direct Deformed-Hamiltonian Derivation at Fixed Physical Momenta}
+
+Consider the four-parameter quartic-dispersion Hamiltonian family
+\begin{equation}
+H_{a,b,d,g} = \int_{-\infty}^\infty \dd x\,\left(\frac{a}{2}\pi^2 + \frac{b}{2}u^2 - g u^3 + \frac{d}{2}u_x^2\right), \qquad u = \varphi_x, \quad \pi = \varphi_t,
+\end{equation}
+whose canonical equation of motion is $u_{tt} = a b u_{xx} - a d u_{xxxx} - 3 a g (u^2)_{xx}$. Substituting the Hirota dependent-variable transformation $u = \frac{2d}{g}(\ln\tau)_{xx}$ yields the deformed bilinear equation
+\begin{equation}
+\left(\frac{1}{a}D_t^2 - b D_x^2 + d D_x^4\right)\tau\cdot\tau = 0, \qquad \tilde{\mathcal{P}}(K,W) = \frac{W^2}{a} - b K^2 + d K^4.
+\end{equation}
+A one-soliton solution $\tau_1 = 1 + \ee^{2(K_j x + W_j t)}$ with $K_j = \sqrt{b/d}\sin\alpha_j$ and $W_j = -\sqrt{a}b/\sqrt{d}\,\epsilon_j\sin\alpha_j\cos\alpha_j$ has physical velocity $\tilde{v}_j = -W_j/K_j = \sqrt{ab}\,\epsilon_j\cos\alpha_j$, topological charge $\tilde{M}_j = \int u\,\dd x = \frac{4\sqrt{bd}}{g}\sin\alpha_j$, and canonical field momentum
+\begin{equation}
+P_j = -\int \pi u\,\dd x = \frac{2 b^{3/2}}{\sqrt{a}g^2}\epsilon_j\sin^3\alpha_j\cos\alpha_j = p_*\,P^{(0)}(\alpha_j,\epsilon_j), \qquad p_* = \frac{b^2\sqrt{d}}{\sqrt{a}g^2}.
+\end{equation}
+For two solitons, the Hirota interaction coefficient $\tilde{A}_{12} = -\tilde{\mathcal{P}}(K_1-K_2,W_1-W_2)/\tilde{\mathcal{P}}(K_1+K_2,W_1+W_2)$ has $b^2/d$ cancelling between numerator and denominator, so $\tilde{A}_{12}(\alpha_1,\alpha_2) = A_{12}(\alpha_1,\alpha_2)$ at fixed angles $\alpha_j$. However, the physical momenta $P_j$ are held fixed while $(a,b,d,g)$ vary, so $\alpha_j(P_j; a,b,d,g)$ must vary according to $P^{(0)}(\alpha_j) = P_j/p_*$. Meanwhile, the classical action scale multiplying the dimensionless reduced action is $s = \frac{d b^{3/2}}{\sqrt{a}g^2}$, so the classical two-soliton phase in the Darboux frame at fixed physical momenta $(P_1,P_2)$ is
+\begin{equation}
+\delta_{\mathrm{cl}}(P_1,P_2; a,b,d,g) = s\,\delta_0\!\left(\frac{P_1}{p_*}, \frac{P_2}{p_*}\right).
+\end{equation}
+Using $\partial_{P_j}\delta_0 = -\Delta X'_j$ and defining $D = \sum_{j=1}^2 P_j \Delta X'_j = -\sum_{j=1}^2 P_j \partial_{P_j}\delta_0$, any deformation scales as
+\begin{equation}
+\delta_{\mathrm{cl}}(P_1,P_2) = \delta_0(P_1,P_2) + \left(\frac{\delta s}{s}\delta_0 + \frac{\delta p_*}{p_*}D\right) + O(\text{deformation}^2).
+\end{equation}
+For the four local operator perturbations:
+\begin{itemize}
+\item $\Delta H_\lambda = \lambda\hbar\int u^2\,\dd x \implies \delta b = 2\lambda\hbar \implies \frac{\delta s}{s} = \frac{3}{2}\delta b = 3\lambda\hbar$ and $\frac{\delta p_*}{p_*} = 2\delta b = 4\lambda\hbar$, giving
+\begin{equation}
+K_\lambda = 3\delta_0 + 4\sum_{j=1}^2 P_j \Delta X'_j = \frac{2}{3}(v_2 - v_1)\ln A_{12} + 3T_{12} + 4(P_1\gamma_1 M_2 - P_2\gamma_2 M_1),
+\label{eq:Klambda}
+\end{equation}
+where we used the exact trigonometric identity $\frac{2}{3}\ell_j - \frac{4P_j}{k_j} = \frac{2}{3}\left[-v_j(1-4k_j^2) - 4\cdot\frac{2}{3}v_j k_j^2 \cdot \frac{3}{2}\right] = -\frac{2}{3}v_j$.
+\item $\Delta H_\eta = \eta\hbar\int u_x^2\,\dd x \implies \delta d = 2\eta\hbar \implies K_\eta = 2\delta_0 + 2D$.
+\item $\Delta H_\zeta = \zeta\hbar\int u^3\,\dd x \implies \delta g = -\zeta\hbar \implies K_\zeta = 2\delta_0 + D$.
+\item $\Delta H_\kappa = \kappa\hbar\int \pi^2\,\dd x \implies \delta a = 2\kappa\hbar \implies K_\kappa = -\delta_0 - D$.
+\end{itemize}
+Furthermore, by First-Order Rayleigh--Schr\"odinger / WKB perturbation theory at fixed asymptotic momenta, $K_\lambda = -\int_{-\infty}^\infty \dd t \int_{-\infty}^\infty \dd x\,(u_{12}^2 - u_1^2 - u_2^2)_{\text{fixed }P_j}$. Decomposing this into the connected insertion at fixed angles $\alpha_j$, $\mathcal{I}_{u^2}^{\mathrm{conn}} = \int \dd t\,\dd x\,(u_{12}^2 - u_1^2 - u_2^2) = \frac{4}{3}(v_2-v_1)\ln A_{12} + 2T_{12} = 3\delta_0 + 2D$, plus the classical trajectory shift from holding $P_j$ fixed ($+2D$), we recover $K_\lambda = (3\delta_0 + 2D) + 2D = 3\delta_0 + 4D$.
+
+At the benchmark point $(\alpha_1,\alpha_2) = (0.3, 0.6)$, our independent 80-digit recomputation gives:
+\begin{equation}
+\begin{aligned}
+K_\lambda^{++}(0.3,0.6) &= +0.05008140486841890958182890110409717393603491445172264526\dots \neq 0, \\
+K_\lambda^{+-}(0.3,0.6) &= -0.22517393868334175848239343385708785721495736988172617955\dots \neq 0,
+\end{aligned}
+\end{equation}
+confirming the values reported in \texttt{good\_twobody.tex} (\S5) and \texttt{good\_twobody\_counterterms.json} to all 55 stored digits.
+
+\subsection{Is $K_\lambda$ Really Antisymmetric, or Is a Symmetric Part Dropped by a Frame Choice?}
+
+This question from Point~7 of the audit brief has a sharp two-part answer proved in Check~1c of \texttt{audit\_good\_twobody.py}:
+
+\begin{enumerate}
+\item \textbf{Within the chamber-reversing Darboux frame, no symmetric term is dropped in forming $3\delta_0 + 4D$}: Once $\delta_0(1,2)$ is defined by Eq.~(8) of \texttt{good\_twobody.tex},
+\begin{equation}
+\delta_0(1,2) = \frac{2}{9}(\ell_1 - \ell_2)\ln A_{12} + \frac{2}{3}M_1 M_2(v_1 - v_2),
+\end{equation}
+it satisfies $\delta_0(1,2) + \delta_0(2,1) = 0$ identically under full particle swap $(1 \leftrightarrow 2) : (\alpha_1,\epsilon_1) \leftrightarrow (\alpha_2,\epsilon_2)$ because $A_{12} = A_{21}$. Differentiating $\delta_0(1,2) + \delta_0(2,1) = 0$ with respect to $P_1$ gives $\Delta X'_1(1,2) = -\Delta X'_2(2,1)$, hence $D(1,2) + D(2,1) = 0$ and $K_\lambda(1,2) + K_\lambda(2,1) = 0$ identically.
+\item \textbf{However, $\delta_0(1,2)$ is itself antisymmetric ONLY because a symmetric boundary coboundary was subtracted to define the chamber-reversing Darboux coordinates}: In the raw Hirota tau function $\tau_2 = 1 + f_1 + f_2 + A_{12}f_1 f_2$, the topological center-of-mass shift attaches to whichever soliton lies to the right in a given asymptotic chamber ($x \to -\infty$ vs.\ $x \to +\infty$). As shown in Eq.~(4) of \texttt{good\_twobody.tex} and audited in \texttt{phase2/audit\_frame\_dictionary.tex}, passing from raw Hirota positions $X_j$ to the symmetric Darboux coordinates $X'_j = X_j + \gamma_j\sum_{l\text{ left of }j} M_l$ subtracts the \textbf{symmetric boundary coboundary}
+\begin{equation}
+S_{\mathrm{cb}}(1,2) = \frac{1}{2}(\Pi_1 M_2 + \Pi_2 M_1) = -M_1 M_2\frac{v_1 + v_2}{2}, \qquad S_{\mathrm{cb}}(1,2) = +S_{\mathrm{cb}}(2,1),
+\end{equation}
+from the unreduced incoming-chamber action phase $\delta_0^{\mathrm{raw}}(1,2) = \delta_0(1,2) + S_{\mathrm{cb}}(1,2)$. If one works instead in an incoming-ordered (fixed-chamber) coordinate frame that retains $S_{\mathrm{cb}}(1,2)$, the fixed-momentum $\lambda$-counterterm response acquires a non-zero \textbf{symmetric} part:
+\begin{equation}
+K_\lambda^{\mathrm{sym}}(1,2) = \left(3 - 4\sum_{j=1}^2 P_j\frac{\partial}{\partial P_j}\right)S_{\mathrm{cb}}(1,2) = \frac{1}{2}\left[\left(3\Pi_1 - 4P_1\gamma_1\right)M_2 + \left(3\Pi_2 - 4P_2\gamma_2\right)M_1 - 4\left(\frac{\Pi_1 P_2}{\partial_{\alpha_2}P_2}\cos\alpha_2 + \frac{\Pi_2 P_1}{\partial_{\alpha_1}P_1}\cos\alpha_1\right)\right].
+\end{equation}
+At $(\alpha_1,\alpha_2) = (0.3,0.6)$ in the overtaking channel $(++)$, this frame-dependent symmetric coboundary response is non-zero:
+\begin{equation}
+K_\lambda^{\mathrm{sym}}(0.3,0.6; ++) = +0.2711917271184108\dots \neq 0.
+\end{equation}
+\end{enumerate}
+Thus $K_\lambda$ is purely antisymmetric \emph{in the chamber-reversing classical Darboux frame} (where the asymptotic out-state reverses chamber ordering relative to the in-state so that $S_{\mathrm{cb}}$ cancels), whereas in a fixed-chamber coordinate frame a non-zero symmetric boundary coboundary part is present. We qualify Claim~C4 to make this coordinate-frame mechanism explicit.
+
+\section{Three-Body Clustering: Reconciling Continuum and Toda Audits (Point 8)}
+
+Point~8 of the audit brief asks us to reconcile two statements:
+\begin{itemize}
+\item \texttt{phase2/good\_twobody.tex} (\S6) proves three-soliton phonon transmission factorisation $T_{123}(q) = T_1(q)T_2(q)T_3(q)$ and shows that scalar three-body factorisation $S_3 = S_{12}S_{13}S_{23}$ leaves an antisymmetric pair addition such as $F_{12} = c(P_1 M_2 - P_2 M_1)$ unfixed.
+\item \texttt{phase2/audit\_frame\_dictionary.tex} (Claim~5 and Theorem~1, pp.~2--5) proved on the \textbf{Toda} side that spatial cluster separability (a non-vanishing $3\times 3$ determinant minor test) together with the inhomogeneous Krein--Wiener--Hopf PDE uniquely fixes the antisymmetric two-body phase $\widehat{\Phi}_q(u_1,u_2)$ and removes the candidate deformation $A_\lambda(y_1,y_2)$.
+\end{itemize}
+
+In Check~4 of \texttt{audit\_good\_twobody.py}, we performed an exact symbolic comparison of both candidate functions under all three constraints. The reconciliation is governed by a strict \textbf{three-level hierarchy of three-body constraints}:
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}p{4.3cm}p{3.6cm}p{3.6cm}p{3.5cm}@{}}
+\toprule
+\textbf{Constraint Level} & \textbf{Mathematical Condition} & \textbf{Infinite-rank $A_\lambda(y_1,y_2)$ (\texttt{frame\_dictionary})} & \textbf{Rank-2 $F_{12}=c(P_1 M_2 - P_2 M_1)$ (\texttt{good\_twobody})} \\
+\midrule
+\textbf{Level 1}: Scalar 3-body phase additivity \& phonon transmission $T_{123}=T_1 T_2 T_3$ & $\delta_3 = \delta_{12}+\delta_{13}+\delta_{23}$ commutes for any pair function $F_{ij}=-F_{ji}$ & \textbf{Passes} (leaves $A_\lambda$ unfixed) & \textbf{Passes} (leaves $F_{12}$ unfixed) \\
+\addlinespace
+\textbf{Level 2}: Spatial cluster separability of Darboux frame shifts ($3\times 3$ minor test) & $\partial_{P_j}\Phi(1,2)$ depends only on soliton $2$'s additive charges $\implies \det_{1\le a,b\le 3}\Phi(y_a,z_b)=0$ & \textbf{Fails}: $\det_{3\times 3} A_\lambda = -\frac{18232351733}{8133427676989440}\neq 0$ (excluded at Level~2) & \textbf{Passes}: $\det_{3\times 3} F_{12} = 0$ identically (Schmidt rank 2) \\
+\addlinespace
+\textbf{Level 3}: Microscopic Toda Krein--Wiener--Hopf PDE (finite-density sea + dressing) & $(\partial_{u_1}+\partial_{u_2})\widehat{\Phi}_q(u_1,u_2) = 2\psi_-(u_1)[\widetilde{\Psi}_-(u_2)-\widetilde{\Psi}_-(0)]$ (Schmidt rank 1) & \textbf{Fails}: $\det_{2\times 2}(\partial_1+\partial_2)A_\lambda \neq 0$ (excluded) & \textbf{Fails}: $\det_{2\times 2}(\partial_1+\partial_2)F_{12} = \frac{27\sqrt{10}}{80}\neq 0$ (excluded at Level~3) \\
+\bottomrule
+\end{tabular}
+\caption{Reconciliation of the continuum (\texttt{good\_twobody.tex}) and Toda (\texttt{audit\_frame\_dictionary.tex}) three-body clustering tests across the three constraint levels.}
+\label{tab:clustering}
+\end{table}
+
+\subsection{Detailed Breakdown of the Three Levels}
+
+\begin{enumerate}
+\item \textbf{Is the package's clustering test in \texttt{good\_twobody\_threebody.py} as strong as the Toda test? No.}
+The continuum package tests \emph{Level~1}: (i) exact four-wave Hirota bilinear factorisation (all $3^4=81$ coefficients vanish, proving $T_{123}(q)=T_1(q)T_2(q)T_3(q)$ so the continuum mode integral $J$ is pairwise additive without a genuine three-body phonon density), and (ii) scalar phase additivity $\delta_3 = \delta_{12}+\delta_{13}+\delta_{23}$. Because scalar addition is commutative and associative (indeed, lines 94--95 of \texttt{good\_twobody\_threebody.py} literally check \texttt{(f12+f13+f23)-(f23+f13+f12) == 0}), \emph{any} pairwise antisymmetric function $F_{ij}=-F_{ji}$ passes Level~1.
+\item \textbf{Level~2 (Spatial cluster decomposition of Darboux frame generators)}:
+In \texttt{audit\_frame\_dictionary.tex} (pp.~3--4), a stronger requirement is imposed: if $\Phi_{ij}$ is generated by a local canonical transformation to separated asymptotic Darboux coordinates $(X'_i, P_i)$, then when soliton~3 is displaced to spatial infinity, the shift $\Delta X'_1 = -\partial_{P_1}\Phi_{12}$ induced by soliton~2 can depend only on a finite set of additive one-body charges $(M_2, P_2)$ of soliton~2. Consequently, any Darboux-generated pair phase must have \textbf{Schmidt rank $\le 2$}, so all $3\times 3$ minors $\det_{1\le a,b\le 3}\Phi(y_a, z_b)$ must vanish.
+\begin{itemize}
+\item The \texttt{frame\_dictionary} candidate $A_\lambda(y_1,y_2) = \frac{4}{9}(y_1-y_2)(y_1 y_2)^{3/2}\ln\frac{\sqrt{y_1}+\sqrt{y_2}}{|\sqrt{y_1}-\sqrt{y_2}|}$ has infinite Schmidt rank due to the non-separable logarithm; at $y=(1,2,3)$ and $z=(4,5,6)$, we verified in \texttt{audit\_good\_twobody.py} that $\det_{1\le a,b\le 3}[A_\lambda(y_a,z_b)/\frac{4}{9}] = -\frac{18232351733}{8133427676989440} \neq 0$. Thus Level~2 alone rules out $A_\lambda(y_1,y_2)$.
+\item By contrast, the \texttt{good\_twobody} candidate $F_{12} = c(P_1 M_2 - P_2 M_1)$ is \emph{explicitly} a rank-2 antisymmetric bilinear of the one-body charges $(P_j, M_j)$, shifting $\Delta X'_1 \mapsto \Delta X'_1 - c M_2$ by the additive topological charge of soliton~2! Its $3\times 3$ determinant $\det_{1\le a,b\le 3} F_{12}(\alpha_a,\alpha_b)$ vanishes identically for all angles $(\alpha_1,\alpha_2,\alpha_3)$ and $(\beta_1,\beta_2,\beta_3)$ (proved symbolically in \texttt{audit\_good\_twobody.py}). Therefore, \textbf{even the Level~2 Darboux $3\times 3$ determinant test does NOT exclude $F_{12} = c(P_1 M_2 - P_2 M_1)$}.
+\end{itemize}
+\item \textbf{Level~3 (Which Toda ingredient is absent in the continuum?)}:
+On the Toda side, solitons are holes/particles in a \textbf{finite-density Fermi sea} $[-q,q]$ governed by the linear Bethe-ansatz / Krein integral operator $\mathcal{A} = I - \mathcal{K}$ with step-function source $(\mathcal{A}F_p)(x) = \Theta(p-x)$. Because $\partial_p\Theta(p-x) = -\partial_x\Theta(p-x) = \delta(p-x)$, integration by parts on the Wiener--Hopf domain $[-q,q]$ yields the inhomogeneous \textbf{Krein PDE} (\texttt{audit\_frame\_dictionary.tex}, Theorem~1):
+\begin{equation}
+\left(\frac{\partial}{\partial u_1} + \frac{\partial}{\partial u_2}\right)\widehat{\Phi}_q(u_1,u_2) = 2\psi_-(u_1)\!\left[\widetilde{\Psi}_-(u_2) - \widetilde{\Psi}_-(0)\right] \qquad (u_1 > u_2 > 0),
+\label{eq:krein_pde}
+\end{equation}
+whose right-hand side is a \textbf{uniquely determined rank-1 product} of one-body edge resolvents $\psi_-$ and $\widetilde{\Psi}_-$, with boundary condition $\widehat{\Phi}_q(u,u)=0$. Any homogeneous additive deformation $\Delta\Phi(u_1,u_2)$ at fixed one-body resolvents must satisfy $(\partial_{u_1}+\partial_{u_2})\Delta\Phi = 0$ and $\Delta\Phi(u,u)=0$, which forces $\Delta\Phi \equiv 0$. In particular, for the scaling-limit bilinear $F_{\mathrm{rank2}}(y_1,y_2) = y_1^{3/2}y_2^{1/2} - y_2^{3/2}y_1^{1/2} \propto P_1 M_2 - P_2 M_1$, we proved in Check~4c of \texttt{audit\_good\_twobody.py} that
+\begin{equation}
+\left(\frac{\partial}{\partial y_1} + \frac{\partial}{\partial y_2}\right)\!\left(y_1^{3/2}y_2^{1/2} - y_2^{3/2}y_1^{1/2}\right) = \frac{y_1^2 - y_2^2}{2\sqrt{y_1 y_2}},
+\end{equation}
+which is non-zero and has \textbf{Schmidt rank 2} (its $2\times 2$ minor at $y=(1,2), z=(4,5)$ is $\frac{27\sqrt{10}}{80} \neq 0$), so it is excluded on the Toda side by the inhomogeneous Krein PDE~\eqref{eq:krein_pde}.
+\end{enumerate}
+
+\paragraph{Why this ingredient is absent in the continuum calculation:}
+In the continuum background-field expansion around the zero-density vacuum $u=0$, there is no finite-density Fermi sea $[-q,q]$ and no linear Bethe-ansatz dressing equation expressing the two-soliton phase as a bilinear form of $(I-\mathcal{K})^{-1}$ on a shared interval; instead, the two-soliton one-loop shift is governed by the spacetime functional determinant of $\mathcal{D}_2 = \partial_t^2 - \partial_x^2 + \partial_x^4 + 6\partial_x(u_{12}\partial_x\cdot)$ together with its four-dimensional zero-mode projection and collective-radiation Schur complement $\det(A-BC^{-1}B^{\mathsf{T}})$, which remain uncomputed (\texttt{null}). Moreover, as noted in \texttt{audit\_frame\_dictionary.tex} (line~454), even on the Toda side the identification between the microscopic Krein phase $\widehat{\Phi}_q(u_1,u_2)$ and a specific continuum canonical collective-coordinate convention still leaves a rank-2 endpoint-response dictionary open until the continuum boundary-value problem is solved.
+
+\section{Audit of the Grid JSON and \texttt{null} Entries (Point 9)}
+
+In Check~5 of \texttt{audit\_good\_twobody.py}, we audited the full structure and numerical accuracy of \texttt{good\_twobody\_grid.json}, \texttt{good\_twobody\_threebody.json}, and \texttt{good\_twobody\_resonance.json}:
+\begin{itemize}
+\item \textbf{Row counts and channel partition}: \texttt{good\_twobody\_grid.json} contains exactly 270 rows: 90 in $(++)$ ($1\le i_a \neq i_b \le 10$, $\alpha_j = i_j/10$), 90 in $(--)$ ($1\le i_a \neq i_b \le 10$), 45 in $(+-)$ ($i_a + i_b \le 10$, strictly below the head-on Y-resonance $\alpha_1+\alpha_2 = \pi/3 \approx 1.04719755$), and 45 in $(-+)$ ($i_a + i_b \le 10$).
+\item \textbf{Honest \texttt{null} entries}: Every one of the 270 rows in \texttt{good\_twobody\_grid.json} has \texttt{physical\_symmetric: null} and \texttt{physical\_antisymmetric: null}, accompanied by \texttt{physical\_status: "uncomputed boundary determinant and state map"} and \texttt{unknown\_additive\_antisymmetric: "B12 (mode convention); not assumed zero"}. Likewise, \texttt{good\_twobody\_threebody.json} records \texttt{full\_threebody\_determinant: null} and \texttt{good\_twobody\_resonance.json} records \texttt{quantum\_phase: null} for all 6 rows of \texttt{overtaking\_heavy\_Y} (where $\alpha_2 > \pi/3$ lies on the spectrally unstable heavy branch). These \texttt{null} entries are completely honest: the projected two- and three-soliton functional determinants, collective-radiation Schur complements, and incoming/outgoing state-normalisation maps have not been computed.
+\item \textbf{Independent 80-digit spot checks}: We recomputed 10 representative rows spanning all four orientation sectors $(++, --, +-, -+)$ and near-resonance head-on kinematics ($(\alpha_1,\alpha_2) = (0.1,0.9), (0.2,0.8), (0.3,0.7), (0.4,0.6), (0.5,0.5)$) from scratch at 80 decimal digits using our independent primitives. Every numeric field (\texttt{A}, \texttt{logA}, \texttt{I}, \texttt{I\_symmetric}, \texttt{J\_antisymmetric}, \texttt{R\_mode}, \texttt{R\_canonical}, \texttt{conditional\_mode\_representative}, \texttt{conditional\_canonical\_representative}, \texttt{lambda\_coefficient}, \texttt{eta\_coefficient}, \texttt{zeta\_coefficient}, \texttt{kappa\_coefficient}, \texttt{tadpole\_coefficient}) agreed with the cached JSON to $\le 3.81\times 10^{-54}$, and all 270 rows satisfied exact particle-exchange antisymmetry $f(1,2) + f(2,1) = 0$ to $<10^{-65}$.
+\end{itemize}
+
+\section{Near-Resonance Asymptotics as $A_{12} \to \infty$ or $0^+$ (Point 10)}
+
+In Check~6 of \texttt{audit\_good\_twobody.py}, we audited all four near-resonance regimes in \S7 of \texttt{good\_twobody.tex} and \texttt{good\_twobody\_resonance.json} for consistency with the semiclassical phase singularity as $A_{12} \to \infty$ or $A_{12} \to 0^+$:
+
+\subsection{Head-On Y-Resonance ($\alpha_1 + \alpha_2 = \pi/3 - h$, $h \to 0^+$, $A_{12} \to +\infty$)}
+
+In the head-on channel $\epsilon_1 = +1, \epsilon_2 = -1$, the denominator of $A_{12}$ vanishes linearly at $\alpha_1 + \alpha_2 = \pi/3$: setting $\alpha_2 = \alpha_2^* - h$ with $\alpha_2^* = \pi/3 - \alpha_1$, we have $A_{12}(h) = A_{-1}/h + O(1)$ and $\ln A_{12}(h) = -\ln h + \ln A_{-1} + O(h) \to +\infty$.
+\begin{itemize}
+\item \textbf{Why $\delta_0$ remains finite while its momentum derivatives diverge}: At $\alpha_1 + \alpha_2^* = \pi/3$, $\ell_1 - \ell_2^* = -\cos 3\alpha_1 - \cos(3(\pi/3-\alpha_1)) = -\cos 3\alpha_1 - \cos(\pi - 3\alpha_1) = 0$, so $\ell_1 - \ell_2 = 3\sin(3\alpha_1)\,h + O(h^2)$. Consequently, the logarithmic term in $\delta_0 = \frac{2}{9}(\ell_1-\ell_2)\ln A_{12} + T_{12}$ vanishes as $-\frac{2}{3}\sin(3\alpha_1)\,h\ln h \to 0$, and $\delta_0 \to T_{12}^*$ is finite with a branch-point derivative singularity $\partial_{\alpha_j}\delta_0 \sim \ln h$.
+\item \textbf{Logarithmic divergence of $\Delta X'_j$, $R[p]$, and $K_\lambda$}: Because $\partial_{P_j}\delta_0 = -\Delta X'_j$ differentiates across the vanishing prefactor $\ell_1 - \ell_2 = O(h)$, the Darboux shifts $\Delta X'_1 \sim -\frac{\ln A_{12}}{k_1}$, $\Delta X'_2 \sim +\frac{\ln A_{12}}{k_2}$, the recoil $R[p] \sim C_p(\alpha_1,\alpha_2^*)\ln A_{12} + B_p(\alpha_1,\alpha_2^*) - J_*$, and the counterterm response $K_\lambda \sim C_\lambda(\alpha_1,\alpha_2^*)\ln A_{12} + B_\lambda(\alpha_1,\alpha_2^*)$ all diverge logarithmically as $\ln A_{12} \sim -\ln h$. Meanwhile, the continuum phonon integral $J_{12}(\alpha_1,\alpha_2)$ depends only on the one-soliton factors $T_1(q)$ and $T_2(q)$ and is completely smooth across $\alpha_1+\alpha_2 = \pi/3$, converging to $J_*(\alpha_1,\alpha_2^*)$.
+\item \textbf{Qualification on the $o(1)$ remainder in Eqs.~(22)--(25)}: In \texttt{good\_twobody\_grid.py:89--95}, the subtracted quantities are defined by subtracting the \emph{endpoint} slope $C(\alpha_1,\alpha_2^*)\ln A_{12}(h)$ at $\alpha_2 = \alpha_2^* - h$:
+\begin{equation}
+\begin{aligned}
+F_{\mathrm{sub}}(h) - B(\alpha_1,\alpha_2^*) &= \left[C(\alpha_1,\alpha_2^*-h) - C(\alpha_1,\alpha_2^*)\right]\ln A_{12}(h) + \left[B(\alpha_1,\alpha_2^*-h) - B(\alpha_1,\alpha_2^*)\right] \\
+&= -h\left[\frac{\partial C}{\partial\alpha_2}(\alpha_1,\alpha_2^*)\,\ln A_{12}(h) + \frac{\partial B}{\partial\alpha_2}(\alpha_1,\alpha_2^*)\right] + O(h^2\ln h).
+\end{aligned}
+\end{equation}
+Because $\ln A_{12}(10^{-12}) \approx 31.17$, the leading remainder at $h=10^{-12}$ is $O(h\ln A_{12}) + O(h) \sim 1.1\times 10^{-11}$ to $2.0\times 10^{-11}$ rather than $O(h) \sim 10^{-12}$. As shown in Table~\ref{tab:headon_hlogh}, subtracting the exact first-order Taylor correction $-h[(\partial_{\alpha_2}C)\ln A_{12}(h) + \partial_{\alpha_2}B]$ reduces the $h=10^{-12}$ residual by \textbf{twelve orders of magnitude}, to $\le 3.05\times 10^{-23}$ ($O(h^2\ln h)$).
+\end{itemize}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+$\alpha_1$ & $|F_{\mathrm{mode}}^{\mathrm{sub}} - B_{p_{\mathrm{m}}}|$ & After $-h(\partial_{\alpha_2}C)\ln A$ & After full $O(h\ln A + h)$ & $|K_\lambda^{\mathrm{sub}} - B_\lambda|$ & After $-h(\partial_{\alpha_2}C_\lambda)\ln A$ & After full $O(h\ln A + h)$ \\
+\midrule
+$0.2$ & $1.1260\times 10^{-11}$ & $5.7592\times 10^{-12}$ & $1.0758\times 10^{-23}$ & $1.8798\times 10^{-11}$ & $5.6174\times 10^{-12}$ & $3.0522\times 10^{-23}$ \\
+$0.4$ & $1.6635\times 10^{-11}$ & $8.0484\times 10^{-13}$ & $5.9792\times 10^{-24}$ & $1.4671\times 10^{-11}$ & $3.9198\times 10^{-12}$ & $1.2874\times 10^{-23}$ \\
+$0.5$ & $2.0328\times 10^{-11}$ & $1.3833\times 10^{-12}$ & $1.5254\times 10^{-23}$ & $1.3240\times 10^{-11}$ & $3.9471\times 10^{-12}$ & $1.1035\times 10^{-23}$ \\
+\bottomrule
+\end{tabular}
+\caption{Subleading Taylor diagnostics at $h=10^{-12}$ on the head-on Y-resonance line $\alpha_2 = \pi/3 - \alpha_1 - h$ from Check~6 of \texttt{audit\_good\_twobody.py}. At $\alpha_1=0.2$ ($\alpha_2^*\approx 0.8472$), $p_{\mathrm{m}}(\alpha_2)/k_2(\alpha_2) = \cot\alpha_2\,E_{\mathrm{m}}(\alpha_2)$ is near its stationary point, so the $O(h\ln A_{12})$ and $O(h)$ terms have comparable magnitude; subtracting both reduces all residuals to $O(h^2\ln h) \le 3.05\times 10^{-23}$.}
+\label{tab:headon_hlogh}
+\end{table}
+
+\subsection{Overtaking Limits ($A_{12} \to 0^+$) and the False $|\alpha_1-\alpha_2|=\pi/3$ Line}
+
+\begin{enumerate}
+\item \textbf{Light equal-velocity overtaking threshold ($\alpha_1 \in (0,\pi/3)$, $\alpha_2 = \alpha_1 + h$, $h \to 0^+$)}: Here $A_{12}(h) = c_0(\alpha_1)h^2 + O(h^3) \to 0^+$, so $\ln A_{12}(h) \sim 2\ln h \to -\infty$ and the individual Darboux shifts $\Delta X'_j \sim \mp\frac{2}{k_1}\ln h$ diverge. However, because the two solitons approach identical parameters ($\alpha_2 \to \alpha_1$, $\epsilon_2 = \epsilon_1$), the prefactors in $R[p] = (p_2/k_2 - p_1/k_1)\ln A_{12} + O(h)$ and $K_\lambda = \frac{2}{3}(v_2-v_1)\ln A_{12} + O(h)$ vanish linearly in $h$:
+\begin{equation}
+K_\lambda(\alpha_1, \alpha_1+h; ++) = -\frac{4}{3}\sin\alpha_1\,h\ln h + O(h) \to 0, \qquad R[p](\alpha_1,\alpha_1+h; ++) = O(h\ln h) \to 0, \qquad J_{12} = O(h) \to 0.
+\end{equation}
+At $\alpha_1=0.4, h=10^{-12}$, $K_\lambda = +1.434298\times 10^{-11}$, matching $-\frac{4}{3}\sin(0.4)\,h\ln h = +1.434663\times 10^{-11}$ to $3.65\times 10^{-15} = O(h)$.
+\item \textbf{Heavy overtaking Y-line ($\alpha_1 + \alpha_2 = 2\pi/3 - h$, $h \to 0^+$)}: Because $\alpha_1 + \alpha_2 = 2\pi/3$ cannot be reached with both $\alpha_j \in (0,\pi/3)$, at least one soliton must lie on the spectrally unstable heavy branch $\alpha > \pi/3$. At $\alpha_1=0.9$, $\alpha_2^* = 2\pi/3 - 0.9 \approx 1.194395 > \pi/3$, $A_{12}(h) \propto h \to 0^+$ while $v_2^* - v_1 = \cos\alpha_2^* - \cos\alpha_1 \approx -0.254266 \neq 0$, so $K_\lambda(h) \sim \frac{2}{3}(v_2^*-v_1)\ln h \to +\infty$ diverges logarithmically (increasing by $-\frac{2}{3}(v_2^*-v_1)\ln 100 \approx +0.779913$ per factor of $100$ in $h$). Because the heavy branch has tachyonic internal modes, \texttt{good\_twobody\_resonance.json} rightly sets \texttt{quantum\_phase: null}.
+\item \textbf{Refutation of the false overtaking resonance $|\alpha_1 - \alpha_2| = \pi/3$}: At $(\alpha_1,\alpha_2) = (0.2, 0.2+\pi/3)$ with $\epsilon_1 = \epsilon_2 = +1$, $A_{12} = 0.35546547984906165\dots$, which is strictly positive and finite ($0 < A_{12} < 1$). The numerator of $A_{12}$ factors via $\cos 3\alpha_1 - \cos 3\alpha_2 = 2\sin\frac{3(\alpha_2-\alpha_1)}{2}\sin\frac{3(\alpha_1+\alpha_2)}{2}$, whose zeroes in the overtaking channel are $\alpha_2 - \alpha_1 = 0$ and $\alpha_1 + \alpha_2 = 2\pi/3$, \emph{not} $|\alpha_1-\alpha_2|=\pi/3$.
+\end{enumerate}
+
+\section{Failures Recorded}
+
+In compliance with \texttt{AGENTS.md} (``Report failures honestly. List failed checks, including ones that were later fixed, in the write-up''), we record both the historical failures documented by the package and all seven failures encountered and fixed during the development of \texttt{phase2/scripts/audit\_good\_twobody.py}:
+
+\subsection{Historical Failures Documented in \texttt{good\_twobody.tex}}
+\begin{enumerate}
+\item \textbf{Legacy fixed-momentum counterterm vanishing claim}: Earlier exploratory Phase~2 notes claimed that $\Delta H = \lambda\hbar\int u^2\,\dd x$ produced zero shift of the two-soliton phase at fixed physical momenta. Direct scaling and spacetime integration refute this: $K_\lambda = 3\delta_0 + 4\sum_j P_j \Delta X'_j \neq 0$.
+\item \textbf{Legacy overtaking resonance at $|\alpha_1-\alpha_2|=\pi/3$}: Earlier Phase~2 notes placed an overtaking resonance at $|\alpha_1-\alpha_2|=\pi/3$. Direct evaluation gives $A_{12}(0.2, 0.2+\pi/3; ++) \approx 0.355465 \neq 0,\infty$; the actual zeros/poles of $A_{12}$ are $\alpha_1+\alpha_2=\pi/3$ (head-on Y-resonance), $\alpha_1=\alpha_2$ (overtaking threshold), and $\alpha_1+\alpha_2=2\pi/3$ (heavy overtaking Y-line).
+\item \textbf{Unjustified setting of $B_{12}=0$ and physical symmetric phase to zero}: Earlier notes set the unknown boundary-projection phase $B_{12}$ to zero without computing the projected two-soliton determinant or collective-radiation Schur complement. The audited package replaces those entries with explicit \texttt{null} values.
+\end{enumerate}
+
+\subsection{Failures Encountered and Fixed During This Independent Audit}
+\begin{enumerate}
+\item \textbf{Run~1 of \texttt{audit\_good\_twobody.py} (\texttt{SyntaxError} at line 317)}: A typographic space inside the identifier \texttt{ddelta0\_da1\_ minus\_log} caused a Python syntax error. Fixed by removing the space (\texttt{ddelta0\_da1\_minus\_log}).
+\item \textbf{Run~2 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} and \texttt{ValueError} at lines 270--271 in Check~1a)}: \texttt{sp.trigsimp((sp.diff(E1\_true, a1) - v1 * sp.diff(P1, a1)).subs(e1**2, 1))} did not simplify to $0$ because \texttt{v1 * sp.diff(P1, a1)} was not expanded before substituting \texttt{e1**2: 1}, and \texttt{sp.diff(Pi1, k1)} raised \texttt{ValueError: Can't calculate derivative wrt sin(a1)}. Fixed by calling \texttt{sp.expand} before \texttt{.subs(e1**2, 1)} and computing $\partial_{k_1}\Pi_1 = (\partial_{\alpha_1}\Pi_1)/\cos\alpha_1$.
+\item \textbf{Run~3 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} at lines 306 and 325 in Check~1b)}: With symbolic direction signs $\epsilon_1,\epsilon_2$, \texttt{.subs(\{e1**2: 1, e2**2: 1\})} left odd powers $\epsilon_j^3$ unreduced, and \texttt{sp.trigsimp} did not canonicalise rational trigonometric expressions mixing $\sin 3\alpha_j$ and $\sqrt{3}\sin\alpha_j$. Fixed by looping explicitly over the four sign pairs $(\epsilon_1,\epsilon_2)\in\{(1,1),(1,-1),(-1,1),(-1,-1)\}$ with symbolic $(\alpha_1,\alpha_2)$ and applying \texttt{.rewrite(sp.exp)} followed by \texttt{sp.expand}.
+\item \textbf{Run~4 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} at line 433 in Check~2a)}: Our initial implementation of \texttt{deformed\_twobody\_phase\_fixed\_P} wrote the topological term $T_{12}$ with prefactor $\frac{1}{3}(\Pi_2 M_1 - \Pi_1 M_2)$ instead of $\frac{2}{3}(\Pi_2 M_1 - \Pi_1 M_2)$, producing a $0.1065$ discrepancy against $K_\lambda$. Fixing the prefactor to $\frac{2}{3}$ reduced the deformed-PDE Richardson error across all four counterterms $(\lambda,\eta,\zeta,\kappa)$ to $3.05\times 10^{-54}$.
+\item \textbf{Run~5 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} at line 499 in Check~2c)}: In the symbolic expansion of the one-loop ring $\frac{1}{2}\ln(1 - \frac{6Uq^2}{\omega_{\mathrm{E}}^2+M^2})$, we initially wrote the $n$-th Taylor coefficient with alternating sign $(-1)^n/n$ instead of $-1/(2n)$. Fixing the Taylor coefficient to $-1/(2n)$ gave exact symbolic agreement for $n=1,2,3,4$.
+\item \textbf{Run~6 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} at line 812 in Check~6a)}: We initially asserted that subtracting the $O(h\ln A_{12})$ term alone would reduce both the mode and $\lambda$ remainders at $h=10^{-12}$ by $>5\times$ at all $\alpha_1\in\{0.2,0.4,0.5\}$. At $\alpha_1=0.2$ ($\alpha_2^* = \pi/3-0.2\approx 0.8472$), $p_{\mathrm{m}}(\alpha_2)/k_2(\alpha_2) = \cot\alpha_2\,E_{\mathrm{m}}(\alpha_2)$ is near a stationary point, so the $O(h\ln A_{12})$ and $O(h)$ terms have comparable magnitude (Wait: subtracting both the $O(h\ln A_{12})$ and $O(h)$ Taylor terms reduces the residual from $1.13\times 10^{-11}$ to $1.08\times 10^{-23}$). Fixed by testing the full first-order Taylor subtraction $O(h\ln A_{12})+O(h)$ to $<10^{-21}$.
+\item \textbf{Run~7 of \texttt{audit\_good\_twobody.py} (\texttt{AssertionError} at line 844 in Check~6c)}: On the heavy overtaking Y-line, we initially asserted that the step difference $K_\lambda(10^{-12}) - K_\lambda(10^{-10})$ matched $-\frac{2}{3}(v_2^*-v_1)\ln 100$ to $<10^{-10}$, overlooking that the subleading correction at $h_1=10^{-10}$ is $O(h_1\ln h_1) \sim 2.3\times 10^{-9}$. Fixed by setting the step-difference bound to $5\times 10^{-9}$ and additionally verifying that $K_\lambda(10^{-12}) - C_\lambda^*\ln A_{12}(10^{-12})$ matches $B_\lambda^{\mathrm{heavy}}(\alpha_1,\alpha_2^*)$ to $<10^{-9}$.
+\item \textbf{Initial \texttt{pdflatex} passes on \texttt{audit\_good\_twobody.tex}}: Pass~1 failed on \texttt{Undefined color `blue!60!black'} (because \texttt{xcolor} was not loaded) and a stray underscore \texttt{\_} at line 286 (\texttt{continuum?)\_}). Fixed by using standard color \texttt{blue} and removing the stray underscore.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{Hirota1973}
+R.~Hirota,
+``Exact $N$-soliton solutions of the wave equation of long waves in shallow-water and in nonlinear lattices,''
+\emph{J.\ Math.\ Phys.} \textbf{14} (1973) 810--814,
+\href{https://doi.org/10.1063/1.1666400}{doi:10.1063/1.1666400}.
+(Verified entry and classical bilinear formulas against project conventions.)
+
+\bibitem{BonaSachs1988}
+J.~L.~Bona and R.~L.~Sachs,
+``Global existence of smooth solutions and stability of solitary waves for a generalized Boussinesq equation,''
+\emph{Commun.\ Math.\ Phys.} \textbf{118} (1988) 15--29,
+\href{https://doi.org/10.1007/BF01218475}{doi:10.1007/BF01218475}.
+(Verified spectral stability threshold $\alpha \in (0,\pi/3)$ for the light branch vs.\ heavy branch $\alpha > \pi/3$.)
+
+\bibitem{CorriganZambon2023}
+E.~Corrigan and C.~Zambon,
+``Integrable defects in the Boussinesq equations,''
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772 [hep-th]}.
+(Full text read in repository; dictionary $u_{\mathrm{CZ}} = -3\varphi$, $\mathcal{L}_{\mathrm{CZ}} = 9\mathcal{L}$ verified.)
+
+\end{thebibliography}
+
+\end{document}
