@@ -105,3 +105,45 @@ repository. Regenerated JSON caches, figures, bytecode, and logs stay in scratch
 No pull, commit, stash, branch switch, index update, or push was performed in the
 original checkout. This task's explicit constraints override the general README,
 build, and Git-update instructions in AGENTS.md.
+
+## Integrability scheme condition (4 November 2026)
+
+**(c)** New package: `phase2/integ_scheme.tex` / `.pdf`. The result concerns
+classical continuum charges and a formal local one-loop Ward identity in the
+explicit contraction-cutoff prescription. It does not construct a convergent
+continuum quantum operator or the absolute light–light phase.
+
+| Script | Claims checked | Precision / tolerance | Outcome |
+|---|---|---|---|
+| `phase2/scripts/integ_charges.py` | Arbitrary-sound canonical higher charge; Euler derivatives of the bracket; both Lax equations; independent Riccati and pseudo-differential residues through H₇; lower-charge dictionary; exact background shift; arbitrary-λ tangent correction; soliton charge. | Exact SymPy identities; 60-digit independent quadrature, error < 1e-55. | PASS; ends `ALL CHECKS PASSED`. |
+| `phase2/scripts/integ_ordering.py` | All one-contraction terms in H and Q; direct double-contraction Ward source including derivative jets; retained failure of the uncorrected Wick charge; restoring local mixing for symbolic λ; finite part of mixing; cutoff primitives and reduced-commutator order counting. | Exact SymPy identities; 60-digit contraction integrals, error < 1e-53. | PASS; ends `ALL CHECKS PASSED`. |
+| `phase2/scripts/integ_observables.py` | Static modulus vs pressure; shifted mean; conditional full one-body elastic invariant; sound-unit action/symplectic/momentum factors; two-body response and invariant; all four orientations and exchange. | Exact SymPy identities; 70-digit quadratures and inverse momenta, central-difference step 1e-18, error < 1e-32. | PASS; ends `ALL CHECKS PASSED`. |
+
+**Failures recorded.** The uncorrected normal-ordered higher charge has a
+nonzero local Ward source; this is a retained negative test, not silently
+removed. The first charge and observable script runs each failed a structural
+SymPy equality comparison of algebraically identical expressions; they now
+assert an exactly zero expanded/simplified difference. No mathematical target,
+precision, or tolerance changed. An initial document write and a later edit
+used duplicated relative directories and were rerun with correct paths; the
+first PDF compilation also caught a box across an alignment separator, which
+was corrected. An early record-assembly attempt was rejected by the
+suite-completion guard; no incomplete regression record was accepted.
+The initial shared-checkout pull failed on read-only
+`.git/FETCH_HEAD`; a writable `/tmp/integ_scheme_work` clone on `main` was pulled
+successfully and used for commits. Regenerated historical artifacts are not
+part of this change.
+
+The full historical regression execution and its failures are recorded below. Checks use `OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`,
+`PYTHONDONTWRITEBYTECODE=1`; logs are in `/tmp/integ_scheme_logs`. New scripts
+write no result caches. The ordering script imports only the new charge
+script's differential-algebra utilities.
+
+**Full regression results.** All 129 top-level historical scripts were run sequentially from their own directories; 127 returned zero and 2 failed. Of the zero-exit scripts, 2 printed no `ALL CHECKS PASSED` marker and are not automatically classified as passing verification. Per-script exits, timings and marker observations are in [`integ_regression_results.json`](phase2/scripts/integ_regression_results.json). Nested script executions are not counted again.
+
+| Failed historical script | Exit | Recorded failure |
+|---|---:|---|
+| `phase2/scripts/audit_onebody.py` | 1 | Existing line-383 extrapolated-identity tolerance 3e-6; already documented in README. Unchanged. |
+| `phase2/scripts/toda_edge_twoterm.py` | 1 | Existing successive-raw-step bound 0.004; already documented above. Unchanged. |
+
+No historical failures were repaired or hidden as part of this research task. The LaTeX note was built with `pdflatex` twice and its rendered pages were inspected.

@@ -1,0 +1,843 @@
+{
+  "base_commit": "4da7564",
+  "scope": "All 129 top-level historical Python scripts in phase1/scripts, phase2/scripts, corrigan-zambon; nested executions are not separately counted. New integ scripts run separately.",
+  "execution": "Sequential per-directory python3 script.py in writable temporary clone; OPENBLAS_NUM_THREADS=1, OMP_NUM_THREADS=1, PYTHONDONTWRITEBYTECODE=1.",
+  "python": "3.12.3",
+  "sympy": "1.14.0",
+  "mpmath": "1.3.0",
+  "new_source_sha256": {
+    "integ_charges.py": "5f0f3b8c34a18d8e7514f98500bfd909dba51a38386aa2388e946820df1122c6",
+    "integ_observables.py": "aba4d8bc9afe0c21f16b82a8819b4d117f9566435373ca54e34591e3a1c01da9",
+    "integ_ordering.py": "67482f101b005507dc716cce5b68d4d96d776a1ca575df85086b920996e1c56b"
+  },
+  "counts": {
+    "historical": 129,
+    "exit_zero": 127,
+    "nonzero": 2,
+    "exit_zero_without_success_marker": 2
+  },
+  "historical": [
+    {
+      "script": "phase1/scripts/charges.py",
+      "exit_code": 0,
+      "seconds": 25.35,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase1/scripts/clarkson_dowie_map.py",
+      "exit_code": 0,
+      "seconds": 1.63,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase1/scripts/figures.py",
+      "exit_code": 0,
+      "seconds": 5.3,
+      "printed_success_marker": false
+    },
+    {
+      "script": "phase1/scripts/hirota_solitons.py",
+      "exit_code": 0,
+      "seconds": 10.5,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase1/scripts/interaction_regimes.py",
+      "exit_code": 0,
+      "seconds": 30.93,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase1/scripts/lax_zero_curvature.py",
+      "exit_code": 0,
+      "seconds": 0.82,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase1/scripts/toda_limit.py",
+      "exit_code": 0,
+      "seconds": 0.64,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_charges_action.py",
+      "exit_code": 0,
+      "seconds": 1.15,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_defb_boundary.py",
+      "exit_code": 0,
+      "seconds": 34.01,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_defq.py",
+      "exit_code": 0,
+      "seconds": 22.91,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_det_projected.py",
+      "exit_code": 0,
+      "seconds": 32.01,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_determinant_foundations.py",
+      "exit_code": 0,
+      "seconds": 19.88,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_frame_dictionary.py",
+      "exit_code": 0,
+      "seconds": 63.51,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_frames_defects.py",
+      "exit_code": 0,
+      "seconds": 1.31,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_good_twobody.py",
+      "exit_code": 0,
+      "seconds": 30.97,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_onebody.py",
+      "exit_code": 1,
+      "seconds": 25.91,
+      "printed_success_marker": false
+    },
+    {
+      "script": "phase2/scripts/audit_onebody_scheme.py",
+      "exit_code": 0,
+      "seconds": 8.94,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_phase2h_foundations.py",
+      "exit_code": 0,
+      "seconds": 16.02,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_phase2i.py",
+      "exit_code": 0,
+      "seconds": 56.7,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_projected_measure.py",
+      "exit_code": 0,
+      "seconds": 13.85,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_resonant_channels.py",
+      "exit_code": 0,
+      "seconds": 64.62,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_smx.py",
+      "exit_code": 0,
+      "seconds": 17.35,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_toda_dictionary.py",
+      "exit_code": 0,
+      "seconds": 46.62,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_twobody_cont.py",
+      "exit_code": 0,
+      "seconds": 167.32,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_twobody_toda.py",
+      "exit_code": 0,
+      "seconds": 299.96,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/audit_uniform_limits.py",
+      "exit_code": 0,
+      "seconds": 35.06,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/charge_and_frame_audit.py",
+      "exit_code": 0,
+      "seconds": 14.01,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/consistency_checks.py",
+      "exit_code": 0,
+      "seconds": 3.05,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defb_boundary_holonomy.py",
+      "exit_code": 0,
+      "seconds": 3.06,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defb_boundary_renorm.py",
+      "exit_code": 0,
+      "seconds": 9.76,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defect_bootstrap_algebra.py",
+      "exit_code": 0,
+      "seconds": 2.05,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defect_bootstrap_sewing.py",
+      "exit_code": 0,
+      "seconds": 5.1,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defect_bootstrap_transmission.py",
+      "exit_code": 0,
+      "seconds": 13.81,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defect_smatrix_good_continuation.py",
+      "exit_code": 0,
+      "seconds": 0.42,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defq_absorption_fusion.py",
+      "exit_code": 0,
+      "seconds": 0.17,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defq_classical_charges.py",
+      "exit_code": 0,
+      "seconds": 12.23,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/defq_oneloop_renorm.py",
+      "exit_code": 0,
+      "seconds": 3.32,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/det_charges.py",
+      "exit_code": 0,
+      "seconds": 14.11,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/det_geometry.py",
+      "exit_code": 0,
+      "seconds": 9.82,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/det_spectrum.py",
+      "exit_code": 0,
+      "seconds": 0.75,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/errata_checks.py",
+      "exit_code": 0,
+      "seconds": 67.23,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/fit_R.py",
+      "exit_code": 0,
+      "seconds": 1.36,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/frame_analysis.py",
+      "exit_code": 0,
+      "seconds": 0.14,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/frame_edge.py",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/frame_identities.py",
+      "exit_code": 0,
+      "seconds": 43.43,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_renorm_lattice.py",
+      "exit_code": 0,
+      "seconds": 0.94,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_renorm_trace.py",
+      "exit_code": 0,
+      "seconds": 4.09,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_renorm_vacuum.py",
+      "exit_code": 0,
+      "seconds": 3.86,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_twobody_counterterms.py",
+      "exit_code": 0,
+      "seconds": 1.97,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_twobody_grid.py",
+      "exit_code": 0,
+      "seconds": 43.7,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_twobody_kernels.py",
+      "exit_code": 0,
+      "seconds": 20.17,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_twobody_local_insertion.py",
+      "exit_code": 0,
+      "seconds": 4.9,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/good_twobody_threebody.py",
+      "exit_code": 0,
+      "seconds": 5.56,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/kp_master_and_toda_edge.py",
+      "exit_code": 0,
+      "seconds": 6.27,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/matching_analysis.py",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/matching_conventions.py",
+      "exit_code": 0,
+      "seconds": 2.37,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/matching_toda.py",
+      "exit_code": 0,
+      "seconds": 54.52,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_continuum.py",
+      "exit_code": 0,
+      "seconds": 6.63,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_prec_analysis.py",
+      "exit_code": 0,
+      "seconds": 1.29,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_prec_edge.py",
+      "exit_code": 0,
+      "seconds": 1.42,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_prec_identities.py",
+      "exit_code": 0,
+      "seconds": 0.05,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_prec_scan.py",
+      "exit_code": 0,
+      "seconds": 0.51,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_scheme_continuum.py",
+      "exit_code": 0,
+      "seconds": 2.47,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_scheme_dictionary.py",
+      "exit_code": 0,
+      "seconds": 31.2,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_scheme_edge.py",
+      "exit_code": 0,
+      "seconds": 87.15,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/onebody_toda.py",
+      "exit_code": 0,
+      "seconds": 1.11,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_breather.py",
+      "exit_code": 0,
+      "seconds": 46.04,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_defect_phase_and_fusion.py",
+      "exit_code": 0,
+      "seconds": 41.58,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_defect_scattering_and_stability.py",
+      "exit_code": 0,
+      "seconds": 2.13,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_good_limits_cusp_resonance.py",
+      "exit_code": 0,
+      "seconds": 1.33,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_good_phonon_scattering.py",
+      "exit_code": 0,
+      "seconds": 6.41,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_good_twosoliton_phase.py",
+      "exit_code": 0,
+      "seconds": 11.81,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_phase_shifts.py",
+      "exit_code": 0,
+      "seconds": 9.49,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_soliton_energy.py",
+      "exit_code": 0,
+      "seconds": 6.81,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/oneloop_step0_wellposedness.py",
+      "exit_code": 0,
+      "seconds": 0.08,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/resonant_channels_conservation.py",
+      "exit_code": 0,
+      "seconds": 8.04,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/resonant_channels_kinematics.py",
+      "exit_code": 0,
+      "seconds": 1.5,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/resonant_channels_quantum.py",
+      "exit_code": 0,
+      "seconds": 0.88,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/routes_BC_checks.py",
+      "exit_code": 0,
+      "seconds": 0.81,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/semiclassical_phase.py",
+      "exit_code": 0,
+      "seconds": 137.09,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_algebra.py",
+      "exit_code": 0,
+      "seconds": 1.88,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_bridge_deformation.py",
+      "exit_code": 0,
+      "seconds": 33.87,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_bridge_hierarchy.py",
+      "exit_code": 0,
+      "seconds": 1.34,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_bridge_hikami.py",
+      "exit_code": 0,
+      "seconds": 1.05,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_bridge_sector.py",
+      "exit_code": 0,
+      "seconds": 5.36,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_calibration.py",
+      "exit_code": 0,
+      "seconds": 1.05,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_modes.py",
+      "exit_code": 0,
+      "seconds": 11.74,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/shiftcharge_projection.py",
+      "exit_code": 0,
+      "seconds": 20.25,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smatrix_ansatz.py",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smatrix_poles_bootstrap.py",
+      "exit_code": 0,
+      "seconds": 0.12,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smatrix_rejected_forms.py",
+      "exit_code": 0,
+      "seconds": 1.92,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smatrix_semiclassical_unitarity_crossing.py",
+      "exit_code": 0,
+      "seconds": 0.11,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smx_dictionary_and_families.py",
+      "exit_code": 0,
+      "seconds": 0.92,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smx_poles_good_vs_bad.py",
+      "exit_code": 0,
+      "seconds": 0.97,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smx_residual_ambiguity_interface.py",
+      "exit_code": 0,
+      "seconds": 1.01,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/smx_twisted_ring_bethe.py",
+      "exit_code": 0,
+      "seconds": 0.49,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/symplectic_scattering.py",
+      "exit_code": 0,
+      "seconds": 0.56,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_ba_vs_label.py",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_bethe_classical.py",
+      "exit_code": 0,
+      "seconds": 0.15,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_bethe_quantum.py",
+      "exit_code": 0,
+      "seconds": 33.69,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_dressed_phase_check.py",
+      "exit_code": 0,
+      "seconds": 0.14,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_edge_ba.py",
+      "exit_code": 0,
+      "seconds": 2.47,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_edge_grid.py",
+      "exit_code": 0,
+      "seconds": 10.0,
+      "printed_success_marker": false
+    },
+    {
+      "script": "phase2/scripts/toda_edge_kappa.py",
+      "exit_code": 0,
+      "seconds": 182.67,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_edge_nodecheck.py",
+      "exit_code": 0,
+      "seconds": 13.42,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_edge_scan.py",
+      "exit_code": 0,
+      "seconds": 45.47,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_edge_twoterm.py",
+      "exit_code": 1,
+      "seconds": 184.61,
+      "printed_success_marker": false
+    },
+    {
+      "script": "phase2/scripts/toda_label_symplectic.py",
+      "exit_code": 0,
+      "seconds": 0.33,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_quantum_corrections.py",
+      "exit_code": 0,
+      "seconds": 26.87,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_scaling_fast.py",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_soliton_classical.py",
+      "exit_code": 0,
+      "seconds": 0.1,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/toda_wh_and_kp_synthesis.py",
+      "exit_code": 0,
+      "seconds": 21.88,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_cont_det_antisym.py",
+      "exit_code": 0,
+      "seconds": 3.02,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_cont_grid.py",
+      "exit_code": 0,
+      "seconds": 0.53,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_cont_phase.py",
+      "exit_code": 0,
+      "seconds": 8.59,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_toda_analysis.py",
+      "exit_code": 0,
+      "seconds": 4.7,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_toda_edge.py",
+      "exit_code": 0,
+      "seconds": 23.21,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_toda_identities.py",
+      "exit_code": 0,
+      "seconds": 23.44,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/twobody_toda_scan.py",
+      "exit_code": 0,
+      "seconds": 0.48,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/uniform_limits_analytic.py",
+      "exit_code": 0,
+      "seconds": 16.53,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/uniform_limits_matched.py",
+      "exit_code": 0,
+      "seconds": 5.21,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/uniform_limits_refit.py",
+      "exit_code": 0,
+      "seconds": 0.87,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/uniform_limits_scan.py",
+      "exit_code": 0,
+      "seconds": 0.47,
+      "printed_success_marker": true
+    },
+    {
+      "script": "phase2/scripts/uniform_limits_wh.py",
+      "exit_code": 0,
+      "seconds": 0.06,
+      "printed_success_marker": true
+    },
+    {
+      "script": "corrigan-zambon/defect_check.py",
+      "exit_code": 0,
+      "seconds": 1.85,
+      "printed_success_marker": true
+    },
+    {
+      "script": "corrigan-zambon/defect_transmission_phase.py",
+      "exit_code": 0,
+      "seconds": 4.76,
+      "printed_success_marker": true
+    },
+    {
+      "script": "corrigan-zambon/defect_two_soliton_symplectic.py",
+      "exit_code": 0,
+      "seconds": 15.42,
+      "printed_success_marker": true
+    },
+    {
+      "script": "corrigan-zambon/defect_vacuum_stability.py",
+      "exit_code": 0,
+      "seconds": 102.39,
+      "printed_success_marker": true
+    },
+    {
+      "script": "corrigan-zambon/verify_defect_solutions.py",
+      "exit_code": 0,
+      "seconds": 52.22,
+      "printed_success_marker": true
+    }
+  ],
+  "new_checks": [
+    {
+      "script": "integ_charges.py",
+      "exit": 0,
+      "marker": true
+    },
+    {
+      "script": "integ_observables.py",
+      "exit": 0,
+      "marker": true
+    },
+    {
+      "script": "integ_ordering.py",
+      "exit": 0,
+      "marker": true
+    }
+  ],
+  "failures": [
+    {
+      "script": "phase2/scripts/audit_onebody.py",
+      "exit_code": 1,
+      "log_tail": [
+        "Traceback (most recent call last):",
+        "  File \"/tmp/integ_scheme_work/phase2/scripts/audit_onebody.py\", line 383, in <module>",
+        "    assert max_cv_id_diff < mp.mpf('3e-6')",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "AssertionError"
+      ]
+    },
+    {
+      "script": "phase2/scripts/toda_edge_twoterm.py",
+      "exit_code": 1,
+      "log_tail": [
+        "  y=(3,0.5): D(0) = -0.00139   (Toda-semi)(0) = -0.01266",
+        "  y=(6,0.5): D(0) = -0.00082   (Toda-semi)(0) = -0.00336",
+        "  y=(1.5,1): D(0) = -0.07638   (Toda-semi)(0) = -0.32908",
+        "  y=(3,1): D(0) = -0.01725   (Toda-semi)(0) = -0.04557",
+        "  y=(6,1): D(0) = -0.00593   (Toda-semi)(0) = -0.01151",
+        "  y=(0.3,0.1): D(0) = +0.09142   (Toda-semi)(0) = -0.08615",
+        "  y=(3,0.1): D(0) = +0.00128   (Toda-semi)(0) = -0.00066",
+        "Traceback (most recent call last):",
+        "  File \"/tmp/integ_scheme_work/phase2/scripts/toda_edge_twoterm.py\", line 71, in <module>",
+        "    assert all(step[3] < 4e-3 for step in _check_steps), (",
+        "           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "AssertionError: ('toda_edge.tex: successive Toda changes < 0.004 FAILED', [('3,1', 0.01, 0.005, np.float64(0.006326021899113243)), ('6,1', 0.01, 0.005, np.float64(0.009016412921543093)), ('6,1', 0.005, 0.0025, np.float64(0.00451194513125408))])"
+      ]
+    }
+  ]
+}

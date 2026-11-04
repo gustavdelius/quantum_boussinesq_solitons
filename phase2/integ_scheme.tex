@@ -1,0 +1,544 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\chg}{\file{integ_charges.py}}
+\newcommand{\ord}{\file{integ_ordering.py}}
+\newcommand{\obs}{\file{integ_observables.py}}
+\newcommand{\I}{\mathcal I}
+\newcommand{\J}{\mathcal J}
+\newcommand{\vol}{\mathcal V}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Quantum-integrability scheme condition\\for the canonical good Boussinesq equation}
+\author{Research note for PI Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C The elastic counterterm is tangent to an explicitly conserved family.
+For $H_s=\int[\pi^2/2+su^2/2-u^3+u_x^2/2]\dd x$, the first higher
+charge can be chosen as
+$Q_s=\int[\pi_x^2+u_{xx}^2-3u\pi^2+3u^4-9uu_x^2+s(u_x^2-u^3)]\dd x$.
+Its canonical bracket with $H_s$ vanishes for every $s$.
+Consequently $s=1+2\hbar\lambda$ admits the correction
+$2\lambda\int(u_x^2-u^3)\dd x$ for every $\lambda$.
+The order-$\hbar$ local integrability condition cannot determine this
+finite coupling.
+
+\C Free-good-vacuum Wick ordering alone fails to conserve the charge.
+In the stated contraction-cutoff prescription its defect is removed by
+local composite-charge mixing $18\hbar A_\Lambda\int:u^2:\dd x$, with
+$A_\Lambda=(\sqrt{1+\Lambda^2}-1)/(2\pi)$, independently of $\lambda$.
+This is a formal local Ward identity, not a construction of a convergent
+continuum quantum operator. The absence of a $\lambda$ solvability
+condition also follows without assuming that such an operator exists.
+
+\C Static modulus matching independently gives $\lambda=9/(4\pi)$;
+zero mean strain and zero reference pressure alone do not. Conditional
+one-body and two-body coefficients become $\lambda$ independent after
+consistent sound-unit and action normalization.
+\D Use static matching provisionally for the requested one-loop
+light--light phase, pending the recorded PI decision. The absolute phase
+is still to be calculated.
+\end{abstract}
+
+\section{Scope, conventions and verification}
+Labels mean: (a) established in literature, (b) literature heuristic,
+(c) project derivation/check, (d) proposal or unestablished identification.
+Every displayed derived identity is covered by the script named in its
+subsection. Scripts are in \file{phase2/scripts/}; numerical tests use
+60 or 70 decimal digits. Finite samples do not prove operator convergence.
+The PI decision at \file{4da7564} fixes the target to the complete
+$O(\hbar^0)$ light--light phase in a stated scheme. This note tests the
+proposed integrability condition; it does not replace that target with
+an exact S-matrix programme.
+
+\paragraph{Provisional choices \D.}
+Use the first higher residue, $H_7$, modulo lower charges, Wick products
+in the free good vacuum at $s=1$, and the sharp, background-independent
+momentum cutoff of \file{good_renorm.tex}. More precisely, cut off vacuum
+contractions in local composite products, retaining the continuum canonical
+bracket and symmetric coincident-point products. This specifies a local
+subtraction/Ward prescription, not a finite-mode Hamiltonian truncation.
+This choice and the extra static matching recommendation are in README's
+Open decisions; neither is recorded as a new PI decision.
+
+\paragraph{Order counting \C (\ord).}
+We require the coefficient of $\hbar$ in
+$[\widehat Q,\widehat H]/(i\hbar)$ to vanish as well as its classical
+coefficient. The unreduced commutator then vanishes through $O(\hbar^2)$.
+For Weyl symbols and a constant canonical Poisson tensor, interchange of
+the symbols reverses odd contractions and preserves even ones. Hence
+\begin{equation}
+ \frac{[\operatorname{Op}_W(F),\operatorname{Op}_W(G)]}{i\hbar}
+ =\operatorname{Op}_W(\{F,G\})+O(\hbar^2).\label{weyl}
+\end{equation}
+The script checks the second-order star-product cancellation explicitly.
+The third-contraction Moyal term would occur at $O(\hbar^2)$ in this
+\emph{reduced} expression. It is beyond the requested order and is not
+computed here.
+
+\section{First higher charge in canonical variables}
+\paragraph{Canonical bracket \C (\chg).}
+Set $s=c^2$, $u=\phi_x$ and retain
+$\Omega=\int\dd\pi\wedge\dd\phi$, $\{\phi(x),\pi(y)\}=\delta(x-y)$.
+For local functionals of $u,\pi$,
+\begin{align}
+ H_s&=\int h_s\dd x,&h_s&=\tfrac12\pi^2+\tfrac{s}{2}u^2-u^3+\tfrac12u_x^2,\\
+ \{F,G\}&=\int\left[
+ \frac{\delta F}{\delta u}\partial_x\frac{\delta G}{\delta\pi}
+ +\frac{\delta F}{\delta\pi}\partial_x\frac{\delta G}{\delta u}\right]\dd x,
+ &\frac{\delta F}{\delta\phi}&=-\partial_x\frac{\delta F}{\delta u},\\
+ u_t&=\pi_x,&\pi_t&=(su-3u^2-u_{xx})_x.\label{flow}
+\end{align}
+Use a periodic line or decaying fields/variations with fixed potential
+endpoints. Total derivatives are discarded only under those conditions.
+The lower charges are $M=\int u\dd x$, $\Pi=\int\pi\dd x$,
+$P=-\int\pi u\dd x$ and $H_s$; their conservation is checked separately.
+In the local $u,\pi$ bracket $M,\Pi$ are Casimirs; in potential variables
+$\Pi$ generates the constant shift of $\phi$.
+
+\paragraph{Explicit representative \C (\chg).}
+\begin{equation}
+ \boxed{Q_s=\int q_s\dd x,\qquad
+ q_s=\pi_x^2+u_{xx}^2-3u\pi^2+3u^4-9uu_x^2+s(u_x^2-u^3).}\label{Q}
+\end{equation}
+The $\pi_x^2,u_{xx}^2$ terms establish independence from the lower charges.
+Its variational derivatives are
+\begin{align}
+ \frac{\delta Q_s}{\delta\pi}&=-6u\pi-2\pi_{xx},\\
+ \frac{\delta Q_s}{\delta u}&=-3\pi^2+12u^3+9u_x^2+18uu_{xx}
+                  +2u_{xxxx}-s(3u^2+2u_{xx}).\label{variations}
+\end{align}
+Substituting into the bracket gives a density whose Euler operators in
+both independent jet families vanish exactly, as does its constant part.
+It is therefore a total derivative:
+\begin{equation}
+ \boxed{\{Q_s,H_s\}=0.}\label{conservation}
+\end{equation}
+This is an arbitrary-field identity, not a soliton-only test.
+
+\paragraph{Hierarchy identification \C (\chg).}
+The scalar Lax dictionary, with coefficients to the left of $D_x$, is
+\begin{align}
+ L&=D_x^3+aD_x+b,&a&=\tfrac32u-\tfrac{s}{4},&
+ b&=\tfrac34u_x+\tfrac{\sqrt3}{4}\pi,&\tau&=\sqrt3\,t,\\
+ a_\tau&=2b_x-a_{xx},&
+ b_\tau&=b_{xx}-\tfrac23a_{xxx}-\tfrac23aa_x.&&&
+\end{align}
+Both equations reduce to \eqref{flow}. Define vacuum-subtracted residues
+$\mathsf{H}_n=\int[\operatorname{Res}L^{n/3}-\operatorname{Res}L^{n/3}|_0]\dd x$.
+Independent pseudo-differential multiplication and the Riccati recursion
+$f_{xx}+3ff_x+f^3+af+b=z^3$, $f=z+\sum_{n\geq1}f_nz^{-n}$,
+check $\mathsf{H}_n=-n\int(f_n-f_n|_0)\dd x$ through $n=7$, modulo derivatives.
+They give
+\begin{align}
+ \mathsf{H}_1&=\tfrac12M,&\mathsf{H}_2&=\tfrac{\sqrt3}{6}\Pi,&\mathsf{H}_3&=\mathsf{H}_6=0,\\
+ \mathsf{H}_4&=-\tfrac{\sqrt3}{6}P-\tfrac{\sqrt3 s}{36}\Pi,&
+ \mathsf{H}_5&=\tfrac5{24}H_s-\tfrac{5s^2}{288}M,\\
+ \mathsf{H}_7&=-\tfrac7{144}(Q_s+sH_s)+\tfrac{7s^3}{2592}M.\label{hierarchy}
+\end{align}
+Thus \eqref{Q} is the first higher hierarchy charge beyond the specified
+four. No second-bracket quantum normalization has been imported.
+
+\C Independently, the pulse
+$u=k^2\operatorname{sech}^2(k(x-vt)/2)/2$, $\pi=-vu$, $v^2=s-k^2$ gives
+\begin{equation}
+ Q_s^{\rm sol}=4k^5(20k^2-21s)/105.
+\end{equation}
+Exact integration after $y=\tanh(k(x-vt)/2)$ and three independent
+60-digit quadratures agree to better than $10^{-55}$.
+
+\section{Test of the elastic direction before quantum ordering}
+\paragraph{Background shift \C (\chg).}
+The proposed (d) hypothesis is confirmed as a classical local identity:
+\begin{align}
+ s&=1-6U,\\
+ h_1(U+u,\pi)&=h_s(u,\pi)+(U-3U^2)u+U^2/2-U^3,\\
+ q_1(U+u,\pi)&=q_s(u,\pi)-6Uh_s(u,\pi)
+ +(12U^3-3U^2)u+3U^4-U^3.\label{shift}
+\end{align}
+The Hamiltonian changes by a mass charge and a constant; the higher charge
+changes by lower charges and a constant. The Lax dictionary verifies the
+same hierarchy flow for every $s$; $s>0$ selects the stable linear good
+vacuum. The shift relates different background sectors, not a dynamical
+change of mean within a fixed-endpoint sector.
+
+\paragraph{Explicit tangent charge \C (\chg).}
+Let $\I=\int u^2\dd x$, $\J=\int(u_x^2-u^3)\dd x$. Then
+\begin{align}
+ H_{1+2\hbar\lambda}&=H_1+\hbar\lambda\I,&
+ Q_{1+2\hbar\lambda}&=Q_1+2\hbar\lambda\J,\\
+ \{Q_1,\lambda\I\}+\{2\lambda\J,H_1\}&=0,&\{\J,\I\}&=0.\label{tangent}
+\end{align}
+Here the subscript on $H_s,Q_s$ is the sound coefficient; the quantum
+correction coefficient requested in the task is
+$Q^{(1)}_\lambda=2\lambda\J$.
+The family is conserved exactly classically.
+In contrast $\{\I,H_s\}=2\int u\pi_x\dd x$ is generally nonzero:
+being an integrable direction does not make $\I$ a conserved charge.
+
+\paragraph{A regulator-independent solvability observation.}
+\C (\chg, \ord) Let $\mathcal A$ be a fixed one-loop local source at
+$\lambda=0$. If $R$ solves $\{R,H_1\}=-\mathcal A$, then
+\begin{equation}
+ \{R+2\lambda\J,H_1\}+\{Q_1,\lambda\I\}+\mathcal A=0
+ \quad\hbox{for every }\lambda.\label{affine}
+\end{equation}
+Contracting a counterterm already multiplied by $\hbar$ cannot change
+$\mathcal A$ at this order. Thus solvability is independent of $\lambda$:
+either all values admit a local correction, or an independent obstruction
+remains for all. Forbidding the tangent correction would impose an extra
+normalization on $Q$, not integrability. This argument is about a
+consistent continuum local Ward problem, not an arbitrary finite lattice.
+
+\section{All local one-loop ordering terms in this representative}
+\paragraph{Vacuum contractions \C (\ord).}
+Use $\omega(q)=|q|\sqrt{1+q^2}$ and $|q|\leq\Lambda$ in contractions.
+With $R_\Lambda=\sqrt{1+\Lambda^2}$, divide covariances by $\hbar$:
+\begin{align}
+ A&=\langle u^2\rangle_0/\hbar=(R_\Lambda-1)/(2\pi),\\
+ B&=\langle u_x^2\rangle_0/\hbar
+ =(R_\Lambda^3/3-R_\Lambda+2/3)/(2\pi),\\
+ C&=\langle u_{xx}^2\rangle_0/\hbar
+ =(R_\Lambda^5/5-2R_\Lambda^3/3+R_\Lambda-8/15)/(2\pi),\\
+ D&=\langle\pi^2\rangle_0/\hbar=A+B=(R_\Lambda^3-1)/(6\pi),\\
+ E&=\langle\pi_x^2\rangle_0/\hbar=B+C.\label{cov}
+\end{align}
+Here $D,E$ denote covariances. These are half-line integrals of
+$q/\sqrt{1+q^2}$, $q^3/\sqrt{1+q^2}$, $q^5/\sqrt{1+q^2}$,
+$q\sqrt{1+q^2}$, $q^3\sqrt{1+q^2}$, respectively, divided by $2\pi$.
+All primitives and three cutoffs are checked by 60-digit quadrature.
+Symmetrized mixed $u$--$\pi$ covariances and odd spatial coincidences
+vanish. The contraction matrix retains
+$\langle uu_{xx}\rangle_0/\hbar=-B$, although it contributes nothing
+for the chosen densities.
+
+\paragraph{Wick-to-Weyl dictionary \C (\ord).}
+For a polynomial $f$ in the field jets set
+$Tf=\tfrac12\sum C_{ab}\partial_a\partial_bf$.
+The Wick operator has Weyl symbol $f-\hbar Tf+O(\hbar^2)$.
+With $\vol=\int\dd x$ denoting only a vacuum constant,
+\begin{align}
+ \sigma_W(:H_s:)&=H_s+3\hbar AM
+       -\tfrac\hbar2(D+sA+B)\vol+O(\hbar^2),\\
+ \sigma_W(:Q_s:)&=Q_s-18\hbar A\I
+       +\hbar(3D+9B+3sA)M
+       -\hbar(E+C+sB)\vol+O(\hbar^2).\label{wick}
+\end{align}
+In particular $-:u^3:=-u^3+3\hbar Au$ reproduces the Wick term in
+\file{good_renorm.tex}. At $s=1$ the Hamiltonian constant is
+$-\hbar D\vol$, the subtracted free zero-point energy.
+All nonconstant terms in $Q_s$ arise from $-3u\pi^2$, $3u^4$,
+$-9uu_x^2$ and $-su^3$. No derivative or momentum operator is added at
+this order. Double self-contractions of $u^4$ start at $\hbar^2$.
+
+\paragraph{The uncorrected charge fails \C (\ord).}
+Mass and constant terms commute locally. Simple Wick ordering therefore
+leaves
+\begin{equation}
+ \frac{[:Q_1:,:H_1:]}{i\hbar}
+ =-18\hbar A\{\I,H_1\}+O(\hbar^2)
+ =36\hbar A\int\pi u_x\dd x+O(\hbar^2).\label{source}
+\end{equation}
+A direct Wick double-contraction check gives the same source. The surviving
+nonlinear pair is $-3u(x)\pi(x)^2$ against $-u(y)^3$. With $r=x-y$,
+its second-contraction commutator divided by $i\hbar$ is
+$36\hbar C_{uu,\Lambda}(r)\delta'(r)\pi(x)u(y)$.
+Evenness gives $C_{uu,\Lambda}(r)\delta'(r)=A\delta'(r)$, which integrates
+to \eqref{source}. Other double contractions vanish or are total
+derivatives. This prevents mistakenly dropping the source merely because
+the reduced \emph{Weyl} commutator has no first-order Moyal term.
+
+\paragraph{Local charge mixing \C (\ord).}
+Choose
+\begin{align}
+ \widehat H_\lambda&=:H_1:+\hbar\lambda:\I:,\\
+ \widehat Q_\lambda
+ &=\boxed{:Q_1:+\hbar(18A:\I:+2\lambda:\J:)}+O(\hbar^2).\label{corrected}
+\end{align}
+Equation~\eqref{tangent} cancels the elastic deformation; $18A:\I:$
+cancels \eqref{source}. The remaining Weyl symbols are
+\begin{align}
+ \sigma_W(\widehat H_\lambda)
+ &=H_1+\hbar[\lambda\I+3AM-D\vol]+O(\hbar^2),\\
+ \sigma_W(\widehat Q_\lambda)
+ &=Q_1+\hbar[2\lambda\J+(6A+12B)M-2(B+C)\vol]+O(\hbar^2),\\
+ [\widehat Q_\lambda,\widehat H_\lambda]/(i\hbar)&=O(\hbar^2)
+ \quad\hbox{in the stated local Ward prescription.}\label{ward}
+\end{align}
+\begin{center}\small
+\begin{tabular}{@{}L{3.5cm}L{5.3cm}L{6.3cm}@{}}\toprule
+Term & Interpretation & Consequence\\\midrule
+Constants and $M$ & Vacuum and lower-charge origins & Commute; choose
+consistently with the reference pressure.\\
+$\hbar\lambda\I$ in $H$ & Integrable elastic direction & Requires
+$2\hbar\lambda\J$ in $Q$; leaves $\lambda$ free.\\
+$-18\hbar A\I$ in $\sigma_W(:Q:)$ & Nonconserved Wick mixing & Cannot
+be removed by conserved lower charges alone; needs the opposite local
+composite-charge term.\\
+Conserved finite additions to $Q$ & Hierarchy normalization & Allowed,
+but do not determine the elastic Hamiltonian coupling.\\\bottomrule
+\end{tabular}
+\end{center}
+\C The charge-mixing coefficient is fixed within this prescription,
+including its finite part:
+$18A=9(\sqrt{1+\Lambda^2}-1)/\pi$ and
+$18A-9\Lambda/\pi\longrightarrow-9/\pi$.
+Removing only the leading divergence leaves a finite Ward source.
+There is no nonremovable \emph{local first-order} obstruction here and no
+condition on $\lambda$.
+
+\paragraph{Operator and regulator limitation \D.}
+The mixing diverges with the cutoff. Its cancellation in a local Ward
+identity does not establish convergence of interacting charge matrix
+elements, a positive representation, or boundary-compatible domains.
+In particular it does not prove existence of
+$\lim_{\Lambda\to\infty}\widehat Q_\lambda$ on the free Fock domain.
+A literal spectral projection also changes the canonical bracket and may
+break the classical hierarchy; its contact and cutoff-edge terms must be
+checked separately. Such an operator construction remains open.
+This does not restore a $\lambda$ selection in the local problem:
+\eqref{affine} makes the elastic tangent a homogeneous solution regardless
+of the inhomogeneous ordering source.
+
+\section{What fixes the remaining finite coupling?}
+\paragraph{Vacuum conditions \C (\obs).}
+With the pressure and energy origins of \file{good_renorm.tex},
+\begin{align}
+ e(U)&=\tfrac12U^2-U^3+\hbar[W(U)+\lambda U^2]+O(\hbar^2),\\
+ W(U)&=-\frac{(1-6U)^{3/2}-1+9U}{6\pi},\qquad U<1/6,\\
+ e(0)&=e'(0)=0,\qquad
+ K(0)=e''(0)=1+\hbar(2\lambda-9/(2\pi))+O(\hbar^2),\\
+ c_R:=\sqrt{K(0)}&=1+\hbar s_1+O(\hbar^2),\qquad
+ s_1=\lambda-9/(4\pi).\label{static}
+\end{align}
+The curvature is checked by a convergent 70-digit integral and symbolic
+differentiation. Thus $K(0)=1$, equivalently unit \emph{static/hydrodynamic}
+speed to this order, fixes $\lambda=9/(4\pi)$.
+A specified shift $s_*$ would give $\lambda=s_*+9/(4\pi)$.
+
+\C Fixed mean $U=0$ specifies a sector; zero pressure there holds for
+every $\lambda$, because $(\lambda U^2)'|_0=0$. Neither fixes curvature.
+If instead $U=\hbar\rho$, the speed coefficient is
+$\lambda-3\rho-9/(4\pi)$; the reference mean must be stated.
+
+\D ``Physical sound speed equals one'' needs a definition here.
+The existing vacuum note distinguishes the thermodynamic speed from the
+sequential bare-on-shell slope and leaves the strict fixed-$\hbar$
+spectral limit open. We do not identify these limits or repeat that
+spectral calculation. Static matching is an extra reproducible scheme
+choice; an exact pole/edge condition needs additional infrared input.
+Integrability and mean/pressure alone give no finite number for $\lambda$.
+
+\section{Sound units and invariant combinations}
+\paragraph{Classical scaling \C (\obs).}
+For $s=c^2>0$,
+\begin{equation}
+ x=X/c,\quad t=T/c^2,\quad\phi=c\Phi,\quad
+ u=c^2\Phi_X,\quad\pi=c^3\Phi_T
+\end{equation}
+maps the action to $c^3$ times the unit-sound action. Thus
+\begin{equation}
+ S_c=c^3S_0,\quad\Omega_c=c^3\Omega_0,\quad
+ P_c=c^4P_0,\quad E_c=c^5E_0,\quad\hbar_R=\hbar/c^3.\label{scaling}
+\end{equation}
+All transformed action coefficients, the symplectic factor and soliton
+energy/momentum are checked independently. This is a unit/parameter
+conversion, not a canonical transformation keeping numerical $\hbar$ fixed.
+
+\paragraph{One body \C, conditional on the audited trace (\obs).}
+On the light branch take the existing conditional inputs
+\begin{align}
+ P_0(k)&=\epsilon\tfrac23k^3\sqrt{1-k^2},&
+ E_0(k)&=\tfrac23k^3-\tfrac8{15}k^5,\\
+ F_\lambda(k)&=F_0(k)+\tfrac{2\lambda}{3}k^3,\\
+ F_0(k)&=\frac{\sqrt3}{\pi}(\tfrac34-k^2)
+ \operatorname{artanh}\frac{2k}{\sqrt3}-\frac{3k}{2\pi}.
+\end{align}
+These are not a new determinant evaluation. At fixed momentum
+$E_0'(P)=v$ and $5E_0-4Pv=2k^3/3$. With energy in $c_R^5$ units and
+momentum in $c_R^4$ units,
+\begin{align}
+ F_R&=F_\lambda-s_1(5E_0-4PE_0')
+     =F_0+\frac9{4\pi}\frac{2k^3}{3},\\
+ C_g&=\lim_{k\to0}F_\lambda/|P_0|=\lambda-2/\pi,&
+ C_R&=C_g-s_1=1/(4\pi).\label{onebody}
+\end{align}
+In $F_R$, $k$ labels the unit-sound solution at the rescaled momentum.
+The entire displayed $F_R$, not just its slope, is independent of
+$\lambda$ within this elastic family.
+
+\paragraph{Two bodies \C, conditional on the stated frame (\obs).}
+Use the chamber-reversing Darboux frame of \file{good_twobody.tex}, in
+which $\partial_{P_j}\delta_0=-\Delta X'_j$. Rescaling gives
+\begin{align}
+ \delta_c(P_1,P_2)&=c^3\delta_0(P_1/c^4,P_2/c^4),\\
+ K_\lambda&=\left.\partial_c\delta_c\right|_1
+  =3\delta_0-4\sum_jP_j\partial_{P_j}\delta_0
+  =3\delta_0+4\sum_jP_j\Delta X'_j.\label{K}
+\end{align}
+Since $c=1+\hbar\lambda+O(\hbar^2)$ for the bare elastic deformation,
+this is the fixed-laboratory-momentum response per unit $\lambda$.
+The script differentiates the explicit root-cross-ratio phase and
+independently inverts deformed momenta before taking central differences.
+At $(\alpha_1,\alpha_2)=(0.3,0.6)$ it finds
+$K^{++}_\lambda=0.05008140486841890958\ldots$ and
+$K^{+-}_\lambda=-0.22517393868334175848\ldots$.
+All four orientations and exchange antisymmetry pass.
+
+\C Write the dimensionless phase as
+\begin{equation}
+ \Theta(P;\hbar)=\delta_0(P)/\hbar+\delta_{1,\lambda}(P)+O(\hbar),
+ \qquad\delta_{1,\lambda}=\delta_{1,0}+\lambda K_\lambda.
+\end{equation}
+This specifies only the response; $\delta_{1,0}$ remains unknown.
+With $p_j=P_j/c_R^4$, $\hbar_R=\hbar/c_R^3$,
+\begin{align}
+ \Theta&=\delta_0(p)/\hbar_R+\delta_{1,R}(p)+O(\hbar_R),\\
+ \boxed{\delta_{1,R}=\delta_{1,\lambda}-s_1K_\lambda
+       =\delta_{1,0}+\frac9{4\pi}K_\lambda.}\label{phaseinv}
+\end{align}
+Changing momentum arguments alone misses the $3\delta_0$ term from
+action/$\hbar$ normalization and does not remove the entire response.
+
+\C These invariants are precisely independent along the specified elastic
+change, with kinetic/cubic/dispersive normalization, pressure origin and
+boundary/frame prescription held fixed. At fixed laboratory momentum,
+$\lambda K_\lambda$ is generally nonzero: changing $\lambda$ without
+matching measured stiffness changes the model. This does not classify
+invariants under all finite counterterms or all quantum completions.
+\D Boundary/state normalization and the independent two-body seed remain
+unfixed after sound-unit conversion.
+
+\section{Consequence for the target and proposed report changes}
+\D Compute the requested phase provisionally in the \emph{static
+reference-vacuum scheme}: free-good-vacuum Wick subtraction,
+$e(0)=e'(0)=0$, $K(0)=1$, hence $\lambda=9/(4\pi)$, with one physical
+momentum and boundary prescription throughout. Retain the arbitrary-$\lambda$
+response for conversion. This is an additional normalization proposal,
+not an integrability prediction or an already accepted PI decision.
+Until accepted, $\lambda$ remains free. Even after it is fixed, the
+absolute two-body seed is an unknown calculation, not a scheme choice.
+
+The following is proposed text for the report's ``Good-equation
+priorities'' in Conclusions; \file{report.tex} is not edited.
+\begin{enumerate}
+\item \C/\D \textbf{Complete the scheme specification.} Record the
+higher-charge test's unrestricted $\lambda$, the explicit local correction
+and operator qualification. Adopt an extra vacuum condition; static
+$K(0)=1$ is recommended. An exact spectral condition needs its infrared definition.
+\item \D \textbf{Calculate the complete light--light phase in that scheme.}
+Construct fixed-momentum physical states and evaluate the boundary-compatible,
+time-dependent projected determinant and measure. Retain the audited
+endpoint subtraction; check both $\lambda K_\lambda$ and \eqref{phaseinv}.
+Factorisation/clustering alone does not determine the absolute seed.
+\item \D \textbf{Validate quantum charges and scattering channels.}
+Specify composite-charge matrix elements/domains and light-sector closure,
+including phonons and heavy resonances. Do not promote a local first-order
+identity to operator existence or all-loop integrability. Higher Moyal
+orders are outside this task.
+\item \D \textbf{Complete quantum defect theory as supporting work.}
+Determine boundary terms, normalization, absorption locus and residues in
+the same physical scheme. The existing deficient-rank tests cannot fix
+the bulk elastic coupling.
+\item \D \textbf{Keep exact candidate/ring work as a longer-term programme.}
+Physical poles, branches and quantum seams can follow a controlled
+one-loop phase; an exact S-matrix is not a prerequisite for the PI target.
+\end{enumerate}
+
+\section{Summary of claims and checks}
+\small
+\begin{longtable}{@{}L{4.6cm}L{6.2cm}L{4.3cm}@{}}
+\toprule Claim and status & Check and scope & Script\\\midrule\endhead
+\C First higher canonical charge & Exact Euler bracket; independent
+Riccati and pseudo-differential residues through $H_7$. & \chg\\
+\C Arbitrary sound coefficient & Both Lax equations, exact background
+shift, tangent identity and independent pulse integral. & \chg\\
+\C Local ordering terms & Full jet contraction matrix, exact primitives
+and 60-digit quadrature at three cutoffs. & \ord\\
+\C Wick defect and correction & Nonzero uncorrected source, direct double
+contraction and corrected symbolic-$\lambda$ Ward identity. & \ord\\
+\C Static matching vs pressure & Energy derivatives, independent convergent
+curvature integral and shifted reference mean. & \obs\\
+\C Conditional sound invariants & Action/symplectic/momentum factors,
+full one-body elastic subtraction and inverse-momentum phase response. & \obs\\
+\D Quantum operator and phase & No assertion of charge convergence,
+positive representation, exact spectral speed or completed absolute phase.
+& Explicit open scope\\\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Failures recorded and execution record}
+\begin{enumerate}
+\item \C \textbf{Naive Wick ordering fails.} Equation~\eqref{source}
+is an explicitly checked nonzero source, retained as a negative test.
+Adding only the $\lambda$ tangent correction does not cure it. The stated
+composite mixing does; no check was weakened.
+\item \textbf{Two development assertions used structural equality.}
+The first \chg\ run compared an expanded Euler derivative to an
+unexpanded polynomial; the first \obs\ run compared algebraically equal
+forms of the small-$k$ limit. Both failed and were repaired by testing
+that the expanded/simplified difference is exactly zero. Mathematical
+claims and numerical tolerances were unchanged.
+\item \textbf{Repository infrastructure.} The initial shared-checkout pull
+failed because \file{.git/FETCH\_HEAD} is read-only. Work used the writable
+\file{/tmp/integ_scheme_work} clone on \file{main}, with the project remote
+and a successful initial pull. An initial document-write command and a later script-edit command used
+duplicated relative directories; neither wrote its target, and both were
+rerun with correct paths. The first PDF build also caught a box
+spanning an alignment separator; the formula layout was corrected. An early execution-record assembly was
+rejected by its suite-completion guard; the record is assembled only after
+all scripts finish. Only task files are committed;
+historical regenerated outputs remain in scratch.
+\end{enumerate}
+\paragraph{Fresh checks.}
+All three new scripts end with \texttt{ALL CHECKS PASSED}. The largest
+observed errors are $6.08\times10^{-64}$ for the charge quadrature,
+$3.89\times10^{-62}$ for the vacuum contractions, and
+$1.62\times10^{-35}$ for the fixed-momentum phase response. Their asserted
+bounds are $10^{-55}$, $10^{-53}$ and $10^{-32}$, respectively.
+
+\paragraph{Full historical regression.}
+All 129 top-level historical Python scripts were run sequentially from
+their own directories in \file{phase1/scripts}, \file{phase2/scripts}
+and \file{corrigan-zambon}. Of these, 127 returned exit code zero
+and 2 failed. 2 zero-exit scripts printed no success marker;
+they are not reclassified as passing verification merely from their exit code.
+The per-script exits, runtimes, marker observations and failed log tails
+are in \file{scripts/integ_regression_results.json}, with an inventory
+entry in \file{../scripts_inventory.md}. Nested script runs are not counted
+again. All historical source files and tolerances are unchanged; regenerated
+caches/figures stay in scratch. Failures are:
+\begin{itemize}
+\item \file{phase2/scripts/audit_onebody.py}: exit 1. The existing line-383 extrapolated-identity bound $3\times10^{-6}$ fails, as already documented in README and the inventory.
+\item \file{phase2/scripts/toda_edge_twoterm.py}: exit 1. The existing successive-raw-value bound $0.004$ fails, already documented in the inventory; it was not relaxed.
+\end{itemize}
+
+
+\section{Sources and reading record}
+No external model-specific theorem or bibliographic identifier is used.
+Results are project derivations (c), with conditional inputs labelled.
+The following repository texts and relevant scripts were read directly:
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}
+\item \file{AGENTS.md}, \file{README.md}, PI decision \file{4da7564}.
+\item \file{phase1/review.tex}, Lax/hierarchy sections; its dictionary
+is rederived above, not used to assume canonical quantum ordering.
+\item \file{phase2/good_renorm.tex}, Wick subtraction, static elasticity,
+spectral-limit qualification and conditional trace.
+\item \file{phase2/good_twobody.tex}, counterterm/kernel scripts, and
+\file{phase2/report.tex}, fixed-momentum scattering and Conclusions.
+\item \file{phase2/shiftcharge_quantum_bridge.tex},
+\file{shiftcharge_bridge_hierarchy.py} and
+\file{resonant_channels_conservation.py}, for existing charge conventions.
+\end{itemize}
+New checkers import no historical checker; only \ord\ imports the new
+charge script's jet-algebra utilities. No second-bracket quantum result is
+transferred to the canonical theory.
+\end{document}
