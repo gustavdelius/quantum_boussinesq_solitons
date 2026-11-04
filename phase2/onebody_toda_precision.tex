@@ -1,0 +1,391 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\scan}{\texttt{onebody\_\allowbreak prec\_\allowbreak scan.py}}
+\newcommand{\edge}{\texttt{onebody\_\allowbreak prec\_\allowbreak edge.py}}
+\newcommand{\ids}{\texttt{onebody\_\allowbreak prec\_\allowbreak identities.py}}
+\newcommand{\ana}{\texttt{onebody\_\allowbreak prec\_\allowbreak analysis.py}}
+\title{The Toda one-body coefficient at higher precision:\\
+independent finite-sea extrapolation and an analytic edge reduction}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc\ An unconstrained extrapolation of new finite-sea Bethe data gives
+$C=0.1591549414\pm 8.23\times10^{-6}$.
+The mesh/roundoff, $h\to0$, and final amplitude-tail components are $5.68\times10^{-8}$, $7.70\times10^{-6}$, and $4.73\times10^{-7}$, respectively. This reduces the previous $0.00334$ envelope by a factor of 406.
+The uncertainties are deterministic numerical diagnostics, added linearly,
+not statistical confidence intervals or rigorous bounds.
+\Lc\ A separately checked half-line calculation derives $1/(2\pi)$ from
+the momentum logarithm and the harmonic Toda vacuum sound correction.
+The numerical fit does not impose this constant.
+\Ld\ The result concerns the stipulated Toda edge limit and inherited
+classical Boussinesq units. A uniform interchange with the fixed-nonzero-$P$
+semiclassical limit, and identification with a completed quantum bad-Boussinesq
+field theory, remain additional questions.
+\end{abstract}
+
+\section{Scope, normalization, and checked inputs}
+Labels mean (a) proved in the literature, (b) literature heuristic,
+(c) derived or checked in this project, and (d) unestablished identification
+or guess. All numerical (c) statements mean evidence at the stated precision,
+not existence theorems. The complete internal notes
+\texttt{onebody\_dispersion\_test.tex} and \texttt{frame\_dictionary.tex},
+their specified \texttt{onebody\_*} and \texttt{frame\_*} implementations,
+and the relevant classical Toda and earlier half-line sections were read.
+No external reference, DOI, arXiv entry, full text, or abstract is cited or
+claimed as independently verified here. No older script is executed: several
+write files outside this task's permitted prefixes.
+
+\paragraph{Inherited units \Lc\ (\edge, \ana).}
+Use $a=1$, $b=e^{-1/2}$, $h=\hbar_T=3b\hbar_B$ and
+\begin{equation}
+ P_B=\frac{\overline P}{6\sqrt3 b},\qquad
+ E_B=\frac{\overline E}{6\sqrt3 b^2},\qquad
+ C_h(y)=3\frac{\overline E(P_0(\kappa))-E_0(\kappa)}{hP_0(\kappa)},
+ \quad \kappa=\sqrt{hy/b}.
+ \label{eq:quantity}
+\end{equation}
+Here
+\begin{equation}
+ P_0=4b(\kappa\cosh\kappa-\sinh\kappa),\qquad
+ E_0=2b^2(\sinh\kappa\cosh\kappa-\kappa),\qquad
+ \frac{\dd E_0}{\dd P_0}=b\frac{\sinh\kappa}{\kappa}.
+\end{equation}
+The reported coefficient is $C=\lim_{y\to\infty}\lim_{h\to0}C_h(y)$.
+It multiplies $\hbar_B|P_B|$ in energy, or is order $\hbar_B^0$ in
+$E_B/\hbar_B$. Parity supplies the opposite edge.
+The inherited continuum equation is the \emph{bad} one,
+$u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx}$, with
+$u=2(\log\tau)_{xx}$, $k=\sinh\beta$, $v=\epsilon\cosh\beta$ and
+$\kappa=\sqrt3\beta$ to leading order. There is no change of regulator,
+time normalization, sound-line convention, or quantum charge identification.
+
+\section{Fresh finite-sea calculation}
+\paragraph{Equations \Lc\ (\scan, \ids).}
+With $t=2\pi h$, the sea operator and its two solutions are
+\begin{align}
+ \Theta(d)&=2h\operatorname{Im}\log\Gamma(1+id/h)+2d\log h,
+ &K&=\Theta',\\
+ (\mathcal Af)(x)&=tf(x)-\int_{-q}^q K(x-z)f(z)\,\dd z,
+ &\mathcal A\rho&=1,\quad \mathcal A\eta=x,\quad\int\rho=1.
+\end{align}
+Define $D=1+\int K(p-x)\rho(x)\dd x$,
+$V=p+\int K(p-x)\eta(x)\dd x$, and $v_s=V(q)/D(q)$.
+The edge-relative observables are
+\begin{align}
+ \overline P(p)&=p-q+\int[\Theta(p-x)-\Theta(q-x)]\rho(x)\,\dd x,\\
+ \overline E(p)&=\tfrac12(p^2-q^2)
+       +\int[\Theta(p-x)-\Theta(q-x)]\eta(x)\,\dd x.
+\end{align}
+We solve $\overline P(p)=P_0(\kappa)$ before evaluating each energy.
+The direct group-velocity coefficient is
+\begin{equation}
+ C_{v,h}(y)=\frac3h\left[\frac{V(p)}{D(p)}
+                         -b\frac{\sinh\kappa}{\kappa}\right].
+\end{equation}
+
+\paragraph{Subtractions and conditioning \Lc.}
+The full classical lattice energy, not merely its cubic approximation,
+is subtracted. To reduce cancellation, the code first forms
+\begin{equation}
+ \overline E-b\overline P
+ =(p-q)\left(\frac{p+q}{2}-b\right)
+ +\int[\Theta(p-x)-\Theta(q-x)](\eta-b\rho)(x)\,\dd x,
+ \label{eq:stable}
+\end{equation}
+and subtracts $E_0-bP_0$, calculated at 60 decimal digits.
+This is algebraically the original energy comparison: the quantum sound
+shift has \emph{not} been removed. Direct evaluation of the unsubtracted
+formula is checked too. The dense solves themselves use IEEE double
+precision; high-precision fits do not upgrade those input data.
+
+\paragraph{Meshes and extrapolation \Lc\ (\scan, \ana).}
+The eleven $h$ values are
+$.08,.06,.04,.03,.02,.015,.01,.0075,.005,.00375,.0025$.
+The base mesh is $N=\lceil10/h+200\rceil$; refinements increase this by
+25\% at $.01,.005,.0025$, reaching $N=5250$.
+Fifteen momentum labels cover $y=.25$ through $128$.
+All sea solves check normalization, $P(q)=\pi h$, monotonic momentum,
+and the fixed-$P$ inversion. The exact derivative identity below is also
+checked independently at 60 digits, by complex trigamma differentiation and
+separate finite differences in $q$, not by substituting the identity into itself.
+
+The central $h$ intercept is a quartic least-squares fit to the last seven
+$h$ values. Alternatives are a cubic through the last six, quintic through
+the last eight, quadratic through the last four, and cubic plus either
+$h\log h$ or $h^2\log h$ through the last seven. All coordinates are scaled
+before fitting and all small linear systems use 60-digit arithmetic.
+The $h$ error is the maximum intercept change. Lower-order Richardson-type
+fits are retained as conservative truncation diagnostics.
+The mesh diagnostic is the largest refined-minus-base difference plus
+$2\,10^{-10}$ for roundoff, multiplied by the largest $\ell^1$ norm of the
+$h$-extrapolation weights. These errors are subsequently propagated through
+the amplitude-fit weights.
+
+\begin{table}[ht]\centering\small
+\begin{tabular}{rrrrr}\toprule
+$y$ & $C_E(y)$ & mesh/roundoff & $h$ extrapolation & half-line difference\\\midrule
+4 & 0.16093283146 & $9.8\times10^{-9}$ & $2.0\times10^{-9}$ & $2.7\times10^{-10}$ \\
+8 & 0.16002007918 & $9.4\times10^{-9}$ & $1.3\times10^{-8}$ & $6.4\times10^{-11}$ \\
+16 & 0.15958191769 & $1.1\times10^{-8}$ & $8.9\times10^{-8}$ & $1.4\times10^{-10}$ \\
+32 & 0.15936706868 & $1.3\times10^{-8}$ & $6.2\times10^{-7}$ & $3.2\times10^{-9}$ \\
+64 & 0.15926060097 & $1.9\times10^{-8}$ & $4.4\times10^{-6}$ & $7.2\times10^{-8}$ \\
+\bottomrule\end{tabular}
+\caption{Fresh finite-sea energy intercepts (c). The last column compares with independently inverted half-line equations, not a fitted target constant. Both energy and velocity differences through $y=64$ are inside the separately assigned mesh-plus-$h$ diagnostics.}
+\end{table}
+
+\section{Analytic edge reduction and removal of the logarithm}
+\paragraph{An exact thermodynamic identity \Lc\ (\ids, \scan).}
+For this paragraph $q$ varies at fixed $h$ and $a$ is determined by counting;
+it is not held fixed when differentiating $q$. Differentiating the sea
+equations and integrating by parts gives
+\begin{equation}
+ \mathcal A\eta'=1-\eta(q)[K(x-q)+K(x+q)],\qquad
+ \mathcal A\partial_q\rho=\rho(q)[K(x-q)+K(x+q)].
+\end{equation}
+Consequently $\eta'=\rho-v_s\partial_q\rho$, and its exterior version is
+\begin{equation}
+ \boxed{\partial_pV=D-v_s\partial_qD.} \label{eq:identity}
+\end{equation}
+Independent $N=32,48$ mpmath quadratures at $h=.7,q=1$, with a centered
+$q$ difference of step $10^{-15}$, give maximum residuals
+$3.21\,10^{-19}$ and $1.13\,10^{-28}$, respectively.
+
+\paragraph{Edge shape and its normalization \Lc\ (\edge).}
+Put $u=(p-q)/h$ and $n=1/a$. Classical matching gives
+$n=-1/[2\log(q/2)]$ and, to leading edge order,
+\begin{equation}
+ D(p,q)=A(q,h)f(u)+o(A),\qquad
+ A=n\sqrt{2h/q},\qquad F(u)=\int_0^u f(w)\dd w=\tfrac43 y(u)^{3/2}.
+ \label{eq:edgeform}
+\end{equation}
+Then $\overline P=hAF$ and $v_{s,0}=q/(2n)$.
+The logarithmic derivative of $A$ satisfies
+$1-v_{s,0}\partial_q\log A=1/(4n)$, checked symbolically.
+In \eqref{eq:identity} the $-\partial_u/h$ part of $\partial_q$
+cancels $\partial_pD$. Matching $V(q)=v_sD(q)$ fixes the integration constant:
+\begin{equation}
+ V-v_sD=\frac{hA}{4n}F+o(hA),\qquad
+ \frac VD=v_s+\frac{h}{4n}\frac Ff+o(h).
+ \label{eq:velocityedge}
+\end{equation}
+These are asymptotic statements in the matched edge expansion, rather than
+an assertion of uniformity in arbitrarily large $y$ at finite $h$.
+
+\paragraph{Correct half-line factor \Lc\ (\edge).}
+The integral representation of the digamma kernel gives, for $\omega\ne0$,
+\begin{equation}
+ \widehat K_0(\omega)=-\frac{2\pi}{e^{|\omega|}-1},\qquad
+ \Sigma(\omega)=\frac{2\pi}{1-e^{-|\omega|}}
+              =2\pi g(i\omega)g(-i\omega),
+\end{equation}
+where
+\begin{equation}
+ g(s)=s^{-1/2}\Gamma\left(1+\frac{s}{2\pi}\right)
+ \exp\left[-\frac{s}{2\pi}\log\frac{s}{2\pi e}\right],\qquad \Re s>0.
+\end{equation}
+The kernel transform follows by transforming the cosine in
+$K_0(x)=-2\gamma+2\int_0^\infty(1-\cos xt)/(e^t-1)\dd t$;
+the additive zero-frequency distribution is fixed by bulk matching.
+The factor product is independently checked at five nonzero frequencies
+to $10^{-64}$. This corrects the Fourier scale in the older Phase~2i note;
+that note's printed transform is not used.
+
+The half-line solution has the interior transform proportional to the
+inverse interior factor divided by the zero-frequency pole. Multiplication
+by $\Sigma$ leaves the exterior factor divided by that pole. Thus
+$\mathcal L[f]\propto g(s)/s$, and integration fixes
+\begin{equation}
+ \boxed{\mathcal L[F](s)=\sqrt\pi\,\frac{g(s)}{s^2},\qquad
+ \mathcal L[J](s)=\sqrt\pi\,\frac{g(s)}{s^3},\quad
+ J(u)=\int_0^u F(w)\dd w.} \label{eq:laplace}
+\end{equation}
+The normalization follows from $F\sim4u^{3/2}/3$, whose transform is
+$\sqrt\pi s^{-5/2}$. In particular, omitting $\sqrt\pi$ fails the classical
+normalization. The branch is the principal logarithm in the right half-plane.
+Independent de Hoog (50 digits) and Talbot (70 digits) inversions agree
+within $3\,10^{-47}$ in all reported quantities at
+$y=4,8,16,32,64,128,256,512,1024$.
+The fresh finite-sea intercepts test both the momentum shape and the energy
+consequences of this half-line construction.
+
+\paragraph{Vacuum sound coefficient \Lc\ (\edge, \scan).}
+Expanding the inherited Toda Hamiltonian
+$H=\sum_n[p_n^2/2+e^{-(x_{n+1}-x_n)}]$ about spacing $a$ gives
+$\omega(k)=2b|\sin(k/2)|$. Its harmonic zero-point energy per particle is
+\begin{equation}
+ e(a,h)=b^2+h\frac1{4\pi}\int_0^{2\pi}\omega(k)\dd k+O(h^2)
+       =b^2+\frac{2hb}{\pi}+O(h^2).
+\end{equation}
+The long-wave elastic equation with unit particle mass gives
+$v_s=a\sqrt{\partial_a^2e}=ab+ah/(4\pi)+O(h^2)$.
+The integral and derivative are checked symbolically. This supplies the
+vacuum normalization independently of the proposed soliton coefficient;
+the finite-sea sound extrapolation tests it separately.
+No arbitrary multiple of the sound line is adjusted to obtain agreement.
+
+\paragraph{Energy and leading logarithm \Lc\ (\edge).}
+At $a=1$, integrating \eqref{eq:velocityedge} at fixed dressed momentum yields
+\begin{equation}
+ C_E(y)=\frac3{4\pi}+\frac{3J(u(y))}{4F(u(y))}-\frac{3y}{10},\qquad
+ C_v(y)=\frac3{4\pi}+\frac y2[u'(y)-1].
+ \label{eq:edgeenergy}
+\end{equation}
+The $3y/10$ is exactly the leading edge limit of the classical nonlinear
+energy already removed in \eqref{eq:quantity}.
+Expanding the independently factored transform at small $s$ gives
+\begin{align}
+ g(s)&=s^{-1/2}\left[1+\frac{s}{2\pi}
+ (1+\log(2\pi)-\gamma-\log s)+O(s^2\log^2s)\right],\\
+ u(y)&=y-A_0\log y+c_0+\frac{d_0}{y}+O(y^{-2}\log^m y),\label{eq:u}\\
+ A_0&=\frac1{2\pi},\qquad
+ c_0=\frac{1-\log(8\pi)}{2\pi},\qquad
+ d_0=\frac1{48}-\frac1{4\pi^2}.
+\end{align}
+The transform inversion uses
+$\mathcal L^{-1}[s^{-\alpha}\log^j s]
+=(-\partial_\alpha)^j[u^{\alpha-1}/\Gamma(\alpha)]$.
+SymPy differentiates these expressions and checks the inverse-series
+coefficients, including cancellation of $(\log y)/y$ in $u(y)$.
+
+In the energy integral use $\dd u=u'(y)\dd y$ \emph{before} extrapolation:
+\begin{equation}
+ J=\frac8{15}y^{5/2}-\frac{8A_0}{9}y^{3/2}
+       -\frac{8d_0}{3}y^{1/2}+\text{constant}+O(y^{-1/2}\log^m y).
+\end{equation}
+Thus both the leading classical term and the known logarithmic displacement
+are removed analytically; no unknown leading $\log y$ energy coefficient is fitted.
+The constant of integration is allowed as a $y^{-3/2}$ term in numerical fits.
+Equations \eqref{eq:edgeenergy}--\eqref{eq:u} give
+\begin{align}
+ C_E(y)&=\frac3{4\pi}-\frac{A_0}{2}-\frac{3d_0}{2y}
+                  +O(y^{-3/2}),\\
+ C_v(y)&=\frac3{4\pi}-\frac{A_0}{2}-\frac{d_0}{2y}+o(y^{-1}),\\
+ \boxed{C=\frac3{4\pi}-\frac1{4\pi}=\frac1{2\pi}.} \label{eq:answer}
+\end{align}
+This is a project analytic derivation within the matched Bethe edge problem,
+with the harmonic vacuum normalization stated explicitly. It is not an
+assumed fit intercept or a new literature theorem.
+
+\section{Numerical verdict and separated uncertainty}
+\paragraph{Free intercept test \Lc\ (\ana).}
+The finite-sea energy fits first subtract the derived tail $-3d_0/(2y)$.
+The fitted constant remains free. We vary $y$ windows $[4,32]$, $[8,32]$,
+$[8,64]$, $[16,64]$ and residual bases
+\[
+ \{1,y^{-2}\},\quad\{1,y^{-2},y^{-3}\},\quad
+ \{1,y^{-3/2},y^{-2}\},\quad\{1,y^{-2},y^{-2}\log y\}.
+\]
+The central fit uses $[8,32]$ and the second basis.
+The amplitude error is the maximum intercept change among all sixteen fits.
+The mesh and $h$ components are separately propagated with absolute fit
+weights, taking the largest result over those fits, and the three maxima
+are added. This deliberately conservative total also retains lower-order
+$h$ fits and a possible integration-constant tail.
+Here ``amplitude error'' denotes the final large-$y$ tail of the edge
+coefficient; the actual lattice amplitude $\kappa^2=hy/b$ has already
+been extrapolated to zero in the first stage.
+
+\Lc\ The primary result and its direct velocity cross-check are
+\begin{align*}
+ C_E&=0.15915494136\pm 8.23\times10^{-6},\\
+ C_v&=0.15915490084\pm 4.62\times10^{-5}.
+\end{align*}
+\begin{center}
+\begin{tabular}{lrr}\toprule
+Error component & energy & velocity\\\midrule
+Mesh and roundoff & $5.68\times10^{-8}$ & $7.48\times10^{-8}$ \\
+$h\to0$ extrapolation & $7.70\times10^{-6}$ & $4.49\times10^{-5}$ \\
+Amplitude-tail extrapolation & $4.73\times10^{-7}$ & $1.27\times10^{-6}$ \\
+Linear total & $8.23\times10^{-6}$ & $4.62\times10^{-5}$ \\
+\bottomrule\end{tabular}\end{center}
+The independent sound intercept is $3(v_s-b)/h=0.238732414641$, with $h$-fit spread $2.24\times10^{-10}$; its analytic comparator is $3/(4\pi)$.
+\begin{center}\small
+\begin{tabular}{lrrl}\toprule
+Hypothesis & value & discrepancy/envelope & verdict\\\midrule
+$1/(2\pi)$ & 0.1591549431 & 0.000211 & compatible \\
+$1/6$ & 0.1666666667 & 912 & excluded \\
+$\sqrt3/(2\pi)^2$ & 0.0438733595 & $1.40\times10^4$ & excluded \\
+$(1+10^{-3})/(2\pi)$ & 0.1593140980 & 19.3 & excluded \\
+$(1+10^{-4})/(2\pi)$ & 0.1591708586 & 1.93 & excluded \\
+$(1+10^{-5})/(2\pi)$ & 0.1591565346 & 0.194 & compatible \\
+\bottomrule\end{tabular}\end{center}
+For $C=(1+\delta)/(2\pi)$ the finite-sea envelope gives $-5.174\times10^{-5}\leq\delta\leq 5.172\times10^{-5}$. Thus arbitrarily small nonzero offsets remain numerically indistinguishable. The alternative $\sqrt3/(2\pi)^2$ is about $0.04387$, so it is not actually a nearby value.
+The twelve free-intercept high-precision half-line fits give the range $[0.15915494308687,0.15915494310110]$, including variation of the fitting window and a $y^{-3/2}$ tail. This is an additional asymptotic diagnostic, separate from the primary finite-sea budget.
+
+
+\paragraph{Analytic versus numerical precision.}
+\Lc\ The half-line inversion has vastly smaller arithmetic error than the
+finite-sea extrapolation. Fitting its high-precision values with a free
+intercept provides a useful additional diagnostic, but does not justify
+replacing the finite-sea error budget by a 50-digit error bar.
+Agreement with \eqref{eq:answer} is compatibility within a deterministic
+envelope, not a probability that two real numbers are exactly equal.
+For the model $C=(1+\delta)/(2\pi)$ the interval on $\delta$ is explicitly
+reported; ``small'' without a specified magnitude cannot be rejected.
+
+\paragraph{Unbounded qualifications \Ld.}
+The derivation uses smooth matched edge asymptotics and their differentiated
+form. The numerical errors do not bound failure of that asymptotic ansatz,
+or an exchange of $h\to0$, $y\to\infty$ with the fixed-nonzero-$P$
+semiclassical limit. In particular $y\to\infty$ at fixed $h$ exits the
+small-amplitude region. Neither the unresolved field determinant nor a
+quantum correction to the Toda--Boussinesq identification has an assigned
+error bar here. These are distinct from the numerical coefficient of the
+explicitly defined nested Bethe limit.
+
+\section{Checks, failures recorded, and reproduction}
+\begin{center}\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{.45\linewidth}c>{\raggedright\arraybackslash}p{.36\linewidth}}
+\toprule Claim & Label & Check\\\midrule
+Fixed-$P$ energy and direct velocity & (c) & \scan; refined meshes\\
+Exact $V'=D-v_s\partial_qD$ & (c) & \ids; independent 60-digit derivatives\\
+Correct factor product and normalization & (c) & \edge; 70-digit product\\
+Momentum logarithm and $d_0$ & (c) & \edge; symbolic inverse transform\\
+Edge energy and analytic $1/(2\pi)$ & (c) & \edge; algebra and two inversion methods\\
+Numerical constant and error decomposition & (c) & \ana; free intercepts\\
+Uniform limit interchange; full continuum theory & (d) & not established\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The first scan used $N=\lceil8/h+160\rceil$ and failed the exact
+$|P(q)-\pi h|<2\,10^{-10}$ check at $h=.02$. The scan was restarted
+with $N=\lceil10/h+200\rceil$. The tolerance was retained, not relaxed.
+\item The older half-line note's printed Fourier scale and missing
+$\sqrt\pi$ in the momentum transform fail the independent factor-product
+and classical-normalization tests. Neither printed expression was used
+as an input; the corrected formulas are derived above.
+\item A numerical fit cannot establish exact equality of constants, and a
+uniform finite-$h$ interchange of limits was not proved. These limitations
+are retained despite the successful analytic edge calculation.
+\item No historical checker is newly certified. Existing files, README,
+and git state are untouched. No final assertion tolerance was weakened.
+\end{enumerate}
+
+\paragraph{Reproduction.}
+From \texttt{phase2/scripts/}, run
+\begin{verbatim}
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+ PYTHONDONTWRITEBYTECODE=1 python3 onebody_prec_scan.py --recompute
+PYTHONDONTWRITEBYTECODE=1 python3 onebody_prec_edge.py --recompute
+PYTHONDONTWRITEBYTECODE=1 python3 onebody_prec_identities.py --recompute
+PYTHONDONTWRITEBYTECODE=1 python3 onebody_prec_analysis.py
+\end{verbatim}
+The three numerical scripts validate their saved JSON when \texttt{--recompute}
+is omitted. All four terminate with \texttt{ALL CHECKS PASSED}.
+Raw data, fit alternatives, algorithm comparisons, source hashes, and
+runtimes are retained in \texttt{onebody\_prec\_*.json}.
+The recorded dense scan took 1097.7 seconds, the two-method half-line inversions 173.5 seconds, and the high-precision identity check 88.6 seconds; the combined numerical runtime is about 22.7 minutes. Cached validation avoids the dense solves and inverse transforms.
+Build with \texttt{pdflatex} twice in \texttt{phase2/}; generated auxiliary
+files are kept outside the repository. The delivered source is self-contained.
+\end{document}
