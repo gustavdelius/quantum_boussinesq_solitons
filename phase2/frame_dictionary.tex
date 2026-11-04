@@ -1,0 +1,512 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.35cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,hyperref}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\id}{\texttt{frame\_\allowbreak identities.py}}
+\newcommand{\ed}{\texttt{frame\_\allowbreak edge.py}}
+\newcommand{\an}{\texttt{frame\_\allowbreak analysis.py}}
+\emergencystretch=3em
+\title{Physical momentum, energy, and the remaining quantum frame obstruction\\in the Toda--Boussinesq corner}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc\ We derive an energy counterpart of the endpoint momentum identity,
+relate the endpoint responses to derivatives of dressed momentum and energy,
+and give an independently implemented finite-sea dictionary and numerical
+energy dispersion at fixed dressed momentum. A mixed rectangle of the
+classical-frame symmetric remainder stays nonzero under the tested edge
+extrapolations. These are consequences of the existing asymptotic Bethe
+integral equations, not a new proof of their microscopic applicability.
+\Ld\ The requested physical scalar one-loop scattering prediction is not
+determined: the endpoint identities leave an antisymmetric two-body frame
+function free. We exhibit an explicit freedom that survives the nested
+limit while leaving every one-body observable and reciprocity test intact.
+This is a checked partial result, not a completed common quantum dictionary.
+No Wiener--Hopf dispersion or phase formula from Phase 2i is assumed.
+\end{abstract}
+
+\section{Scope, conventions, and input status}
+Labels (a), (b), (c), (d) have the repository meanings: literature proof,
+literature heuristic, project derivation/check, and guess or unresolved
+identification. Numerical extrapolations labelled (c) below are explicitly
+numerical evidence; they are not proofs of existence of the limiting functions.
+All new formulas are checked by \id, \ed, or \an, as indicated by section.
+No external source is cited or claimed to have been read. The full texts in
+\texttt{literature/} were unavailable. The inputs read were the master report
+(Route D and ranked priorities), \texttt{toda\_route.tex},
+\texttt{toda\_edge.tex}, \texttt{matching.tex}, the Toda sections of
+\texttt{charge\_frame\_master.tex}, \texttt{independent\_phase2h\_audit.tex},
+\texttt{audit\_toda\_dictionary.tex}, Section 4 of
+\texttt{audit\_frames\_defects.tex}, their specified implementations and saved
+JSON data, and the relevant continuum formulas in \texttt{oneloop\_phase.tex}.
+The overstatements in earlier notes are not adopted here.
+
+\paragraph{Inherited conventions.}
+Use $h=\hbar_T$, $t=2\pi h$, mean lattice spacing $a$, and $b=e^{-a/2}$.
+The physical coordinate of the unperturbed chain is $x_T=an$.
+The inherited leading classical dictionary is
+\begin{equation}
+ \kappa=\sqrt3\beta,\quad h=3b\hbar_B,\quad
+ x_B=2\sqrt3 n,\quad t_B=2\sqrt3 b t_T,\qquad
+ P_B=\frac{a\overline P}{6\sqrt3 b},\quad
+ E_B=\frac{\overline E}{6\sqrt3 b^2}.
+ \label{eq:units}
+\end{equation}
+\Lc\ The charge scalings agree with the small-amplitude soliton expansions
+(\id); they are leading continuum scalings, not exact finite-amplitude
+identities or a derivation of quantum collective charges.
+The bad-equation input is
+\[
+ \begin{gathered}
+ u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx},\quad k=\sinh\beta,\quad v=\epsilon\cosh\beta,\\
+ P_{B,0}=\tfrac23\epsilon\sinh^3\beta\cosh\beta,\qquad
+ E_{B,0}=\tfrac2{15}\sinh^3\beta(5+4\sinh^2\beta).
+ \end{gathered}
+\]
+The good convention instead has $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$,
+$k=\sin\alpha$, $v=\epsilon\cos\alpha$,
+$P_{g,0}=\frac23\epsilon\sin^3\alpha\cos\alpha$.
+Both use $u=2(\log\tau)_{xx}$ and the stipulated symplectic normalization.
+A larger right-moving bad/Toda soliton is faster; a smaller good soliton is
+faster. \Lc\ This follows by differentiating the displayed velocities.
+\Ld\ No real quantum equivalence between good and bad models, or analytic
+continuation of their quantum states, follows from this classical dictionary.
+We keep the inherited classical coordinate scale; we do not rescale time to
+set the quantum sound velocity to one.
+
+\section{An exact finite-sea one-body dictionary}
+\paragraph{Definitions and derivation \Lc\ (\id, \ed).}
+For an invertible finite-sea operator on $[-q,q]$, write
+\begin{align}
+ \Theta(d)&=2h\operatorname{Im}\log\Gamma(1+id/h)+2d\log h,
+ &K(d)&=\Theta'(d),\\
+ (\mathcal Af)(x)&=tf(x)-\int_{-q}^q K(x-z)f(z)\,\dd z,
+ &\mathcal A\rho&=1,\quad \mathcal A\eta=x,\quad \int\rho=1/a,\\
+ \mathcal AF_p(x)&=\Theta(p-x),&
+ P(p)&=p+\int\Theta(p-x)\rho(x)\,\dd x,\\
+ E(p)&=\frac{p^2}{2}+\int xF_p(x)\,\dd x
+       =\frac{p^2}{2}+\int\Theta(p-x)\eta(x)\,\dd x .
+ \label{eq:fredholm}
+\end{align}
+The last equality uses self-adjointness of $\mathcal A$. Thus only two sea
+solutions, $\rho$ and $\eta$, are needed for all one-body observables.
+For the right edge define
+\begin{equation}
+ \begin{gathered}
+ \overline P(p)=P(p)-P(q),\qquad \overline E(p)=E(p)-E(q),\\
+ D(p)=1+\int K(p-x)\rho(x)\,\dd x,\qquad
+ V(p)=p+\int K(p-x)\eta(x)\,\dd x .
+ \end{gathered}
+ \label{eq:DV}
+\end{equation}
+\Lc\ Then $P'=D$, $E'=V$, $P(q)=\pi h/a$,
+$D(q)=t\rho(q)$ and $V(q)=t\eta(q)$. The edge-subtracted energy uses the
+existing zero-energy edge reference; no chemical-potential constant is fitted.
+Parity gives $P(-p)=-P(p)$ and $E(-p)=E(p)$, so the left-edge version follows
+with signed momentum. The excitation group velocity and right sound speed are
+\begin{equation}
+ v_{\rm exc}(p)=\frac{V(p)}{D(p)},\qquad
+ v_s=\frac{\eta(q)}{\rho(q)}.
+ \label{eq:velocity}
+\end{equation}
+These are velocities conjugate to the dressed physical momentum, not the
+bare Bethe parameter $p$.
+
+Integration by parts in the differentiated $F_p$ equation gives
+\begin{equation}
+ \boxed{t\rho(q)[F_p(q)-F_p(-q)]=1-D(p),\qquad
+ t\eta(q)[F_p(q)+F_p(-q)]=P(p)-V(p).}
+ \label{eq:newenergy}
+\end{equation}
+For example, multiply $\mathcal A\partial_xF_p$ by $\eta$ and use
+$\int x\partial_xF_p=q[F_p(q)+F_p(-q)]-\int F_p$.
+The explicit endpoint terms cancel the bare $q$ terms and leave
+$E'(p)=p+\int F_p-t\eta(q)[F_p(q)+F_p(-q)]$; self-adjointness gives
+$p+\int F_p=P(p)$. This proves the second identity without assuming a
+Wiener--Hopf factorization. \Lc
+
+\paragraph{Exact quantum Jacobian \Lc\ (\id, \ed).}
+The old variable $y$ is best understood as a monotone \emph{physical-momentum
+label}, not a bare spectral coordinate:
+\begin{equation}
+ \overline P(q+hu(y))=P_0(\kappa)
+ =\frac{4b}{a}(\kappa\cosh\kappa-\sinh\kappa),\qquad
+ \kappa=\sqrt{yh/b}.
+ \label{eq:invert}
+\end{equation}
+Consequently the exact finite-$h$ dictionary is the parametric pair
+$(\overline P(q+hu),\overline E(q+hu))$, with
+\begin{equation}
+ \boxed{\frac{\dd u}{\dd y}=\frac{2\sinh\kappa}{aD(q+hu)},\qquad
+ \frac{\dd\overline E}{\dd y}
+ =\frac{2h\sinh\kappa}{a}\frac{V(q+hu)}{D(q+hu)}.}
+ \label{eq:jac}
+\end{equation}
+The classical comparator is $u_{0,h}(y)=2b(\cosh\kappa-1)/h$ and
+$u'_{0,h}=\sinh\kappa/\kappa$. Subtracting these known finite-amplitude
+expressions before extrapolating removes a large classical lattice artifact.
+All new calculations use the exact endpoint $q$, with no $q(1+10^{-10})$
+offset. Fixed nonzero $\overline P$ as $h\to0$ and fixed $y$ are different
+limits: at fixed $y$, $a\sqrt b\,\overline P/h^{3/2}\to\frac43 y^{3/2}$.
+The term ``fixed physical momenta in the edge limit'' below means fixed
+\emph{scaled} dressed momenta specified by \eqref{eq:invert}.
+
+\section{Energy dispersion: what can be extracted without a phase frame}
+\paragraph{Classical comparison and loop order \Lc\ (\id).}
+The classical energy is $E_0(\kappa)=2b^2(\sinh\kappa\cosh\kappa-\kappa)$;
+$dE_0/dP_0=ab\sinh\kappa/\kappa$. Moreover
+\begin{equation}
+ E_0-abP_0=\frac{2b^2}{15}\kappa^5+O(\kappa^7),\qquad
+ E_{B,0}-P_{B,0}=\frac15\beta^5+O(\beta^7).
+ \label{eq:dispcl}
+\end{equation}
+At fixed spectral coordinate, suppose locally away from the edge that
+$\overline P=P_0(p)+hP_1(p)+o(h)$ and
+$\overline E=E_0(p)+hE_1(p)+o(h)$. Inverting at fixed $P=P_0(p_0)$ gives
+\begin{equation}
+ p=p_0-h\frac{P_1(p_0)}{P'_0(p_0)}+o(h),\qquad
+ E(P)=E_0(p_0)+h\left[E_1(p_0)-\frac{E'_0(p_0)}{P'_0(p_0)}P_1(p_0)\right]+o(h).
+ \label{eq:fixedP}
+\end{equation}
+This is an exact formal chain-rule statement conditional on the expansions,
+not a uniform endpoint expansion. An $O(h)$ energy correction is the
+one-loop correction to the energy, whereas the one-loop \emph{phase} is
+$O(h^0)$ after division of an action by $h$.
+
+\paragraph{Independent numerical data \Lc\ (\ed, \an).}
+At $a=1$ the calculation supplies a useful finite-$y$ coefficient
+\begin{equation}
+ c_{E,h}(y)=\frac{\overline E(P_0(\sqrt{yh/b}))-E_0(\sqrt{yh/b})}{hP_0(\sqrt{yh/b})}.
+ \label{eq:ce}
+\end{equation}
+A finite extrapolated $c_E(y)$ would give
+$\overline E=E_0(P)+hP c_E(y)+o(hP)$ at fixed $y$.
+It contains the quantum crossover at that $y$; it is not itself a
+large-$y$ loop expansion. Table~\ref{tab:one} records the independent fits.
+In the inherited units \eqref{eq:units} its leading quantum contribution to
+bad-Boussinesq energy is $3\hbar_B P_B c_E(y)$ for $a=1$.
+\Ld\ This is a Toda-induced small-amplitude dispersion, not a comparison
+with a fully renormalized continuum energy operator. Quantum corrections to
+the identification of collective charges remain a separate question.
+
+
+\par
+\begin{table}[ht]\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{rrrrrrr}\toprule
+$y$ & $u-y$ & spread & $u\prime$ & spread & $c_E(y)$ & spread\\\midrule
+0.1 & -0.0763583 & $6.9\,10^{-9}$ & 0.3524490 & $9.6\,10^{-8}$ & 0.0725266 & $5.9\,10^{-9}$\\
+0.5 & -0.2505729 & $5.6\,10^{-8}$ & 0.7041319 & $1.3\,10^{-7}$ & 0.0601062 & $2.3\,10^{-8}$\\
+1 & -0.3574864 & $1.3\,10^{-7}$ & 0.8429770 & $1.8\,10^{-7}$ & 0.0559987 & $7.3\,10^{-8}$\\
+2 & -0.4663924 & $3.7\,10^{-7}$ & 0.9213452 & $2.8\,10^{-7}$ & 0.0543111 & $2.2\,10^{-7}$\\
+4 & -0.5757147 & $1.1\,10^{-6}$ & 0.9604744 & $4.4\,10^{-7}$ & 0.0536443 & $7.2\,10^{-7}$\\
+8 & -0.6854957 & $3.5\,10^{-6}$ & 0.9801739 & $7.5\,10^{-7}$ & 0.0533400 & $2.5\,10^{-6}$\\
+16 & -0.7955379 & $1.2\,10^{-5}$ & 0.9900702 & $1.3\,10^{-6}$ & 0.0531937 & $8.8\,10^{-6}$\\
+32 & -0.9057144 & $4.2\,10^{-5}$ & 0.9950310 & $2.4\,10^{-6}$ & 0.0531202 & $3.2\,10^{-5}$\\
+64 & -1.0159485 & $1.5\,10^{-4}$ & 0.9975150 & $4.2\,10^{-6}$ & 0.0530723 & $1.1\,10^{-4}$\\
+\bottomrule\end{tabular}
+\caption{Numerical edge extrapolations at fixed scaled dressed momentum (c). The spreads concern edge-fit models only. Maximum measured mesh differences across these rows are $5.1\,10^{-10}$ for $u-y$, $1.9\,10^{-11}$ for $u\prime$, and $4.7\,10^{-10}$ for $c_E$. Their propagated mesh diagnostics are at most fifteen times these values. No large-$y$ asymptotic coefficient is fitted here.}\label{tab:one}
+\end{table}
+\par
+
+
+\Lc\ At fixed, unscaled momenta the independent finite-$h$ extrapolation
+also reproduces the earlier dispersion estimates; Table~\ref{tab:fixed}
+reports the coefficient $[\overline E(P)-E_0(P)]/h$.
+The sound-velocity estimate is tabulated separately and is not silently
+removed by a quantum change of coordinates.
+
+\par
+\begin{table}[ht]\centering\small
+\begin{tabular}{rrrr}\toprule
+$P$ & $E_1(P)$ & edge-fit spread & mesh difference\\\midrule
+0.15 & 0.007775546 & $7.5\,10^{-8}$ & $8.9\,10^{-12}$\\
+0.4 & 0.020319171 & $3.7\,10^{-8}$ & $3.9\,10^{-11}$\\
+0.6 & 0.030098075 & $2.2\,10^{-8}$ & $7.1\,10^{-11}$\\
+\bottomrule\end{tabular}
+\caption{One-loop energy at fixed, unscaled physical momentum (c, numerical). These are finite-amplitude Toda results, not finite-amplitude Boussinesq predictions.}\label{tab:fixed}
+\end{table}
+\par
+
+\Lc\ The extrapolated $(v_s-b)/h$ is $0.0795774724$, with edge-fit spread $5.7\,10^{-9}$ and measured mesh difference $1.2\,10^{-11}$. This is a numerical estimate, not an independently proved closed form.
+
+\section{Endpoint responses: derivatives, not yet soliton charges}
+\paragraph{Response dictionary \Lc\ (\id, \ed).}
+Put $f_p^\pm=F_p(\pm q)-F_q(\pm q)$ and use the earlier audit's responses
+\begin{equation}
+ \mathfrak M_p=ta\rho(q)(f_p^+-f_p^-),\qquad
+ \mathfrak Q_p=\frac{f_p^++f_p^-}{2a\rho(q)}.
+\end{equation}
+The new energy identity turns these into directly measurable derivatives
+of the one-body Bethe dispersion:
+\begin{equation}
+ \boxed{\mathfrak M_p=-a[D(p)-D(q)],\qquad
+ \mathfrak Q_p=\frac{\overline P(p)-V(p)+V(q)}{2at\rho(q)\eta(q)}.}
+ \label{eq:responses}
+\end{equation}
+There is also a thermodynamic interpretation of the \emph{unsubtracted}
+sum. At fixed $h$ vary $q$ and let $n=1/a=\int\rho$. Differentiating the sea
+problem and using self-adjointness yields
+\begin{equation}
+ \partial_q n=2t\rho(q)^2,\qquad
+ \partial_qP(p)=t\rho(q)[F_p(q)+F_p(-q)],\qquad
+ -a\partial_a P(p)\big|_{p,h}=\frac{F_p(q)+F_p(-q)}{2a\rho(q)}.
+ \label{eq:pressure}
+\end{equation}
+Thus $\mathfrak Q$ is a difference of these fixed-bare-parameter pressure
+responses, with the second derivative evaluated at $p=q$ \emph{after}
+differentiation. It is not a derivative keeping $p-q$ fixed or following a
+fixed physical-momentum excitation. Those operations must not be conflated.
+The checks use independent finite differences in $q$ as well as endpoint
+identities, at 60 decimal digits.
+
+\Ld\ Equations \eqref{eq:responses}--\eqref{eq:pressure} do not identify
+$\mathfrak M$ with a quantum integrated compression or $\mathfrak Q$ with
+$P-\Pi$ in a chosen collective-coordinate Hilbert space. Their classical
+analogy alone is insufficient for that step.
+
+\section{Two-body references and the surviving mixed diagnostic}
+\paragraph{Exact decomposition \Lc\ (\id, \ed).}
+Keep the directional Bethe kernel
+\begin{equation}
+ \Phi(p,z)=\Theta(p-z)-\int K(p-x)F_z(x)\,\dd x .
+\end{equation}
+Its four-term right-edge reference is
+$\widehat\Phi(p,z)=\Phi(p,z)-\Phi(p,q)-\Phi(q,z)+\Phi(q,q)$.
+The old two-term reference is
+$N(p,z)=\Phi(p,z)-\Phi(p,q)=\widehat\Phi(p,z)+U(z)$ with
+$U(z)=\Phi(q,z)-\Phi(q,q)$. Thus switching these references adds a one-body
+function. The exact endpoint reciprocity identity becomes
+\begin{equation}
+ \widehat\Phi(p,z)+\widehat\Phi(z,p)
+ =t(f_p^+f_z^+-f_p^-f_z^-)
+ =\mathfrak M_p\mathfrak Q_z+\mathfrak M_z\mathfrak Q_p.
+ \label{eq:recip}
+\end{equation}
+Our independent implementation checks it against the directly solved phases,
+not only against another expression in the same response functions.
+One algebraically antisymmetric representative is
+\begin{equation}
+ B(p,z)=\widehat\Phi(p,z)-\mathfrak M_p\mathfrak Q_z.
+ \label{eq:B}
+\end{equation}
+\Ld\ We do not select $B/h$ as the physical scalar scattering phase.
+Antisymmetry is necessary for such a proposal, but is not its derivation.
+
+\paragraph{A reference-free numerical test \Lc\ (\ed, \an).}
+At the fixed dressed momenta of \eqref{eq:invert} define
+\begin{align}
+ C_{\rm cl}(y,z)&=-2\kappa_y[P_0(\kappa_z)-2b\sinh\kappa_z],\\
+ S_h(y,z)&=\frac{\mathfrak M_y\mathfrak Q_z+
+ \mathfrak M_z\mathfrak Q_y-C_{\rm cl}(y,z)-C_{\rm cl}(z,y)}h,\\
+ \mathcal D_h(Y)&=S_h(2Y,Y/2)-S_h(Y,Y/2)
+                    -S_h(2Y,Y/4)+S_h(Y,Y/4).
+ \label{eq:rectangle}
+\end{align}
+All calculations here use $a=1$ and the exact quantum $q$.
+Every additive one-body reference disappears from $\mathcal D_h$.
+Its values therefore test genuine mixed dependence in the retained
+classical frame, and the same rectangle is obtained from the two-term
+normalization. Table~\ref{tab:rect} gives the new extrapolation.
+
+\par
+\begin{table}[ht]\centering\small
+\begin{tabular}{rrrr}\toprule
+$Y$ & $\mathcal D_0(Y)$ estimate & edge-fit spread & mesh difference\\\midrule
+4 & -0.5043623 & $3.7\,10^{-4}$ & $6.0\,10^{-11}$\\
+8 & -0.4349827 & $1.3\,10^{-3}$ & $1.4\,10^{-10}$\\
+16 & -0.4087054 & $5.2\,10^{-3}$ & $2.4\,10^{-10}$\\
+32 & -0.3957520 & $2.2\,10^{-2}$ & $3.1\,10^{-10}$\\
+\bottomrule\end{tabular}
+\caption{Mixed rectangles of the classical-frame symmetric discrepancy (c, numerical). The two largest momenta are in ratio $2^{3/2}$ at leading edge order; all four corners use separately inverted dressed momenta.}\label{tab:rect}
+\end{table}
+\par
+
+\Lc\ Fitting these four edge estimates to $A+B/\sqrt Y$, $A+B/Y$, or $A+B/\sqrt Y+C/Y$ gives $A=-0.3276,-0.3774,-0.4034$, respectively. The fit-model range is about $0.0758$, separately from the tabulated edge-fit errors. These unconstrained fits suggest a nonzero mixed asymptote but do not establish it; no fit is selected as the physical one-loop prediction.
+
+\Lc\ These data support survival of the nonseparable discrepancy at fixed
+scaled physical momenta as $h\to0$, at the tested finite $Y$. This is stronger
+than the earlier single finite-$h$ counterexample. \Ld\ They do not prove a
+nonzero $Y\to\infty$ limit. Different large-$Y$ fit models are reported in
+the JSON; extrapolation of four moderately large values is not an asymptotic
+theorem. Nor does a symmetric directional-kernel discrepancy disprove an
+ordered forward amplitude: it constrains a proposed common scalar frame.
+
+\paragraph{Endpoint subtraction cannot be dropped.}
+\Lc\ In \eqref{eq:responses} the difference $D(p)-D(q)$ is essential.
+Replacing it by $D(p)$ does not compute the four-term phase. In particular,
+a formula for its symmetric part using only $u'(y)$ at the two external
+points, with no subtracted endpoint response, is not a consequence of
+\eqref{eq:recip}. The direct phase test in \ed\ retains both endpoints.
+\Ld\ No claimed Phase 2i symmetric-limit formula is used to extrapolate
+these data.
+
+\section{Why there is still no unique one-loop phase prediction}
+\paragraph{An explicit remaining freedom \Lc\ (\id, \an).}
+For $y_1,y_2>0$ and any real $\lambda$, define
+\begin{equation}
+ A_\lambda(y_1,y_2)=\lambda\frac{y_1y_2(y_1-y_2)}{(y_1+y_2)^3}.
+ \label{eq:ambiguity}
+\end{equation}
+It is antisymmetric, vanishes if either momentum label goes to zero with
+the other fixed, and has a nonzero mixed derivative. Replacing a candidate
+frame representative $B$ by $B+hA_\lambda$ changes no one-body momentum,
+energy, Jacobian, classical action limit, or symmetric reciprocity identity.
+Nevertheless it changes the phase at order $h^0$, with
+\begin{equation}
+ A_\lambda(Y,r^2Y)=\lambda\frac{r^2(1-r^2)}{(1+r^2)^3},\qquad 0<r<1,
+ \label{eq:ambiguitylimit}
+\end{equation}
+independently of $Y$. A mixed rectangle of this term is nonzero, so this
+freedom is not a one-body phase convention in disguise.
+This is a counterexample to \emph{uniqueness from the one-body and reciprocity
+constraints}; it is not a proposal to modify the microscopic Toda theory.
+
+\Ld\ The missing input is a microscopic derivation of the quantum canonical
+position/frame map (or equivalent two-particle quantization/delay condition)
+that fixes the antisymmetric part of the transformation to the continuum
+Darboux frame. It must identify the quantum compression and momentum charges
+including endpoint variations. Exact one-body dispersion, or imposing scalar
+antisymmetry, does not supply it. Deriving that input, together with a uniform
+large-$Y$ edge analysis, is required before a continuum one-loop calculation
+can be assigned a unique mandatory Toda target.
+
+Consequently no number or table in this note is advertised as the requested
+physical two-soliton one-loop phase. \Ld\ A continuum calculation using the
+same inherited coordinates can compare to the one-body dispersion and must
+respect the exact momentum Jacobian; its full phase cannot yet be tested
+against a uniquely fixed scalar target. This is the precise obstruction in
+this partial result.
+
+\section{Limits and the conditional continuum comparison}
+\paragraph{What commutes and what is not established.}
+\Lc\ At finite $h$, within a smooth invertible sea problem with $D>0$, inversion
+from $p$ to $P$ is a regular coordinate change: the chain rules above and
+endpoint referencing can be performed exactly in either coordinate.
+In the displayed ambiguity example, $h\to0$ and $Y\to\infty$ commute at
+fixed $r$, since \eqref{eq:ambiguitylimit} is independent of both.
+That observation is \emph{only} about the counterexample.
+\Ld\ Commutation of $h\to0$ and $Y\to\infty$ for the full physical phase
+has not been established. At fixed $h$, $Y\to\infty$ exits the small-amplitude
+corner, since $\kappa^2=hY/b$; a simultaneous small-amplitude limit needs
+$hY/b\to0$. Taking $Y\to\infty$ first is not the same continuum procedure.
+\Lc\ Likewise $r\to0$ at fixed $Y$ takes the smaller excitation to its edge,
+whereas a semiclassical expansion of both excitations requires $r^2Y\gg1$.
+Equal amplitudes require separate analysis: the classical logarithm
+$\log[(1-r)/(1+r)]$ is singular and the spectral separation need not be large
+when $(1-r^2)Y$ is small. These facts obstruct a uniform termwise expansion;
+they are not proofs that the exact physical amplitudes have unequal iterated
+limits. \Ld\ The actual phase limit-commutation questions at $r=0,1$ remain
+open in this work, including the head-on channel.
+
+\paragraph{Comparison with \texttt{oneloop\_phase.tex}.}
+\Lc\ Conditional on that note's mode-sum momentum shift,
+$\Delta P_g=\epsilon\alpha(\log\alpha+c)/\pi+O(\alpha^3\log\alpha)$,
+$c=-\log2-1+\frac14\log3$, the leading relative shift is
+\begin{equation}
+ \frac{\hbar_B\Delta P_g}{P_{g,0}}
+ =\frac{3}{2\pi y}(\log\alpha+c)+\cdots,\qquad y=\alpha^2/\hbar_B .
+ \label{eq:nonuniform}
+\end{equation}
+The algebra is independently checked in \id. The expansion is nonuniform
+in the fixed-$y$ edge limit; it requires $y\gg|\log\alpha|$.
+The master report also makes the physical one-loop determinant, endpoint
+domain, and normalization conditional. \Ld\ Neither reversing the overtaking
+ordering nor replacing that momentum shift by the proposed collective one
+proves a common quantum dictionary. We therefore do not claim agreement or
+inequivalence with the continuum phase integrals. No new regularization or
+absolute phase convention is selected.
+
+\section{Verification, error budget, and failures recorded}
+\paragraph{Numerical protocol \Lc.}
+\ed\ is a fresh finite-sea Nystr\"om implementation using SciPy digamma and
+log-gamma functions, independent of the old solver classes. It solves the
+count equation at fixed $a=1$ and uses LU reuse for backflow. The base meshes
+are $N=325,450,700,1200,2200$ at $h=.08,.04,.02,.01,.005$;
+refinements have $N=1620$ at $.01$ and $2750$ at $.005$.
+The classical momentum target is inverted before every energy or phase
+measurement. No result is obtained by fitting to a proposed target function.
+\id\ independently uses mpmath at 60 digits, $N=40,64$, $h=.4$, $q=1.5$,
+and determines $a$ from counting. It tests energy and momentum derivatives,
+endpoint identities, parity samples, and pressure responses with symmetric
+$q$ differences of step $10^{-10}$. Maximum tested errors are approximately
+$1.31\times10^{-9}$ and $4.62\times10^{-15}$, respectively; quadrature and
+finite-difference errors, not decimal precision, limit these tests.
+
+The central edge fit is quadratic through the last three $h$ values.
+The extrapolation spread is the maximum difference from a last-two linear
+fit, a last-four cubic fit, and a last-four fit in $1,h,h^2,h\log h$.
+The mesh column is the largest observed refined-minus-base difference at
+$.01$ or $.005$. The JSON also multiplies this by the largest $\ell^1$
+norm of the extrapolation weights as a conservative diagnostic of amplification.
+None of these is a rigorous confidence interval or bound on omitted terms.
+Large-$Y$ fit-model spread is separate from edge-extrapolation spread.
+There is no assigned numerical error bar for the unknown physical frame.
+
+\paragraph{Phase 2i use policy.}
+\Lc\ The only checked Phase 2i formula used for a diagnostic is the product
+of its printed factors. Direct 60-digit Gamma-function evaluation at
+$|\omega|=.2,1,3$ gives
+\begin{equation}
+ \Phi_{\rm WH}(i\omega)\Phi_{\rm WH}(-i\omega)
+ =\frac{\pi e^{|\omega|/2}}{\sinh(|\omega|/2)}
+\end{equation}
+to better than $10^{-55}$, and disagrees with its printed Fourier symbol.
+This verifies a factor product only; zero-frequency distributional issues,
+the half-line inverse, $c_{\rm edge},d_0,e_0$, Krein convolution, and $c_1(r)$
+are not adopted. The new numerical dispersion and remainder data do not use
+any of those formulas.
+
+\begin{center}\small
+\begin{tabular}{p{.48\linewidth}cp{.35\linewidth}}
+\toprule Claim & Label & Check or limitation\\\midrule
+Exact energy/backflow identity and velocity & (c) & \id; independent \ed\\
+Physical-momentum inversion and quantum Jacobian & (c) & symbolic chain rule; direct solve\\
+Pressure interpretation of endpoint responses & (c) & 60-digit finite differences\\
+One-body fixed-$P$ energy and finite-$y$ tables & (c) & mesh and extrapolation diagnostics\\
+Nonzero mixed edge remainder at tested $Y$ & (c) & direct reciprocity and rectangles\\
+Remaining antisymmetric freedom & (c) & symbolic counterexample; mixed rectangle\\
+Unique scalar one-loop phase; full commuting limits & (d) & not established\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The hoped-for disappearance of the classical-frame mixed remainder
+under the physical-momentum inversion is not supported by the new edge
+scan. This negative result is retained, not removed by redefining a reference.
+\item The printed Phase 2i Fourier symbol fails the independent factor-product
+check. No other Phase 2i result is promoted to an input on that basis.
+\item The attempted determination of a unique scalar one-loop target fails:
+\eqref{eq:ambiguity} preserves all imposed one-body and reciprocity constraints
+but changes that target. This is an obstruction of the stated derivation,
+not a proof that a microscopic answer does not exist.
+\item Large-$Y$ extrapolation and the endpoint limits are unresolved; the
+numerical error diagnostics must not be presented as a proof of a constant
+asymptote or of commutation of exact limits.
+\item The first LaTeX build failed because its temporary output directory had not yet been created (no log file could be opened). Creating that directory fixed the build setup; this was not a sandbox rejection. The first successful layout also had two overlong displayed equations; both were split before the final rendering. One render was started while a rebuild was still writing the PDF and failed with an empty-stream error; it was repeated after the build completed.
+\item No numerical assertion tolerance was weakened. No existing project
+script or document was modified. The full historical suite was not rerun:
+these deliverables contain independent checks, and no prior implementation
+is changed or newly certified.
+\end{enumerate}
+
+\paragraph{Reproduction.}
+Run with one BLAS thread from \texttt{phase2/scripts/}:
+\begin{verbatim}
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 frame_edge.py --recompute
+python3 frame_identities.py
+python3 frame_analysis.py
+\end{verbatim}
+Without \texttt{--recompute}, the edge script validates its saved JSON.
+Every completed checker ends with \texttt{ALL CHECKS PASSED}; this certifies
+its explicitly stated identities and diagnostics, not the unresolved physical
+identifications. SHA-256 provenance and raw timings are saved in the JSON
+outputs. Build from \texttt{phase2/} with \texttt{pdflatex} twice.
+The recorded full edge scan takes about 326 seconds, the high-precision identity run about 178 seconds, and the cached analysis under one second on this machine. A complete regeneration is therefore about eight and a half minutes; cached edge validation avoids the dense solves.
+\end{document}
