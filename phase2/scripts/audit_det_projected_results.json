@@ -1,0 +1,182 @@
+{
+  "precision_dps": 70,
+  "package_files": {
+    "phase2/det_projected_oneloop.tex": "10e6f1bf47cf69460cfb0242b3d5776f8f65cb39130569922ea0aea5d3779b0f",
+    "phase2/scripts/det_geometry.py": "89dee08558ea8e414b73bbabd3553df84948a293bdb70f023f2c2006866014df",
+    "phase2/scripts/det_spectrum.py": "0e8ef3cd07eff782a05e4145009c6230a71b804de9f85045166c0b0d61e89dc2",
+    "phase2/scripts/det_charges.py": "b8bb3f07912cf3381bdf81bfcd70a351214d86eb74dd12d26dfe47efad2df111",
+    "phase2/scripts/det_geometry_results.json": "f141096a7a1e747b922c6aa83577dc8095b242b89bb7048653ab164193bedece",
+    "phase2/scripts/det_spectrum_results.json": "0ed262e79b4c8c159d8fde868c7ae203a3b485b53252c42eae792e1152ad76e8",
+    "phase2/scripts/det_charges_results.json": "41b49759f29db409cf5c56fa836769e8c4f13414d2a699d4516952927f9fb851"
+  },
+  "findings": [
+    "Operator D_v, K_v = -d_xi H_v d_xi, Green concomitant B_v, boundary form, and bounded static kernel {1, u_0} confirmed by exact symbolic derivation.",
+    "Field-space projector tail formula (P eta)_phi(+-oo) = b_r +- (v/(k P_v)) b_X derived and checked; det_projected_oneloop.tex line 297 attributed this to det_geometry.py, which only tested an abstract 6x6 matrix."
+  ],
+  "prior_claim_failures_confirmed": [
+    "Confirmed heavy-mode shorthand error in oneloop_phase.tex line 221: pairing f_-^(sp) with -eps*gamma gives nonzero residual |4*cos(alpha)*gamma*(f_-^(sp))'(xi)| = 0.00733252608902684591052563782082469787883147921580161712443113 at alpha=1.2, xi=0.37."
+  ],
+  "script_circularities_detected": [
+    "det_geometry.py lines 26 and 33 repeat the tautology d_x(-u+3u^2+u_xx) = -u_x+6uu_x+u_xxx without testing the first-variation boundary form [A delta_phi - u_x delta_phi_x] or [pi].",
+    "det_spectrum.py lines 19-20 compare (-I*om)^2*f + 2*I*v*om*f' + v^2*f'' against -om^2*f + 2*I*v*om*f' + v^2*f'' without differentiating exp(-I*om*t)*f(x-v*t).",
+    "det_charges.py line 24 asserts (v*dp - l) - v*dp + l == 0, and line 63 repeats the same tautology numerically for (v*p_can - L_1) - v*p_can == -L_1.",
+    "det_charges.py line 27 defines label_phase = d0 + g1*(-dp1) + g2*(-dp2) and asserts it equals d0 - dp1*g1 - dp2*g2 without expanding delta_0(P_1, P_2).",
+    "det_charges.py lines 80-85 use numerical mp.diff at 0 while the text claims analytic differentiation; replaced here by exact symbolic SymPy series expansion."
+  ],
+  "geometry_checks": [
+    {
+      "v": "0.8",
+      "max_W4_quad_error": "1.83518581795756948289459977085e-77",
+      "norm_constant_error": "8.11388845462873428128817088464e-69"
+    },
+    {
+      "v": "-0.7",
+      "max_W4_quad_error": "1.30175386758133990282943589807e-71",
+      "norm_constant_error": "2.55370150022913288763757164003e-69"
+    },
+    {
+      "v": "0.3",
+      "max_W4_quad_error": "3.62227163153068494700364771636e-71",
+      "norm_constant_error": "1.40363025721814041696391349009e-70"
+    },
+    {
+      "v": "0.6",
+      "max_W4_quad_error": "1.81113581576534247350182385818e-71",
+      "norm_constant_error": "2.26391976970667809187727982272e-70"
+    },
+    {
+      "v": "-0.4",
+      "max_W4_quad_error": "4.52783953941335618375455964544e-72",
+      "norm_constant_error": "2.26391976970667809187727982272e-71"
+    }
+  ],
+  "spectrum_checks": [
+    {
+      "alpha": "1.1",
+      "epsilon": 1,
+      "correct_pair_residual": "6.19040562029169790747693701526e-73",
+      "shorthand_wrong_rate_residual": "0.00139720952099358777054640223735676375407514864020810330934363",
+      "analytic_discrepancy_match": "3.537374640166684518558249723e-74"
+    },
+    {
+      "alpha": "1.1",
+      "epsilon": -1,
+      "correct_pair_residual": "6.19040562029169790747693701526e-73",
+      "shorthand_wrong_rate_residual": "0.00139720952099358777054640223735676375407514864020810330934363",
+      "analytic_discrepancy_match": "3.537374640166684518558249723e-74"
+    },
+    {
+      "alpha": "1.2",
+      "epsilon": 1,
+      "correct_pair_residual": "2.19317227690334440150611482826e-72",
+      "shorthand_wrong_rate_residual": "0.00733252608902684591052563782082469787883147921580161712443111",
+      "analytic_discrepancy_match": "2.19317227690334440150611482826e-72"
+    },
+    {
+      "alpha": "1.2",
+      "epsilon": -1,
+      "correct_pair_residual": "2.19317227690334440150611482826e-72",
+      "shorthand_wrong_rate_residual": "0.00733252608902684591052563782082469787883147921580161712443111",
+      "analytic_discrepancy_match": "2.19317227690334440150611482826e-72"
+    },
+    {
+      "alpha": "1.35",
+      "epsilon": 1,
+      "correct_pair_residual": "4.2448495682000214222698996676e-73",
+      "shorthand_wrong_rate_residual": "0.0216244912873094677064003880146090044941648406357791979879774",
+      "analytic_discrepancy_match": "2.8298997121333476148465997784e-73"
+    },
+    {
+      "alpha": "1.35",
+      "epsilon": -1,
+      "correct_pair_residual": "4.2448495682000214222698996676e-73",
+      "shorthand_wrong_rate_residual": "0.0216244912873094677064003880146090044941648406357791979879774",
+      "analytic_discrepancy_match": "2.8298997121333476148465997784e-73"
+    }
+  ],
+  "charge_checks": [
+    {
+      "alpha": "0.15",
+      "p_mode_plus": "-0.157387066429279990391638003665",
+      "p_can_plus": "-0.190035364892326785252980676357",
+      "E1_at_P": "-0.00142490244096877688099786309521",
+      "cutoff_1e22_raw_error": "3.56757262043922006939767994404e-24",
+      "cutoff_1e22_analytic_3sin_4piLam": "3.56757262043922006939767994404e-24",
+      "cutoff_1e22_richardson_error": "2.42534993691007788607456014663e-69"
+    },
+    {
+      "alpha": "0.35",
+      "p_mode_plus": "-0.265196583086378622006588879984",
+      "p_can_plus": "-0.433826858902481881202361248271",
+      "E1_at_P": "-0.0176873519106751014790678820551",
+      "cutoff_1e22_raw_error": "8.18608215478620655051232936397e-24",
+      "cutoff_1e22_analytic_3sin_4piLam": "8.18608215478620655051232936397e-24",
+      "cutoff_1e22_richardson_error": "7.29623593014626742032491404635e-69"
+    },
+    {
+      "alpha": "0.5",
+      "p_mode_plus": "-0.309798364829473380706756657483",
+      "p_can_plus": "-0.603389892153812490245666281831",
+      "E1_at_P": "-0.0500914989922958554219332251182",
+      "cutoff_1e22_raw_error": "1.14454416470029798372702957873e-23",
+      "cutoff_1e22_analytic_3sin_4piLam": "1.14454416470029798372702957873e-23",
+      "cutoff_1e22_richardson_error": "1.25208683080609164118897662824e-68"
+    },
+    {
+      "alpha": "0.85",
+      "p_mode_plus": "-0.311827472658891913871060883189",
+      "p_can_plus": "-0.962723079254963412922425240214",
+      "E1_at_P": "-0.223358039968531983437258558518",
+      "cutoff_1e22_raw_error": "1.79354985189239035785608871027e-23",
+      "cutoff_1e22_analytic_3sin_4piLam": "1.79354985189239035785608871027e-23",
+      "cutoff_1e22_richardson_error": "2.50901602807184195867231527853e-68"
+    }
+  ],
+  "small_amplitude_extrapolation": {
+    "target_minus_2_over_pi": "-0.6366197723675813430755350534900574481378",
+    "richardson_extrapolated": "-0.6366197723675813430755350534900574481378",
+    "extrapolation_error": "1.4651480677514115580188880329e-45",
+    "subleading_alpha2_coeff_exact": "-0.488075158815145696357910207676"
+  },
+  "implementation_failures": [
+    "Initial mental-arithmetic value 6/(7*k) for int w^2 dxi failed exact symbolic integration; corrected to (6 - 12 + 45/7)*k = 3*k/7.",
+    "Expanding the even integrand sin(a)*p_can(a) with sp.series(..., a, 0, 7) kept the a^6 term, producing an a^7 term upon integration; truncating the integrand to O(a^6) matched the O(a^7) series for E_1|_P.",
+    "Initial asymptotic coefficient for the finite-cutoff remainder omitted the -3*sin(a)/(4*pi*Lam) term from sqrt(1+Lam^2)-Lam in raw(Lam), giving 9*sin(a)/(8*pi*Lam) instead of (-3/8 + 12/8 - 3/8)*sin(a)/(pi*Lam) = 3*sin(a)/(4*pi*Lam); corrected without weakening the 1e-64 tolerance.",
+    "3-point Richardson extrapolation at alpha in {1e-4, 5e-5, 2.5e-5} had O(a1^2 a2^2 a3^2) ~ 1.56e-26 > 1e-28; upgraded to 4-point extrapolation at alpha_k = 1e-5 / 2^k and tightened the tolerance to 1e-40."
+  ],
+  "phase_checks": [
+    {
+      "e1": 1,
+      "e2": 1,
+      "I12": "-1.17808997452653372255457683815",
+      "I21": "-1.96350267906325951590806654513",
+      "J12": "0.392706352268362896676744853491",
+      "quad_vs_dilog_error": "0.0"
+    },
+    {
+      "e1": 1,
+      "e2": -1,
+      "I12": "0.40854224129136417307607587653",
+      "I21": "-0.40854224129136417307607587653",
+      "J12": "0.40854224129136417307607587653",
+      "quad_vs_dilog_error": "1.35835186182400685512636789363e-71"
+    },
+    {
+      "e1": -1,
+      "e2": 1,
+      "I12": "-0.40854224129136417307607587653",
+      "I21": "0.40854224129136417307607587653",
+      "J12": "-0.40854224129136417307607587653",
+      "quad_vs_dilog_error": "1.35835186182400685512636789363e-71"
+    },
+    {
+      "e1": -1,
+      "e2": -1,
+      "I12": "1.17808997452653372255457683815",
+      "I21": "1.96350267906325951590806654513",
+      "J12": "-0.392706352268362896676744853491",
+      "quad_vs_dilog_error": "0.0"
+    }
+  ],
+  "runtime_seconds": 68.631093117001
+}

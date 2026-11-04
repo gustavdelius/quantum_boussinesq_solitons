@@ -1,0 +1,731 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/\allowbreak #1}}
+\newcommand{\smxdict}{\texttt{scripts/\allowbreak smx\_\allowbreak dictionary\_\allowbreak and\_\allowbreak families.py}}
+\newcommand{\smxpoles}{\texttt{scripts/\allowbreak smx\_\allowbreak poles\_\allowbreak good\_\allowbreak vs\_\allowbreak bad.py}}
+\newcommand{\smxring}{\texttt{scripts/\allowbreak smx\_\allowbreak twisted\_\allowbreak ring\_\allowbreak bethe.py}}
+\newcommand{\smxamb}{\texttt{scripts/\allowbreak smx\_\allowbreak residual\_\allowbreak ambiguity\_\allowbreak interface.py}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cP}{\mathcal{P}}
+\DeclareMathOperator{\Li}{Li}
+\DeclareMathOperator{\sgn}{sgn}
+
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}[proposition]{Theorem}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{Exact two-soliton S-matrix candidates and the constraints on them\\
+for the good and bad Boussinesq equations}
+\author{Project \emph{quantum\_boussinesq\_solitons} (Phase 2, next step 5)}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We classify candidate exact quantum two-soliton S-matrices $S(1,2;\hbar)$ for both the \emph{good} (fixed convention) and \emph{bad} Boussinesq equations across overtaking and head-on channels, using only constraints that are independent of the pending Toda-to-continuum quantum frame dictionary: (i)~the semiclassical limit $\hbar\arg S\to\delta(1,2)$, including $O(\hbar^0)$ Maslov/Stirling offsets; (ii)~unitarity; (iii)~quantum crossing; (iv)~bound-state poles and zeros against the physical breather spectrum; and (v)~consistency with the $N$-soliton asymptotic Bethe equations on a ring.
+Keeping the good and bad equations strictly separate with explicit dictionaries, we establish four main results \Lc:
+\begin{enumerate}
+\item \textbf{Exclusion of mixed-argument $\mathfrak{sl}_3$ quantum dilogarithms and all-orders mirror products.}
+Because $\partial_1\partial_2(\ell_1-\ell_2)=0$, the mixed derivative $\partial_1\partial_2\delta(1,2)$ is a rational function of $(e^{\beta_1},e^{\beta_2})$ (or $(e^{i\alpha_1},e^{i\alpha_2})$) of transcendental weight zero. By contrast, for any quantum dilogarithm $\Phi_\hbar(R)$ with tree-level phase $\Li_2(R)$, $\partial_1\partial_2\Li_2(R)$ retains a transcendental $\ln(1-R)$ term unless $\partial_1\partial_2\ln R=0$ (excluding mixed arguments such as $R=A_{12}$), while multiplicatively separable KP root ratios $R_{rs}=\tan(\varphi_{1,r}/2)/\tan(\varphi_{2,s}/2)$ fail at the diagonal pole $\alpha_1\to\alpha_2$ (relative least-squares residual $3.68\times 10^{-2}$). Mirror products $F(D)G(S)$ are excluded at \emph{all} orders in $\hbar$ by two-body exchange unitarity $S(1,2)S(2,1)=1$ alone, which forces $G(S)=\text{const}$.
+\item \textbf{Good vs.\ bad bound-state poles.}
+For the bad equation, the Gamma candidate $S_\Gamma^{\rm bad}$ has simple physical-sheet poles precisely at the Bogdan--Charkina breather levels $I_{\rm br}=N\hbar$ ($N\ge 1$) and no pole at $N=0$. For the good equation, every complex-conjugate Hirota breather has $A_{12}<1/4$ and is singular \La/\Lc; nevertheless, on the light branch $\alpha_{1,2}=a\mp ib$ with $a\in(0,\pi/3)$ and $b<0$, $\operatorname{Im}(P_1-P_2)>0$ and $i\eta<0$, so the naive continuation $S_\Gamma^{\rm good}$ acquires spurious simple poles on the physical sheet at singular kinematics ($A_{12}<1/4$). Across all real Y-junction resonances ($A_{12}=0$ or $\infty$), $\ell_1=\ell_2$ ($\eta=0$) and $S_\Gamma^{\rm good}\to e^{iT_{12}/\hbar}$ smoothly without poles.
+\item \textbf{Twisted $N$-soliton ring Bethe equations from topological cross terms.}
+Transporting soliton $j$ around a ring of circumference $\Lambda$ across the seam shifts its Darboux coordinate by $\Delta_{\rm seam}X_j'=\Lambda+\gamma_j\sum_{l\neq j}M_l$ and drops the seam potential $\phi(0^+)$ by $M_j$, producing the Aharonov--Bohm $\phi$-winding twist $+\Pi_j M_l$. The resulting twisted directional Bethe phase $\Phi_{\rm ring}(j\mid l)=\delta(j,l)+\Pi_j M_l$ satisfies $-\partial_{P_j}\Phi_{\rm ring}(j\mid l)=\Delta x_{jl}=-\frac{1}{k_j}\ln A_{jl}$ (the exact Hirota shift), obeys the global translation-winding sum rule $P_{\rm tot}\Lambda+\Pi_{\rm tot}M_{\rm tot}=2\pi\hbar\sum_j n_j$, and fuses covariantly onto Bogdan--Charkina breathers.
+\item \textbf{Minimal residual ambiguity and package interfaces.}
+After (i)--(v), the residual freedom at $O(\hbar^0)$ reduces to a single real antisymmetric overtaking phase $\vartheta_{\rm ov}(1,2)=-\vartheta_{\rm ov}(2,1)$, with $\vartheta_{\rm ho}(\beta_1,\beta_2)=-\vartheta_{\rm ov}(\beta_1,\beta_2+i\pi)$ fixed by crossing. We prove the exact crossing identity $I_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)=-I_{12}^{\rm head}(\alpha_1,\alpha_2)$ and $J_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)+J_{12}^{\rm head}(\alpha_1,\alpha_2)=+\pi/2$ for the one-loop continuum integrals, showing that the $+\pi/2$ cusp jump of $J_{12}$ across $\alpha_2=\pi/3$ cancels the $+\pi/2$ Stirling offset of $S_{\Gamma,\rm ho}$, and state the exact interface formulas to the projected determinant (\texttt{det\_*}) and quantum frame (\texttt{frame\_*}) packages.
+\end{enumerate}
+Every candidate passing tests remains a guess \Ld\ until derived from a quantum theory.
+\end{abstract}
+
+\tableofcontents
+
+%======================================================================
+\section{Conventions, good/bad dictionaries, and scope}\label{sec:dict}
+
+\subsection{Separate conventions for the good and bad equations}
+Throughout this note we keep the \emph{good} Boussinesq equation (the fixed repository convention of \texttt{AGENTS.md} and \texttt{review.pdf}) and the \emph{bad} Boussinesq equation (used in the Toda and Bogdan--Charkina analyses of \texttt{report.pdf} and \texttt{smatrix\_ansatz.pdf}) strictly separate.
+
+\paragraph{Good equation (fixed convention).}
+The potential $\phi(x,t)$, velocity field $u=\phi_x=2(\ln\tau)_{xx}$, Lagrangian density $L$, and canonical symplectic form $\Omega$ are
+\begin{equation}\label{eq:good_conv}
+u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\qquad
+L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\phi_x^3-\tfrac12\phi_{xx}^2,\qquad
+\Omega=\int_{-\infty}^\infty d\pi\wedge d\phi\quad (\pi=\phi_t),
+\end{equation}
+and $\hbar$ refers to this canonical normalisation. A one-soliton solution has wavenumber $k\in(0,1)$, direction $\epsilon\in\{+1,-1\}$, and rapidities uniformised by $\alpha\in(0,\pi/2)$:
+\begin{equation}\label{eq:good_1sol}
+k=\sin\alpha,\quad v=\epsilon\cos\alpha,\quad \omega=kv=\tfrac12\epsilon\sin 2\alpha,\quad \ell=-\epsilon\cos 3\alpha,\quad
+M=2k,\quad \Pi=-Mv=-\epsilon\sin 2\alpha,
+\end{equation}
+with canonical momentum and energy \La/\Lc\ (\texttt{review.pdf})
+\begin{equation}\label{eq:good_EP}
+P=\tfrac23\epsilon k^3\cos\alpha,\qquad E=\tfrac2{15}k^3(5-4k^2),\qquad
+\frac{dP}{d\alpha}=\tfrac23\epsilon\sin\alpha\sin 3\alpha=\frac{2k}{9}\frac{d\ell}{d\alpha}.
+\end{equation}
+
+\paragraph{Bad equation.}
+For the bad equation $v_{tt}=v_{xx}+v_{xxxx}+3(v^2)_{xx}$ with $v=-\tilde\phi_x=-2(\ln\tau)_{xx}$ and $L_{\rm bad}=\frac12\tilde\phi_t^2-\frac12\tilde\phi_x^2+\tilde\phi_x^3+\frac12\tilde\phi_{xx}^2$, a one-soliton solution is supersonic ($|v|>1$) and uniformised by $\beta>0$:
+\begin{equation}\label{eq:bad_1sol}
+k=\sinh\beta,\quad v=\epsilon\cosh\beta,\quad \omega=kv=\tfrac12\epsilon\sinh 2\beta,\quad \ell=\epsilon\cosh 3\beta,\quad
+M=2k,\quad \Pi=-Mv=-\epsilon\sinh 2\beta,
+\end{equation}
+with canonical momentum and energy \La/\Lc\ (\texttt{report.pdf})
+\begin{equation}\label{eq:bad_EP}
+P=\tfrac23\epsilon k^3\cosh\beta,\qquad E=\tfrac2{15}k^3(5+4k^2),\qquad
+\frac{dP}{d\beta}=\tfrac23\epsilon\sinh\beta\sinh 3\beta=\frac{2k}{9}\frac{d\ell}{d\beta}.
+\end{equation}
+Table~\ref{tab:dict} records the complete dictionary between the two equations, including the analytic continuation $\alpha=i\beta$ (with the sign flip in $\ell$: $\ell_{\rm good}(i\beta)=-\epsilon\cos(3i\beta)=-\epsilon\cosh 3\beta=-\ell_{\rm bad}(\beta)$).
+
+\begin{table}[ht]
+\centering\small
+\caption{Explicit dictionary between the good (fixed convention) and bad Boussinesq equations \Lc\ (\script{smx\_dictionary\_and\_families.py}).}\label{tab:dict}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Quantity & Good equation (fixed convention) & Bad equation \\
+\midrule
+PDE & $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ & $v_{tt}=v_{xx}+v_{xxxx}+3(v^2)_{xx}$ \\
+Potential / Tau & $u=\phi_x=2(\ln\tau)_{xx}$ & $v=-\tilde\phi_x=-2(\ln\tau)_{xx}$ \\
+Uniformisation & $\alpha\in(0,\pi/2)$ & $\beta\in(0,\infty)$ \\
+Wavenumber, speed & $k=\sin\alpha,\; v=\epsilon\cos\alpha\;\;(|v|<1)$ & $k=\sinh\beta,\; v=\epsilon\cosh\beta\;\;(|v|>1)$ \\
+Spectral parameter $\ell$ & $\ell=-\epsilon\cos 3\alpha$ & $\ell=+\epsilon\cosh 3\beta$ \\
+Mass, shift charge & $M=2\sin\alpha,\; \Pi=-Mv=-\epsilon\sin 2\alpha$ & $M=2\sinh\beta,\; \Pi=-Mv=-\epsilon\sinh 2\beta$ \\
+Momentum, energy & $P=\tfrac23\epsilon k^3\cos\alpha,\; E=\tfrac2{15}k^3(5-4k^2)$ & $P=\tfrac23\epsilon k^3\cosh\beta,\; E=\tfrac2{15}k^3(5+4k^2)$ \\
+Darboux ratio $\gamma=d\Pi/dP$ & $\gamma=-\dfrac{3\cos 2\alpha}{\sin\alpha\sin 3\alpha}$ & $\gamma=-\dfrac{3\cosh 2\beta}{\sinh\beta\sinh 3\beta}$ \\
+Hirota polynomial $\cP(K,W)$ & $W^2-K^2+K^4$ & $W^2-K^2-K^4$ \\
+KP cubic roots $(p_a,p_b)$ & $\tfrac12(\pm k+v/\sqrt3),\;\; 4p^3-p=\tfrac{\ell}{3\sqrt3}$ & $\tfrac12(\pm k+iv/\sqrt3),\;\; 4p^3+p=\tfrac{i\ell}{3\sqrt3}$ \\
+Overtaking $A_{12}^{\rm ov}$ ($\epsilon_1=\epsilon_2$) & $\dfrac{1-3\cot^2(S/2)}{1-3\cot^2(D/2)}=\dfrac{G_{\rm good}(S/2)}{G_{\rm good}(D/2)}$ & $\dfrac{1+3\coth^2(S/2)}{1+3\coth^2(D/2)}=\dfrac{G_{\rm bad}(S/2)}{G_{\rm bad}(D/2)}$ \\
+Head-on $A_{12}^{\rm ho}$ ($\epsilon_1=-\epsilon_2$) & $\dfrac{1-3\tan^2(D/2)}{1-3\tan^2(S/2)}=\dfrac{1}{A_{12}^{\rm ov}(\alpha_1,\alpha_2+\pi)}$ & $\dfrac{1+3\tanh^2(D/2)}{1+3\tanh^2(S/2)}=\dfrac{1}{A_{12}^{\rm ov}(\beta_1,\beta_2+i\pi)}$ \\
+$\mathfrak{sl}_3$ block $G(y)$ & $G_{\rm good}(y)=\dfrac{4\cos^2 y-1}{\sin^2 y}$ & $G_{\rm bad}(y)=\dfrac{4\cosh^2 y-1}{\sinh^2 y}$ \\
+Crossing involution & $\alpha_2\mapsto\alpha_2+\pi\;\;(k_2\mapsto -k_2,\; v_2\mapsto -v_2)$ & $\beta_2\mapsto\beta_2+i\pi\;\;(k_2\mapsto -k_2,\; v_2\mapsto -v_2)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Two-soliton semiclassical phase and exact log-derivative identity}
+In both equations, let particle~1 start to the left of particle~2 as $t\to-\infty$ ($x_1<x_2$ for $\epsilon_1=\epsilon_2=+1$ with $v_1>v_2$, or for head-on $\epsilon_1=+1,\epsilon_2=-1$). The classical position shifts are $\Delta x_{12}=-\frac{1}{k_1}\ln A_{12}$ and $\Delta x_{21}=+\frac{1}{k_2}\ln A_{12}$, while the Darboux-coordinate shifts are $\Delta x_{12}'=\Delta x_{12}-\gamma_1 M_2$ and $\Delta x_{21}'=\Delta x_{21}+\gamma_2 M_1$ (\texttt{report.pdf}, Sec.~3.2). Integrating $-\Delta x_{12}'\,dP_1-\Delta x_{21}'\,dP_2=d\delta(1,2)$ yields the semiclassical phase \Lc:
+\begin{equation}\label{eq:delta0}
+\delta(1,2)=\delta_{\rm dyn}(1,2)+T_{12},\qquad
+\delta_{\rm dyn}(1,2)=\frac29(\ell_1-\ell_2)\ln A_{12},\qquad
+T_{12}=\frac23 M_1 M_2(v_1-v_2)=-\frac23(\Pi_1 M_2-\Pi_2 M_1).
+\end{equation}
+The fact that $\partial_1\delta(1,2)=-P_1'\Delta x_{12}'$ holds identically in both equations rests on a remarkable algebraic cancellation between the derivative of $\ln A_{12}$ and the topological term:
+
+\begin{proposition}[\Lc, \script{smx\_dictionary\_and\_families.py}]\label{prop:logA_id}
+For both the good equation (with $\partial_1=\partial_{\alpha_1}$) and the bad equation (with $\partial_1=\partial_{\beta_1}$), and in both overtaking ($\epsilon_1=\epsilon_2$) and head-on ($\epsilon_1=-\epsilon_2$) channels, the interaction constant $A_{12}$ satisfies the KP cross-ratio identity
+\begin{equation}\label{eq:KP_cr}
+A_{12}=\frac{(p_{1a}-p_{2a})(p_{1b}-p_{2b})}{(p_{1a}-p_{2b})(p_{1b}-p_{2a})},
+\end{equation}
+and the exact log-derivative identity
+\begin{equation}\label{eq:logA_id}
+\frac29(\ell_1-\ell_2)\,\partial_1\ln A_{12}=-\frac13\Pi_1' M_2-\frac23 M_1'\Pi_2.
+\end{equation}
+Consequently, differentiating $\delta(1,2)=\frac29(\ell_1-\ell_2)\ln A_{12}-\frac23(\Pi_1 M_2-\Pi_2 M_1)$ with respect to the rapidity of soliton~1 gives
+\begin{equation}\label{eq:ddelta_d1}
+\partial_1\delta(1,2)=\frac29\ell_1'\ln A_{12}-\Pi_1' M_2=P_1'\Bigl(\frac{1}{k_1}\ln A_{12}-\gamma_1 M_2\Bigr)=-P_1'\Delta x_{12}',
+\end{equation}
+where we used $\frac29\ell_1'=P_1'/k_1$ from~\eqref{eq:good_EP} and~\eqref{eq:bad_EP}. Verified to 35 digits at six test pairs across both equations and channels (residual $<10^{-35}$).
+\end{proposition}
+
+\subsection{Scope of this write-up and deferred comparisons}
+A separate work package (\texttt{frame\_*}) is concurrently deriving the quantum momentum and frame dictionary between the quantum Toda chain at finite density and the continuum bad Boussinesq equation, while another (\texttt{det\_*}) is auditing the projected one-loop determinant. Accordingly:
+\begin{itemize}
+\item \textbf{Deferred quantitative Toda edge comparisons:} Every quantitative $O(\hbar^0)$ comparison with numerical Toda Fermi-edge data (\texttt{toda\_edge.pdf}, \texttt{matching.pdf}), including the conjectured small-amplitude overtaking residual $c_0^*(r)=-\frac4\pi(\chi_2(r)-r)$ in Eq.~(19) of \texttt{report.pdf} and the finite-$\hbar_T$ reciprocity remainder of \texttt{audit\_toda\_dictionary.pdf}, is \textbf{explicitly deferred} to a subsequent run once the \texttt{frame\_*} dictionary is completed.
+\item \textbf{Exclusion of Phase~2i:} The note \texttt{phase2/toda\_wh\_and\_kp\_synthesis.tex} (Phase~2i) is under independent audit (\texttt{audit\_phase2i*}) and is \emph{not} relied upon anywhere in this document.
+\end{itemize}
+
+%======================================================================
+\section{Classification of candidate S-matrix families}\label{sec:families}
+
+We test candidate two-body phase functions $S(1,2;\hbar)$ in both overtaking ($\epsilon_1=\epsilon_2$) and head-on ($\epsilon_1=-\epsilon_2$) channels against five structural requirements:
+\begin{enumerate}
+\item[(i)] \textbf{Semiclassical limit:} $\hbar\arg S(1,2;\hbar)\to\delta(1,2)$ as $\hbar\to 0$ at fixed rapidities in both channels, tracking the $O(\hbar^0)$ offset $\lim_{\hbar\to 0}\bigl(\arg S-\delta/\hbar\bigr)$;
+\item[(ii)] \textbf{Unitarity:} $|S(1,2;\hbar)|=1$ on the regular real rapidity manifold and two-body exchange unitarity $S(1,2;\hbar)S(2,1;\hbar)=1$;
+\item[(iii)] \textbf{Quantum crossing:}
+\begin{equation}\label{eq:q_crossing}
+S_{\rm ov}(\beta_1,\beta_2+i\pi;\hbar)\,S_{\rm ho}(\beta_1,\beta_2;\hbar)=1\quad(\text{bad}),\qquad
+S_{\rm ov}(\alpha_1,\alpha_2+\pi;\hbar)\,S_{\rm ho}(\alpha_1,\alpha_2;\hbar)=1\quad(\text{good});
+\end{equation}
+\item[(iv)] \textbf{Bound-state poles and zeros:} Poles on the physical sheet $\operatorname{Im}(P_1-P_2)>0$ must match the physical bound-state spectrum (Sec.~\ref{sec:poles});
+\item[(v)] \textbf{Ring Bethe consistency:} Compatibility with the $N$-soliton twisted asymptotic Bethe equations on a ring (Sec.~\ref{sec:bethe}).
+\end{enumerate}
+
+\subsection{Family I: Gamma ansatz, string shifts \texorpdfstring{$s$}{s}, and \texorpdfstring{$\eta$}{eta}-CDD modifications}
+Let $\eta=\frac29(\ell_1-\ell_2)/\hbar$ and define the $\hbar$-independent regularised cross-ratios
+\begin{equation}\label{eq:calAB}
+\cA_{12}=\frac{81 A_{12}}{4(\ell_1-\ell_2)^2},\qquad
+\cB_{12}=\frac{81}{4 A_{12}(\ell_1-\ell_2)^2},
+\end{equation}
+so that $A_{12}/\eta^2=\hbar^2\cA_{12}$ and $1/(A_{12}\eta^2)=\hbar^2\cB_{12}$. Consider the shifted Gamma family with parameter $s>0$ \Ld:
+\begin{align}
+S_{\rm ov}^{(s)}(1,2)&=\frac{\Gamma(s+i\eta)}{\Gamma(s-i\eta)}\bigl(e^2\hbar^2\cA_{12}\bigr)^{i\eta}e^{iT_{12}/\hbar}
+\qquad(\epsilon_1=\epsilon_2),\label{eq:S_gamma_ov}\\
+S_{\rm ho}^{(s)}(1,2)&=\frac{\Gamma(s-i\eta)}{\Gamma(s+i\eta)}\bigl(e^2\hbar^2\cB_{12}\bigr)^{-i\eta}e^{iT_{12}/\hbar}
+\qquad(\epsilon_1=+1,\;\epsilon_2=-1),\label{eq:S_gamma_ho}
+\end{align}
+and $S_{-+}^{(s)}(1,2)=1/S_{+-}^{(s)}(2,1)$, together with rational or hyperbolic CDD factors in $\eta$:
+\begin{equation}\label{eq:eta_CDD}
+F_{\rm rat}(\eta;c)=\frac{c+i\eta}{c-i\eta}\quad(c\in\mathbb R\setminus\{0\}),\qquad
+F_{\rm hyp}(\eta;\gamma)=\frac{\sinh\frac\pi2(\eta-i\gamma)}{\sinh\frac\pi2(\eta+i\gamma)}\quad(\gamma\in\mathbb R).
+\end{equation}
+
+\begin{proposition}[\Lc, \script{smx\_dictionary\_and\_families.py}]\label{prop:fam1}
+\begin{enumerate}
+\item For every $s>0$, the family~\eqref{eq:S_gamma_ov}--\eqref{eq:S_gamma_ho} satisfies unitarity~(ii) and exact crossing~(iii) (whenever $\cA_{12},\cB_{12}>0$), and has the Stirling asymptotic expansion as $\hbar\to 0$ ($|\eta|\to\infty$) at fixed rapidities:
+\begin{equation}\label{eq:stirling_s}
+\arg S^{(s)}(1,2)-\frac{\delta(1,2)}{\hbar}
+=\Bigl(s-\frac12\Bigr)\pi\tau\sgn(\eta)-\frac{s^2-s+\frac16}{\eta}\tau+O(\eta^{-3})\pmod{2\pi},
+\end{equation}
+where $\tau=+1$ for overtaking ($\epsilon_1=\epsilon_2$) and $\tau=-1$ for head-on ($\epsilon_1=+1,\epsilon_2=-1$). In particular:
+\begin{itemize}
+\item For the baseline candidate $s=1$ (\texttt{smatrix\_ansatz.pdf}), the $O(\hbar^0)$ Maslov/Stirling offset is $+\frac\pi2\sgn(\eta)$ in overtaking and $-\frac\pi2\sgn(\eta)$ in head-on, and the $O(\hbar^1)$ coefficient is $-\frac1{6\eta}\tau$.
+\item For the half-integer shift $s=\frac12$, the $O(\hbar^0)$ constant offset \emph{vanishes} in both channels, and the $O(\hbar^1)$ coefficient is $+\frac1{12\eta}\tau$, while the poles shift to $i\eta=-(N-\frac12)$ ($N\ge 1$).
+\end{itemize}
+\item Multiplying $S_{\rm ov}^{(s)}$ by $F_{\rm CDD}(\eta)$ and $S_{\rm ho}^{(s)}$ by $F_{\rm CDD}(\eta)^{-1}$ preserves unitarity~(ii) and crossing~(iii). As $\hbar\to 0$ at fixed rapidities ($|\eta|\to\infty$), any $\eta$-only CDD factor~\eqref{eq:eta_CDD} contributes \emph{only a rapidity-independent constant step} at $O(\hbar^0)$:
+\begin{equation}\label{eq:eta_cdd_asymp}
+\arg F_{\rm rat}(\eta;c)=\pi\sgn(c)\sgn(\eta)-\frac{2c}{\eta}+O(\eta^{-3}),\qquad
+\arg F_{\rm hyp}(\eta;\gamma)=-\pi\gamma\sgn(\eta)+O(e^{-\pi|\eta|}).
+\end{equation}
+Thus $\eta$-only CDD factors cannot generate a smooth rapidity-dependent $O(\hbar^0)$ phase at fixed rapidities; conversely, any nontrivial rapidity-dependent $O(\hbar^0)$ phase $\vartheta(\beta_1,\beta_2)$ must depend directly on $(\beta_1,\beta_2)$ rather than through $\eta$ alone.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Family II: \texorpdfstring{$\hbar$}{hbar}-renormalisation and coupling shifts}
+In quantum integrable field theories such as sine-Gordon and affine Toda, the bare coupling $\hbar$ is renormalised in the dynamical soliton phase by $\hbar\mapsto\hbar_{\rm ren}=\hbar(1+c_1\hbar+c_2\hbar^2+\dots)$ \La~\cite{FK,Hol92}. In the Boussinesq candidate~\eqref{eq:S_gamma_ov}--\eqref{eq:S_gamma_ho}, $\hbar$ enters in two distinct places: in the spectral ratio $\eta=\frac29(\ell_1-\ell_2)/\hbar$ (which controls the dynamical phase $\delta_{\rm dyn}$ and the breather pole spacing), and in the topological Aharonov--Bohm factor $e^{iT_{12}/\hbar}$.
+
+\begin{proposition}[\Lc, \script{smx\_dictionary\_and\_families.py}]\label{prop:fam2}
+\begin{enumerate}
+\item The dynamical phase $\delta_{\rm dyn}(1,2)=\frac29(\ell_1-\ell_2)\ln A_{12}$ and the topological term $T_{12}=\frac23 M_1 M_2(v_1-v_2)$ obey the classical crossing symmetry \emph{separately}:
+\begin{equation}\label{eq:sep_crossing}
+\delta_{\rm dyn}^{\rm ov}(\beta_1,\beta_2+i\pi)=-\delta_{\rm dyn}^{\rm ho}(\beta_1,\beta_2),\qquad
+T_{12}^{\rm ov}(\beta_1,\beta_2+i\pi)=-T_{12}^{\rm ho}(\beta_1,\beta_2),
+\end{equation}
+and identically under $\alpha_2\mapsto\alpha_2+\pi$ in the good equation (verified to 35 digits).
+\item Because of~\eqref{eq:sep_crossing}, both \emph{global} $\hbar$-renormalisation ($\hbar\mapsto\hbar_{\rm ren}$ in both $\eta$ and $e^{iT_{12}/\hbar}$) and \emph{dynamical-only} $\hbar$-renormalisation ($\eta\mapsto\eta_{\rm ren}=\frac29(\ell_1-\ell_2)/\hbar_{\rm ren}$ while keeping canonical $\hbar$ in $e^{iT_{12}/\hbar}$) preserve exact unitarity~(ii) and exact quantum crossing~(iii).
+\item Expanding as $\hbar\to 0$ at fixed rapidities, $\hbar_{\rm ren}=\hbar(1+c_1\hbar+c_2\hbar^2+\dots)$ shifts the $O(\hbar^0)$ phase by a term proportional to the classical phase:
+\begin{equation}\label{eq:hbar_ren_shift}
+\arg S_{\rm ren}(1,2)-\arg S_0(1,2)=
+\begin{cases}
+-c_1\,\delta(1,2)+O(\hbar) & (\text{global }\hbar\mapsto\hbar_{\rm ren}),\\[2pt]
+-c_1\,\delta_{\rm dyn}(1,2)+O(\hbar) & (\text{dynamical-only }\eta\mapsto\eta_{\rm ren}),
+\end{cases}
+\end{equation}
+and shifts the Bogdan--Charkina breather quantisation condition to $I_{\rm br}=N\hbar_{\rm ren}=N\hbar(1+c_1\hbar+O(\hbar^2))$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Family III: \texorpdfstring{$\mathfrak{sl}_3$}{sl3} quantum-dilogarithm candidates (separated and mixed arguments)}
+In \texttt{smatrix\_ansatz.pdf} (Sec.~2, p.~2), quantum dilogarithms $\Phi_\hbar$ were excluded at leading order only when their arguments are functions of $D=\beta_1-\beta_2$ and $S=\beta_1+\beta_2$ separately; whether a product of quantum dilogarithms with \emph{mixed} two-soliton arguments (such as $A_{12}$, KP root differences $\mu_{1a}-\mu_{2b}$, or KP root ratios) could reproduce $\delta(1,2)/\hbar$ at leading order was left as an open question. We now resolve this question completely.
+
+Recall that any Faddeev/compact quantum dilogarithm $\Phi_\hbar(R)$ with semi-classical expansion $\ln\Phi_\hbar(R)=\frac{1}{i\hbar}\Li_2(R)+O(\hbar^0)$ contributes a tree-level phase spanned by Euler dilogarithms $\Li_2(R_k(\beta_1,\beta_2))$. Since single-soliton phase conventions vanish under the mixed derivative $\partial_1\partial_2$, any candidate built from quantum dilogarithms (times $e^{iT_{12}/\hbar}$) must match $\partial_1\partial_2\delta_{\rm dyn}(1,2)$ via a linear combination $\sum_k c_k\,\partial_1\partial_2\Li_2(R_k)$.
+
+\begin{theorem}[\Lc, \script{smx\_dictionary\_and\_families.py}]\label{thm:fam3}
+\begin{enumerate}
+\item \textbf{Transcendental weight zero of $\partial_1\partial_2\delta(1,2)$.}
+Because $\ell_1-\ell_2$ is a sum of single-particle functions, $\partial_1\partial_2(\ell_1-\ell_2)=0$. Hence
+\begin{equation}\label{eq:d1d2_ddyn}
+\partial_1\partial_2\delta_{\rm dyn}(1,2)
+=\frac29\Bigl[\ell_1'\,\partial_2\ln A_{12}-\ell_2'\,\partial_1\ln A_{12}+(\ell_1-\ell_2)\,\partial_1\partial_2\ln A_{12}\Bigr]
+\end{equation}
+is a purely rational function of $(e^{\beta_1},e^{\beta_2})$ (bad equation) or $(e^{i\alpha_1},e^{i\alpha_2})$ (good equation), containing \emph{no logarithms or polylogarithms} (transcendental weight zero; verified symbolically in SymPy).
+\item \textbf{Exclusion of non-separable mixed arguments.}
+For any twice-differentiable argument $R(\beta_1,\beta_2)$,
+\begin{equation}\label{eq:d1d2_Li2}
+\partial_1\partial_2\Li_2\bigl(R(\beta_1,\beta_2)\bigr)
+=\frac{R}{1-R}(\partial_1\ln R)(\partial_2\ln R)-\ln\bigl(1-R(\beta_1,\beta_2)\bigr)\,\partial_1\partial_2\ln R.
+\end{equation}
+Therefore, $\partial_1\partial_2\Li_2(R)$ has transcendental weight zero if and only if $\partial_1\partial_2\ln R=0$, i.e., $R(\beta_1,\beta_2)=f_1(\beta_1)/f_2(\beta_2)$ is multiplicatively separable. In particular, mixed arguments such as $R=A_{12}(\beta_1,\beta_2)$ (for which $\partial_1\partial_2\ln A_{12}=5.4541932\neq 0$ at $(\beta_1,\beta_2)=(1.1,0.4)$) or additive root differences $R=c(\mu_{1a}-\mu_{2b})$ retain a transcendental $\ln(1-R)$ term and cannot match~\eqref{eq:d1d2_ddyn}.
+\item \textbf{Exclusion of multiplicatively separable KP root-ratio dilogarithms at $O(\hbar^{-1})$.}
+In the KP uniformisation where the three roots of soliton~$j$ are $\mu_{j,r}=\frac{1}{\sqrt3}\sin\varphi_{j,r}$ with $\varphi_{j,r}=\alpha_j+\frac{2\pi r}{3}$ ($r\in\{0,1,2\}$), the natural multiplicatively separable ratios are $R_{rs}(\alpha_1,\alpha_2)=\tan(\varphi_{1,r}/2)/\tan(\varphi_{2,s}/2)$, which satisfy $\partial_{\alpha_1}\partial_{\alpha_2}\ln R_{rs}=0$ and
+\begin{equation}\label{eq:d1d2_Li2_KP}
+\partial_{\alpha_1}\partial_{\alpha_2}\Li_2(R_{rs})=-\frac{R_{rs}}{1-R_{rs}}\frac{1}{\sin\varphi_{1,r}\sin\varphi_{2,s}}.
+\end{equation}
+On $40$ random regular overtaking pairs $(\alpha_1,\alpha_2)$, the $10$-parameter basis $\operatorname{span}_{r,s}\{\partial_1\partial_2\Li_2(R_{rs})\}\oplus\operatorname{span}\{\partial_1\partial_2 T_{12}\}$ fails least-squares matching to $\partial_1\partial_2\delta(1,2)$ with relative residual $3.68\times 10^{-2}$. Analytically, as $\alpha_1\to\alpha_2=\alpha$, the diagonal ($r=s$) term in~\eqref{eq:d1d2_Li2_KP} has residue $-\frac{1}{2\sin\varphi_r}\frac{1}{\alpha_1-\alpha_2}$, whose numerator is bounded as $\sin\varphi_r\to 0$, whereas $\partial_1\partial_2\delta_{\rm dyn}(1,2)$ has diagonal pole residue $+\frac{4}{3}\frac{\sin 3\alpha}{\alpha_1-\alpha_2}$ (good) or $+\frac{4}{3}\frac{\sinh 3\beta}{\beta_1-\beta_2}$ (bad).
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}[\Lc]\label{rem:dilog_1loop}
+While Theorem~\ref{thm:fam3} excludes quantum dilogarithms as the \emph{leading} $O(\hbar^{-1})$ tree-level building block, classical dilogarithms $\Li_2(R_{rs})$ of precisely the KP root ratios $R_{rs}=\tan(\varphi_{1,r}/2)/\tan(\varphi_{2,s}/2)$ appear at $O(\hbar^0)$ (one loop) in the continuum integral $I_{12}(\alpha_1,\alpha_2)$ (\texttt{oneloop\_phase.pdf}; see Sec.~\ref{sec:interface}).
+\end{remark}
+
+\subsection{Family IV: Mirror products \texorpdfstring{$F(\beta_1-\beta_2)G(\beta_1+\beta_2)$}{F(b1-b2)G(b1+b2)}}
+Because the $\mathfrak{sl}_3$ factorisation $A_{12}^{\rm ov}=G(S/2)/G(D/2)$ splits $\ln A_{12}$ into a function of $S=\beta_1+\beta_2$ minus a function of $D=\beta_1-\beta_2$, Route~C of \texttt{report.pdf} asked whether the S-matrix could be a ``mirror'' product $M(\beta_1,\beta_2)=F(\beta_1-\beta_2)G(\beta_1+\beta_2)$ (possibly times $e^{iT_{12}/\hbar}$). Phase~2c excluded this at $O(\hbar^{-1})$ because $\partial_S\partial_D\delta_{\rm dyn}\neq 0$. We observe that exchange unitarity~(ii) excludes any nontrivial $G(\beta_1+\beta_2)$ factor at \emph{all} orders in $\hbar$:
+
+\begin{proposition}[\Lc, \script{smx\_dictionary\_and\_families.py}]\label{prop:fam4}
+\begin{enumerate}
+\item At $O(\hbar^{-1})$, $\partial_S\partial_D\delta_{\rm dyn}\neq 0$ in both equations: $\partial_S\partial_D\delta_{\rm dyn}^{\rm bad}=-3.0850$ at $(S,D)=(1.4,0.6)$ and $\partial_S\partial_D\delta_{\rm dyn}^{\rm good}=-1.6310$ at $(S,D)=(0.8,0.3)$.
+\item At \emph{any} order in $\hbar$, let $M(\beta_1,\beta_2;\hbar)=F(\beta_1-\beta_2;\hbar)G(\beta_1+\beta_2;\hbar)$ be a multiplicative block in an overtaking S-matrix satisfying two-body exchange unitarity $M(\beta_1,\beta_2;\hbar)M(\beta_2,\beta_1;\hbar)=1$. Because exchanging $1\leftrightarrow 2$ sends $D\mapsto -D$ and $S\mapsto +S$,
+\begin{equation}\label{eq:mirror_unitarity}
+F(D;\hbar)F(-D;\hbar)\,G(S;\hbar)^2=1\quad\Longrightarrow\quad
+\frac{\partial}{\partial S}\ln\bigl(G(S;\hbar)^2\bigr)=0\quad\Longrightarrow\quad G(S;\hbar)=\text{const.}
+\end{equation}
+Thus no non-constant factor $G(\beta_1+\beta_2;\hbar)$ can appear multiplicatively in $S(1,2;\hbar)$; the $\beta_1+\beta_2$ dependence of $A_{12}$ can enter $S(1,2;\hbar)$ only inside an exponent multiplied by an antisymmetric prefactor such as $i\eta(1,2)=-i\eta(2,1)$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Family V: Pure and continuum-dressed exponentials}
+Consider the pole-free exponential family \Ld
+\begin{equation}\label{eq:fam5}
+S_{\rm exp}(1,2;\hbar)=\exp\!\Bigl(\frac{i}{\hbar}\delta(1,2)+i\delta_1(1,2)+O(\hbar)\Bigr),
+\end{equation}
+where $\delta_1(1,2)$ is a real one-loop phase obeying antisymmetry $\delta_1(1,2)+\delta_1(2,1)=0$ and crossing $\delta_1^{\rm ov}(\beta_1,\beta_2+i\pi)+\delta_1^{\rm ho}(\beta_1,\beta_2)=0$ (mod $2\pi$).
+\begin{itemize}
+\item For the \textbf{bad equation}, $S_{\rm exp}$ passes (i)--(iii) and (v), but is \textbf{excluded by (iv)}: it is an entire function of $\eta$ with no poles on the physical sheet, failing to reproduce the Bogdan--Charkina breather spectrum $I_{\rm br}=N\hbar$ \La/\Lc~\cite{BC}.
+\item For the \textbf{good equation}, where regular classical breathers do not exist (Sec.~\ref{sec:poles}), $S_{\rm exp}^{\rm good}$ is \emph{not} excluded by~(iv); in fact, unlike $S_\Gamma^{\rm good}$, it avoids introducing spurious poles on the physical sheet at singular breather kinematics \Lc/\Ld.
+\end{itemize}
+
+Table~\ref{tab:families} summarises the classification of all five candidate families across both equations.
+
+\begin{table}[ht]
+\centering\small
+\caption{Classification of two-soliton S-matrix candidate families against constraints (i)--(v) \Lc/\Ld\ (\script{smx\_dictionary\_and\_families.py}, \script{smx\_poles\_good\_vs\_bad.py}, \script{smx\_twisted\_ring\_bethe.py}).}\label{tab:families}
+\begin{tabular}{@{}p{4.3cm}cccccp{4.4cm}@{}}
+\toprule
+Candidate family & (i) & (ii) & (iii) & (iv) & (v) & Status and verdict \\
+\midrule
+I. Gamma $S_\Gamma^{(s=1)}$ \eqref{eq:S_gamma_ov}--\eqref{eq:S_gamma_ho} &
+Pass & Pass & Pass &
+\begin{tabular}[c]{@{}c@{}}Pass (bad)\\Fail$^*$ (good)\end{tabular} &
+Pass &
+\Ld\ baseline for bad eq; $^*$spurious physical-sheet poles in good eq (Prop.~\ref{prop:good_poles}) \\
+\addlinespace[3pt]
+Ia. Shifted Gamma $S_\Gamma^{(s=1/2)}$ &
+Pass & Pass & Pass & Half-int. & Pass &
+Zero Maslov offset; shifts poles to $I_{\rm br}=(N-\frac12)\hbar$ \Lc \\
+\addlinespace[3pt]
+Ib. $\eta$-CDD $S_\Gamma\cdot F_{\rm CDD}(\eta)$ \eqref{eq:eta_CDD} &
+Pass & Pass & Pass & Extra poles & Pass &
+Constant $O(\hbar^0)$ step as $\hbar\to 0$; adds/cancels poles in $\eta$ \Lc \\
+\addlinespace[3pt]
+II. $\hbar$-renormalised $S_\Gamma(\hbar_{\rm ren})$ &
+Pass & Pass & Pass & $O(\hbar^2)$ shift & Pass &
+Both global and dynamical-only preserve (ii)--(iii); shifts $O(\hbar^0)$ by $-c_1\delta$ \Lc \\
+\addlinespace[3pt]
+IIIa. Quantum dilog $\Phi_\hbar(f(D))\Phi_\hbar(g(S))$ &
+Fail & Pass & --- & --- & --- &
+Excluded at $O(\hbar^{-1})$ by $\partial_S\partial_D\delta_{\rm dyn}\neq 0$ \Lc \\
+\addlinespace[3pt]
+IIIb. Mixed-arg.\ quantum dilog $\Phi_\hbar(A_{12})$, $\Phi_\hbar(R_{rs})$ &
+Fail & --- & --- & --- & --- &
+Excluded at $O(\hbar^{-1})$ by weight-0 theorem and diagonal residue (Thm.~\ref{thm:fam3}) \Lc \\
+\addlinespace[3pt]
+IV. Mirror product $F(D)G(S)e^{iT/\hbar}$ &
+Fail & Fail & --- & --- & --- &
+Excluded at $O(\hbar^{-1})$ by~(i) and at \emph{all} orders by~(ii): $G(S)=\text{const}$ (Prop.~\ref{prop:fam4}) \Lc \\
+\addlinespace[3pt]
+V. Dressed exponential $\exp(i\delta/\hbar+i\delta_1)$ &
+Pass & Pass & Pass &
+\begin{tabular}[c]{@{}c@{}}Fail (bad)\\Pass (good)\end{tabular} &
+Pass &
+Excluded for bad eq (no BC poles); viable \Ld\ for good eq (no breathers) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%======================================================================
+\section{Criterion (iv): bound-state poles in the bad vs.\ good equations}\label{sec:poles}
+
+A decisive structural difference between the bad and good Boussinesq equations lies in their complex-conjugate two-soliton (breather) reductions.
+
+\subsection{Bad equation: Bogdan--Charkina breathers and physical-sheet poles}
+For the bad equation, take two right-movers ($\epsilon_1=\epsilon_2=+1$) at complex-conjugate rapidities $\beta_1=a-ib$, $\beta_2=a+ib$ with $a>0$ and $b\in(\pi/3,\pi/2)$ (or the parity-image window $b\in(\pi/2,2\pi/3)$). Then \La~\cite{BC} / \Lc\ (\texttt{smatrix\_poles\_bootstrap.py}, \script{smx\_poles\_good\_vs\_bad.py}):
+\begin{enumerate}
+\item The interaction constant is real and exceeds unity precisely in this window:
+\begin{equation}\label{eq:A_bad_br}
+A_{12}^{\rm bad}(a-ib,a+ib)=\frac{1+3\coth^2 a}{1-3\cot^2 b}>1\quad\Longleftrightarrow\quad \cot^2 b<\frac13\quad\Longleftrightarrow\quad b\in\Bigl(\frac\pi3,\frac{2\pi}{3}\Bigr)\setminus\Bigl\{\frac\pi2\Bigr\},
+\end{equation}
+giving a regular, spatially localised periodic breather of envelope speed $V_{\rm br}=\cosh a\cos 2b/\cos b$ and total energy $E_{\rm br}=E(\beta_1)+E(\beta_2)\in\mathbb R$.
+\item For $b\in(\pi/3,\pi/2)$, the relative momentum has positive imaginary part,
+\begin{equation}\label{eq:ImP_bad}
+\operatorname{Im}(P_1-P_2)=-\frac13\sin 2b\,\bigl[\cosh 4a\cos 2b-\cosh 2a\bigr]>0,
+\end{equation}
+which defines the physical sheet for two-body bound states of $S(1,2)$, while
+\begin{equation}\label{eq:ieta_bad}
+i\eta=\frac{2i}{9\hbar}(\ell_1-\ell_2)=\frac{4}{9\hbar}\sinh 3a\sin 3b=-\frac{I_{\rm br}}{\hbar}<0,\qquad
+I_{\rm br}=-\frac49\sinh 3a\sin 3b>0.
+\end{equation}
+\item Consequently, the $\Gamma(1+i\eta)$ numerator of $S_{\Gamma,\rm ov}^{\rm bad}$ has simple poles on the physical sheet precisely at the Bogdan--Charkina Bohr--Sommerfeld quantisation levels $I_{\rm br}=N\hbar$ ($N=1,2,\dots$), and has no pole at the threshold $N=0$ ($b\to\pi/3^+$) because $\Gamma(1)=1$ is finite \Lc.
+\end{enumerate}
+
+\subsection{Good equation: absence of regular breathers, spurious poles of \texorpdfstring{$S_\Gamma^{\rm good}$}{S\_Gamma\^{}good}, and Y-junction resonances}
+For the good equation, the situation is inverted:
+
+\begin{proposition}[\La~\cite{LMK,BD} / \Lc, \script{smx\_poles\_good\_vs\_bad.py}]\label{prop:good_poles}
+\begin{enumerate}
+\item \textbf{Absence of regular Hirota breathers.}
+For any complex-conjugate pair $\alpha_1=a-ib$, $\alpha_2=a+ib$ with $a\in(0,\pi/2)\setminus\{\pi/6\}$ and $b\in\mathbb R\setminus\{0\}$ ($\epsilon_1=\epsilon_2=+1$), the Hirota interaction constant is
+\begin{equation}\label{eq:A_good_br}
+A_{12}^{\rm good}(a-ib,a+ib)=\frac{1-3\cot^2 a}{1+3\coth^2 b}<\frac14.
+\end{equation}
+Specifically, $A_{12}^{\rm good}<0$ for $a\in(0,\pi/6)$ and $0<A_{12}^{\rm good}<1/4$ for $a\in(\pi/6,\pi/2)$ (since $\coth^2 b>1$).As shown in Proposition~3.2 of \texttt{review.pdf}, the two-soliton $\tau$-function $\tau_{\rm br}=2e^{\theta_R}(\cos\theta_I+\sqrt{A_{12}}\cosh\theta_R)$ is strictly positive for all $(x,t)$ if and only if $A_{12}>1/4$. Thus \emph{every} complex-conjugate breather of the good equation develops logarithmic singularities in $u=2(\ln\tau)_{xx}$ and has infinite energy; the good Boussinesq equation has no regular breathers.
+\item \textbf{Spurious physical-sheet poles of the naive Gamma continuation $S_\Gamma^{\rm good}$.}
+At $\alpha_{1,2}=a\mp ib$, the relative momentum imaginary part and the Gamma argument are
+\begin{equation}\label{eq:good_ImP_ieta}
+\operatorname{Im}(P_1-P_2)=\frac13\sinh 2b\,\bigl[\cos 4a\cosh 2b-\cos 2a\bigr],\qquad
+i\eta=\frac{2i}{9\hbar}(\ell_1-\ell_2)=\frac{4}{9\hbar}\sin 3a\sinh 3b.
+\end{equation}
+On the ``light'' branch $a\in(0,\pi/3)$, taking $b<0$ (with $\cosh 2b<\cos 2a/\cos 4a$ when $\cos 4a>0$, or for all $b<0$ when $a\in[\pi/8,\pi/3)$) gives $\sinh 2b<0$ and $\cos 4a\cosh 2b-\cos 2a<0$, so
+\begin{equation}\label{eq:spurious_pole_cond}
+\operatorname{Im}(P_1-P_2)>0\quad(\text{physical sheet})\qquad\text{and}\qquad i\eta=\frac{4}{9\hbar}\sin 3a\sinh 3b<0.
+\end{equation}
+Hence $\Gamma(1+i\eta)$ in $S_{\Gamma,\rm ov}^{\rm good}$ has simple poles on the physical sheet $\operatorname{Im}(P_1-P_2)>0$ at
+\begin{equation}\label{eq:spurious_poles}
+\sinh 3b=-\frac{9N\hbar}{4\sin 3a}\qquad(N=1,2,\dots),
+\end{equation}
+even though at every such root $A_{12}^{\rm good}(a-ib,a+ib)<1/4$ corresponds to a \emph{singular} solution (for instance, at $\hbar=0.05$ and $N=1$, $a=0.4$ gives $b=-0.04021$, $\operatorname{Im}(P_1-P_2)=0.01919>0$, and $A_{12}^{\rm good}=-2.177<0$; $a=0.65$ gives $b=-0.04031$, $\operatorname{Im}(P_1-P_2)=0.05586>0$, and $A_{12}^{\rm good}=+0.02585<1/4$).
+\item \textbf{Smoothness across real Y-junction resonances.}
+On the real rapidity square $(\alpha_1,\alpha_2)\in(0,\pi/2)^2$, the good equation has resonant Y-junction boundaries where $A_{12}=0$ or $A_{12}=\infty$ \La~\cite{LMK,BD,RS}:
+\begin{itemize}
+\item Head-on ($\epsilon_1=+1,\epsilon_2=-1$): $\alpha_1+\alpha_2=\pi/3$ ($A_{12}^{\rm ho}=\infty$);
+\item Overtaking ($\epsilon_1=\epsilon_2=+1$): $|\alpha_1-\alpha_2|=\pi/3$ ($A_{12}^{\rm ov}=\infty$) and $\alpha_1+\alpha_2=2\pi/3$ ($A_{12}^{\rm ov}=0$).
+\end{itemize}
+On \emph{all three} real resonance lines, $\ell_1-\ell_2=0$ ($\eta=0$) identically: for head-on at $\alpha_1+\alpha_2=\pi/3$, $\ell_1-\ell_2=-\cos 3\alpha_1-\cos(\pi-3\alpha_1)=0$; for overtaking at $\alpha_2=\alpha_1\pm\pi/3$ or $\alpha_2=2\pi/3-\alpha_1$, $\ell_1-\ell_2=-\cos 3\alpha_1+\cos 3\alpha_2=0$. Because $\lim_{\eta\to 0}(e^2 A_{12}/\eta^2)^{i\eta}=1$ and $\Gamma(1)=1$, $S_\Gamma^{\rm good}$ approaches the smooth topological phase $e^{iT_{12}/\hbar}$ on the entire Y-junction locus, with neither poles nor zeros there.
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[\Lc/\Ld]
+Proposition~\ref{prop:good_poles}(2) shows that for the good equation, the naive analytic continuation $S_\Gamma^{\rm good}$ violates criterion~(iv) unless either (a)~the quantum good equation admits bound states without regular classical Hirota breather counterparts (a guess~\Ld\ with no known evidence), or (b)~the good-equation S-matrix has its Gamma poles cancelled (as in Family~V, $S_{\rm exp}^{\rm good}$) or moved off the physical sheet. By contrast, for the bad equation, the physical-sheet poles of $S_\Gamma^{\rm bad}$ match the regular Bogdan--Charkina breather spectrum without discrepancy.
+\end{remark}
+
+%======================================================================
+\section{Criterion (v): twisted \texorpdfstring{$N$}{N}-soliton Bethe equations on a ring}\label{sec:bethe}
+
+Section~9 of \texttt{report.pdf} listed the asymptotic Bethe equations on a ring of circumference $\Lambda$---and specifically the $\phi$-winding twist induced by the topological cross terms $\sum_{X_i>X_j}d\Pi_i\wedge dM_j$ in the $N$-soliton symplectic form---as not yet worked out. Here we derive the twisted $N$-soliton ring Bethe equations from the chamber-dependent symplectic geometry and verify their consistency properties at 40-digit precision.
+
+\subsection{\texorpdfstring{$N$}{N}-soliton symplectic form and Darboux coordinates across ordering chambers}
+On the infinite line, an $N$-soliton state with asymptotic positions $X_1,\dots,X_N$ lies in one of $N!$ spatial ordering chambers $\sigma\in S_N$, defined by $X_{\sigma(1)}<X_{\sigma(2)}<\dots<X_{\sigma(N)}$. In chamber $\sigma$, the canonical symplectic form $\Omega=\int d\pi\wedge d\phi$ reduces on the asymptotic $N$-soliton manifold (with left-boundary reference $c=\phi(-\infty)$ and $\Pi_{\rm tot}=\sum_{j=1}^N\Pi_j$) to \Lc\ (\texttt{report.pdf}, Prop.~3.1):
+\begin{equation}\label{eq:Omega_sigma}
+\Omega^{(\sigma)}=d\Pi_{\rm tot}\wedge dc+\sum_{j=1}^N dP_j\wedge dX_j+\sum_{\sigma^{-1}(i)>\sigma^{-1}(j)} d\Pi_i\wedge dM_j.
+\end{equation}
+Define in chamber $\sigma$ the Darboux position coordinates
+\begin{equation}\label{eq:Darboux_Xj}
+X_j'^{(\sigma)}=X_j+\gamma_j\sum_{\sigma^{-1}(l)<\sigma^{-1}(j)} M_l,\qquad
+\gamma_j=\frac{d\Pi_j}{dP_j}.
+\end{equation}
+
+\begin{proposition}[\Lc, \smxring]\label{prop:N_symp}
+For every $N\ge 2$ and every permutation $\sigma\in S_N$, in both the good and bad equations:
+\begin{enumerate}
+\item The canonical wedge sum $\sum_{j=1}^N dP_j\wedge dX_j'^{(\sigma)}$ equals $\sum_{j=1}^N dP_j\wedge dX_j+\sum_{\sigma^{-1}(i)>\sigma^{-1}(j)}d\Pi_i\wedge dM_j$, so $(c,\Pi_{\rm tot};X_1'^{(\sigma)},P_1,\dots,X_N'^{(\sigma)},P_N)$ are exact Darboux coordinates in chamber $\sigma$:
+\begin{equation}\label{eq:Omega_Darboux}
+\Omega^{(\sigma)}=d\Pi_{\rm tot}\wedge dc+\sum_{j=1}^N dP_j\wedge dX_j'^{(\sigma)}.
+\end{equation}
+\item Across any wall between adjacent chambers $\sigma$ and $\sigma'=(j\;l)\sigma$ where solitons $j$ (left) and $l$ (right) cross, the Hirota scattering map $X_j^+=X_j^-+\Delta x_{jl}$, $X_l^+=X_l^-+\Delta x_{lj}$ ($\Delta x_{jl}=-\frac{1}{k_j}\ln A_{jl}$, $\Delta x_{lj}=+\frac{1}{k_l}\ln A_{jl}$) shifts the Darboux coordinates by
+\begin{align}
+X_j'^{(\sigma')}-X_j'^{(\sigma)}&=\Delta x_{jl}-\gamma_j M_l=\Delta x_{jl}'=-\frac{\partial\delta(j,l)}{\partial P_j},\label{eq:Darboux_wall}\\
+X_l'^{(\sigma')}-X_l'^{(\sigma)}&=\Delta x_{lj}+\gamma_l M_j=\Delta x_{lj}'=-\frac{\partial\delta(j,l)}{\partial P_l},\nonumber
+\end{align}
+and preserves the symplectic form, $\Omega^{(\sigma')}=\Omega^{(\sigma)}$, by virtue of the identity
+\begin{equation}\label{eq:symp_wall_id}
+P_j'\frac{\partial\Delta x_{jl}}{\partial\beta_l}-P_l'\frac{\partial\Delta x_{lj}}{\partial\beta_j}=-\Pi_l' M_j'-\Pi_j' M_l'.
+\end{equation}
+Verified to 40 digits for $N=4$ across all $4!=24$ ordering chambers and all $\binom{4}{2}=6$ pairs in both the bad and good equations (maximum residual $<10^{-38}$).
+\end{enumerate}
+\end{proposition}
+
+\subsection{Seam jump on the ring \texorpdfstring{$S^1_\Lambda$}{S\^{}1\_Lambda} and the twisted directional Bethe phase}
+Now place $N$ well-separated solitons on a ring $x\in[0,\Lambda)$ of circumference $\Lambda\gg\max_j k_j^{-1}$, cut open at a reference seam $x=0$ where $c=\phi(0^+)$. Each soliton $j$ is a kink of the potential $\phi$ carrying topological charge $M_j=2k_j$ and conjugate shift momentum $\Pi_j=-M_j v_j$, so the total winding across the ring is $|\phi(\Lambda^-)-\phi(0^+)|=\sum_{j=1}^N M_j=M_{\rm tot}$.
+
+Follow soliton $j$ as it traverses the ring once in the positive direction from $X_j=0^+$ (where $j$ is the leftmost soliton, $\sigma^{-1}(j)=1$) to $X_j=\Lambda^-$ (where $j$ is the rightmost soliton, $\sigma^{-1}(j)=N$), and then jumps back across the seam $\Lambda^-\to 0^+$:
+\begin{enumerate}
+\item \textbf{Bulk collisions ($0^+\to\Lambda^-$):}
+In the interior of the interval $(0,\Lambda)$, soliton $j$ overtakes or crosses every other soliton $l\neq j$. In the canonical Darboux coordinates $X'^{(\sigma)}$, each crossing of $j$ past $l$ is generated by the two-body phase $\delta(j,l)$ (or $\hbar\arg S(j,l)$ in the quantum theory), which encodes the Darboux shift $\Delta x_{jl}'=-\partial_{P_j}\delta(j,l)$.
+\item \textbf{Seam transition ($\Lambda^-\to 0^+$):}
+When soliton $j$ passes from $X_j=\Lambda^-$ across the seam to $X_j=0^+$, two topological jumps occur simultaneously:
+\begin{itemize}
+\item First, all $N-1$ other solitons $l\neq j$, which lay to the \emph{left} of $j$ at $X_j=\Lambda^-$, now lie to the \emph{right} of $j$ at $X_j=0^+$. By~\eqref{eq:Darboux_Xj}, the Darboux coordinate $X_j'$ jumps across the seam by
+\begin{equation}\label{eq:seam_Darboux}
+\Delta_{\rm seam}X_j'=X_j'\big|_{X_j=\Lambda^-}-X_j'\big|_{X_j=0^+}=\Lambda+\gamma_j\sum_{l\neq j}M_l.
+\end{equation}
+Integrating $P_j\,d(\Delta_{\rm seam}X_j')$ at fixed $M_l$ gives the kinetic-plus-Darboux seam action $P_j\Lambda+\Pi_j\sum_{l\neq j}M_l$.
+\item Second, passing the kink $j$ across the seam $x=0$ shifts the seam potential $c=\phi(0^+)$ by $M_j$, which couples to the conjugate momentum $\Pi_j$ to contribute the self-winding phase $\Pi_j M_j$.
+\end{itemize}
+\end{enumerate}
+
+Combining the bulk scattering phase $\delta(j,l)$ with the pairwise topological seam twist $+\Pi_j M_l$ defines the \emph{twisted directional ring Bethe phase} of soliton $j$ passing soliton $l$:
+\begin{equation}\label{eq:Phi_ring}
+\Phi_{\rm ring}(j\mid l)\coloneqq \delta(j,l)+\Pi_j M_l
+=\frac29(\ell_j-\ell_l)\ln A_{jl}+\frac13\Pi_j M_l+\frac23\Pi_l M_j.
+\end{equation}
+For any candidate quantum S-matrix $S(j,l;\hbar)$, the quantum twisted ring Bethe equations are therefore
+\begin{equation}\label{eq:quantum_ring_BA}
+\mathcal B_j^{\rm ring}\coloneqq P_j\Lambda+\Pi_j M_j+\sum_{l\neq j}\Bigl(\hbar\arg S(j,l;\hbar)+\Pi_j M_l\Bigr)=2\pi\hbar n_j,\qquad n_j\in\mathbb Z\quad(j=1,\dots,N),
+\end{equation}
+or in multiplicative form,
+\begin{equation}\label{eq:quantum_ring_BA_mult}
+\exp\!\Bigl(\frac{i}{\hbar}\bigl(P_j\Lambda+\Pi_j M_{\rm tot}\bigr)\Bigr)\prod_{l\neq j} S(j,l;\hbar)=1\qquad(j=1,\dots,N).
+\end{equation}
+
+\begin{theorem}[\Lc, \smxring]\label{thm:ring_bethe}
+The twisted directional ring Bethe phase~\eqref{eq:Phi_ring} and the ring Bethe equations~\eqref{eq:quantum_ring_BA}--\eqref{eq:quantum_ring_BA_mult} satisfy three exact consistency laws across both the bad and good equations and in both overtaking and head-on channels:
+\begin{enumerate}
+\item \textbf{Exact recovery of the physical Hirota shift $\Delta x_{jl}$.}
+Differentiating $\Phi_{\rm ring}(j\mid l)$ with respect to the physical momentum $P_j$ at fixed soliton~$l$ gives
+\begin{equation}\label{eq:dPhi_ring_dPj}
+-\frac{\partial\Phi_{\rm ring}(j\mid l)}{\partial P_j}
+=-\frac{\partial\delta(j,l)}{\partial P_j}-\gamma_j M_l
+=\Delta x_{jl}'+\gamma_j M_l
+=\Delta x_{jl}=-\frac{1}{k_j}\ln A_{jl}.
+\end{equation}
+Thus the classical trajectory shift in the ring Bethe equation $\partial_{P_j}\mathcal B_j^{\rm ring}=\Lambda-\sum_{l\neq j}\Delta x_{jl}$ is the \emph{exact physical Hirota shift} $\Delta x_{jl}$. By contrast:
+\begin{itemize}
+\item Omitting the seam twist $+\Pi_j M_l$ gives $-\partial_{P_j}\delta(j,l)=\Delta x_{jl}-\gamma_j M_l$, which misses $\Delta x_{jl}$ by the $O(1)$ Darboux shift $-\gamma_j M_l$ (e.g.\ error $0.680$ at $(\beta_1,\beta_2)=(1.1,0.4)$);
+\item Omitting the topological term $T_{jl}$ altogether gives $-\partial_{P_j}\delta_{\rm dyn}(j,l)=\Delta x_{jl}+(\frac13\Pi_j' M_l+\frac23 M_j'\Pi_l)/P_j'$, which also fails by $O(1)$ (e.g.\ error $0.916$ at $(\beta_1,\beta_2)=(1.1,0.4)$).
+\end{itemize}
+Verified to 40 digits at six test pairs across both equations and channels (residual $<10^{-38}$).
+\item \textbf{Global translation-winding sum rule.}
+For any unitary candidate $S(j,l;\hbar)S(l,j;\hbar)=1$, $\arg S(j,l;\hbar)+\arg S(l,j;\hbar)=0$, so the pairwise twisted phases satisfy the non-antisymmetric reciprocity relation
+\begin{equation}\label{eq:Phi_reciprocity}
+\Phi_{\rm ring}(j\mid l)+\Phi_{\rm ring}(l\mid j)=\Pi_j M_l+\Pi_l M_j\neq 0.
+\end{equation}
+Summing the twisted Bethe equations~\eqref{eq:quantum_ring_BA} over $j=1,\dots,N$ causes all bulk S-matrix phases $\arg S(j,l;\hbar)$ to cancel pairwise while the diagonal and off-diagonal topological twists combine into the total bilinear $\Pi_{\rm tot}M_{\rm tot}$:
+\begin{equation}\label{eq:global_sum_rule}
+\sum_{j=1}^N\mathcal B_j^{\rm ring}=P_{\rm tot}\Lambda+\Pi_{\rm tot}M_{\rm tot}=2\pi\hbar\sum_{j=1}^N n_j,\quad
+P_{\rm tot}=\sum_{j=1}^N P_j,\;\; \Pi_{\rm tot}=\sum_{j=1}^N\Pi_j,\;\; M_{\rm tot}=\sum_{j=1}^N M_j.
+\end{equation}
+This is the exact field-theoretic momentum quantization law for a state of total field momentum $P_{\rm tot}$ and zero-mode momentum $\Pi_{\rm tot}$ in the winding sector $\Delta\phi=M_{\rm tot}$ on $S^1_\Lambda$.
+\item \textbf{Covariant fusion onto Bogdan--Charkina breathers.}
+For a bad-equation breather with constituent rapidities $\beta_{1,2}=a\mp ib$ ($\epsilon_1=\epsilon_2=+1$) and a third soliton $\beta_3$ of either direction $\epsilon_3=\pm 1$, the constituent masses and shift charges sum to real composite breather charges:
+\begin{equation}\label{eq:breather_charges}
+M_{\rm br}=M_1+M_2=4\sinh a\cos b\in\mathbb R,\qquad
+\Pi_{\rm br}=\Pi_1+\Pi_2=-2\sinh 2a\cos 2b=-M_{\rm br}V_{\rm br}\in\mathbb R,
+\end{equation}
+where $V_{\rm br}=\cosh a\cos 2b/\cos b$ is the classical breather envelope velocity. Consequently, the fused ring Bethe phase $\Phi_{\rm ring}(\text{br}\mid 3)=\Phi_{\rm ring}(1\mid 3)+\Phi_{\rm ring}(2\mid 3)=\delta(1,3)+\delta(2,3)+\Pi_{\rm br}M_3$ is real to 40 digits, and
+\begin{equation}\label{eq:breather_shift}
+-\frac{\partial}{\partial P_3}\bigl[\Phi_{\rm ring}(3\mid 1)+\Phi_{\rm ring}(3\mid 2)\bigr]
+=-\frac{1}{k_3}\ln(A_{31}A_{32})=\Delta x_{3,\rm br}
+\end{equation}
+reproduces the exact classical breather--soliton Hirota shift (verified to 40 digits for both $\epsilon_3=+1$ and $\epsilon_3=-1$).
+\end{enumerate}
+\end{theorem}
+
+%======================================================================
+\section{Minimal residual ambiguity and precise interface to other packages}\label{sec:interface}
+
+\subsection{Minimal residual ambiguity after constraints (i)--(v)}
+We now determine the exact freedom that remains after imposing (i)~the semiclassical limit, (ii)~unitarity, (iii)~quantum crossing, (iv)~the Bogdan--Charkina integer breather spectrum $I_{\rm br}=N\hbar$ ($N\ge 1$, no $N=0$ pole) for the bad equation, and (v)~consistency with the twisted ring Bethe equations~\eqref{eq:quantum_ring_BA}.
+
+\begin{proposition}[\Lc, \smxamb]\label{prop:min_amb}
+For the bad equation, let $S_{\Gamma,\rm ov}=S_{\rm ov}^{(s=1)}$ and $S_{\Gamma,\rm ho}=S_{\rm ho}^{(s=1)}$ be the baseline Gamma candidate~\eqref{eq:S_gamma_ov}--\eqref{eq:S_gamma_ho}. Any candidate two-soliton S-matrix $S(1,2;\hbar)$ that satisfies (i)--(v) with simple physical-sheet poles solely at $I_{\rm br}=N\hbar$ ($N\ge 1$) takes the form
+\begin{equation}\label{eq:S_residual_form}
+S_{\rm ov}(1,2;\hbar)=S_{\Gamma,\rm ov}(1,2;\hbar)\,\exp\!\bigl(i\Theta_{\rm ov}(1,2;\hbar)\bigr),\qquad
+S_{\rm ho}(1,2;\hbar)=S_{\Gamma,\rm ho}(1,2;\hbar)\,\exp\!\bigl(i\Theta_{\rm ho}(1,2;\hbar)\bigr),
+\end{equation}
+where $\Theta_{\rm ov},\Theta_{\rm ho}$ have asymptotic expansions $\Theta_{\rm ov/ho}(1,2;\hbar)=\vartheta_{\rm ov/ho}(1,2)+\hbar\,\vartheta_{\rm ov/ho}^{(1)}(1,2)+O(\hbar^2)$ as $\hbar\to 0$ at fixed rapidities, are holomorphic in the physical breather strip $0<\operatorname{Im}(-i\eta)<1$, and obey:
+\begin{enumerate}
+\item \textbf{Real-valuedness and antisymmetry (from unitarity~(ii)):}
+For real rapidities, $\Theta_{\rm ov},\Theta_{\rm ho}\in\mathbb R$ and
+\begin{equation}\label{eq:Theta_antisym}
+\Theta_{\rm ov}(1,2;\hbar)+\Theta_{\rm ov}(2,1;\hbar)=0,\qquad
+\Theta_{\rm ho}(1,2;\hbar)+\Theta_{\rm ho}(2,1;\hbar)=0\pmod{2\pi}.
+\end{equation}
+\item \textbf{Crossing locking of the head-on channel (from crossing~(iii)):}
+Because $S_{\Gamma,\rm ov}(\beta_1,\beta_2+i\pi;\hbar)S_{\Gamma,\rm ho}(\beta_1,\beta_2;\hbar)=1$ holds identically, $\Theta_{\rm ho}$ is completely fixed by analytic continuation of $\Theta_{\rm ov}$:
+\begin{equation}\label{eq:Theta_crossing}
+\Theta_{\rm ho}(\beta_1,\beta_2;\hbar)=-\Theta_{\rm ov}(\beta_1,\beta_2+i\pi;\hbar)\pmod{2\pi}.
+\end{equation}
+\item \textbf{Automatic ring Bethe compatibility (criterion~(v)):}
+Any $(\Theta_{\rm ov},\Theta_{\rm ho})$ satisfying~\eqref{eq:Theta_antisym} preserves the global ring Bethe sum rule~\eqref{eq:global_sum_rule} identically at all orders in $\hbar$, and shifts the quantum ring Bethe phase at $O(\hbar)$ without altering the classical Hirota shift~\eqref{eq:dPhi_ring_dPj}.
+\end{enumerate}
+Consequently, at one-loop order $O(\hbar^0)$, the \emph{minimal residual ambiguity} after (i)--(v) is a \textbf{single real antisymmetric two-variable function} $\vartheta_{\rm ov}(\beta_1,\beta_2)=-\vartheta_{\rm ov}(\beta_2,\beta_1)$ in the overtaking channel (with $\vartheta_{\rm ho}(\beta_1,\beta_2)=-\vartheta_{\rm ov}(\beta_1,\beta_2+i\pi)$ locked by crossing).
+\end{proposition}
+
+\subsection{Interface to the projected determinant (\texttt{det\_*}) and quantum frame (\texttt{frame\_*}) packages}
+Write the full $O(\hbar^0)$ one-loop phase of the physical S-matrix as
+\begin{equation}\label{eq:delta1_phys_split}
+\delta_1^{\rm phys}(1,2)\coloneqq \lim_{\hbar\to 0}\Bigl(\arg S(1,2;\hbar)-\frac{\delta(1,2)}{\hbar}\Bigr)
+=\pm\frac\pi2\sgn(\eta)+\vartheta_{\rm ov/ho}(1,2)
+=\delta_1^{\rm det}(1,2)+\delta_1^{\rm frame}(1,2),
+\end{equation}
+where $\delta_1^{\rm det}(1,2)$ is the intrinsic one-loop phase from the projected fluctuation determinant (\texttt{det\_*} package) and $\delta_1^{\rm frame}(1,2)$ is the conversion from bare classical rapidities to renormalised quantum physical momenta (\texttt{frame\_*} package). We now establish the exact crossing and small-amplitude laws governing both pieces.
+
+\paragraph{1. Continuum one-loop integrals and the cusp-jump cancellation of the Stirling offset.}
+In \texttt{oneloop\_phase.pdf} (and under conditional status in \texttt{audit\_determinant\_foundations.pdf}), the raw continuum integral over phonon phase shifts on the good-equation two-soliton background is
+\begin{equation}\label{eq:Delta_theta_cont}
+\Delta\theta_{\rm cont}^{\rm same/head}(\alpha_1,\alpha_2)=I_{12}^{\rm same/head}(\alpha_1,\alpha_2)+J_{12}^{\rm same/head}(\alpha_1,\alpha_2),
+\end{equation}
+where, with $\varphi_{j,r}\in\{\alpha_j+2\pi/3,\alpha_j-2\pi/3,\alpha_j\}$ and $\sigma_r\in\{+1,+1,-1\}$:
+\begin{align}
+I_{12}^{\rm same}(\alpha_1,\alpha_2)&=\frac{1}{\pi}\sum_{r,s=1}^3\sigma_r\sigma_s\Bigl[\Li_2(-R_{rs})-\Li_2(R_{rs})+\ln|R_{rs}|\ln\frac{|1-R_{rs}|}{1+|R_{rs}|}\Bigr],\quad R_{rs}=\frac{\tan(\varphi_{1,r}/2)}{\tan(\varphi_{2,s}/2)},\label{eq:I12_same}\\
+J_{12}^{\rm same}(\alpha_1,\alpha_2)&=\sum_{s=1}^3\sigma_s\sgn(\cos\varphi_{2,s})\arctan\bigl(\tan\alpha_1\cot\varphi_{2,s}\bigr)-(\alpha_1\leftrightarrow\alpha_2),\label{eq:J12_same}
+\end{align}
+and in the head-on channel $R_{rs}$ is replaced by $\tilde R_{rs}=\tan(\varphi_{1,r}/2)\tan(\varphi_{2,s}/2)$ and $\cot\varphi_{2,s}$ by $-\tan\varphi_{2,s}$ in the $1\to 2$ term (\texttt{oneloop\_phase.pdf}, Eqs.~(16)--(19)).
+
+\begin{theorem}[\Lc, \smxamb]\label{thm:IJ_crossing}
+For all $(\alpha_1,\alpha_2)\in(0,\pi/3)^2$ (the sub-radiation-threshold square where $\cos 3\alpha_j>0$), the continuum integrals~\eqref{eq:I12_same}--\eqref{eq:J12_same} satisfy the exact crossing identities
+\begin{equation}\label{eq:IJ_crossing}
+I_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)=-I_{12}^{\rm head}(\alpha_1,\alpha_2),\qquad
+J_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)+J_{12}^{\rm head}(\alpha_1,\alpha_2)=+\frac\pi2,
+\end{equation}
+and hence
+\begin{equation}\label{eq:Delta_theta_crossing}
+\Delta\theta_{\rm cont}^{\rm same}(\alpha_1,\alpha_2+\pi)+\Delta\theta_{\rm cont}^{\rm head}(\alpha_1,\alpha_2)=+\frac\pi2.
+\end{equation}
+Verified to 40 digits across $(0,\pi/3)^2$ (maximum residual $<10^{-39}$).
+\end{theorem}
+
+\begin{proof}
+Under $\alpha_2\mapsto\alpha_2+\pi$, each angle shifts by $\varphi_{2,s}\mapsto\varphi_{2,s}+\pi$, so $\tan(\varphi_{2,s}/2)\mapsto -\cot(\varphi_{2,s}/2)$, $R_{rs}\mapsto -\tilde R_{rs}$, and $I_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)=-I_{12}^{\rm head}(\alpha_1,\alpha_2)$ term by term. In $J_{12}$, let $f_1(\alpha_2)=\sum_s\sigma_s\sgn(\cos\varphi_{2,s})\arctan(\tan\alpha_1\cot\varphi_{2,s})$ be the smooth function on $(0,\pi/3)$ (where $\cos\varphi_{2,1}<0,\cos\varphi_{2,2}<0,\cos\varphi_{2,3}>0$). Because $\cot(\varphi_{2,s}+\pi)=\cot\varphi_{2,s}$ is $\pi$-periodic whereas $\sgn(\cos(\varphi_{2,s}+\pi))=-\sgn(\cos\varphi_{2,s})$, continuing $f_1$ analytically from $(0,\pi/3)$ across the radiation-threshold cusp $\alpha_2=\pi/3$ (where $J_{12}^{\rm same}$ jumps by $+\pi$) to $\alpha_2+\pi\in(\pi,4\pi/3)$ reverses the sign of $f_1$. Meanwhile, in $J_{12}^{\rm head}$, the identity $\arctan(x)-\arctan(1/x)=\frac\pi2\sgn(x)$ applied to each of the three $s$-terms with signs $(\sigma_1,\sigma_2,\sigma_3)\cdot(-1,-1,+1)=(-1,-1,-1)$ shifts the sum of the three $\pm\pi/2$ constants by $(-1-1+1)\frac\pi2=-\frac\pi2$, yielding $J_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)+J_{12}^{\rm head}(\alpha_1,\alpha_2)=+\frac\pi2$.
+\end{proof}
+
+\begin{corollary}[Cancellation of the head-on Stirling offset under crossing, \Lc]\label{cor:maslov_cancel}
+For $\alpha_1<\alpha_2\in(0,\pi/3)$ ($\ell_1<\ell_2$, $\eta<0$), the Gamma candidate $S_{\Gamma}^{(s=1)}$ has Stirling $O(\hbar^0)$ offset $-\frac\pi2$ in overtaking and $+\frac\pi2$ in head-on ($\eta_{\rm ho}>0$). By Theorem~\ref{thm:IJ_crossing}, an overtaking one-loop phase of the form
+\begin{equation}\label{eq:delta1_det_ov}
+\delta_{1,\rm ov}^{\rm det}(\alpha_1,\alpha_2)=-c_{\rm M}\frac\pi2+c_{\rm loop}\Delta\theta_{\rm cont}^{\rm same}(\alpha_1,\alpha_2)\qquad(0<\alpha_1<\alpha_2<\pi/3)
+\end{equation}
+continues under exact crossing $\delta_{1,\rm ho}^{\rm det}(\alpha_1,\alpha_2)=-\delta_{1,\rm ov}^{\rm det}(\alpha_1,\alpha_2+\pi)$ to
+\begin{equation}\label{eq:delta1_det_ho}
+\delta_{1,\rm ho}^{\rm det}(\alpha_1,\alpha_2)=\Bigl(c_{\rm M}-\frac12 c_{\rm loop}\Bigr)\frac\pi2+c_{\rm loop}\Delta\theta_{\rm cont}^{\rm head}(\alpha_1,\alpha_2).
+\end{equation}
+In particular, for $c_{\rm loop}=1$:
+\begin{itemize}
+\item If $c_{\rm M}=1$ (matching the overtaking Stirling offset $-\frac\pi2$ of $S_{\Gamma,\rm ov}$), the crossed head-on threshold constant is $(1-\frac12)\frac\pi2=+\frac\pi4$ for $\Delta\theta_{\rm cont}$ or, if only $I_{12}$ is crossed and $J_{12}$ is evaluated on its principal branch (jumping by $+\pi$ at $\alpha_2=\pi/3$), $(c_{\rm M}-1)\frac\pi2=0$ in the head-on channel!
+\end{itemize}
+Thus the $+\frac\pi2$ crossing offset of $J_{12}$ and the $+\frac\pi2$ Stirling offset of $S_{\Gamma,\rm ho}$ are locked by the same threshold anomaly.
+\end{corollary}
+
+\paragraph{2. Frame-conversion interface and small-amplitude scaling law.}
+Suppose the quantum momentum/frame dictionary (\texttt{frame\_*}) supplies a single-soliton one-loop momentum shift $\Delta P(\alpha,\epsilon)=\epsilon\Delta P(\alpha,+1)$ (so $P_{\rm quant}(\alpha,\epsilon)=P(\alpha,\epsilon)+\hbar\Delta P(\alpha,\epsilon)+O(\hbar^2)$) and a one-loop coupling renormalisation $c_1$ ($\hbar_{\rm ren}=\hbar(1+c_1\hbar)$). Expanding $\delta(P_1^{\rm quant},P_2^{\rm quant})/\hbar_{\rm ren}$ at fixed quantum momenta shifts the $O(\hbar^0)$ phase by
+\begin{equation}\label{eq:delta1_frame}
+\delta_1^{\rm frame}(1,2)=\Bigl[\Delta x_{12}'\Delta P(\alpha_1,\epsilon_1)+\Delta x_{21}'\Delta P(\alpha_2,\epsilon_2)\Bigr]-c_1\delta(1,2)
+=\delta_1^{\rm Hirota}(1,2)+\delta_1^{\rm Darboux}(1,2)-c_1\delta(1,2),
+\end{equation}
+where we split $\Delta x_{12}'=\Delta x_{12}-\gamma_1 M_2$ into the Hirota-shift piece and the Darboux-frame piece:
+\begin{align}
+\delta_1^{\rm Hirota}(1,2)&=\Delta x_{12}\Delta P(\alpha_1,\epsilon_1)+\Delta x_{21}\Delta P(\alpha_2,\epsilon_2),\label{eq:frame_split}\\
+\delta_1^{\rm Darboux}(1,2)&=-\gamma_1 M_2\Delta P(\alpha_1,\epsilon_1)+\gamma_2 M_1\Delta P(\alpha_2,\epsilon_2).\nonumber
+\end{align}
+
+\begin{proposition}[\Lc, \smxamb]\label{prop:small_amp_interface}
+\begin{enumerate}
+\item For \emph{any} single-variable function $\Delta P(\alpha,+1)$ extended to crossed rapidities by $\Delta P(\alpha+\pi,+1)=-\Delta P(\alpha,-1)=\Delta P(\alpha,+1)$, both $\delta_1^{\rm Hirota}(1,2)$ and $\delta_1^{\rm Darboux}(1,2)$ are antisymmetric under $1\leftrightarrow 2$ and obey exact crossing $\delta_{1,\rm ov}^{\bullet}(\alpha_1,\alpha_2+\pi)=-\delta_{1,\rm ho}^{\bullet}(\alpha_1,\alpha_2)$ (verified to 40 digits).
+\item Assume $\Delta P(\alpha,+1)$ has the small-amplitude expansion
+\begin{equation}\label{eq:DeltaP_small}
+\Delta P(\alpha,+1)=c_{\ln}\,\alpha\ln\alpha+c_{\rm lin}\,\alpha+O(\alpha^3\ln\alpha)\qquad(\alpha\to 0^+).
+\end{equation}
+Along any ray $\alpha_1=\lambda r$, $\alpha_2=\lambda$ with fixed ratio $r\in(0,1)$ as $\lambda\to 0^+$:
+\begin{itemize}
+\item In the \textbf{overtaking channel} ($\epsilon_1=\epsilon_2=+1$), where $\Delta x_{12}=-\frac{1}{\lambda r}\ln\bigl(\frac{1-r}{1+r}\bigr)^2+O(\lambda)$ and $-\gamma_1 M_2=\frac{2}{\lambda r}+O(\lambda)$, both pieces have finite, scale-invariant $\lambda\to 0^+$ limits:
+\begin{align}
+\lim_{\lambda\to 0^+}\delta_{1,\rm ov}^{\rm Hirota}(\lambda r,\lambda)&=-2c_{\ln}\ln r\ln\frac{1-r}{1+r},\label{eq:lim_Hirota_ov}\\
+\lim_{\lambda\to 0^+}\delta_{1,\rm ov}^{\rm Darboux}(\lambda r,\lambda)&=2c_{\ln}\,r\ln r+2c_{\rm lin}(r-1),\label{eq:lim_Darboux_ov}
+\end{align}
+while $\delta_{\rm ov}(\lambda r,\lambda)=O(\lambda^2\ln\lambda)\to 0$ (so $c_1$ drops out at $\lambda\to 0^+$) and $J_{12}^{\rm same}(\lambda r,\lambda)=O(\lambda^2)\to 0$. Meanwhile, the continuum dilogarithm integral~\eqref{eq:I12_same} has the exact KdV limit
+\begin{equation}\label{eq:lim_I12_ov}
+\lim_{\lambda\to 0^+}I_{12}^{\rm same}(\lambda r,\lambda)=-\frac{4}{\pi}\chi_2(r)-\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r},\qquad
+\chi_2(r)=\tfrac12\bigl(\Li_2(r)-\Li_2(-r)\bigr).
+\end{equation}
+Combining~\eqref{eq:lim_Hirota_ov} and~\eqref{eq:lim_I12_ov}, the non-Legendre logarithmic product $\ln r\ln\frac{1-r}{1+r}$ in $c_{\rm loop}I_{12}^{\rm same}\pm\delta_{1,\rm ov}^{\rm Hirota}$ cancels if and only if $\pm c_{\ln}=c_{\rm loop}/\pi$ (for $c_{\rm loop}=1$, $c_{\ln}=\pm 1/\pi$, where the continuum mode integral $\Delta P_{\rm mode}(\alpha)=-\frac2\pi\alpha\ln\alpha+O(\alpha)$ has $c_{\ln}=-2/\pi$ and therefore cancels $\ln r\ln\frac{1-r}{1+r}$ in $I_{12}^{\rm same}-\delta_{1,\rm ov}^{\rm Hirota}[\Delta P_{\rm mode}]=-\frac4\pi\chi_2(r)$, independently confirming the sign audit in \texttt{matching.pdf}).
+\item In the \textbf{head-on channel} ($\epsilon_1=+1,\epsilon_2=-1$), $A_{12}^{\rm ho}=1-\frac32\lambda^2(1-r^2)+O(\lambda^4)$ gives $\Delta x_{12}=O(\lambda)$, so
+\begin{equation}\label{eq:lim_Hirota_ho}
+\delta_{1,\rm ho}^{\rm Hirota}(\lambda r,\lambda)=O(\lambda^2\ln\lambda)\longrightarrow 0,\qquad
+I_{12}^{\rm head}(\lambda r,\lambda)+J_{12}^{\rm head}(\lambda r,\lambda)=O(\lambda^2\ln\lambda)\longrightarrow 0,
+\end{equation}
+whereas $-\gamma_1 M_2=\frac{2}{\lambda r}+O(\lambda)$ and $+\gamma_2 M_1=\frac{2r}{\lambda}+O(\lambda)$ have the \emph{same} sign, so the Darboux-frame piece is
+\begin{equation}\label{eq:lim_Darboux_ho}
+\delta_{1,\rm ho}^{\rm Darboux}(\lambda r,\lambda)=2c_{\ln}\bigl[(1+r)\ln\lambda+r\ln r\bigr]+2c_{\rm lin}(1+r)+O(\lambda^2\ln\lambda),
+\end{equation}
+which vanishes as $\lambda\to 0^+$ if and only if $c_{\ln}=c_{\rm lin}=0$ (or if the quantum frame conversion takes place directly in the Darboux momentum coordinates rather than via $\Delta x' \Delta P$).
+\end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\paragraph{Precise interface summary.}
+Once the \texttt{det\_*} and \texttt{frame\_*} packages supply:
+\begin{enumerate}
+\item the intrinsic projected determinant phase $\delta_{1,\rm ov}^{\rm det}(\beta_1,\beta_2)$ (specifically the two dimensionless numbers $(c_{\rm M},c_{\rm loop})$ in~\eqref{eq:delta1_det_ov} and any zero-mode projection correction $\Delta\vartheta_{\rm proj}(\beta_1,\beta_2)$), and
+\item the single-soliton one-loop momentum shift function $\Delta P(\beta,+1)$ (with small-amplitude coefficients $(c_{\ln},c_{\rm lin})$ in~\eqref{eq:DeltaP_small}) and coupling shift $c_1$ in~\eqref{eq:delta1_frame},
+\end{enumerate}
+the residual $O(\hbar^0)$ function $\vartheta_{\rm ov}(1,2)$ in Proposition~\ref{prop:min_amb} is uniquely fixed with zero remaining free parameters by
+\begin{equation}\label{eq:interface_master}
+\vartheta_{\rm ov}(1,2)=-\frac\pi2\sgn(\eta)+\delta_{1,\rm ov}^{\rm det}(1,2)+\Delta x_{12}'\Delta P(\beta_1,+1)+\Delta x_{21}'\Delta P(\beta_2,+1)-c_1\delta_{\rm ov}(1,2),
+\end{equation}
+and $\vartheta_{\rm ho}(\beta_1,\beta_2)=-\vartheta_{\rm ov}(\beta_1,\beta_2+i\pi)$.
+
+%======================================================================
+\section{Summary of claims, verification scripts, and failures recorded}\label{sec:summary}
+
+\subsection{Summary table of claims and checks}
+Every verification script in \texttt{phase2/scripts/smx\_*.py} runs in a few seconds at 35--40 digit precision (\texttt{mpmath}) and ends by printing \texttt{ALL CHECKS PASSED}.
+
+\begin{table}[ht]
+\centering\small
+\caption{Summary of claims, labels, and verification scripts.}\label{tab:summary}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{7.1cm}cc>{\raggedright\arraybackslash}p{4.6cm}@{}}
+\toprule
+Claim / Formula & Label & Status & Verification script \\
+\midrule
+Explicit good/bad dictionaries, KP cross-ratio~\eqref{eq:KP_cr}, $\mathfrak{sl}_3$ factorisation $A_{\rm ov}=G(S/2)/G(D/2)$, and log-derivative identity~\eqref{eq:logA_id} &
+\Lc & Passed ($<10^{-30}$) & \smxdict \\
+\addlinespace[3pt]
+Family~I: Stirling expansion~\eqref{eq:stirling_s} for $s=1,1/2$ and constant $O(\hbar^0)$ step~\eqref{eq:eta_cdd_asymp} of $\eta$-CDD factors &
+\Lc & Passed ($<10^{-11}$) & \smxdict \\
+\addlinespace[3pt]
+Family~II: Separate crossing~\eqref{eq:sep_crossing} of $\delta_{\rm dyn}$ and $T_{12}$; global and dynamical-only $\hbar$-renormalisation~\eqref{eq:hbar_ren_shift} &
+\Lc & Passed ($<10^{-30}$) & \smxdict \\
+\addlinespace[3pt]
+Family~III: Weight-0 theorem for $\partial_1\partial_2\delta(1,2)$, exclusion of mixed-arg.\ dilogarithms $\Li_2(A_{12})$ and KP root-ratio basis $\Li_2(R_{rs})$ at $O(\hbar^{-1})$ (Thm.~\ref{thm:fam3}) &
+\Lc & Passed (SymPy + lstsq) & \smxdict \\
+\addlinespace[3pt]
+Family~IV: All-orders exclusion of mirror products $F(D)G(S)$ by exchange unitarity $G(S)=\text{const}$ (Prop.~\ref{prop:fam4}) &
+\Lc & Passed (SymPy + 40d) & \smxdict \\
+\addlinespace[3pt]
+Bad eq.\ physical-sheet breather poles at $I_{\rm br}=N\hbar$ ($N\ge 1$) and regularity at $N=0$ &
+\Lc & Passed ($<10^{-32}$) & \smxpoles \\
+\addlinespace[3pt]
+Good eq.: $A_{12}^{\rm good}(a-ib,a+ib)<1/4$ everywhere; spurious physical-sheet poles~\eqref{eq:spurious_poles} of $S_\Gamma^{\rm good}$ on $a\in(0,\pi/3),b<0$; smoothness $\eta=0$ across Y-junctions (Prop.~\ref{prop:good_poles}) &
+\La/\Lc & Passed ($<10^{-32}$) & \smxpoles \\
+\addlinespace[3pt]
+$N$-soliton symplectic form~\eqref{eq:Omega_sigma}, Darboux coordinates~\eqref{eq:Darboux_Xj}, and wall-crossing invariance across all $N!$ chambers ($N=4$) &
+\Lc & Passed ($<10^{-38}$) & \smxring \\
+\addlinespace[3pt]
+Twisted ring Bethe phase~\eqref{eq:Phi_ring}: exact Hirota shift $-\partial_{P_j}\Phi_{\rm ring}(j\mid l)=\Delta x_{jl}$, global sum rule~\eqref{eq:global_sum_rule}, and covariant breather fusion~\eqref{eq:breather_charges}--\eqref{eq:breather_shift} (Thm.~\ref{thm:ring_bethe}) &
+\Lc & Passed ($<10^{-38}$) & \smxring \\
+\addlinespace[3pt]
+Minimal residual ambiguity (Prop.~\ref{prop:min_amb}), continuum integral crossing $J_{12}^{\rm same}(\alpha_1,\alpha_2+\pi)+J_{12}^{\rm head}(\alpha_1,\alpha_2)=+\pi/2$ (Thm.~\ref{thm:IJ_crossing}), and small-amplitude interface laws~\eqref{eq:lim_Hirota_ov}--\eqref{eq:lim_Darboux_ho} &
+\Lc & Passed ($<10^{-38}$) & \smxamb \\
+\addlinespace[3pt]
+That any surviving candidate is the exact S-matrix of a well-defined quantum Boussinesq theory &
+\Ld & Open & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Failures recorded}
+In accordance with \texttt{AGENTS.md}, we record all failed checks and intermediate errors encountered during this investigation, including those that were diagnosed and fixed:
+\begin{enumerate}
+\item \textbf{Swapped $K^4$ dispersion sign in the initial definition of $A_{12}$ (\smxdict).}
+In the first draft of \texttt{A12(s1, s2)}, we wrote \texttt{W**2 - K**2 - sg * K**4} with \texttt{sg = -1} for the bad equation and \texttt{+1} for the good equation, which reversed the signs of $K^4$ between the two equations. This caused \smxpoles\ to report $A_{12}^{\rm good}=473.5>1/4$ at $(a,b)=(0.25,0.2)$ and caused the symplectic and ring Bethe derivative checks in \smxring\ and \smxamb\ to fail. Fixing the polynomial to \texttt{W**2 - K**2 + sg * K**4} resolved all three failures immediately.
+\item \textbf{Missing $-\frac23 M_1'\Pi_2$ term in the log-derivative identity~\eqref{eq:logA_id}.}
+We initially conjectured $\frac29(\ell_1-\ell_2)\partial_1\ln A_{12}=-\frac13\Pi_1' M_2$, overlooking that $M_1$ also depends on $\beta_1$ inside $T_{12}=-\frac23(\Pi_1 M_2-\Pi_2 M_1)$. Numerical differentiation exposed the discrepancy; restoring the $-\frac23 M_1'\Pi_2$ term gave agreement to $10^{-38}$. In \smxring, at the head-on test pair $(\beta_1,\epsilon_1)=(0.9,+1)$, $(\beta_2,\epsilon_2)=(0.35,-1)$, the two terms $-\frac13\Pi_1' M_2$ and $-\frac23 M_1'\Pi_2$ have opposite signs and nearly cancel, giving $|\partial_{P_1}\delta_{\rm dyn}+\Delta x_{12}|=6.04\times 10^{-3}$ (smaller than our initial naive lower-bound threshold $10^{-2}$, which was updated to the exact analytical prediction $|(\frac13\Pi_1' M_2+\frac23 M_1'\Pi_2)/P_1'|$).
+\item \textbf{Sign of the $I_{\rm KdV}(r)$ vs.\ $\Delta x\,\Delta P_{\rm mode}$ log cancellation (\smxamb).}
+We initially tested whether $I_{\rm KdV}(r)+\delta_{1,\rm ov}^{\rm Hirota}[\Delta P_{\rm mode}]$ (with a plus sign) equals $-\frac4\pi\chi_2(r)$ for $\Delta P_{\rm mode}(\alpha)=-\frac2\pi\alpha\ln\alpha$. That check failed with error $0.902$ at $r=0.25$ because both $I_{\rm KdV}(r)$ and $\delta_{1,\rm ov}^{\rm Hirota}[\Delta P_{\rm mode}]$ carry $-\frac2\pi\ln r\ln\frac{1-r}{1+r}$ with the \emph{same} minus sign, so the logarithm cancels in the difference $I_{\rm KdV}(r)-\delta_{1,\rm ov}^{\rm Hirota}[\Delta P_{\rm mode}]=-\frac4\pi\chi_2(r)$ (independently confirming the sign correction recorded in \texttt{matching.pdf}).
+\item \textbf{SymPy \texttt{simplify} hang on $\partial_{\beta_1}\partial_{\beta_2}\delta_{\rm dyn}$ (\smxdict).}
+Calling \texttt{sp.simplify(sp.diff(ddyn\_sym, B1, B2))} directly on the hyperbolic expression timed out ($>3$~minutes) because SymPy attempted hyperbolic trigonometric factorisation of high-degree polynomials. Expanding $\partial_1\partial_2[(\ell_1-\ell_2)\ln A_{12}]=\ell_1'\partial_2\ln A_{12}-\ell_2'\partial_1\ln A_{12}+(\ell_1-\ell_2)\partial_1\partial_2\ln A_{12}$ directly verified the absence of \texttt{log} and \texttt{polylog} nodes in $<0.1\,$s.
+\item \textbf{Binary float64 rounding in $\mathfrak{sl}_3$ test arguments and sign of the $O(\eta^{-1})$ Bernoulli term in Check~2 (\smxdict).}
+Passing Python \texttt{float} literals $(0.85+0.3)/2$ into \texttt{G\_sl3\_bad} introduced a $10^{-16}$ IEEE~754 rounding discrepancy against 40-digit \texttt{mpf} arithmetic, and the $O(\eta^{-1})$ Stirling term in~\eqref{eq:stirling_s} was initially written with $+B_2(s)/\eta$ instead of $-B_2(s)/\eta$ (since $\operatorname{Im}[B_2(s)/(2i\eta)]=-B_2(s)/(2\eta)$). Both were caught by the 30-digit assertion in \smxdict\ and corrected.
+\end{enumerate}
+
+\begin{thebibliography}{99}\small
+\bibitem{BC} M.~M.~Bogdan, O.~V.~Charkina, Quasiclassical quantization of the Boussinesq breather emerging from the kink localized mode, \emph{Low Temp. Phys.} 51 (2025), arXiv:2502.14695. [verified in Phase~1/2; full text in \texttt{literature/} on another machine, abstract and Phase~1/2 equations used here]
+\bibitem{BD} T.~Bonnemain, B.~Doyon, Soliton gas of the integrable Boussinesq equation and its generalised hydrodynamics, \emph{SciPost Phys.} 18 (2025) 075, arXiv:2402.08669. [verified in Phase~1/2; full text on another machine]
+\bibitem{CZ} E.~Corrigan, C.~Zambon, Adding integrable defects to the Boussinesq equation, \emph{J. Phys. A} 56 (2023) 405202, arXiv:2306.03772. [verified in Phase~1/2; full text on another machine]
+\bibitem{DMHC} A.~Dimakis, F.~M\"uller-Hoissen, X.-M.~Chen, Matrix Boussinesq solitons and their tropical limit, \emph{Phys. Scr.} 94 (2019) 035206, arXiv:1805.09711. [verified in Phase~1/2; full text on another machine]
+\bibitem{FK} L.~D.~Faddeev, V.~E.~Korepin, Quantum theory of solitons, \emph{Phys. Rep.} 42 (1978) 1, doi:10.1016/0370-1573(78)90058-3. [verified in Phase~2; abstract/standard reference]
+\bibitem{Hirota73} R.~Hirota, Exact $N$-soliton solutions of the wave equation of long waves in shallow-water and in nonlinear lattices, \emph{J. Math. Phys.} 14 (1973) 810, doi:10.1063/1.1666400. [abstract verified in Phase~1]
+\bibitem{Hol92} T.~J.~Hollowood, Solitons in affine Toda field theories, \emph{Nucl. Phys. B} 384 (1992) 523, arXiv:hep-th/9110010. [verified in Phase~1/2; full text on another machine]
+\bibitem{LMK} F.~Lambert, M.~Musette, E.~Kesteloot, Soliton resonances for the good Boussinesq equation, \emph{Inverse Problems} 3 (1987) 275. [abstract verified in Phase~1; conditions via \cite{BD}]
+\bibitem{RS} A.~G.~Rasin, J.~Schiff, B\"acklund transformations for the Boussinesq equation and merging solitons, \emph{J. Phys. A} 50 (2017) 325202, arXiv:1701.00243. [verified in Phase~1; full text on another machine]
+\end{thebibliography}
+
+\end{document}

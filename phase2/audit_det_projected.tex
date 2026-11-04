@@ -1,0 +1,467 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}\ }
+\newcommand{\Lb}{\textsf{\textbf{(b)}}\ }
+\newcommand{\Lc}{\textsf{\textbf{(c)}}\ }
+\newcommand{\Ld}{\textsf{\textbf{(d)}}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak det\_\allowbreak projected.py}}
+\newcommand{\pkgtex}{\texttt{det\_\allowbreak projected\_\allowbreak oneloop.tex}}
+\newcommand{\G}{\texttt{det\_\allowbreak geometry.py}}
+\newcommand{\Scheck}{\texttt{det\_\allowbreak spectrum.py}}
+\newcommand{\Ccheck}{\texttt{det\_\allowbreak charges.py}}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\R}{\mathbb R}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=2em
+
+\title{Independent audit of the projected one-loop Boussinesq determinant:\\
+operator domain, intrinsic tail divergence, and conditional fixed-$P$ invariants}
+\author{Quantum Boussinesq solitons project --- Independent audit for Gustav Delius}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report an independent mathematical and numerical audit of the projected
+one-loop determinant package \texttt{phase2/}\pkgtex\ and its
+scripts \G, \Scheck, and \Ccheck. All analytical identities are re-derived from
+the fixed good-Boussinesq Lagrangian without reusing package code paths, and all
+numerical quadratures and limits are recomputed at 70-digit working precision
+in \texttt{phase2/\allowbreak scripts/}\scr\ using independent coordinate transforms,
+closed-form dilogarithms, and Richardson extrapolations.
+\Lc Every mathematical formula displayed in \pkgtex\ is confirmed; no displayed
+mathematical claim is refuted. We prove that the linear box divergence of the
+configuration-space kinetic norms of shift and velocity/width paths is
+\emph{intrinsic} to the velocity-dependent topological jump $M(v)=2\sqrt{1-v^2}$
+of the potential formulation on $\R$, rather than an artefact of the auxiliary
+symplectic completion or the centred shift gauge. We confirm the ``heavy-mode
+shorthand error'' in \texttt{oneloop\_\allowbreak phase.tex} and derive its exact
+analytical residual $4\cos\alpha\,\gamma(\alpha)(f_-^{\rm sp})'(\xi)$.
+We separate the unconditional Legendre algebra in $E_1|_P=-L_1$ from the
+conditional equal-mode-count cutoff endpoint $B_\Lambda$ and the vacuum
+tadpole subtraction $C_\Lambda$. Finally, we qualify four tautological
+assertions and two text-to-script gaps in the package's verification scripts
+and supply non-circular replacements. \Ld The full constrained functional
+determinant, nonzero-frequency spectral completeness, and absolute two-soliton
+phase normalization remain open.
+\end{abstract}
+
+\section{Scope, conventions, and runtime verification}
+Claim labels follow \texttt{AGENTS.md}: \textbf{(a)} proved in the literature,
+\textbf{(b)} conjectured or heuristic in the literature, \textbf{(c)} derived or
+verified in this project, and \textbf{(d)} a guess or unestablished physical
+identification. No external references are invented; only local repository files
+were read in this session. We use the fixed good-equation conventions of
+\texttt{AGENTS.md}:
+\begin{equation}\label{eq:conv}
+ u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\qquad u=\phi_x=2(\log\tau)_{xx},\qquad
+ \mathcal L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\phi_x^3-\tfrac12\phi_{xx}^2,
+\end{equation}
+with $\pi=\phi_t$, $\Omega=\int\dd\pi\wedge\dd\phi$, $k=\sin\alpha=\sqrt{1-v^2}$,
+$v=\epsilon\cos\alpha$, $M=2k$, $\Pi=-2vk$, and $P=\tfrac23vk^3$.
+
+\paragraph{Package execution and runtimes (Point 6).}
+All three package scripts and the independent audit script were executed from
+the repository root and finished by printing \texttt{ALL CHECKS PASSED} \Lc:
+\begin{center}\small
+\begin{tabular}{@{}lcrrl@{}}\toprule
+Script (\texttt{phase2/scripts/}) & Precision & Cached JSON & Fresh run & Terminal status\\\midrule
+\G & 55 dps & 43.55 s & 17.59 s & \texttt{ALL CHECKS PASSED}\\
+\Scheck & 60 dps & 1.91 s & 0.68 s & \texttt{ALL CHECKS PASSED}\\
+\Ccheck  & 65 dps & 69.38 s & 22.59 s & \texttt{ALL CHECKS PASSED}\\
+\scr & 70 dps & --- & 68.63 s & \texttt{ALL CHECKS PASSED}\\\bottomrule
+\end{tabular}
+\end{center}
+All numerical outputs and SHA-256 digests of the audited files are saved in
+\texttt{phase2/\allowbreak scripts/\allowbreak audit\_\allowbreak det\_\allowbreak projected\_\allowbreak results.json}.
+
+\section{Fluctuation operator, endpoint variations, and zero modes (Point 1)}
+\subsection{First variation and spatial boundary concomitant}
+Expanding $\phi\mapsto\phi+\delta\phi$ in \eqref{eq:conv} and integrating by
+parts in $(t,x)$ yields the exact identity \Lc (\scr, check 1):
+\begin{equation}\label{eq:ibp1}
+ \delta\mathcal L = -\big[\phi_{tt}-\phi_{xx}+\phi_{xxxx}+3(\phi_x^2)_x\big]\delta\phi
+ +\partial_t(\pi\delta\phi)+\partial_x(A\delta\phi-u_x\delta\phi_x),\qquad
+ A=-u+3u^2+u_{xx}.
+\end{equation}
+On the classical soliton $u_0(\xi)=\tfrac12k^2\operatorname{sech}^2(k\xi/2)$
+($\xi=x-X-vt$), both $A=(k^2-1)u_0=-v^2u_0$ and $u_{0,x}$ decay exponentially
+as $x\to\pm\infty$. Consequently, time-independent bounded variations
+$\delta\phi(\pm\infty)\ne0$ produce zero spatial boundary term in
+$\delta S|_{\rm space}$. Similarly, local conservation $\pi_t=-\partial_x A$
+implies $\dot M=[\pi]_{-\infty}^{+\infty}=0$ and
+$\dot\Pi=[-A]_{-\infty}^{+\infty}=0$ for smooth histories with
+$\pi(\pm\infty)=u(\pm\infty)=u_{xx}(\pm\infty)=0$ \Lc.
+
+\paragraph{Qualification on \G\ lines 25--33.}
+Whereas Eq.~(7) of \pkgtex\ is correct, lines 26 and
+33 of \G\ only assert the tautology
+$\partial_x(-u+3u^2+u_{xx})=-u_x+6uu_x+u_{xxx}$ (twice, with opposite signs and
+an unused symbol \texttt{p}) without testing the boundary form
+$A\delta\phi-u_x\delta\phi_x$ against $\delta\mathcal L$ \Lc. Check~1 of \scr\
+verifies the full identity~\eqref{eq:ibp1}.
+
+\subsection{Co-moving quadratic action and static kernel exhaustiveness}
+Writing $\phi(x,t)=\Phi(\xi;v,C)+\eta(\xi,t)$ with
+$\Phi(\xi;v,C)=C+k\tanh(k\xi/2)$, the second variation of \eqref{eq:conv} in
+co-moving coordinates is \Lc (\scr, check 1)
+\begin{equation}\label{eq:L2}
+ \mathcal L_2 = \tfrac12(\eta_t-v\eta_\xi)^2-\tfrac12(1-6u_0)\eta_\xi^2-\tfrac12\eta_{\xi\xi}^2
+ = -\tfrac12\eta\mathcal D_v\eta + \partial_t(\cdots) + \partial_\xi(\cdots),
+\end{equation}
+where
+\begin{equation}\label{eq:DvKv}
+ \mathcal D_v=(\partial_t-v\partial_\xi)^2+\mathcal L,\qquad
+ \mathcal K_v=\mathcal L+v^2\partial_\xi^2
+ =\partial_\xi^4-k^2\partial_\xi^2+6\partial_\xi(u_0\partial_\xi)
+ =-\partial_\xi\mathcal H_v\partial_\xi,
+\end{equation}
+with $\mathcal H_v=-\partial_\xi^2+k^2-6u_0$, and Lagrange--Green concomitant
+$f\mathcal K_vg-g\mathcal K_vf=\partial_\xi B_v(f,g)$,
+$B_v(f,g)=fg'''-f'g''+f''g'-f'''g+(6u_0+v^2-1)(fg'-gf')$. For monochromatic
+co-moving modes, differentiating $e^{-i\nu t}f(\xi)$ symbolically gives
+$\mathcal D_v(e^{-i\nu t}f)=e^{-i\nu t}(\mathcal K_v+2iv\nu\partial_\xi-\nu^2)f$ \Lc.
+
+In the polynomial variable $y=\tanh(k\xi/2)$, $\mathcal K_v f=-\partial_\xi(\mathcal H_v f')=0$
+with $f'(\pm\infty)=0$ integrates to $\mathcal H_v f'=0$. One solution is
+$h_1(\xi)=u_0'(\xi)=-\tfrac12k^3y(1-y^2)$. Constructing the second linearly
+independent solution of $\mathcal H_v h=0$ explicitly by reduction of order in
+SymPy (\scr, check 1) gives
+\begin{equation}\label{eq:h2}
+ h_2(y)=h_1(y)\int\frac{k^3\,\dd y}{2(1-y^2)h_1(y)^2}
+ =\frac{k\big(15y^4-18y^2-8y^2(1-y^2)\ln|y|+3\big)}{8y(1-y^2)},
+\end{equation}
+which has constant Wronskian $W(h_1,h_2)=\tfrac12k^4\ne0$ and diverges at
+$y\to\pm1$ as $(1-y^2)^{-1}=\cosh^2(k\xi/2)\sim\tfrac14e^{k|\xi|}$ \Lc. Hence
+every solution of $\mathcal K_v f=0$ with decaying derivative satisfies
+$f'=c_1 u_0'$, proving that $\ker_{\rm bdd}\mathcal K_v=\operatorname{span}\{1,u_0(\xi)\}$.
+Moreover, differentiating the profile ODE $\mathcal H_v u_0'=0$ with respect to
+$v$ yields $\mathcal H_v(\partial_v u_0)=2v u_0$ and hence
+$\mathcal K_v\Phi_v=-2v u_0'$ and $\mathcal D_v(\Phi_v-tu_0)=0$ identically \Lc.
+
+\section{Collective measure, projector tails, and intrinsic norm divergence (Point 2)}
+\subsection{Rank-two three-tangent matrix and four-mode completion}
+Ordering the $t=0$ soliton-family tangents as $(v,X,C)$, namely
+$Z_v=(\Phi_v,-u_0-v\partial_v u_0)$, $Z_X=(-u_0,v u_0')$, and $Z_C=(1,0)$,
+their symplectic pairings $\Omega(Z_A,Z_B)=\int(\delta_A\pi\,\delta_B\phi-\delta_B\pi\,\delta_A\phi)\,\dd\xi$
+form the $3\times3$ skew-symmetric matrix \eqref{eq:W3_audit} of rank two with
+null vector $\Pi_v\partial_X-P_v\partial_C$ \Lc (\scr, check 2):
+\begin{equation}\label{eq:W3_audit}
+ W_3=\begin{pmatrix}0&P_v&\Pi_v\\-P_v&0&0\\-\Pi_v&0&0\end{pmatrix},\qquad
+ P_v=\frac{\dd P}{\dd v}=\frac23k(1-4v^2),\quad
+ \Pi_v=\frac{\dd\Pi}{\dd v}=\frac{2(2v^2-1)}{k}.
+\end{equation}
+Appending the localized momentum direction $Z_r=(0,w)$ with
+$w(\xi)=\tfrac3k u_0-\tfrac{15}{2k^3}u_0^2$ ($\int w\,\dd\xi=1$,
+$\int wu_0\,\dd\xi=0$, $\int w\Phi_v\,\dd\xi=0$ by parity) yields the invertible
+$4\times4$ matrix $W_4$ with $\det W_4=P_v^2$ and Liouville density
+$\sqrt{\det W_4}=|P_v|$ away from the cusp $|v|=1/2$ \Lc. Independent 70-digit
+quadratures in \scr\ using the compactified coordinate $u=\tanh(k\xi/2)\in(-1,1)$
+at $v\in\{0.8,-0.7,0.3,0.6,-0.4\}$ match $W_4$ to $<3\times10^{-68}$ \Lc.
+
+\subsection{Explicit field-space projector tail formula (qualification on line 297)}
+Line 297 of \texttt{det\_projected\_oneloop.tex} labels as ``\Lc
+(\texttt{det\_geometry.py})'' the statement that the symplectic projector
+$\mathcal P\eta=Z_A(W_4^{-1})^{AB}\Omega(Z_B,\eta)$ does not preserve zero
+endpoint variations and can create both constant and opposite-sign tails.
+However, \texttt{det\_geometry.py} (lines 64--77) tests only a $6\times6$
+constant matrix and never evaluates $\mathcal P\eta$ on fields \Lc.
+Inverting $W_4$ explicitly gives (\scr, check 2)
+\begin{equation}\label{eq:Winv_tails}
+ W_4^{-1}=\begin{pmatrix}
+  0&-P_v^{-1}&0&0\\
+  P_v^{-1}&0&0&-P_v^{-1}\Pi_v\\
+  0&0&0&1\\
+  0&P_v^{-1}\Pi_v&-1&0
+ \end{pmatrix}
+ \implies
+ (\mathcal P\eta)_\phi(\pm\infty)=b_r\pm\frac{v}{kP_v}b_X,
+\end{equation}
+where $b_r=\int w\eta_\phi\,\dd\xi$ and
+$b_X=\int(vu_0'\eta_\phi+u_0\eta_\pi)\,\dd\xi$. For the localized Schwartz-class
+perturbation $\eta=(w,0)$, $b_r=\int w^2\,\dd\xi=\tfrac37k\ne0$ and $b_X=0$,
+producing a pure constant tail $(\mathcal P\eta)_\phi(\pm\infty)=\tfrac37k$.
+For $\eta=(0,u_0)$, $b_r=0$ and $b_X=\tfrac23k^3\ne0$, producing an opposite-sign
+tail $(\mathcal P\eta)_\phi(\pm\infty)=\pm\tfrac{2vk^2}{3P_v}$ \Lc. This supplies
+the missing field-space verification.
+
+\subsection{Why the kinetic norm divergence is intrinsic (Point 2)}
+For $\Phi(\xi;v,C)=C+k\tanh(k\xi/2)$, the velocity tangent
+$\Phi_v(\xi)=-\frac{v}{k}[\tanh(k\xi/2)+\frac{k\xi}{2}\operatorname{sech}^2(k\xi/2)]$
+approaches $\mp\frac{v}{k}$ as $\xi\to\pm\infty$. In \scr\ (check 2) we evaluate
+both the leading box divergence on $[-R,R]$ and the exact $O(1)$ constant:
+\begin{equation}\label{eq:phiv_norm_exact}
+ \int_{-R}^R \Phi_v(\xi)^2\,\dd\xi
+ = 2R\frac{v^2}{k^2} + \frac{2(\pi^2-6)}{9}\frac{v^2}{k^3} + O(R^2e^{-kR}),
+\end{equation}
+verified numerically at $R=180/k$ to $<10^{-60}$ \Lc.
+
+\paragraph{Intrinsic vs.\ completion-artefact analysis.}
+The linear divergence in~\eqref{eq:phiv_norm_exact} is \textbf{intrinsic} to the
+configuration-space potential formulation of the Boussinesq one-soliton on $\R$,
+and is \textbf{neither} an artefact of the auxiliary completion $Z_r=(0,w)$
+\textbf{nor} an artefact of the centred shift coordinate $C$:
+\begin{enumerate}
+\item The auxiliary completion $Z_r=(0,w)$ is purely a localized momentum
+perturbation ($\delta\phi=0$, $\delta\pi=w\sim\operatorname{sech}^2$) and does
+not enter the configuration-space tangents $\Phi_C=1$ or $\Phi_v$ at all \Lc.
+\item Regardless of how the shift coordinate $C$ is parametrized relative to $v$,
+any one-soliton potential profile on $\R$ has asymptotic kink jump equal to the
+topological charge $\phi(+\infty,t)-\phi(-\infty,t)=\int_{-\infty}^\infty u_0\,\dd x
+=M(v)=2\sqrt{1-v^2}$. Along any time-modulated collective path $(v(t),C(t))$
+without compensating radiation tails, the endpoint velocities
+$\dot\phi_\pm=\dot C\mp\frac{v}{k}\dot v$ obey
+$\dot\phi_+-\dot\phi_-=\dot M=-\frac{2v}{k}\dot v$. Even if one couples
+$\dot C=\lambda\dot v$ (for example $\lambda=\pm v/k$ to anchor one spatial
+endpoint at zero), the kinetic norm density slope is \Lc (\scr, check 2)
+\begin{equation}\label{eq:intrinsic_bound}
+ \lim_{R\to\infty}\frac{1}{2R}\int_{-R}^R\tfrac12\dot\Phi^2\,\dd\xi
+ = \tfrac14(\dot\phi_+^2+\dot\phi_-^2)
+ = \tfrac12\left(\dot C^2+\tfrac14\dot M^2\right)
+ = \frac12\left(\lambda^2+\frac{v^2}{k^2}\right)\dot v^2
+ \ge \frac{v^2}{2k^2}\dot v^2 > 0
+\end{equation}
+for all $\lambda\in\R$ whenever $v\ne0$ and $\dot v\ne0$. The centred choice
+$\lambda=0$ actually \emph{minimizes} the divergence coefficient; anchoring one
+endpoint ($\lambda=\pm v/k$) doubles it.
+\item In phase space, by contrast, the stationary soliton has exponentially
+localized canonical momentum $\pi_0=-vu_0$, so its velocity derivative along the
+stationary family $\partial_v\pi_0=-u_0-v\partial_v u_0$ is exponentially
+localized. That is why the instantaneous symplectic form $\Omega$ is finite on
+$(Z_v,Z_X,Z_C,Z_r)$, whereas promoting $v(t)$ and $C(t)$ to independent
+time-dependent configuration-space path-integral coordinates with fixed-endpoint
+radiation fields is obstructed by $\dot M=[\pi]_{-\infty}^{+\infty}=0$ \Lc.
+\end{enumerate}
+
+\section{Heavy-mode shorthand error and spectrum audit (Point 4)}
+For real $q\ne0$, the continuum potential modes $f_q(\xi)=\partial_\xi[e^{iq\xi}(1+Ae^{k\xi})/(1+e^{k\xi})]$
+satisfy the co-moving pencil $(\mathcal K_v+2iv\nu\partial_\xi-\nu^2)f_q=0$ with
+$\nu=|q|\sqrt{1+q^2}-vq$ and $|A|=1$, verified in \scr\ (check 3) at
+independent test points to $<10^{-66}$ \Lc.
+
+On the heavy branch $\alpha\in(\pi/3,\pi/2)$, the secondary KP-triple wavenumbers
+$K_\mp=\sin(\alpha\mp\pi/3)\in(0,k)$ satisfy $K_-+K_+=k$ and yield localized
+exponentially growing and decaying solutions $\eta_\mp(\xi,t)=e^{\pm\epsilon\gamma t}f_\mp^{\rm sp}(\xi)$
+with $\gamma(\alpha)=\sqrt3(\sin^2\alpha-3/4)>0$ and
+$f_\mp^{\rm sp}(\xi)=\partial_\xi[e^{K_\mp\xi}/(1+e^{k\xi})]$.
+
+\paragraph{Confirmation of the heavy-mode shorthand error (Point 4).}
+In \texttt{oneloop\_phase.tex} (line 221), both growth rates $\pm\gamma(\alpha)$
+were written with a single spatial profile $e^{\pm\gamma t}\partial_\xi^2[e^{K_{cb}\xi}/(1+e^{k_1\xi})]$
+($K_{cb}=K_-$). (Notably, the accompanying script
+\texttt{oneloop\_good\_phonon\_scattering.py} at line 267 actually looped over
+\texttt{((+1, K\_cb), (-1, K\_ac))}, contradicting its own comment at line 265.)
+Because the co-moving operator $\mathcal K_v-2v\lambda\partial_\xi+\lambda^2$
+contains the Doppler-odd term $-2v\lambda\partial_\xi$, reversing the rate
+$\lambda=\epsilon\gamma\mapsto-\epsilon\gamma$ requires reflecting
+$\xi\mapsto-\xi$, which sends $K_-\mapsto k-K_-=K_+$. Pairing $f_-^{\rm sp}$
+with the opposite rate $-\epsilon\gamma$ leaves the exact analytical residual \Lc
+(\scr, check 3):
+\begin{equation}\label{eq:shorthand_res}
+ \big(\mathcal K_v-2v(-\epsilon\gamma)\partial_\xi+\gamma^2\big)f_-^{\rm sp}(\xi)
+ = 4v\epsilon\gamma\,\partial_\xi f_-^{\rm sp}(\xi)
+ = 4\cos\alpha\,\gamma(\alpha)\,(f_-^{\rm sp})'(\xi).
+\end{equation}
+Formula~\eqref{eq:shorthand_res} vanishes only at $v=0$ ($\alpha=\pi/2$), is
+strictly independent of $\epsilon=\pm1$ (since $v\epsilon=\cos\alpha$), and at
+$\alpha=1.2$, $\xi=0.37$ evaluates to
+$0.007332526089026845910525637820\ldots$, matching the 60-digit value recorded in
+\texttt{det\_\allowbreak spectrum\_\allowbreak results.json} to $<10^{-65}$ \Lc.
+
+\section{\texorpdfstring{Fixed-momentum correction $E_1|_P=-L_1$ and the $-2/\pi$ limit (Point 3)}{Fixed-momentum correction E1|P = -L1 and the -2/pi limit (Point 3)}}
+\subsection{Independent high-precision recomputation and cutoff asymptotics}
+For $0<\alpha<\pi/3$, let $\varphi_r=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$ and
+$c_r=(1,1,-2)$. In \scr\ (check 4) we recompute the mode-sum charges $e(\alpha)$,
+$p(\alpha,\epsilon)$, the canonical momentum $p_{\rm can}=\dd L_1/\dd v$, and
+$E_1|_P=-L_1=e-vp$ at 70-digit precision using hyperbolic quadrature $q=\sinh u$,
+matching Table~1 of \texttt{det\_projected\_oneloop.tex} to all displayed digits \Lc:
+\begin{center}\small
+\begin{tabular}{@{}crrrr@{}}\toprule
+$\alpha$ & $p(\alpha,+1)$ & $p_{\rm can}(\alpha,+1)$ & $E_1|_P=-L_1(\alpha)$
+ & $\Lambda=10^{22}$ Richardson error\\\midrule
+0.15 & $-0.157387066429280$ & $-0.190035364892327$ & $-0.001424902440969$ & $2.43\times10^{-69}$\\
+0.35 & $-0.265196583086379$ & $-0.433826858902482$ & $-0.017687351910675$ & $7.30\times10^{-69}$\\
+0.50 & $-0.309798364829473$ & $-0.603389892153812$ & $-0.050091498992296$ & $1.25\times10^{-68}$\\
+0.85 & $-0.311827472658892$ & $-0.962723079254963$ & $-0.223358039968532$ & $2.51\times10^{-68}$\\\bottomrule
+\end{tabular}
+\end{center}
+Expanding the regulated energy trace at finite cutoff $\Lambda$ yields the exact
+asymptotic remainder \Lc (\scr, check 4):
+\begin{equation}\label{eq:cutoff_asymp}
+ \Delta E_{\rm reg}(\Lambda)-e(\alpha)
+ := \frac1{4\pi}\int_{-\Lambda}^\Lambda\omega\theta'\,\dd q
+    - B_\Lambda + \frac{3k}{\pi}(\sqrt{1+\Lambda^2}-1) - e(\alpha)
+ = \frac{3\sin\alpha}{4\pi\Lambda} + O(\Lambda^{-3}).
+\end{equation}
+At $\Lambda=10^{22}$, the leading term $\frac{3\sin\alpha}{4\pi\Lambda}$ equals
+$3.56757\times10^{-24}$, $1.14454\times10^{-23}$, and $1.79355\times10^{-23}$ at
+$\alpha=0.15,0.50,0.85$, accounting for 64 digits of the \texttt{cutoff\_error}
+reported in \texttt{det\_charges\_results.json}. Two-point Richardson
+extrapolation between $\Lambda=10^{22}$ and $2\times10^{22}$ removes the
+$O(\Lambda^{-1})$ tail and reduces the residual below $2.6\times10^{-68}$ \Lc.
+
+\subsection{Exact symbolic small-amplitude expansion}
+Whereas \texttt{det\_projected\_oneloop.tex} (line 432) attributes its small-$\alpha$
+series to ``analytic differentiation,'' \texttt{det\_charges.py} (lines 80--85)
+actually used numerical finite differences (\texttt{mp.diff}). In \scr\ (check 4)
+we derive the series symbolically in SymPy from the exact rational-trigonometric
+derivative
+\begin{equation}\label{eq:dlog_exact}
+ \frac{\dd}{\dd\alpha}\ln\left|\frac{\tan((\alpha+2\pi/3)/2)}{\tan((\alpha-2\pi/3)/2)}\right|
+ = \frac{4\sqrt3\cos\alpha}{3-4\sin^2\alpha},
+\end{equation}
+and $\dd(E_1|_P)/\dd\alpha=\epsilon\sin\alpha\,p_{\rm can}(\alpha,\epsilon)$,
+obtaining \Lc
+\begin{align}
+ p_{\rm can}(\alpha,\epsilon) &= -\frac{4\epsilon}{\pi}\alpha+\frac{8\epsilon}{9\pi}\alpha^3-\frac{8\epsilon}{45\pi}\alpha^5+O(\alpha^7),\\
+ E_1|_P(\alpha) &= -\frac{4}{3\pi}\alpha^3+\frac{14}{45\pi}\alpha^5+O(\alpha^7),\\
+ \frac{E_1|_P(\alpha)}{|P_0(\alpha)|} &= -\frac{2}{\pi}-\frac{23}{15\pi}\alpha^2+O(\alpha^4)
+ \underset{\alpha\to0^+}{\longrightarrow} -\frac2\pi = -0.636619772367581343075535\ldots .
+\end{align}
+Four-point Neville--Richardson extrapolation on $\alpha_k=10^{-5}/2^k$ ($k=0,1,2,3$)
+recovers $-2/\pi$ to $1.47\times10^{-45}$ \Lc.
+
+\subsection{Which ingredients are conditional vs.\ unconditional? (Point 3)}
+\begin{enumerate}
+\item \textbf{Unconditional (choice between the two published charge pairs at fixed $L_1$):}
+Given $E_0'(\alpha)=v(\alpha)P_0'(\alpha)$ with $P_0'(\alpha)\ne0$, first-order
+inversion of $P=P_0(\alpha)+\hbar\tilde p(\alpha)$ in $E=E_0(\alpha)+\hbar\tilde e(\alpha)$
+gives $E_1|_P=\tilde e-v\tilde p$. Because the mode-sum pair $(e,p)$ and the
+canonical pair $(e_{\rm can},p_{\rm can})=(vp_{\rm can}-L_1,\dd L_1/\dd v)$ are
+related by a tangent shift $(\delta e,\delta p)=(v\delta p,\delta p)$ sharing the
+same Legendre function $L_1=vp-e=vp_{\rm can}-e_{\rm can}$, the equality
+$e-vp=e_{\rm can}-vp_{\rm can}=-L_1$ holds \emph{unconditionally as an algebraic
+identity} \Lc. Thus $E_1|_P$ does \emph{not} depend on which of the two charge
+pairs is physical (though two-soliton frame shifts $\delta_{\rm renorm}=-\sum_j p_j\partial_{P_j}\delta_0$
+do depend on the choice of $p_j$).
+\item \textbf{Conditional Ingredient A (the equal-mode-count cutoff endpoint $B_\Lambda$):}
+The continuum energy formula $e(\alpha)$ requires retaining the integration-by-parts
+boundary term $B_\Lambda=\frac{\Lambda\sqrt{1+\Lambda^2}}{4\pi}[\theta(\Lambda)-\theta(-\Lambda)]
+=\frac{3k}{2\pi}\Lambda+O(\Lambda^{-1})$. Omitting $B_\Lambda$ leaves an uncancelled
+linear UV divergence $+\frac{3k}{2\pi}\Lambda$ after adding $\delta E_{\rm ct}/\hbar$ \Lc.
+\item \textbf{Conditional Ingredient B (the renormalisation scheme and projected determinant):}
+The limit $E_1|_P/|P_0|\to-2/\pi$ relies critically on the exact cancellation of the
+$O(\alpha)$ linear term in $L_1(\alpha)=\frac{1}{2\pi}[3\sin\alpha+\sum_{r=1}^2\sin\varphi_r(\cos\varphi_r-\cos\alpha)\ln|\tan(\varphi_r/2)|]$,
+where $+3\sin\alpha$ originates from the finite constant $-1$ in the vacuum
+normal-ordering subtraction $C_\Lambda=\frac{\hbar}{2\pi}(\sqrt{1+\Lambda^2}-1)$
+combined with $B_\Lambda$. If the renormalisation prescription or the uncomputed
+boundary/Schur determinant shifts the finite tadpole subtraction by
+$\delta E_{\rm fin}=2\hbar c_{\rm fin}\sin\alpha$ ($c_{\rm fin}\ne0$), then
+$E_1|_P$ acquires $+2c_{\rm fin}\sin\alpha$ and the small-amplitude ratio diverges as \Lc (\scr, check 4)
+\begin{equation}\label{eq:cfin_div}
+ \frac{E_1|_P(\alpha)+2c_{\rm fin}\sin\alpha}{|P_0(\alpha)|}
+ = \frac{3c_{\rm fin}}{\alpha^2} - \frac{2}{\pi} + O(\alpha^0).
+\end{equation}
+Likewise, identifying $L_1(v)$ with the full one-loop effective action remains
+conditional \Ld on constructing the projected functional determinant.
+\end{enumerate}
+
+\section{Two-soliton phases and audit of script circularities (Point 5)}
+In \scr\ (check 5) we recompute the two-soliton continuum integrals $I_{12},I_{21},J_{12}$
+at $(\alpha_1,\alpha_2)=(0.3,0.6)$ across all four orientations $(\epsilon_1,\epsilon_2)\in\{\pm1\}^2$
+both by hyperbolic quadrature $q=\sinh u$ and via the closed-form Legendre
+$\chi_2$ representation, agreeing to $<2\times10^{-69}$ and confirming
+$I_{12}+I_{21}=-\frac\pi2(\epsilon_1+\epsilon_2)$ and
+$J_{12}-I_{12}=\frac\pi4(\epsilon_1+\epsilon_2)$, as well as the bootstrap
+counterexample $F_{12}=\lambda(P_1M_2-P_2M_1)$ \Lc.
+
+\paragraph{Audit of circularities, tolerances, and text-to-script gaps (Point 5).}
+No loosened tolerances ($10^{-42}$ to $10^{-58}$ throughout) or target-feeding-back
+were found in the numerical calculations. However, auditing the script code line
+by line exposed four symbolic/numerical tautologies (``a formula compared with
+itself'') and two text-to-script gaps \Lc:
+\begin{enumerate}
+\item \texttt{det\_geometry.py} lines 26 \& 33: both assert
+$\partial_x(-u+3u^2+u_{xx})=-u_x+6uu_x+u_{xxx}$ (with opposite signs) without
+testing the boundary variation $A\delta\phi-u_x\delta\phi_x$ in Eq.~(7).
+\item \texttt{det\_spectrum.py} lines 19--20: compares
+$(-i\omega)^2f+2iv\omega f'+v^2f''$ against $-\omega^2f+2iv\omega f'+v^2f''$
+without differentiating $e^{-i\omega t}f(x-vt)$. (Line 17 also substitutes $t$
+into the vacuum operator where every derivative term is separately zero.)
+\item \texttt{det\_charges.py} lines 24 \& 63: asserts $(v\,\delta p-l)-v\,\delta p+l=0$
+symbolically and $(vp_{\rm can}-L_1)-vp_{\rm can}=-L_1$ numerically (where $L_1$
+was defined as $vp-e$), testing $(A-B)-A=-B$.
+\item \texttt{det\_charges.py} line 27: defines
+\texttt{label\_phase = d0 + g1*(-dp1) + g2*(-dp2)} and asserts it equals
+\texttt{d0 - dp1*g1 - dp2*g2} without expanding $\delta_0(P_1,P_2)$.
+\item Text-to-script gaps: line 297 of \texttt{det\_projected\_oneloop.tex}
+cites \texttt{det\_geometry.py} for field-space projector tail creation (not in
+that script), and line 432 claims analytic differentiation for the small-$\alpha$
+Taylor series whereas \texttt{det\_charges.py} lines 80--85 use numerical
+\texttt{mp.diff}. All six items are supplied by non-circular checks in \scr.
+\end{enumerate}
+
+\section{Verdict table and failures recorded}
+\begin{center}\small
+\begin{longtable}{@{}L{5.6cm}L{2.8cm}L{5.8cm}@{}}
+\toprule
+Package claim (\texttt{det\_projected\_oneloop.tex}) & Audit verdict & Independent audit evidence (\scr)\\\midrule
+\endhead
+Classical profile, shift dictionary, and charges \eqref{eq:conv}, Eq.~(1) \Lc
+ & \textbf{Confirmed} \Lc & Check 1--2: exact SymPy integration on $y=\tanh(k\xi/2)$\\
+Quadratic operator $\mathcal D_v$, $\mathcal K_v=-\partial_\xi\mathcal H_v\partial_\xi$, and Green concomitant $B_v$, Eqs.~(2)--(9) \Lc
+ & \textbf{Qualified} \Lc & Formulas confirmed; tautologies in \texttt{det\_geometry.py:26,33} and \texttt{det\_spectrum.py:19} replaced in Check 1\\
+Linear box divergence of shift and velocity/width kinetic norms, Eqs.~(12)--(14) \Lc
+ & \textbf{Confirmed} \Lc & Check 2: proved intrinsic to $M(v)=2\sqrt{1-v^2}$ across all shift gauges; exact $O(1)$ constant derived in \eqref{eq:phiv_norm_exact}\\
+Bounded static kernel $\{1,u_0\}$ and velocity Jacobi mode $\eta_v=\Phi_v-tu_0$, Eq.~(15) \Lc
+ & \textbf{Confirmed} \Lc & Check 1: exact symbolic $\mathcal D_v\eta_v=0$ and reduction-of-order growing partner $h_2(\xi)$ in \eqref{eq:h2}\\
+Continuum modes, heavy-branch modes, and \texttt{oneloop\_phase.tex} shorthand error, Eqs.~(16)--(21) \Lc
+ & \textbf{Confirmed} \Lc & Check 3: 70-digit residuals $<10^{-66}$; exact wrong-rate formula $4\cos\alpha\,\gamma(f_-^{\rm sp})'$ derived in \eqref{eq:shorthand_res}\\
+Rank-two $W_3$, auxiliary completion $W_4$, $\det W_4=P_v^2$, and finite projector, Eqs.~(22)--(25) \Lc
+ & \textbf{Qualified} \Lc & Check 2: $W_3,W_4$ confirmed to $<3\times10^{-68}$; missing field-space tail check supplied by \eqref{eq:Winv_tails}\\
+Vacuum counterterm $C_\Lambda$, equal-mode-count endpoint $B_\Lambda$, and regulated $e,p,L_1,p_{\rm can}$, Eqs.~(26)--(35) \Lc
+ & \textbf{Confirmed} \Lc (conditional) & Check 4: hyperbolic quadrature and exact cutoff tail $\frac{3\sin\alpha}{4\pi\Lambda}$ in \eqref{eq:cutoff_asymp}; Richardson error $<3\times10^{-67}$\\
+Fixed-momentum invariant $E_1|_P=-L_1$ and small-amplitude limit $-2/\pi$, Eqs.~(36)--(41) \Lc
+ & \textbf{Qualified} \Lc (conditional) & Check 4: symbolic SymPy series replaces numerical \texttt{mp.diff}; conditional dependence on $B_\Lambda$ and $C_\Lambda$ vs.\ unconditional charge-pair invariance established\\
+Two-soliton exchange constants $I_{12},J_{12}$ and bootstrap family $F_{12}$, Eqs.~(42)--(46) \Lc
+ & \textbf{Confirmed} \Lc & Check 5: closed-form $\chi_2$ vs.\ hyperbolic quadrature to $<2\times10^{-69}$\\
+Full constrained functional determinant, completeness, and physical $E(P),S$ \Ld
+ & \textbf{Confirmed} \Ld (open) & Instantaneous completion does not remove temporal tail or Schur-complement obstructions\\\bottomrule
+\end{longtable}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \emph{Confirmed prior-claim failure:} Pairing $f_-^{\rm sp}(\xi)$ with the
+opposite growth rate $-\epsilon\gamma$ in the shorthand of
+\texttt{oneloop\_\allowbreak phase.tex} (line 221) fails the co-moving PDE with
+residual $|4\cos\alpha\,\gamma(f_-^{\rm sp})'(\xi)|=0.007332526\ldots$ at
+$\alpha=1.2$, $\xi=0.37$ (\scr, check 3).
+\item \emph{Confirmed mathematical obstructions:} Inverting the three-tangent
+Wronskian $W_3$ fails ($\operatorname{rank}W_3=2$); treating $C(t)$ and $v(t)$
+as independent configuration-space collective paths fails by the intrinsic linear
+box divergence~\eqref{eq:intrinsic_bound}; omitting the equal-mode-count endpoint
+$B_\Lambda$ fails UV cancellation by $+\frac{3k}{2\pi}\Lambda$; shifting the
+finite tadpole counterterm by $c_{\rm fin}\ne0$ fails the finite small-amplitude
+limit by $3c_{\rm fin}/\alpha^2$ (\scr, checks 2 \& 4).
+\item \emph{Package script circularities and gaps:} Four tautological assertions
+(\G\ lines 26 \& 33, \Scheck\ lines 19--20, and \Ccheck\ lines 24, 27 \& 63) and
+two text-to-script omissions (field-space projector tails and symbolic
+small-$\alpha$ series) were detected and replaced by genuine checks in \scr.
+\item \emph{Audit script development failures (honestly recorded, fixed without
+weakening checks):}
+(i) In the first run of \scr, the $L^2$ norm $\int_{-\infty}^\infty w(\xi)^2\,\dd\xi$
+was typed from mental arithmetic as $\frac{6}{7k}$ instead of $\frac37k$ and failed
+exact symbolic equality; recomputing $\int w^2\,\dd\xi=(6-12+\frac{45}{7})k=\frac37k$
+repaired the assertion.
+(ii) In the second run of \scr, expanding the even integrand
+$\sin\alpha\,p_{\rm can}(\alpha)$ with \texttt{sp.series(..., a, 0, 7)} retained
+the $O(\alpha^6)$ term, so its integral contained an $O(\alpha^7)$ term and
+failed exact polynomial equality against the $O(\alpha^5)$ truncation; changing
+the integrand series order to \texttt{6} resolved the polynomial check.
+(iii) In the third run of \scr, the analytical coefficient of $\Lambda^{-1}$ in
+\eqref{eq:cutoff_asymp} omitted the $-\frac{3\sin\alpha}{4\pi\Lambda}$ contribution
+from $\sqrt{1+\Lambda^2}-\Lambda$ in the raw integral, giving $\frac{9\sin\alpha}{8\pi\Lambda}$
+instead of $(-\frac38+\frac{12}{8}-\frac38)\frac{\sin\alpha}{\pi\Lambda}=\frac{3\sin\alpha}{4\pi\Lambda}$
+and failing the $10^{-64}$ assertion; restoring that term (with \texttt{mp.workdps(110)}
+at $\Lambda=10^{22}$) passed with no weakened tolerance.
+(iv) In the fourth run of \scr, 3-point Richardson extrapolation at
+$\alpha\in\{10^{-4},5\times10^{-5},2.5\times10^{-5}\}$ had $O(\alpha_1^2\alpha_2^2\alpha_3^2)\sim1.56\times10^{-26}>10^{-28}$;
+upgrading to 4-point extrapolation at $\alpha_k=10^{-5}/2^k$ allowed tightening
+the tolerance from $10^{-28}$ to $10^{-40}$.
+\end{enumerate}
+
+\end{document}
