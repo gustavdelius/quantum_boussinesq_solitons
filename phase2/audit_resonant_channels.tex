@@ -1,0 +1,575 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak resonant\_\allowbreak channels.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of resonant Boussinesq channels:\\classical charge conservation, heavy instability,\\and conditional quantum conclusions}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc Every heavy soliton has an exactly on-shell, opposite-moving light pair,
+with matching $M,\Pi,P,E$ and the classical hierarchy. Independent Riccati
+calculations through $H_8$ confirm the printed charge decompositions; a Darboux
+generating function establishes the chord structure without the package's
+invalid commuting-background argument. The exact Y family also gives a
+localized growing mode of every interior heavy soliton: instability is already
+classical. The real one-loop mismatch is reproduced conditionally, not promoted
+to a physical decay width. Printed threshold-slope and singular-example numbers,
+and the elementary factor in the Gamma fusion formula, fail independent checks.
+\Ld An exact quantum S-matrix, quantum charge selection rules and decay widths
+remain unestablished.
+\end{abstract}
+
+\section{Scope, conventions and reproducibility}
+Labels have the repository meanings: (a) literature theorem, (b) literature
+heuristic, (c) independent project derivation/computational evidence, (d)
+unestablished physical interpretation. ``Confirmed'' certifies the stated
+mathematical scope; ``qualified'' means conditional, restricted or incompletely
+justified; ``refuted'' identifies a concrete discrepancy. Each new calculation
+is in \texttt{scripts/}\scr. No package code is imported. No git operation,
+existing-file edit, bulk phase-script run or new renormalisation choice was made.
+
+\Lc Read: \texttt{AGENTS.md}, \texttt{README.md}, the complete target TeX and its
+16-page PDF text, all three target scripts, the format of
+\texttt{audit\_phase2i.tex}, the ranked next steps, and relevant controlling
+passages of \texttt{errata.tex}, \texttt{audit\_smx.tex},
+\texttt{audit\_defq.tex}, \texttt{audit\_det\_projected.tex} and
+\texttt{audit\_good\_renorm.tex}. The last audit matters because even the real
+one-loop dispersion depends on the finite $u^2$ subtraction. No external
+reference, abstract or full text was newly read; no inherited literature
+attribution is independently authenticated here. All mathematical findings
+below are labelled (c), rather than claiming an unread literature proof.
+
+\Lc We retain
+\[
+ u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\quad u=\varphi_x=2(\log\tau)_{xx},\quad
+ \pi=\varphi_t,\qquad \Omega=\int d\pi\wedge d\varphi.
+\]
+The physical densities are $M:\ u$, $\Pi:\ \pi$, $P:\ -\pi u$ and
+$E:\ (\pi^2+u^2+u_x^2)/2-u^3$. Direct integration agrees with
+$M=2k$, $\Pi=-2kv$, $P=2k^3v/3$, $E=2k^3(5-4k^2)/15$, $k^2+v^2=1$.
+For the bad equation the dispersion instead has $k=\sinh\beta$,
+$v=\epsilon\cosh\beta$, $\omega^2=k^2+k^4$; no bad-equation quantum
+prescription is transferred here. The inherited source dictionary is
+$u_{\rm CZ}=-3\varphi$, $\mathcal L_{\rm CZ}=9\mathcal L$.
+Scattering uses $s=\sigma_{\rm vac}$, $q_D=-s/(2\sqrt3)$; the spectral
+parameter is $\eta\sigma_{\rm vac}$. These must not be interchanged.
+The target uses only an abstract directed-edge holonomy, so it does not
+reproduce the refuted signed scattering substitution in its computations.
+
+\section{Verdict table: all labelled claim groups}
+Repeated claims in the abstract and conclusion are covered by their numbered
+source proposition and the rows below. The equation names are the source's
+LaTeX labels. Every row has independent checks in \scr\ unless explicitly
+identified as an unestablished physical claim (d).
+\small
+\begin{longtable}{@{}L{5.6cm}L{2.4cm}L{7.2cm}@{}}
+\toprule Claim & Verdict & Evidence and precise scope\\\midrule\endhead
+C01. One-body and KP dictionary; cross-ratio (Sec.~1, Prop.~2.1) & Confirmed (c) & Bilinear polynomial, all four directions, physical charge identities.\\
+C02. Three resonance curves (Prop.~2.1.1) & Qualified & Curves confirmed (c); printed $\ell>0$ fails for left-moving overtaking. Equal-soliton diagonal excluded.\\
+C03. KP triangle and projections (Prop.~2.1.2; abstract) & Qualified & Main chord formulas confirmed (c). First abstract formula for $\alpha_{13}$ is false; static $\ell=0$ is an endpoint exception.\\
+C04. Positive Y solution, splitting/merging (Prop.~2.2.1) & Qualified & Y solution confirmed (c). Literal heavy-plus-light fusion into the other light is refuted by positive mass; shared-root projections survive.\\
+C05. Areas and measure (Prop.~2.2.2) & Confirmed (c) & Independent slice integrals: singular fractions $2/9$, $2/3$; two-body measure zero does not restrict heavy one-body measure.\\
+C06. $H_1,\ldots,H_8$ and potentials (Thm.~3.1.1--2) & Confirmed (c) & New spectral series plus direct Riccati/beta integrations; printed $H_7,H_8$ correct.\\
+C07. All-order proof and spin gap (Thm.~3.1.3) & Qualified & Conclusion established by a different formal Darboux proof (c); printed commuting-background argument invalid. Spin-gap assertion confirmed.\\
+C08. Classical telescoping, topology, $\Pi$ (Prop.~3.2.1) & Confirmed (c) & All-order generator and $M,\Pi,P,E$ integrated through Y collision. Original script integrates only $P,E$.\\
+C09. Mode shifts and $\Delta F=0.38879244\ldots$ (Prop.~3.2.2) & Qualified & Number and mode telescoping confirmed (c) by regulated root-transmission traces; finite subtraction and heavy-saddle determinant conditional (d).\\
+C10. Shifted quantum fusion curve (Remark~3.3) & Qualified & Local $E,P$ curve persists (c); simultaneous quantum charges and physical dispersion unresolved (d).\\
+C11. $h\log h$, delays and Taylor logarithm (Prop.~4.1) & Qualified & Generic classical coefficients confirmed (c), away from cusps; physical resummation/frame interpretation conditional (d).\\
+C12. Light concavity and soliton $1\to2$ protection (Thm.~4.3.1) & Confirmed (c) & Symbolic velocity differentiation; concavity plus positive mass. Subadditivity requires a defined total light momentum.\\
+C13. Every-heavy embedding and Jacobian (Thm.~4.3.2) & Qualified & Exact all-heavy charge matching confirmed (c); $1/(\sqrt3 k)$ is one ordered head-on contribution, not the unrestricted displayed integral.\\
+C14. On-shell slope value (\texttt{onshell\_slope}) & Refuted (c) & Symbolic formula correct; printed $+0.241078\ldots$ is actually $-0.2664334283\ldots$.\\
+C15. WKB deficit (Prop.~4.4) & Qualified & Damped-sheet algebra confirmed (c); opposite sheet amplifies. Neither a physical-sheet selection nor inelastic probability derived (d).\\
+C16. Singular numeric example (Prop.~4.4) & Refuted (c) & All three printed $A$, $|\Delta\ell|$, $|S|^2$ values disagree.\\
+C17. Classical and phonon fusion (Prop.~4.5.1--2) & Confirmed (c) & Hirota factors/phases and independently reconstructed phonon transmission telescope; absolute phase constants still conditional (d).\\
+C18. Gamma fusion obstruction (Prop.~4.5.3) & Qualified & Implemented candidate fails, with quoted phase (c); printed elementary-factor exponent is reversed. Physical bootstrap premise unproved (d).\\
+C19. Target-momentum remainder (Prop.~4.5.3) & Qualified & $0.8755292547\ldots$ logarithmic part confirmed (c); not the full Darboux Taylor remainder or a physical no-go.\\
+C20. Four regimes, width, $2\times2$ block and chronological failure (Sec.~5; remarks) & Qualified (d) & Classical domain classification survives (c). No quantum vertex, spectral normalization, complete channels or quantum charges computed.\\
+C21. Singular two-phase breathers & Qualified & Elementary bound $A_{\rm br}<1/4$ confirms singularity within this ansatz (c); does not exclude quantum bound states (d).\\
+C22. Script completeness and timings (Sec.~6) & Qualified & All three scripts pass in 21.87 s (c); several advertised checks are absent or only assumed identities.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Hierarchy charges: a separate derivation}
+\paragraph{Riccati and scattering generating functions (C06--C08).}
+\Lc Put $L_0=D^3-D/4$ and solve $\lambda^3-\lambda/4=z^3$ with
+$\lambda=z+O(z^{-1})$. For the eigenfunction logarithmic derivative $w=\psi_x/\psi$,
+\begin{equation}
+ w_{xx}+3ww_x+w^3+qw+r=z^3,\qquad
+ w=z+\sum_{n\ge1}w_n z^{-n}.
+ \label{riccati}
+\end{equation}
+The integrated formal trace identity is
+$H_n=-n\int(w_n-w_{n,\rm vac})\,dx$; the discarded local terms are total
+$x$ derivatives. It can be obtained by differentiating the formal eigenvalue
+problem with respect to $z$ and cyclically moving $D$ under the integrated
+residue. In particular $w_1=-q/3$, $w_2=(q_x-r)/3$, giving $H_1=\int(q-q_0)/3$
+and $H_2=2\int r/3$ directly. Our recursive scalar ODE computation is independent
+of the package's fractional pseudodifferential multiplication.
+
+\Lc For $g=e^{-p_a x}+e^{-p_b x}$, $f=g_x/g$ and $B=D-f$,
+$BL_0=LB$ with
+\begin{equation}
+ q=-\tfrac14+3f_x,\qquad r=3ff_x+3f_{xx},\qquad
+ \psi=(\lambda-f)e^{\lambda x}.
+\end{equation}
+The vanishing constant coefficient is the derivative of
+$f_{xx}+3ff_x+f^3-f/4=\text{constant}$; all exponentials have the same
+$L_0$ eigenvalue. The endpoint scattering identity gives
+\begin{align}
+ \int(w-\lambda)\,dx
+ &=\log\frac{\lambda+p_b}{\lambda+p_a}
+ =-\sum_{j\ge1}\frac{\Delta_j}{j\lambda^j},\qquad
+ \Delta_j=(-p_b)^j-(-p_a)^j,\\
+ H_n&=n[z^{-n}]\sum_{j\ge1}\frac{\Delta_j}{j\lambda(z)^j}.
+ \label{generator}
+\end{align}
+Every coefficient is a polynomial endpoint difference. Thus the formal local
+hierarchy has chord additivity to all orders, not just to order eight.
+The common vacuum spectrum is essential; this is not a binomial expansion of
+noncommuting differential operators.
+
+\Lc Independent series extraction in \scr\ gives precisely
+\begin{align*}
+&H_1=\Delta_1,\quad H_2=\Delta_2,\quad H_3=H_6=0,\\
+&H_4=\Delta_4-\tfrac13\Delta_2,\qquad H_5=\Delta_5-\tfrac5{72}\Delta_1,\\
+&H_7=\Delta_7-\tfrac7{12}\Delta_5+\tfrac7{324}\Delta_1,\qquad
+ H_8=\Delta_8-\tfrac7{36}\Delta_4+\tfrac{11}{324}\Delta_2.
+\end{align*}
+All printed potentials for $M,\Pi,P,E,H_7,H_8$ have zero exact remainder
+modulo $p_a^2+p_ap_b+p_b^2-1/4$. The pure-$k^3$ ansatz in
+$\operatorname{span}\{\Delta_1,\Delta_5\}$ gives an inconsistent exact linear
+system. Independently, direct scalar recursion through $w_8$ on
+$u=2k^2y/(1+y)^2$, $y=e^{kx}$, reduces the integrals to
+\[
+ \int_0^\infty\frac{y^j}{(1+y)^N}\,dy
+ =\frac{j!(N-j-2)!}{(N-1)!}.
+\]
+All eight charges agree exactly at $(k,v)=(1/2,\sqrt3/2)$ and
+$(97/103,-20\sqrt3/103)$, including a heavy left-mover. These are exact
+rational/algebraic evaluations, not fitted coefficients.
+
+\Lc The target's proposed proof by shifting $\widetilde L$ by $-D/4$ is
+not valid: $[D,\widetilde L]=\widetilde q_xD+\widetilde r_x$ is nonzero on a
+soliton. Its vague operator logarithm is not a derivation of the claimed
+zero-background trace formula. Equation~\eqref{generator} supplies the missing
+argument within the formal scalar hierarchy. No claim about arbitrary
+quantum/nonlocal charges follows from this formal trace theorem.
+
+\paragraph{Across the actual collision.}
+\Lc Use the minus-sign Y solution, $g=\sum_i\exp(-q_ix+\sqrt3q_i^2t)$, so the
+same Darboux transformation applies with three terms. At every finite $t$,
+$f(-\infty)=-q_1$, $f(+\infty)=-q_3$. Therefore the entire integrated generating
+function remains $\log[(\lambda+q_3)/(\lambda+q_1)]$ through the collision.
+Our checker integrates its spatial density at $t=-5,1,7$ and two finite
+spectral parameters; it does not merely subtract endpoint formulas from
+themselves. Separate spatial quadratures of all four physical densities at
+these times match the heavy values. This includes $M$ and $\Pi$, unlike the
+original script, whose actual quadrature loop selects only density indices
+2 and 3 ($P,E$). Hierarchy additivity at collision was not directly tested by
+that original quadrature.
+
+\section{Heavy-soliton kinematics and classical instability}
+\paragraph{Exact on-shell map, not an isolated heavy parameter (C12--C14).}
+\Lc For a right-moving heavy soliton $a\in(\pi/3,\pi/2)$, set
+\[
+ \alpha_1=2\pi/3-a,\quad\epsilon_1=+1,\qquad
+ \alpha_2=a-\pi/3,\quad\epsilon_2=-1.
+\]
+Then $\alpha_1+\alpha_2=\pi/3$ and the two chords concatenate into the heavy
+chord. Reversing all velocities covers the left-moving branch. All four
+physical charges and the entire formal hierarchy agree exactly. The curve in
+the two-particle parameter plane has measure zero, but its projection onto
+the heavy parameter covers the whole open heavy branch. These are distinct
+measure statements.
+
+\Lc No listed topological charge forbids this classical process: the potential
+endpoints are fixed along the exact solution, $M$ is continuous rather than an
+integer kink number, and $\Pi$ is explicitly conserved. The integrated spectral
+generator also telescopes, so the usual local spectral hierarchy supplies no
+additional obstruction. A smooth exact trajectory is stronger evidence than
+matching four asymptotic numbers. \Ld This does not enumerate all possible
+quantum superselection rules or compute an anomalous/nonlocal quantum charge.
+The defensible quantum conclusion is compatibility with the checked classical
+charges, not a theorem that no hidden quantum selection rule exists.
+
+\Lc Using velocity as independent coordinate gives
+\[
+ \frac{dE}{dP}=v,\quad
+ \frac{dP}{dv}=\frac23\sqrt{1-v^2}(1-4v^2),\quad
+ \frac{d^2E_{\rm light}}{dP^2}=-\frac3{2\sin3\alpha}<0.
+\]
+Concavity and monotonicity imply the stated strict inequality when
+$|P_1+P_2|\le P_{\max}$. If the sum lies outside this interval the right-hand
+light energy is undefined, so the abstract's unrestricted wording needs this
+restriction. Mass positivity excludes a heavy daughter in a light-soliton
+$1\to2$ decay. This is soliton-sector kinematic protection, not a general
+proof of quantum elastic factorisation with arbitrary radiation channels.
+
+\Lc At fixed heavy momentum, the derivative of the head-on pair energy with
+respect to its right-moving momentum is $v_1-v_2=\sqrt3 k_3>0$. Hence the
+ordered head-on delta-function contribution is exactly
+\begin{equation}
+ J_{+-}=\frac1{\sqrt3 k_3}.
+\end{equation}
+It is finite and nonzero in the interior, with the strict range
+$(1/\sqrt3,2/3)$; the printed closed lower endpoint requires the excluded
+static limit. The displayed unrestricted integral
+in the package needs a channel restriction (and a convention for identical
+particle counting). If both orderings are integrated, both roots contribute.
+There can also be co-moving $E,P$ roots near the cusp; our independent solver
+finds one at heavy $a=1.1$. Its mass fails to match, so it does not undermine
+the charge-conserving head-on result, but it refutes interpreting the displayed
+integral as an unrestricted total phase space. Its widths are
+$k_1=0.07962397547781387719\ldots$,
+$k_2=0.83585099579192889532\ldots$, with mass mismatch
+$M_1+M_2-M_3=0.04853522241661486512\ldots$.
+
+\Lc The printed formula
+$\Delta E'(0)=-(v_2-v_3)P_2'(\alpha_2)$ is correct. At $\alpha_1=0.62$ the
+signed value is
+\begin{equation}
+ \Delta E'(0)=-0.266433428334333243278532392316\ldots,
+\end{equation}
+not $+0.24107867527655644$. We differentiate the energy mismatch using an
+independent velocity inversion of the heavy momentum. The sub-threshold
+statement $\Delta E(h)<0$ for $h>0$ survives; the printed positive
+slope would have contradicted it. Globally in the light-light square,
+$\partial_{\alpha_2}\Delta E=(v_2-v_3)P_2'(\alpha_2)>0$, since
+$v_2<-1/2$ and $|v_3|<1/2$. The unique zero is the displayed head-on
+resonance, so the lower triangle is below it. Independent sample checks
+cover both sides.
+
+\paragraph{An explicit classical unstable mode, absent from the package.}
+\Lc In the plus-sign Y family insert a small coefficient $c_2=\varepsilon$.
+In the frame $\xi=x-v_3t$, after removing a harmless exponential,
+\begin{equation}
+ \tau\ \sim\ 2\cosh(k_3\xi/2)
+       +\varepsilon e^{-\sqrt3v_3\xi/2}e^{\gamma t},\qquad
+ \gamma=\sqrt3 k_1k_2=\sqrt3(1/4-v_3^2)>0.
+\end{equation}
+Consequently $u=u_0+\varepsilon e^{\gamma t}\chi+O(\varepsilon^2)$ with
+\begin{equation}
+ u_0=\frac{k_3^2}{2}\operatorname{sech}^2(k_3\xi/2),\qquad
+ \chi=2\partial_\xi^2
+ \left[\frac{e^{-\sqrt3v_3\xi/2}}{2\cosh(k_3\xi/2)}\right].
+ \label{unstable}
+\end{equation}
+Both tails decay precisely because $k_3>\sqrt3|v_3|$, equivalent to
+$|v_3|<1/2$. Differentiating the exact family proves, and 80-digit numerical
+spatial differentiation independently verifies,
+\[
+ (\gamma-v_3\partial_\xi)^2\chi
+ =\chi''-\chi''''-6(u_0\chi)''.
+\]
+The associated potential perturbation also decays; its $M$ and $\Pi$
+variations are zero boundary terms. Thus the heavy soliton already has a
+localized exponentially growing classical mode. \Ld A real continuum mode
+trace on this saddle is not by itself its physical quantum energy; discrete
+unstable modes and the determinant contour/domain must be addressed. The
+existence of this classical mode does not fix a quantum width or its
+normalization.
+
+\section{One-loop mismatch and direction of the shifted resonance}
+\paragraph{Independent regulated computation (C09--C10).}
+\Lc We reconstruct the phonon transmission from the soliton chord and complex
+phonon roots
+\[
+ z_\pm(q)=\frac{\operatorname{sgn}(q)\sqrt{1+q^2}\pm i\sqrt3q}{2\sqrt3},\qquad
+ A_{\rm ph}(q)=\frac{(p_a-z_+)(p_b-z_-)}{(p_a-z_-)(p_b-z_+)}.
+\]
+We differentiate its logarithm analytically and integrate the regulated
+energy and momentum traces, including the inherited equal-mode endpoint and
+tadpole:
+\begin{align}
+ e_\Lambda&=\frac1{4\pi}\int_{-\Lambda}^{\Lambda}
+ |q|\sqrt{1+q^2}\,\theta'(q)\,dq-B_\Lambda
+ +\frac{3k}{\pi}(\sqrt{1+\Lambda^2}-1),\\
+ p_\Lambda&=\frac1{4\pi}\int_{-\Lambda}^{\Lambda}q\theta'(q)\,dq,\quad
+ B_\Lambda=\frac{\Lambda\sqrt{1+\Lambda^2}}{4\pi}
+ [\theta(\Lambda)-\theta(-\Lambda)].
+\end{align}
+Endpoint arguments are chosen to tend to zero at large $|q|$. No package
+angular-log charge routine or saved result is used. With $q=\sinh t$,
+independent cutoffs and a free intercept in $1/\Lambda,1/\Lambda^3$, the real
+trace reproduces
+\begin{equation}
+ \Delta F=F_{12}+F_{23}-F_{13}
+ =0.38879244070035460274\ldots,\qquad F=e-vp,
+ \label{df}
+\end{equation}
+while $\Delta e=\Delta p=0$. This is conditional on that prescribed trace and
+finite subtraction. The defect holonomy identity
+$\sum_i\rho_i\mathcal O_i=\eta(\mathcal O_{12}+\mathcal O_{23}-\mathcal O_{13})$
+is valid orientation bookkeeping, not a new physical absorption test. It is not a newly selected physical renormalisation.
+
+\paragraph{What the positive sign means.}
+\Lc At the old classical daughter momenta, keeping all three physical momenta
+fixed, the corrected daughter energy exceeds the heavy energy by
+$\hbar\Delta F>0$. Thus that particular old pair is off shell. It does not
+follow that the entire decay closes: the classical root is inside the
+head-on continuum and has a nonzero derivative. At fixed physical heavy $P_3$,
+write $P_1\mapsto P_1+\hbar\delta p$, $P_2\mapsto P_2-\hbar\delta p$. Then
+\begin{equation}
+ \delta p=-\frac{\Delta F}{v_1-v_2}<0.
+\end{equation}
+For sufficiently small $\hbar$ at any fixed interior heavy parameter,
+the right-moving daughter momentum decreases and the left-moving daughter
+momentum becomes less negative. At $\phi=0.23$,
+$\delta p=-0.23450418388533775558\ldots$. Both daughter widths decrease locally.
+The equality moves toward $\alpha_1+\alpha_2<\pi/3$, the regular side, in
+these fixed-physical-momentum coordinates. This is a shifted on-shell locus,
+not a continuum-edge threshold opening/closing. The statement is nonuniform
+near the heavy cusp, where one daughter becomes soft.
+
+\Lc A finite term $\hbar\lambda u^2$, explicitly left unselected by the
+controlling good-renormalisation audit, changes the mismatch by
+\begin{equation}
+ \Delta F_\lambda=\Delta F_0-2\lambda k_1k_2k_3.
+\end{equation}
+This follows from $\int u^2dx=2k^3/3$ and $k_3=k_1+k_2$, and is independently
+checked. Therefore even the quoted numerical sign is a prescription-dependent
+real-trace statement. \Ld Simultaneous conservation of the physical quantum
+$M,\Pi,H_n$, and a physical complex energy of the unstable saddle, cannot be
+inferred by shifting two momenta in an $E,P$ equation alone. The package
+correctly acknowledges this higher-charge gap in its remark but overstates
+instability/elasticity as settled in parts of the conclusion.
+
+\section{Resonance phases, formal deficits and fusion}
+\paragraph{Classical geometry and transverse limits (C01--C05, C11).}
+\Lc Factoring the pairwise Hirota dispersion gives
+\[
+ \mathcal P(q_i-q_j,\sqrt3(q_i^2-q_j^2))
+ =4(q_i-q_j)^2(q_i^2+q_iq_j+q_j^2-1/4).
+\]
+It proves the positive Y solution and the three shared-root loci. The correct
+lines are $R_{\rm ho}^+:\alpha_1+\alpha_2=\pi/3$,
+$R_{\rm ho}^-:|\alpha_1-\alpha_2|=\pi/3$, and
+$R_{\rm ov}:\alpha_1+\alpha_2=2\pi/3$. No overtaking pole occurs in the open
+square. The printed $\ell>0$ on overtaking is true only for right-movers;
+left-movers have $\ell<0$. The first abstract expression
+$\alpha_{13}=\alpha_{12}+\alpha_{23}+\pi/3$ would give $2\pi/3$,
+outside the declared range, since the two light angles sum to $\pi/3$.
+The main-text piecewise heavy angle is correct. At $\phi=\pi/6$ the cubic
+is nondegenerate but the heavy chord is static, $k=1$, an excluded endpoint
+of the stated open one-body parametrisation.
+
+\Lc For generic noncusp points, differentiating the independently computed
+Hirota phase twice gives
+$\lim_{h\to0^+}h\delta''(h)=\frac29\sigma c_\ell$ with the three tabulated
+coefficients. We use $h=10^{-25}$ and an independent derivative extraction,
+not the package's two-point subtraction. The fixed-$P$ logarithmic coefficient
+is nonzero at the three sampled points. The singular expansion is not uniform
+when $h$ is comparable to $\hbar$; interpreting it as a resummed physical
+branch displacement requires the missing physical frame/determinant.
+
+\paragraph{Damping is a sheet-dependent candidate calculation (C15--C16).}
+\Lc The two continuations $\log A=\log|A|\pm i\pi$ give reciprocal squared
+moduli. On the damped branch only,
+\[
+ |e^{i\delta/\hbar}|^2=e^{-4\pi|\ell_1-\ell_2|/(9\hbar)}.
+\]
+Calling that branch ``physical'' because it is bounded is an assumption,
+not a derivation of scattering boundary conditions. A deficient candidate
+alone does not calculate the channels into which probability flows.
+Away from the exact on-shell curve, $2\to1$ is not energy conserving, so it
+cannot simply be assigned the entire open-domain deficit. The correct
+numbers for the printed example $(0.50,0.65)$, directions $(+,-)$,
+$\hbar=0.1$, are
+\begin{align*}
+ A&=-3.7826223332392473965427362479\ldots,\\
+ |\ell_1-\ell_2|&=0.299443629683584018367638607696\ldots,\\
+ |S|^2&=0.0152828833874182593860493271841\ldots.
+\end{align*}
+All three quoted package numbers fail; its script asserts only $A<0$ and
+$0<|S|^2<1$, never those numbers. \Ld Identifying the complement with a
+physical inelastic probability or proving failure of elastic quantum
+scattering would require a controlled amplitude.
+
+\paragraph{Fusion survives classically, but the Gamma candidate does not (C17--C19).}
+\Lc Independent Hirota factors satisfy
+$A(3,12)A(3,23)=A(3,13)$; the topological term telescopes using both $M$ and
+$\Pi$. The full real classical phases therefore add. The independently
+constructed complex phonon transmission itself telescopes pointwise, a
+stronger test than subtracting angular phase derivatives. With the same
+integration and reference prescription this proves additivity of the bare
+integral linear in the target phase derivative. It does not set absolute
+one-loop phase constants, precisely as the earlier phase audits warn.
+
+\Lc Write $R(\eta)=\Gamma(1+i\eta)/\Gamma(1-i\eta)$. The implemented
+Gamma candidate gives the fusion ratio
+\begin{equation}
+ \left[R(\eta)\left(\frac{e^2}{\eta^2}\right)^{+i\eta}
+ \right]^{-\tau(3,13)},
+ \label{gammafix}
+\end{equation}
+with a \emph{plus} exponent inside the brackets. The package prints a minus
+exponent. The plus sign cancels the leading Stirling phase and tends to
+$\exp[-i\pi\tau\operatorname{sgn}(\eta)/2]$. Fresh log-Gamma evaluations give
+the quoted $1.5158110455271881045\ldots$ phase at $\hbar=0.1$ and approach
+$+\pi/2$ at $10^{-4}$ and $10^{-8}$; the literal printed formula instead has phase
+$2.88667602677875534274\ldots$ at $\hbar=0.1$.
+Thus the obstruction for this candidate survives, while its displayed
+identity is refuted. The earlier candidate audit does not identify this
+candidate as the physical S-matrix.
+
+\Lc Using the independently integrated mode momenta gives the target
+logarithmic remainder $0.8755292547543045976\ldots$. Its nonvanishing is a
+valid statement about the displayed expression. However the full Darboux
+shift also contains $\gamma_jM_i$, so calling this logarithmic piece the
+entire fixed-physical-momentum fusion mismatch is incomplete. In the same
+mode-charge prescription, retaining that term gives
+$3.58464625500292908012\ldots$ at the quoted point, rather than
+$0.8755292547\ldots$. Moreover the
+single-soliton momentum choice, two-body frame and finite subtraction remain
+conditional. \Ld The proposed chronological failure and a universal physical
+fusion no-go therefore remain conjectural.
+
+\Lc The good two-phase breather bound follows directly from
+$A_{\rm br}=(1-3\cot^2a)/(1+3\coth^2b)<1/4$. The tau polynomial cannot
+remain positive when its interference minimum is reached with $A<1$;
+this is an ansatz-specific classical singularity. \Ld It supplies neither a
+quantum bound-state exclusion nor an exact S-matrix pole theorem.
+
+\paragraph{Quantum claims that remain guesses (C20).}
+\Ld The displayed decay-width normalization needs normalized states and a
+defined vertex. The proposed $2\times2$ block assumes a complete two-channel
+space, while an unstable heavy state is not automatically an asymptotic
+one-particle channel. One cannot simultaneously infer its instability and
+use it as an exact stable external state without specifying a resonance
+formalism. Neither kinematic protection nor a scalar Yang--Baxter identity
+proves factorisation. The four regimes are useful classical geometry, but
+``must augment by $2\leftrightarrow1$'' throughout $A<0$ and ``only these
+sectors can be elastic'' go beyond the checked results. The unresolved
+quantum vertex and higher-charge corrections are substantive missing work.
+
+\section{Verification coverage, numerical budgets and failures recorded}
+\paragraph{Original scripts.}
+\Lc Byte-identical copies were executed under new
+\texttt{/tmp/audit\_\allowbreak resonant\_\allowbreak channels\_\allowbreak pkg\_*} names. Their only output
+writes follow \texttt{\_\_file\_\_}, so their JSON files also stayed in
+\texttt{/tmp}; tracked caches were untouched. Measured wall times were:
+\begin{center}
+\begin{tabular}{lrr}\toprule
+Target script suffix & Seconds & Exit / final marker\\\midrule
+\texttt{conservation.py} & 16.388 & 0 / present\\
+\texttt{kinematics.py} & 3.709 & 0 / present\\
+\texttt{quantum.py} & 1.773 & 0 / present\\\bottomrule
+\end{tabular}
+\end{center}
+All print \texttt{ALL CHECKS PASSED}; the total is 21.870 s on this run,
+consistent with the claimed under-25-second run, not a portable speed bound.
+
+\Lc The hierarchy integrator is substantive independent-of-target code within
+the package; it is not a fitted formula compared with itself. Conversely:
+\begin{itemize}
+\item The symbolic telescoping loop converts stringified expressions with
+\texttt{sympify} without preserving the original real-symbol assumptions.
+Its $p$ can differ from the substitution symbol, so these particular
+substitutions can yield identically zero charges before the check.
+Even without that bug, cancellation of a supplied $F$ with itself would
+check bookkeeping rather than derivation. The earlier exact residue
+integration does supply substantive independent evidence.
+\item The claimed direct collision tests of $M,\Pi$ and all $H_n$ are absent;
+only $P,E$ are spatially integrated. The all-order proof is asserted in prose.
+\item The phase-space Jacobian is not numerically integrated or explicitly
+asserted in the quantum checker. Area fractions are saved as strings rather
+than verified by area integration. Bare phonon derivatives are sampled at
+four points; the advertised continuum fusion integral is not integrated.
+\item The unitarity test inserts the claimed positive imaginary part and
+checks an exponential is between zero and one; it selects no physical sheet.
+The printed slope and singular example are not compared with computed values.
+The Gamma comparison uses the corrected plus sign, not the printed minus.
+\item The one-loop mismatch test asserts only a nonzero discrepancy, not the
+20-digit printed number; the independently reconstructed trace here supplies
+that missing numerical cross-check. No quantum matrix element is tested.
+\end{itemize}
+\Lc No evidence of tolerance weakening in the available final scripts was
+found. Their own failures list explicitly admits an initially fabricated
+trailing-digit target, an incorrect early coefficient guess, insufficient
+asymptotic time, and root-inversion/sign mistakes. Those admissions are not
+erased by current passing tests. Editing history cannot be reconstructed
+from these snapshots.
+
+\paragraph{Independent error accounting.}
+\Lc Exact symbolic identities have no mesh/fit error. Riccati beta integrals
+are exact at the two stated profiles; the generic generating-function
+identities are polynomial identities. Y quadratures use central moments,
+different panels and times from the package, and 45/65-digit arithmetic;
+finite-spectral-parameter generator integrals use 80 digits. Their differences
+are numerical diagnostics, not rigorous interval error bounds. The root-trace
+calculation separates (i) quadrature precision/panel refinement, (ii) finite
+cutoff variation, and (iii) two- versus three-cutoff extrapolation spread;
+no leading target coefficient or mismatch is fed into the fit. These budgets
+certify conditional integrals, not the uncomputed determinant or a physical
+renormalisation uncertainty. Asymptotic $h\log h$ extraction uses a declared
+$10^{-21}$ tolerance at $h=10^{-25}$ rather than claiming all 80 digits.
+
+\Lc The measured diagnostics are:
+\begin{center}\small
+\begin{tabular}{lr}\toprule
+Quantity / independent variation & Value\\\midrule
+$\Delta F$, $\Lambda=\sinh18$ & $0.38879243375721738313$\\
+$\Delta F$, $\Lambda=\sinh24$ & $0.38879244068314428624$\\
+$\Delta F$, $\Lambda=\sinh30$ & $0.38879244070031194263$\\
+Free three-cutoff intercept & $0.38879244070035460274$\\
+Two-/three-cutoff intercept spread & $6.10\times10^{-35}$\\
+Trace quadrature method/precision/panel spread & $1.66\times10^{-47}$\\
+Y physical-charge 45-/65-digit spread & $8.55\times10^{-47}$\\\bottomrule
+\end{tabular}
+\end{center}
+The trace mesh check compares 80-digit tanh--sinh on $t$ panels
+$0,1,3,6,18$ with 60-digit Gauss--Legendre on
+$0,1/2,2,5,10,18$. The finite-cutoff discrepancy at the finest cutoff is
+about $4.27\times10^{-14}$, much larger than quadrature error; it is removed
+by extrapolation, not silently included in a high-precision equality.
+The two-/three-cutoff spread is model sensitivity, not a statistical confidence
+interval or an all-orders tail bound. No empirical fit is used for $H_n$.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item Package-claim discrepancies: left-moving overtaking $\ell$ sign;
+first abstract heavy-angle formula; invalid commuting-background proof;
+unrestricted phase-space formula; slope sign and magnitude; three singular
+example numbers; Gamma elementary-factor sign; literal heavy-plus-light fusion labels. Refuted claims are encoded as
+assertions that the discrepancies exist.
+\item The first independent symbolic integration attempt grew too slowly
+with rational $(k,v)$ carrying irrational coefficient denominators and was
+interrupted. We changed exact test profiles so $k$ and $v/\sqrt3$ are rational,
+retaining both a light and a heavy case and all eight charges. The generic
+symbolic generating-function identity was retained, not weakened.
+\item An initial audit check assumed that merely reversing the printed
+slope sign would repair it. It failed with a $0.025354753\ldots$ magnitude
+discrepancy. We replaced that false target with an independently differentiated
+analytic expression and explicitly assert the printed magnitude discrepancy.
+\item The first PDF build reported an overfull temporary-path line.
+Explicit filename break points repaired it; all pages were rendered again.
+\end{enumerate}
+
+\paragraph{Measured independent execution.}
+\Lc The final complete checker ran in 171.773 seconds and printed
+\texttt{ALL CHECKS PASSED}. Earlier complete successful versions took
+141.592 and 180.752 seconds; the final run includes the additional printed-table,
+phase-space, breather and literal-fusion discrepancy assertions. All three
+original script copies also printed the marker. Assertions encode refutations
+as detected discrepancies, not false equalities; no failed tolerance was relaxed.
+The final PDF was built twice, without overfull-box warnings, and all ten pages
+were rendered and visually inspected.
+
+\paragraph{Deliverables and references.}
+The independent checker, this TeX and its twice-built PDF are the only new
+repository files. No existing status or inventory file was edited, as required
+by the task. Temporary build and inspection files have the same audit prefix.
+No bibliography is invented: cited local audit filenames identify the exact
+scope of inherited qualifications, and no external full-text reading is
+claimed. \Ld The remaining scientific task is a quantum treatment of the
+unstable heavy saddle and its coupled channels with physical higher charges,
+not further refinement of already exact classical charge matching.
+\end{document}
