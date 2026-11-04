@@ -1,0 +1,465 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\C}{\textbf{(c)}\nobreakspace}
+\newcommand{\D}{\textbf{(d)}\nobreakspace}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\checks}[1]{\par\noindent\textit{Checks:} \file{twobody_toda_#1.py}.\par}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{The Toda two-body edge phase at fixed dressed momenta:\\
+directional one-loop coefficient, exchange decomposition,\\
+and the surviving physical-normalization question}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C Conditional on the corrected half-line asymptotics, the inherited
+\emph{two-term directional} Toda phase has the following leading
+small-amplitude, fixed-dressed-momentum correction. For right-moving
+overtaking solitons, $r=\beta_2/\beta_1\in(0,1)$,
+\begin{align*}
+ R_{12}^{(1)}&=-\frac4\pi[\chi_2(r)-r],\\
+ S^{(1)}&=\frac2\pi(r+r^{-1})-\pi,\\
+ \vartheta_N^{(1)}&=\pi-\frac4\pi\chi_2(r)+\frac2\pi(r-r^{-1}),
+\end{align*}
+where $S=(R_{12}+R_{21})/2$, $\vartheta_N=(R_{12}-R_{21})/2$, and
+$\chi_2(r)=[\operatorname{Li}_2(r)-\operatorname{Li}_2(-r)]/2$.
+The reverse ordered branch is supplied by exchange, not by substituting
+$r>1$ into principal real logarithms. The corresponding leading
+opposite-edge directional coefficients vanish. New finite-sea solves,
+high-precision inversions and unconstrained intercept fits test these
+statements; the numerical budgets are given below.
+
+\C The same momentum logarithm fixes the symmetric term and the one-body
+invariant $C-s_1=-1/(4\pi)$. We also find a two-term/four-term mismatch
+in the Krein equation printed in the frame audit. Its correction does not
+restore an arbitrary antisymmetric Toda freedom.
+\D These results do \emph{not} identify $\vartheta_N$ with the
+Gamma-relative continuum residual, nor establish a uniform fixed-nonzero-momentum
+semiclassical limit. The exact endpoint-bilinear representative has additional
+one-body reference terms, including half-integer powers in the edge expansion.
+They are explicitly retained. Thus the literal fully normalized physical
+scalar phase requested in the task is not established by this package.
+\end{abstract}
+
+\section{Scope, conventions and the observable actually computed}
+Labels retain the repository meanings: (a) proved in literature, (b)
+literature heuristic, (c) project derivation or numerical evidence, (d)
+unestablished interpretation. No external paper, abstract, arXiv entry or DOI
+is cited or claimed newly read. Internal sources are listed at the end.
+All new scripts and caches have the required \file{twobody_toda} prefix.
+No earlier script is run or imported, and no git state is touched.
+
+\C Retain the audited units $a=1$, $b=e^{-1/2}$,
+\begin{equation}
+ h=\hbar_T=3b\hbar_B,\qquad
+ \kappa=\sqrt3\beta=\sqrt{hy/b},\qquad y=\beta^2/\hbar_B,
+ \qquad P_B=\overline P/(6\sqrt3b).
+ \label{eq:units}
+\end{equation}
+The inherited continuum is the bad equation
+$u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx}$, $u=2(\log\tau)_{xx}$,
+$k=\sinh\beta$, $v=\epsilon\cosh\beta$.
+The dictionary is a small-amplitude dictionary; no finite-amplitude
+Toda--Boussinesq equivalence is inferred.
+In physical Boussinesq momenta the leading ratio is
+$r=(|P_{B,2}|/|P_{B,1}|)^{1/3}$, since
+$|P_B|=2\beta^3/3+O(\beta^5)$ in this corner.
+The exact classical Toda quantities used in the numerical subtractions are
+\begin{align}
+ P_0(\kappa,\epsilon)&=4\epsilon b(\kappa\cosh\kappa-\sinh\kappa),
+ &p_0&=2\epsilon b\cosh\kappa,\\
+ M_0&=-2\kappa,&\Pi_0&=2\epsilon b\sinh\kappa,
+ &v_0&=\epsilon b\sinh\kappa/\kappa.
+\end{align}
+At each finite $h$ we solve $\overline P(p_j)=P_0(\kappa_j,\epsilon_j)$;
+we never replace the rapidity coordinate by a dressed momentum.
+
+\C Set $e_j=\epsilon_jq$ and define the directional phase and its
+four-term counterpart by
+\begin{align}
+ N_{12}&=\Phi(p_1,p_2)-\Phi(p_1,e_2),\\
+ U_{12}&=\Phi(e_1,p_2)-\Phi(e_1,e_2),&
+ \widehat\Phi_{12}&=N_{12}-U_{12}.
+ \label{eq:references}
+\end{align}
+Our residual is precisely the audited Phase 2f/2h two-term quantity,
+with the \emph{full classical lattice} subtraction:
+\begin{equation}
+ R_{12,h}=\frac{N_{12}-\delta_T(1,2)-C_{12}}h,
+ \qquad C_{12}=M_{0,1}(P_{0,2}-\Pi_{0,2}).
+ \label{eq:R}
+\end{equation}
+Here $\delta_T=(p_{0,1}-p_{0,2})\log A_T+M_{0,1}M_{0,2}(v_{0,1}-v_{0,2})$,
+with $A_T=\sinh^2[(\kappa_1-\kappa_2)/2]/\sinh^2[(\kappa_1+\kappa_2)/2]$
+for equal directions and the same ratio of $\cosh^2$ for opposite directions.
+The subtraction is evaluated with 60-digit arithmetic before comparison to
+the float64 sea solves. The dimensionless action phase is unchanged by the
+audited action rescaling: $\delta_T/h=\delta_B/\hbar_B$ in the scaling limit.
+
+\D A directional thermodynamic Bethe phase need not be antisymmetric.
+Consequently the notation $\vartheta_N$ is deliberate: it denotes the
+exchange-odd part of \eqref{eq:R}, not an already normalized scalar
+S-matrix, and not the residual relative to a Gamma candidate in
+\file{smx_candidates.tex}. This distinction matters especially for head-on
+scattering and absolute phase constants.
+\checks{scan}\checks{identities}
+
+\section{Exact finite-sea identities and the reference term}
+\C With $t=2\pi h$,
+\begin{align}
+ \Theta(d)&=2h\operatorname{Im}\log\Gamma(1+id/h)+2d\log h,
+ &K(d)&=\Theta'(d),\\
+ (\mathcal Af)(x)&=tf(x)-\int_{-q}^qK(x-z)f(z)\dd z,
+ &\mathcal A\rho&=1,\quad \mathcal A\eta=x,\quad\int\rho=1,\\
+ \mathcal AF_z(x)&=\Theta(z-x),
+ &\Phi(p,z)&=\Theta(p-z)-\int_{-q}^qK(p-x)F_z(x)\dd x.
+\end{align}
+The gamma logarithm is continuously unwrapped on the real difference axis.
+Let $D=P'$, $V=E'$, $D_q=t\rho(q)$, $V_q=t\eta(q)$.
+The audited endpoint identities and Jacobian are
+\begin{align}
+ D_q[F_p(q)-F_p(-q)]&=1-D(p),\\
+ V_q[F_p(q)+F_p(-q)]&=P(p)-V(p),\\
+ \frac{\dd u}{\dd y}&=\frac{2\sinh\kappa}{D(q+hu)},
+ &\overline P(q+hu)&=P_0(\sqrt{hy/b}).
+ \label{eq:jac}
+\end{align}
+The high-precision checker also uses an independently counted spacing
+$a\ne1$, restoring $a$ in the Jacobian denominator, and differentiates the
+inverted momentum numerically. Its largest $N=48$ Fredholm identity residual
+is $2.57\,10^{-30}$; the centered-difference Jacobian error is
+$6.65\,10^{-22}$.
+
+\C Evaluating the defining equation for $F_z$ at an endpoint gives the
+particularly useful identity
+\begin{equation}
+ \boxed{\Phi(e,z)=-tF_z(e),\qquad
+ U_{12}=-t[F_{p_2}(e_1)-F_{e_2}(e_1)].}
+ \label{eq:Uexact}
+\end{equation}
+This fixes the one-body reference term without a fit or a phase convention.
+Writing $f_j^\pm=F_{p_j}(\pm q)-F_{e_j}(\pm q)$, the exact reciprocity law is
+\begin{equation}
+ \widehat\Phi_{12}+\widehat\Phi_{21}
+ =t(f_1^+f_2^+-f_1^-f_2^-)
+ =\mathfrak M_1\mathfrak Q_2+\mathfrak M_2\mathfrak Q_1,
+\end{equation}
+where $\mathfrak M_j=D_q(f_j^+-f_j^-)$ and
+$\mathfrak Q_j=t(f_j^++f_j^-)/(2D_q)$ at $a=1$.
+The independent checker solves the Fredholm equations and compares actual
+forward and reverse phases to this product, in both channels.
+\checks{identities}\checks{scan}
+
+\section{Correct half-line solution and a new reference correction}
+\C Use only the corrected Wiener--Hopf normalization. Define
+\begin{equation}
+ g(s)=s^{-1/2}\Gamma(1+s/(2\pi))
+       \exp\{-s\log[s/(2\pi e)]/(2\pi)\},\qquad
+ \mathcal LG=\sqrt\pi\,g(s)/s^2.
+\end{equation}
+Put $G(u)=\frac43 y(u)^{3/2}$, $B=G'$, $f=G''$, $c=\sqrt\pi$.
+Then $B(0^+)=c$, $\mathcal LB=\sqrt\pi g/s$ and
+$\mathcal Lf=\sqrt\pi(g-1)$ for the ordinary derivative on $u>0$;
+the removed constant is the contact delta. The dressed Jacobian reads
+$B(u(y))=2\sqrt y/u'(y)$.
+
+\C For $u>v>0$ the corrected, audited forward convolution is
+\begin{equation}
+ H(u,v):=\lim_{h\to0}N_{12}/h
+ =2\int_0^v f(u-w)B(v-w)\dd w.
+ \label{eq:H}
+\end{equation}
+Equation \eqref{eq:Uexact} and the endpoint asymptotics
+$f_j^+\to1-B(u_j)/c$, $f_j^-\to0$ give
+\begin{align}
+ U(v)&:=\lim U_{12}/h=2c[B(v)-c],\\
+ \widehat H(u,v)&=H(u,v)-U(v),\\
+ \widehat H(u,v)+\widehat H(v,u)&=2[B(u)-c][B(v)-c],\\
+ \boxed{H(u,v)+H(v,u)=2B(u)B(v)-2\pi.}
+ \label{eq:two_recip}
+\end{align}
+The $-2\pi$ must not be dropped. In particular $H(u,u)=B(u)^2-\pi$;
+the four-term phase vanishes on either edge.
+
+\C There is a further, independently checkable correction to the frame
+audit. The directional convolution and the four-term function satisfy
+\begin{align}
+ (\partial_u+\partial_v)H&=2f(u)B(v),\\
+ (\partial_u+\partial_v)\widehat H&=2f(u)B(v)-2c f(v).
+ \label{eq:PDE}
+\end{align}
+The frame audit instead prints $2f(u)[B(v)-c]$ for the latter source.
+Its difference from the correct source is $2c[f(u)-f(v)]$, generally nonzero.
+This is a reference mismatch, not a new homogeneous freedom. Given the
+correct source and axis data, the characteristic equation still fixes the
+phase. The exact endpoint identity, finite-sea tests, symbolic bookkeeping
+and differentiated convolution are used, rather than the incorrect printed
+four-term PDE. No conclusion that arbitrary two-body additions are allowed
+is drawn from this correction.
+At $(u,v)=(4,1)$, independent fourth-order differentiation of the
+convolution gives $-0.347104254662920476$, agreeing with the corrected source
+to $2.07\,10^{-17}$; the printed source is $+0.837748060692060127$ and
+differs by $1.18485231535498060$.
+\checks{identities}\checks{edge}\checks{analysis}
+
+\section{Extracting the one-loop coefficient at fixed dressed momentum}
+\C Denote $y_1=Y$, $y_2=r^2Y$, $0<r<1$. First take $h\to0$ at fixed
+$(Y,r)$, then $Y\to\infty$. Each finite-$h$ momentum is exactly inverted;
+the classical edge phase is
+\begin{equation}
+ H_{\rm cl}=4rY+2Y(1-r^2)\log\frac{1-r}{1+r}.
+\end{equation}
+At finite $Y$, $H-H_{\rm cl}$ contains higher inverse-$Y$ corrections;
+it is not by itself a pure $O(\hbar^0)$ coefficient.
+
+\C The corrected momentum expansion has
+\begin{equation}
+ u(y)=y-A\log y+c_{\rm edge}+O(y^{-1}),\qquad A=\frac1{2\pi},
+ \qquad B(u(y))=2\sqrt y\,[1+A/y+O(y^{-2})].
+\end{equation}
+The constant $c_{\rm edge}$ cancels from the leading two-body correction.
+To see the cancellation, substitute $w=v-u(z)$ in \eqref{eq:H}:
+\begin{equation}
+ H=4\int_0^{r^2Y}\sqrt z\,
+ f\bigl(u(Y)-u(r^2Y)+u(z)\bigr)\dd z.
+ \label{eq:regular}
+\end{equation}
+With $S=Y-r^2Y+z$, expansion of the integrand at fixed positive $z/Y$
+gives $f=S^{-1/2}-\frac A2 S^{-3/2}\log[S r^2/z]+\cdots$.
+Thus the leading residual reduces to
+\begin{align}
+ R_{12}^{(1)}
+ &=-2A\int_0^{r^2}\frac{\sqrt t}{(1-r^2+t)^{3/2}}
+       \log\frac{(1-r^2+t)r^2}{t}\dd t\\
+ &=8A\int_0^r\log(s/r)\frac{s^2}{1-s^2}\dd s
+ =-8A[\chi_2(r)-r].
+ \label{eq:c0}
+\end{align}
+The change of variable is $s=\sqrt{t/(1-r^2+t)}$.
+The integrals and their equality to the dilogarithms are checked at 70 digits.
+\D The expansion at $z=O(1)$ requires a matched endpoint estimate to turn
+this into a uniform theorem for the finite-sea equation. Direct inversion
+and unconstrained fits test the result without assuming its intercept.
+
+\C From \eqref{eq:two_recip}, subtracting the classical sum $8rY$ yields
+\begin{equation}
+ S^{(1)}=4A(r+r^{-1})-\pi,\qquad
+ \boxed{\vartheta_N^{(1)}=\pi-8A\chi_2(r)+4A(r-r^{-1}).}
+ \label{eq:answer}
+\end{equation}
+For exchanged arguments the antisymmetric coefficient changes sign.
+At $r=1$ the finite-$Y$ antisymmetric phase is zero, whereas the ordered
+large-$Y$ limit of \eqref{eq:answer} is $\pi/2$ as $r\uparrow1$.
+The near-equal-amplitude boundary layer is therefore not covered by this
+ordered expansion. The $r\downarrow0$ limit is also nonuniform: the forward
+coefficient tends to zero while its symmetric and antisymmetric parts have
+opposite $1/r$ terms. They must be combined before taking a soft-soliton limit.
+
+\C The one-body calculation supplies a nontrivial consistency check:
+\begin{equation}
+ C=s_1-A/2,\qquad s_1=3/(4\pi),\qquad
+ C=1/(2\pi),\qquad A=2(s_1-C).
+\end{equation}
+Consequently the coefficient of $r+r^{-1}$ in the symmetric phase is
+$8(s_1-C)$, agreeing with the independently inverted Jacobian. A common
+sound-line shift changes $C$ and $s_1$ equally and leaves this coefficient
+unchanged. The decomposition found here is an edge dilogarithm, a rational
+Jacobian term, and an endpoint constant. No additional independent
+sound-speed two-body term is found in this strict corner. Splitting the
+rational term into separate multiples of $C$ and $s_1$ is algebraically
+possible but is not an independently established separation of mechanisms.
+\checks{identities}\checks{edge}\checks{analysis}
+
+\section{Head-on channel and why reference data must accompany the answer}
+\C For opposite edges, $f_2^+=O(h)$ while $f_2^-\to B(v)/c-1$.
+The opposite-edge directional interaction and its edge reference are
+$N_{12}/h=O(h)$ and $U_{12}/h=O(h)$ at fixed $y_j$.
+The leading classical terms are $\delta_T/h\to4\sqrt{y_1y_2}$ and
+$C_{12}/h\to-4\sqrt{y_1y_2}$. Thus the leading directional residual,
+its symmetric part and its antisymmetric part all tend to zero.
+New finite-sea extrapolations test both argument orders. This assertion
+concerns the stated iterated corner, not finite-amplitude head-on scattering
+or a global crossing continuation of \eqref{eq:answer}.
+
+\C The algebraically antisymmetric endpoint representative in the audited
+frame dictionary is
+$\mathcal B_{12}=\widehat\Phi_{12}-\mathfrak M_1\mathfrak Q_2$.
+It is unique once this particular subtraction is specified. Its edge values
+are, however,
+\begin{align}
+ \mathcal B_{\rm ov}/h
+ &=H-B_1B_2+c(B_1-B_2)+\pi,\\
+ \mathcal B_{\rm ho}/h&=(B_1-c)(B_2-c).
+ \label{eq:Bchannels}
+\end{align}
+Relative to their classical phases, these contain respectively
+\begin{align}
+ \mathcal B_{\rm ov}/h-\delta_{{\rm cl},\rm ov}
+ &=2\sqrt\pi\sqrt Y(1-r)+\vartheta_N^{(1)}+O(Y^{-1/2}),\\
+ \mathcal B_{\rm ho}/h-4rY
+ &=-2\sqrt\pi\sqrt Y(1+r)+\pi+\frac2\pi(r+r^{-1})+O(Y^{-1/2}).
+ \label{eq:Btails}
+\end{align}
+At fixed small $\beta$, $\sqrt Y=\beta_1/\sqrt{\hbar_B}$.
+Discarding these terms silently would change the quantum expansion and, in
+the head-on channel, the reported constant. The JSON retains $U_{12}$,
+$U_{21}$, the four-term phase and $\mathcal B_{12}/h$ as well as $R$.
+
+\D Removing an arbitrary antisymmetric addition from the Toda Fredholm
+problem does not by itself identify any of these representatives with the
+continuum canonical scattering operator. The frame audit explicitly leaves
+that endpoint-operator identification open, and the Phase 2i audit does not
+select an absolute phase. No new choice of regulator, physical frame,
+statistics offset or crossing branch is made here. Accordingly the table
+for $\vartheta_N$ must not be relabelled as the continuum Gamma-relative
+$\vartheta$ without this additional map.
+\checks{identities}\checks{scan}\checks{analysis}
+
+\section{Numerical extraction and error budget}
+\C The finite-sea mesh uses eleven values
+\[
+h\in\{.08,.06,.04,.03,.02,.015,.01,.0075,.005,.00375,.0025\},
+\]
+with $N=\lceil10/h+200\rceil$, plus 25\% refinements at $.01,.005,.0025$.
+The maximum mesh has 5250 points. Its Gauss weights are recomputed from
+long-double Newton iteration and a Legendre recurrence after the initial
+SciPy-weight run failed reciprocity; the sea linear algebra remains float64.
+Polynomial quadrature moments are checked independently. Fifteen pairs
+$Y=4,8,16,32,64$, $r=.4,.5,.6$ are solved in both channels and both argument
+orders, with exact endpoint $q$ and individually inverted dressed momenta.
+Every solve checks counting, momentum inversion, endpoint identities and
+reciprocity. The $h$ fits are evaluated at 60 digits; their float64 inputs
+are not represented as high-precision sea data.
+
+\C The central extrapolation is quartic on the last seven $h$ points.
+Alternatives are cubic on six, quintic on eight, quadratic on four, and
+cubic plus $h\log h$ or $h^2\log h$ on seven points. No target intercept
+is inserted. The $h$ uncertainty is the largest change of intercept.
+The mesh error is the largest refined-minus-base difference plus
+$2\,10^{-10}$, propagated through the largest extrapolation weight norm.
+The two errors are added. The same method separately checks the vacuum
+sound coefficient against $3/(4\pi)$.
+
+\C The half-line grid has 36 pairs: nine scales from $4$ to $1024$ at
+$r=.4,.5,.6$, and scales $32,128,512$ at $r=.25,.75,.9$.
+Each convolution uses 32-digit Talbot inversion and geometrically segmented
+16- and 24-point mpmath Gauss rules, resolving the $u=O(1)$ layer.
+De Hoog inversion at 45 digits independently checks four one-body points.
+The largest cross-method difference is $2.57\,10^{-30}$ and the largest
+16/24-node convolution difference is $1.01\,10^{-15}$.
+The derivative entering the convolution is separately checked by centered
+differences of the inverted $B$. Quadrature differences are propagated
+through the amplitude-fit weights. These diagnostics do not bound a common
+systematic error of the half-line model.
+
+\C For the three dense ratio grids, the central large-$Y$ fit is cubic
+in $1/Y$ through the last four points. Alternatives include quadratic
+fits, a $Y^{-3/2}$ term, a $Y^{-2}\log Y$ term, and a two-point linear
+fit. For the three sparse ratio grids the quadratic intercept and the
+last-two linear intercept are compared. All intercepts are free. Their
+largest spread is the amplitude-tail error; it is added to the propagated
+quadrature diagnostic. A separate table compares the finite-sea intercepts
+against the half-line model rather than merging their errors into a
+fictitiously rigorous bound on the limiting physical observable.
+
+\input{twobody_toda_numbers.tex}
+
+\D The quoted errors are deterministic sensitivity envelopes, not
+statistical confidence intervals and not a proof that no other asymptotic
+term is present. In particular, a small contour-inversion difference does
+not bound finite-sea matching, and no sampled estimate controls $r=0$ or
+$r=1$. Full quantum equivalence is not inferred from agreement of this
+coefficient with a possible future continuum result.
+\checks{scan}\checks{edge}\checks{analysis}
+
+\section{Verification summary, failures and reproducibility}
+\begin{longtable}{@{}L{5.4cm}L{2.1cm}L{7.3cm}@{}}
+\toprule Claim & Status & Check and limitation\\\midrule\endhead
+Endpoint evaluation, reciprocity and dressed Jacobian & (c) &
+\file{twobody_toda_identities.py}; independent 70-digit quadrature and root derivative.\\
+Correctly referenced edge phase and reverse phase & conditional (c) &
+\file{twobody_toda_edge.py}, \file{twobody_toda_scan.py}; two-term/four-term terms retained.\\
+Forward dilogarithmic coefficient & conditional (c) &
+Independent integral, direct inverse-Laplace convolution, free intercepts.\\
+Symmetric coefficient and one-body consistency & (c) in edge model &
+Exact reciprocity and same $A=2(s_1-C)$, tested numerically.\\
+Antisymmetric directional function and head-on zero & conditional (c) &
+Both finite-sea orders and channels; explicit normalization in JSON.\\
+Printed frame-audit four-term PDE & refuted (c) &
+Endpoint reference differentiation; discrepancy $2c[f(u)-f(v)]$.\\
+Physical scalar phase and Gamma-relative residual & (d) &
+Endpoint operator map, absolute phase and crossing normalization remain open.\\
+Uniform fixed-nonzero-$P$ limit & (d) &
+No uniform finite-sea/large-$Y$ or near-diagonal estimate supplied.\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The first finite-sea run failed before producing a row because the
+node-count attribute \texttt{N} shadowed a method of the same name.
+The method was renamed \texttt{directional}; no equation, grid or tolerance
+was changed.
+\item The first 5250-node refinement failed the unchanged $2\,10^{-8}$
+reciprocity tolerance. The original assertion did not print the residual,
+so its exact size was not retained; the failed row was not accepted into
+the cache. Recomputing the high-order Gauss weights using extended-precision
+Legendre recurrence addresses the quadrature accuracy rather than relaxing
+the test. The replacement changes the largest weight by $1.40\,10^{-13}$
+and passes with maximum reciprocity residual $2.58\,10^{-11}$ and counting
+error $1.78\,10^{-15}$. The successful replacement is stored in the cache.
+\item The printed four-term Krein source in the frame audit fails the exact
+reference differentiation. The wrong source is not used, and the discrepancy
+is retained as a positive refutation check. This does not weaken the
+Fredholm uniqueness condition.
+\item Restricted rational-only and logarithm-only candidate fits are tested
+against the numerical intercepts; their nonzero residuals are reported in
+the table and JSON. Their rejection is limited to these tested bases.
+\item The PDF skill's artifact-marker helper was not installed in this local
+workspace (\texttt{MODULE\_NOT\_FOUND}); the authorized local LaTeX build
+is used directly. An exploratory read also requested a nonexistent historical
+solver filename; the actual solver sources were then located. Neither
+operation modified an existing file.
+\item The first PDF build had a 5.24-point overfull line containing the
+entire $h$ grid; moving the grid to display math repaired it. Nonbreaking
+spaces also keep claim labels with their following text at page boundaries.
+\end{enumerate}
+No mathematical check was weakened to hide a failure. The success markers
+certify the asserted checks, not the open physical identifications.
+All four final scripts printed \texttt{ALL CHECKS PASSED}.
+
+\paragraph{Reproduction and interface.}
+Run only the new scripts, in this order:
+\begin{verbatim}
+python3 phase2/scripts/twobody_toda_identities.py
+python3 phase2/scripts/twobody_toda_scan.py
+python3 phase2/scripts/twobody_toda_edge.py
+python3 phase2/scripts/twobody_toda_analysis.py
+\end{verbatim}
+The two heavy scripts resume their own JSON caches; \texttt{--refresh}
+regenerates them. The coordinator-facing \file{twobody_toda_grid.json}
+contains definitions, signed channels, raw finite-$h$ fit variants, the
+finite-$Y$ half-line grid, the limiting coefficients, candidate residuals
+and separate numerical error components. The raw sea and edge caches are
+also preserved. Build the PDF by running \texttt{pdflatex} twice from
+\file{phase2/}; the numerical table fragment is supplied alongside this source.
+
+\paragraph{Internal sources read; no new external bibliography.}
+\begingroup\raggedright
+The sources used are \file{AGENTS.md}, \file{README.md}, the conclusions
+and relevant Toda sections of \file{phase2/report.tex},
+\file{frame_dictionary.tex}, \file{audit_frame_dictionary.tex},
+\file{audit_phase2i.tex}, \file{onebody_toda_precision.tex},
+\file{audit_onebody_scheme.tex}, the residual-phase sections of
+\file{smx_candidates.tex} and \file{audit_smx.tex}, and the relevant
+\file{errata.tex} and \file{audit_toda_dictionary.tex} corrections.
+Implementation sources were inspected for conventions and methods;
+none of their executable modules was imported or run.
+All numerical results in this note are new task-prefixed outputs.
+\par\endgroup
+\end{document}
