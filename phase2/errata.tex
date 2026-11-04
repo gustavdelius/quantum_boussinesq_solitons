@@ -1,0 +1,1045 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,enumitem}
+\usepackage[bookmarks=false,colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\emergencystretch=4em
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\A}{\textbf{(a)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\test}[1]{\textit{Check:} \file{#1}.}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Consolidated errata to the historical Boussinesq write-ups}
+\author{Scientific record for PI Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C This note preserves the historical files and records corrections from
+\file{paper/review_draft1.tex}, section A, \file{phase2/audit_phase2i.tex},
+and \file{phase0/reference_audit.md}. It distinguishes corrected mathematical
+identities from conditional evidence and unresolved physical identifications.
+The bad-equation Wick boundary energy changes sign; the displayed good-soliton
+energy and several printed Phase 2i formulas change. The inspected historical
+zero-scheme energy tables and executable classical scattering phase do not
+change as a consequence of these corrections. Negative-orientation defect
+labels require repair. No regularisation, equation, or quantum frame is selected.
+\end{abstract}
+
+\paragraph{Labels, scope and evidence.}
+(a) denotes literature results, (b) literature heuristics, (c) project derivations
+and source/metadata observations, and (d) unestablished interpretations.
+All errata and source comparisons below are (c), unless individually marked.
+A bibliographic (c) verifies a record, not a proof in the cited work.
+All mathematical check names refer to \file{phase2/scripts/errata_checks.py};
+it uses exact SymPy and 70-decimal mpmath (45 digits for the nested convolution
+check). Prefixes in the log identify individual parameter samples.
+Source function bodies are executed only where explicitly stated, without
+source imports or top-level effects. Numerical samples are evidence, not global
+theorems. The note contains 14 classical/convention/documentation items
+M01--M14, 11 Phase 2i items I01--I11, a bibliographic ledger, and README
+replacement blocks R01--R08. Multiple occurrences of one correction count as
+one item. No existing file or git state is changed; README replacements are
+instructions for the coordinator, not applied edits.
+
+\tableofcontents
+\newpage
+\section{Classical and one-loop corrections, by historical file}
+
+\subsection{\file{phase2/report.tex}}
+\paragraph{M01. Bad-equation action, line 69 (unnumbered display).}
+\C \textit{Printed:}
+$\mathcal L=\frac12\phi_t^2-\frac12\phi_x^2+\frac12\phi_{xx}^2+\phi_x^3$.
+\textit{Correction:}
+\[
+ \mathcal L_b=\tfrac12\phi_t^2-\tfrac12\phi_x^2-\phi_x^3
+                  +\tfrac12\phi_{xx}^2,\qquad
+ \mathcal H_b=\tfrac12\pi^2+\tfrac12u^2+u^3-\tfrac12u_x^2.
+\]
+Its Euler--Lagrange equation, differentiated in $x$, is precisely
+$u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx}$.
+For $u=k^2\operatorname{sech}^2(kx/2)/2$, $\pi=-vu$, $v^2=1+k^2$,
+\[
+ \int u^2dx=\tfrac23k^3,\quad \int u^3dx=\tfrac4{15}k^5,\quad
+ \int u_x^2dx=\tfrac2{15}k^5,\qquad E_b=\tfrac2{15}k^3(5+4k^2).
+\]
+\test{lagrangian_1, energy_integrals, energy_velocity_1, energy_quadrature}
+\textit{Impact:} the normal-ordering sign M02 is affected. The inspected
+classical phase, charges, and correctly computed classical energy survive.
+
+\paragraph{M08. KdV ratio, line 153; \file{scripts/consistency_checks.py}, final explanatory print.}
+\C \textit{Printed:} ``their ratio tends to $0.564$'' refers to the
+\emph{topological} and KdV terms, whereas that value is the \emph{full}
+derivative divided by the KdV term. At $\beta_1/\beta_2=1.7$,
+\[
+ \frac{\partial_{\beta_1}\delta}{2\beta_1\log A}\longrightarrow
+ 1+\frac{2\beta_2}{\beta_1\log A_{\rm KdV}}=0.564246498175\ldots,
+ \qquad A_{\rm KdV}=\left(\frac{\beta_1-\beta_2}{\beta_1+\beta_2}\right)^2.
+\]
+The cross-only ratio is $-0.435753501825\ldots$; the final script print
+must say $1+2\beta_2/(\beta_1\log A)$, not the expression with a minus sign.
+The extra $4\beta_2$ is a phase-derivative contribution, not a spatial shift.
+\test{kdv_ratio} Independent differentiation at scale $10^{-12}$ agrees
+with the limit to $10^{-20}$. \textit{Impact:} prose only; no phase value changes.
+
+\paragraph{M09. Reproducibility inventory, lines 468--469.}
+\C Replace nonexistent \file{toda_quantum_correction.py} by
+\file{toda_quantum_corrections.py}, and \file{smatrix_boot.py} by
+\file{smatrix_poles_bootstrap.py}. The Phase 2c inventory also omits
+\file{smatrix_rejected_forms.py} and \file{smatrix_semiclassical_unitarity_crossing.py}.
+\test{script_path} (filesystem existence, not a mathematical theorem).
+\textit{Impact:} documentation only. See M04 for the Route E root convention.
+
+\subsection{\file{phase2/oneloop.tex} and its energy-script documentation}
+\paragraph{M02. Propagated normal-ordering sign: lines 59, 71--81, equation \file{eq:E1}.}
+\C The exact offending positive shift is in the ``Decision (PI)'' list,
+line 59, and in the caption immediately below the energy table, line 81;
+it is not a separate numbered equation. Equation \file{eq:E1} writes the
+energy integral plus $cM$. Its normal-ordered specialization is
+\[
+ E_1(\beta)=\frac{\hbar}{4\pi}\int_{-1}^{1}\omega(q)\theta'(q)\,dq+cM,
+ \quad c=-\frac{3\hbar}{2\pi},\quad
+ \Delta E_{\rm Wick}=-\frac{3\hbar}{2\pi}M
+                  =-\frac{3\hbar}{\pi}\sinh\beta.
+\]
+\textit{Printed:} $+3\langle\phi_x^2\rangle M$ and
+$+(3\hbar/\pi)\sinh\beta$; the same error is at lines 15--16 of
+\file{phase2/scripts/oneloop_soliton_energy.py}.
+\textit{Evidence:} M01 gives $+u^3$ in the Hamiltonian, and
+$:u^3:=u^3-3Cu$, with the previously selected stable-band
+$C=\hbar/(2\pi)$. \test{wick_sign, stable_band_variance, wick_energy}
+\textit{Impact:} any energy quoted \emph{with this Wick boundary term}
+changes by $-6\hbar\sinh\beta/\pi$ relative to the erroneous prescription.
+The soliton table and \file{oneloop_breather.py} use $c=0$ and are unchanged.
+This repairs an existing prescription; it does not select a new scheme or
+prove that the stable-band restriction supplies a complete quantum theory \D.
+
+\subsection{\file{phase2/oneloop_phase.tex}}
+\paragraph{M03. Classical good energy, \file{eq:onesol_data}, lines 59--67.}
+\C \textit{Printed:} $E=k^3(2\cos^2\alpha+1)/3$ together with
+$dE/d\alpha=v\,dP/d\alpha$. \textit{Correction:}
+\[
+ E_g=\frac2{15}k^3(5-4k^2)
+     =\frac2{15}\sin^3\alpha(1+4\cos^2\alpha),\qquad dE_g=v\,dP.
+\]
+The printed excess is $k^3(5-2k^2)/15$, and its derivative residual is
+$dE_{\rm printed}/dk-vP'(k)=k^2(1-2k^2/3)$.
+\test{good_energy_misprint, energy_velocity_-1, energy_quadrature, downstream_energy}
+\textit{Impact:} the displayed energy and its asserted derivative relation.
+The inspected phonon/phase function bodies use the PDE, phase derivatives,
+and momentum; \file{audit_charges_action.py:ecl} already uses $E_g$.
+The charge and one-loop tables do not inherit this typo. The independent
+physical determinant qualifications remain \D.
+
+\subsection{\file{phase2/oneloop_defect_phase.tex}, with propagation into Route E}
+\paragraph{M04. Defect dictionary, lines 51, 164--170, 365; \file{eq:s_qD}; \file{report.tex}, lines 334--339.}
+\C \textit{Printed:} $s=\eta\sigma$, $q_D=-\eta\sigma/(2\sqrt3)$,
+and $\alpha_{\rm CZ}=1/(2\sqrt3)$, $\beta_{\rm CZ}=\eta/(2\sqrt3)$.
+\textit{Correction at fixed CZ fields and orientation:}
+\[
+ s=\sigma_0,\qquad q_D=-\frac{\sigma_0}{2\sqrt3},\qquad
+ \alpha_{\rm CZ}=\frac\eta{\sqrt3},\qquad
+ \beta_{\rm CZ}=\frac{2\eta}{\sqrt3}.
+\]
+These obey $\beta_{\rm CZ}=2\alpha_{\rm CZ}$ and
+$\beta_{\rm CZ}^2-\alpha_{\rm CZ}^2=1$; the printed pair does not.
+The signed \emph{spectral} parameter $\eta\sigma_{\rm vac}$ is legitimate
+in the stability polynomial, but is not the scattering-root coordinate.
+Consequently the strict stability criterion $\eta\sigma_{\rm vac}<-1$
+must not be replaced by $q_D>1/(2\sqrt3)$ for both orientations.
+\test{CZ_constraints, wrong_CZ_coefficients, unsigned_root_sewing, signed_root_counterexample}
+The sewing checks use the actual source function bodies with independent
+one-soliton jets, both directions and both orientations.
+At $(\alpha,\epsilon,\sigma_0,\eta)=(0.4,1,2.4,-1)$ the correct $z$ is
+$1.50971083399\ldots$, versus $0.373565030471\ldots$ from the signed root;
+the latter has sewing residual $3.3312537\ldots$.
+\textit{Impact:} physical labels of negative-orientation transmission,
+delays and absorption roots; both executable \file{oneloop_defect_*}
+calculations use the unsigned dictionary. Mirroring all triples in the older
+spectrum audit does not establish equality of these fixed-defect dictionaries.
+The later one-stable-vacuum wording also needs R04's domain qualification.
+
+\paragraph{M05. Transmission factor, \file{eq:z1_sol}, lines 175--178.}
+\C \textit{Printed middle expression:}
+$[(k-(v+s)/\sqrt3)/(k+(v+s)/\sqrt3)]^{-\eta}$.
+\textit{Correction:}
+\[
+ z=\left(\frac{v+s-\sqrt3 k}{v+s+\sqrt3 k}\right)^\eta
+  =\left(\frac{p_b-q_D}{p_a-q_D}\right)^\eta.
+\]
+The printed middle expression equals $-1/z$, not $z$.
+\test{transmission, unsigned_root_sewing}
+\textit{Impact:} none in the executable transmission/delay/fusion functions;
+they use the rational expression. This is a reciprocal and sign error,
+not just a logarithm-branch choice.
+
+\paragraph{M06. Trigonometric roots, \file{eq:kp_roots_sol}, lines 132--136.}
+\C The Cartesian roots are correct. Replace the printed
+$\cos(\alpha-\epsilon\pi/6)/\sqrt3$ and
+$-\cos(\alpha+\epsilon\pi/6)/\sqrt3$ by
+\[
+ p_a=\frac{\epsilon}{\sqrt3}\cos(\alpha-\epsilon\pi/3),\qquad
+ p_b=\frac{\epsilon}{\sqrt3}\cos(\alpha+\epsilon\pi/3).
+\]
+\test{trigonometric_roots} \textit{Impact:} none in the inspected code,
+which uses the preceding Cartesian expressions.
+
+\paragraph{M07. Cubic normalization, \file{eq:kp_cubic}, lines 139--141.}
+\C \textit{Printed:} $p^3-p/4=\ell/(4\sqrt3)
+=-\epsilon\cos3\alpha/(4\sqrt3)$.
+\textit{Correction:} both denominators are $12\sqrt3$.
+\test{cubic} All three Cartesian roots satisfy the corrected cubic.
+\textit{Impact:} no change to executable root sums; literal use of the
+printed equation would assign the wrong spectral parameter.
+
+\paragraph{M12. Phase label, line 186.}
+\C \textit{Printed:} ``In Phase 2d (\file{defect_semiclassics.pdf})''.
+\textit{Correction:} Phase 2c. \test{phase_number}
+\textit{Impact:} citation navigation only.
+
+
+\paragraph{M13. Sewing determinant, \file{eq:det_factorisation}.}
+\C This inherited correction was correctly adopted by Phase 2i.
+For $s=\eta\sigma_{\rm vac}$ (a spectral parameter, unlike M04),
+$S=\kappa_1+\kappa_2$, $\kappa_1\kappa_2=g$,
+$\kappa_1^2+\kappa_2^2=1$, replace the printed $-1/24$ by $-2/3$:
+\[
+ \frac{\det M}{(\kappa_1-\kappa_2)^2}
+ =-\frac23 S^2(S^2-1)P_-(S;s)P_+(S;s),\qquad
+ P_\mp=S^2-\frac{\sqrt3\mp1}{2}sS+\frac{s^2-2\mp\sqrt3}{2}.
+\]
+\test{defect_determinant} Independent differentiation of the nonlinear
+sewing function, six off-shell samples, at $\eta=+1$.
+\textit{Impact:} the displayed algebraic determinant changes by a factor
+16, while its zeros are unchanged. This is not a computed change to a
+physical functional determinant.
+
+\paragraph{M14. Growing modes, abstract and \file{eq:omega_closed}.}
+\C The printed pair $i[s\sqrt{4-s^2}\pm\sqrt3(2-s^2)]/8$ misses an
+admissible-sheet switch. Retain only real polynomial roots $S>1$ and put
+$g=(S^2-1)/2$. For $1<s<2$, away from $s=\sqrt3$, the two positive rates are
+\[
+ g_1=\frac{s\sqrt{4-s^2}+\sqrt3(s^2-2)}8,\qquad
+ g_2=\frac{|s\sqrt{4-s^2}-\sqrt3(s^2-2)|}8.
+\]
+At $s=1.9$ the smaller rate is positive $0.200256\ldots$, not negative;
+at $s=2$ both coalesce at $\sqrt3/4$.
+\test{growth_branch, growth_threshold}
+\textit{Impact:} admissible localized-mode assignment and the plotted/quoted
+frequency pair, not the already correct characteristic-polynomial zeros.
+See I11 for the switching point and R05 for completeness qualifications.
+
+\subsection{Notation and asymptotic width identifications}
+\paragraph{M10. \file{phase1/review.tex}, \file{eq:mu}; \file{phase2/defect_semiclassics.tex}, KP roots; paper appendix item 7.}
+\C The terse statement ``$\mu=-p$'' needs the ordered dictionary
+\[
+ \mu_1=-p_b,\quad \mu_2=-p_a,\quad
+ \lambda=-\ell/(12\sqrt3).
+\]
+The bad-equation complex roots in \file{phase2/smatrix_ansatz.tex}
+instead satisfy $\mu^3+\mu/4=i\ell/(12\sqrt3)$.
+\test{ordered_mu_dictionary, cubic}
+\textit{Impact:} notation clarification, not an error in those source
+cubics or a change in their numerical results.
+
+\paragraph{M11. \file{phase2/toda_route.tex}, line 109; paper appendix item 8.}
+\C The equality $\kappa_j=\sqrt3\beta_j\to0$ and the width dictionary
+must be understood asymptotically. With $\kappa_H$ the Hirota exponential
+width and $\kappa_T$ the profile half-width,
+\[
+ \kappa_H=2\kappa_T,\quad \kappa_H\sim\sqrt{12}\,k_b,\quad
+ \kappa_T\sim\sqrt3\beta,\qquad k_b=\sinh\beta.
+\]
+\test{toda_width} The factor two is exact; the small-amplitude
+identifications are not finite-amplitude identities.
+\textit{Impact:} none on the limiting tests; finite-amplitude extrapolation
+must not identify $k_b$ with $\beta$.
+
+\section{Phase 2i: \file{phase2/toda_wh_and_kp_synthesis.tex}}
+\noindent\C In this section $T(s)=s^{-1/2}\Gamma(1+s/(2\pi))
+\exp[-s\log(s/(2\pi e))/(2\pi)]$ is the printed normalized WH factor.
+The audit verifies the following algebra and numerical evidence, without
+establishing the complete finite-sea-to-physical-frame limit \D.
+
+\paragraph{I01. Fourier symbol, \file{eq:wh_symbol}.}
+\C \textit{Printed:} $2\pi^2e^{\pi|\omega|}/\sinh(\pi|\omega|)$.
+\textit{Correction, for $\omega\ne0$:}
+\[
+ \Phi_{\rm WH}(i\omega)\Phi_{\rm WH}(-i\omega)
+ =\frac{2\pi}{1-e^{-|\omega|}}.
+\]
+\test{wh_symbol, wh_printed_counterexample}
+\textit{Impact:} the Fourier theorem as printed; its large-frequency limit
+is $2\pi$, not $4\pi^2$. The source's subsequent series uses $T$ and does
+not inherit this particular misprint. No zero-frequency distributional
+subtraction is fixed by the nonzero-frequency identity.
+
+\paragraph{I02. Momentum transform and physical scale, \file{eq:laplace_y} and preceding line.}
+\C For $G(u)=4y(u)^{3/2}/3$ the corrected transform is
+\[
+ \mathcal LG(s)=\frac{\sqrt\pi T(s)}{s^2},
+ \qquad G(u)\sim\frac43u^{3/2}.
+\]
+\textit{Printed:} $T(s)/s^2$; its leading term would instead give
+$y(u)\sim\pi^{-1/3}u$. Replace the preceding scale
+$aP_{\rm rel}/(\sqrt{bh}\,h)$ by
+$a\sqrt b\,P_{\rm rel}/h^{3/2}$, since
+$P_{\rm rel}=4b(\kappa\cosh\kappa-\sinh\kappa)/a$ and
+$\kappa^2=yh/b$.
+\test{momentum_normalisation, momentum_scale}
+\textit{Impact:} the printed normalization. The original script's
+\file{rhs_u} already inserts the missing $\sqrt\pi$; its conditional
+coefficients are not changed by correcting the text.
+
+\paragraph{I03. Inverse series, \file{eq:y_of_u}.}
+\C \textit{Printed:}
+\[
+ y-u=\frac{\log(8\pi u)-1}{2\pi}
+ +\frac{12\log(8\pi u)-\pi^2}{48\pi^2u}
+ +\frac{-12\log(8\pi u)+6\zeta(3)+\pi^2-8}{96\pi^3u^2}+O(u^{-3}).
+\]
+Set $A=1/(2\pi)$, $c=(1-\log(8\pi))/(2\pi)$,
+$d=1/48-1/(4\pi^2)$, $e=(4+6\zeta(3)-\pi^2)/(96\pi^3)$.
+Reversion of $u=y-A\log y+c+d/y+e/y^2+\cdots$ requires
+\[
+ y-u=v_0+\frac{v_1}{u}+\frac{v_2}{u^2}+\cdots,
+ \quad v_0=A\log u-c,\quad v_1=Av_0-d,
+ \quad v_2=Av_1-\frac A2v_0^2+dv_0-e.
+\]
+In particular the omitted $(\log u)^2/u^2$ coefficient is
+$-1/(16\pi^3)$. A remainder here may contain logarithms; the bare
+$O(u^{-3})$ assertion is not established.
+\test{inverse_series_reversion, inverse_log_squared, printed_inverse_counterexample}
+\textit{Impact:} numerical values from the printed inverse formula change;
+corrected-transform computations and the conditional $c,d,e$ survive.
+
+\paragraph{I04. Double Laplace transform, \file{eq:double_laplace}.}
+\C \textit{Printed prefactor:} $2$. \textit{Correction:}
+\[
+ \mathcal L_{u_1,u_2}(\partial_{u_2}\Phi_q)
+ =2\pi\frac{T(s_1)T(s_2)-1}{s_1+s_2}.
+\]
+This is the compatible transform of the corrected convolution, not a new
+proof of its physical identification. With $B=G'$, $f=G''$ on $u>0$,
+$B(0^+)=\sqrt\pi$, $\mathcal LB=\sqrt\pi T/s$ and
+$\mathcal Lf=\sqrt\pi(T-1)$. The causal derivative is
+$\sqrt\pi\delta+f$; its product contributes the diagonal contact term
+$2\pi\delta(u_1-u_2)$, removed by the numerator's $-1$.
+For $u_1>u_2>0$,
+\[
+ C(u_1,u_2)=2\int_0^{u_2}f(u_1-w)B(u_2-w)\,dw,
+\]
+so differentiating in $u_2$ retains $2\sqrt\pi f(u_1-u_2)$.
+\test{double_transform_contact, B_boundary, convolution_endpoint}
+\textit{Impact:} the printed transform is off by $\pi$; the original
+formal coefficient integrals were not direct checks of that transform.
+
+\paragraph{I05. Darboux identity, bootstrap item ``Darboux delay coboundary'', lines 375--383.}
+\C Replace
+$\Delta X_D'=\Delta x_D-2\sqrt3\epsilon_1\eta\gamma_1q_D$
+by
+\[
+ \Delta X_D'=\Delta x_D-2\epsilon_1\eta\gamma_1q_D,
+ \quad \Delta x_D=-\frac{\epsilon_1\eta}{k_1}
+      \log\left|\frac{p_{1b}-q_D}{p_{1a}-q_D}\right|,
+ \quad \gamma_1=-\frac{3\cos2\alpha_1}{\sin\alpha_1\sin3\alpha_1}.
+\]
+Then, with $q_{2a}-q_{2b}=k_2$,
+\[
+ -\frac{\log|A_{12}|}{k_1}+2k_2\gamma_1
+ =\epsilon_1[\Delta X_D'(q_{2b},+1)-\Delta X_D'(q_{2a},+1)].
+\]
+The printed right-minus-left discrepancy is
+$2k_2\gamma_1(\sqrt3-1)$. \test{darboux} (all four orientations).
+\textit{Impact:} the claimed delay identity; no absolute physical fusion
+constant is fixed, and algebraic closure remains distinct from physical fusion \D.
+
+\paragraph{I06. Four-term reciprocity product, remarks after Theorem 2, lines 257--275.}
+\C \textit{Printed:}
+$\widehat\Phi_q(u,v)+\widehat\Phi_q(v,u)=2B(u)B(v)$ and the resulting
+$8rY[1/(u'(Y)u'(r^2Y))-1]$ remainder. A four-term edge subtraction
+vanishes when either argument is zero; $2B(0^+)B(v)=2\sqrt\pi B(v)$
+does not. \test{edge_product_counterexample, fourterm_zero_edge}
+\textit{Verified replacement:} retain the finite-sea endpoint identity
+from \file{audit_toda_dictionary.tex}, \file{eq:reciprocity} and \file{eq:four}.
+For $t=2\pi h$, $\mathcal A=tI-K*$ on $[-q,q]$,
+$\mathcal AF_p(x)=\Theta(p-x)$ and
+$\Phi(p,z)=\Theta(p-z)-\int K(p-x)F_z(x)dx$, it is
+\[
+ \Phi(p,z)+\Phi(z,p)=t[F_p(q)F_z(q)-F_p(-q)F_z(-q)].
+\]
+Writing $\widehat\Phi(p,z)=\Phi(p,z)-\Phi(p,e_2)-\Phi(e_1,z)+\Phi(e_1,e_2)$,
+$f_p^\pm=F_p(\pm q)-F_{e_1}(\pm q)$,
+$g_z^\pm=F_z(\pm q)-F_{e_2}(\pm q)$, gives
+\[
+ \widehat\Phi(p,z)+\widehat\Phi(z,p)=t(f_p^+g_z^+-f_p^-g_z^-),
+\]
+where the reverse expression exchanges the reference edges.
+\test{finite_sea_reciprocity, reciprocity_mesh_convergence}
+The new checker solves the actual digamma-kernel equation at $h=1$, $q=0.2$
+with 24 and 36 Gauss nodes, at 70 digits, in same- and opposite-edge cases.
+\D The Phase 2i audit supplies \emph{no proven replacement closed-form edge
+product}. Simply replacing $B$ by $B-B(0)$ would be a new guess, not its
+conclusion. \textit{Impact:} withdraw the claimed edge symmetric-remainder
+formula and its interpretation as a solution of the quantum frame problem.
+Two-term and four-term subtractions also differ by one-body edge terms.
+
+\paragraph{I07. Kernel necessity, Theorem 3, item 1 (line 326).}
+\C \textit{Printed:} both exchange identities hold ``iff'' the kernel is
+odd and inversion-antisymmetric. \textit{Correction:} inversion
+antisymmetry is sufficient for ratio-bilinear exchange; necessity as stated
+is false. $K(z)=z^2-z^{-2}$ is even and inversion-antisymmetric.
+Moreover a constant added to a kernel is annihilated by the zero-sum soliton
+and defect weights while destroying both claimed kernel symmetries.
+\test{kernel_iff_counterexample, kernel_null_constant}
+\textit{Impact:} remove the universal necessity theorem; retain conditional
+algebra, not a uniquely selected physical kernel.
+
+\paragraph{I08. ``Exact'' asymptotic theorem and uniform remainder, abstract and Theorems 1--2.}
+\C Replace ``proves'' with ``formal reversion of the corrected transform,
+supported by numerical inversion''. The coefficients $c,d,e$ above survive
+that check; the vanishing logarithmic coefficients are conditional formal
+results, not independently proved finite-sea asymptotics.
+The formal leading integral and closed $c_1(r)$ survive:
+\[
+ \frac4\pi\int_0^r\log(s/r)\frac{s^2}{1-s^2}\,ds
+ =-\frac4\pi(\chi_2(r)-r),\quad
+ \chi_2(r)=\tfrac12[\operatorname{Li}_2(r)-\operatorname{Li}_2(-r)],
+\]
+\[
+ c_1(r)=-\frac{r^3}{6(1-r^2)}
+ -2d\left[\frac{1-r^2}{r^2}\log\frac{1-r}{1+r}+\frac2r\right].
+\]
+\test{corrected_transform_asymptotic, formal_c0, formal_c1}
+\D The projection, zero-frequency matching and uniform endpoint estimate
+remain missing. Cancellation at fixed $t>0$ is not a bound near $Yt^2=0$.
+\textit{Impact:} theorem strength and physical interpretation, not the
+verified values of these formal integrals.
+
+\paragraph{I09. Saved-data precision, abstract, numerical matching paragraph and tables.}
+\C \textit{Printed:} subtracting the exact classical lattice phase resolves
+fit ambiguity and matches $c_1$ to $<2\times10^{-4}$.
+\textit{Correction:} that agreement is one constrained central fit, with
+$c_0$ held to the target. The estimator
+$64[R_0(32)-c_0]-16[R_0(16)-c_0]$ cancels quadratic curvature; it is not
+the free-intercept estimator $32[R_0(16)-R_0(32)]$.
+\test{fit_estimator} Independent saved-data refits in
+\file{audit_phase2i.py:integrals_data} vary the extrapolation basis and
+large-$Y$ window; their spread exceeds $2\times10^{-4}$ and logarithmic
+alternatives still reverse signs. \textit{Impact:} the error claim is
+withdrawn; saved raw solver numbers are unchanged. No new preferred fit is
+selected, and no sensitivity range is represented as a statistical error bar.
+
+\paragraph{I10. Verification coverage, breather continuation and ``all six audits resolved''.}
+\C \textit{Printed:} all (c) claims were verified, all earlier failures
+reproduced, and earlier audits resolved. \textit{Correction:} the checker
+did not test the printed symbol, printed inverse series, transform scale,
+double transform, constructed convolution, Darboux delay, or physical shifted
+breather quantisation. Its numerical momentum table claims four $h$ values
+and $y=32$, while the code uses three values and stops at $y=16$.
+Its breather roots use angles $\alpha\pm\pi/3$ instead of the real-soliton
+implementation's $\alpha\pm2\pi/3$; continue the latter consistently.
+\textit{Evidence:} \file{audit_phase2i.tex}, script-audit and coverage tables;
+source inspection of \file{toda_wh_and_kp_synthesis.py}.
+\D Local reality/crossing checks and branchwise analytic continuation do
+not prove a global pole-free physical amplitude or the proposed quantum
+breather rule. A real-part prescription itself is not holomorphic.
+The full projected determinant, boundary-compatible measure, defect
+counterterms and stable intermediate states, physical phase constants and
+antisymmetric quantum frame remain unresolved.
+\textit{Impact:} withdraw blanket certification, not the checks that actually pass.
+
+\paragraph{I11. Marginal switching point, lines 420--422.}
+\C The phrase ``across all $1<s<2$, the two admissible positive growth rates''
+includes $s=\sqrt3$, where $g_2=0$ and $S=1$ fails the strict $S>1$
+admissibility condition. Replace it by ``two strictly positive rates for
+$1<s<2$, $s\ne\sqrt3$; at the switching point the second branch is marginal''.
+\test{growth_threshold} The absolute-value formula itself is correct.
+\textit{Impact:} threshold classification; the nonthreshold values in M14
+and the adopted determinant normalization remain valid.
+
+\newpage
+\section{Bibliographic corrections and independent verification ledger}
+\C Checked on 4 November 2026. The 32 numbered records below include all
+23 references flagged by the audit, its eight optional/incomplete-record
+repairs, and its matrix-Boussinesq date clarification. A secondary named
+reference is recorded separately. Each record lists every citing file named
+by the audit; only the erroneous or missing fields specified need changing.
+Reading labels below belong to this errata, not earlier agents.
+
+\paragraph{Access qualification and disagreement with the audit.}
+\C ArXiv abstract pages and accessible DOI landing pages were read anew.
+Several publishers returned HTTP 403/503, bot challenges, or redirect-only
+pages, including on independent fetch retries. For those fields, the
+publisher-deposited Crossref DOI record was read instead; both URLs are
+provided and the limitation is explicit. This is independent metadata
+verification, \emph{not} a claim to have read an inaccessible landing page.
+Thus the requested direct-landing-page verification could not be completed
+for every DOI. No confirmed title, page, or DOI correction disagreed with the
+audit. Two qualifications must remain flagged: a 404 establishes that
+\file{ace204} is unresolved, not that it was intentionally invented; and
+Zakharov's lack of a verified identifier is not a proof that none exists.
+The audit's ``unverifiable'' category means an identifier was missing in the
+write-up, not that the newly verified reference itself is fictitious.
+
+\paragraph{Content-attribution repairs.}
+\C Three bibliographic items affect scientific attribution rather than
+numbers: Bona--Sachs' initial-data hypothesis; Hirota's bad-equation sign;
+and Mathieu--Oevel's distinct algebra. Bogdan--Charkina's incorrect
+``good'' title also misclassifies the underlying equation. The remaining
+metadata repairs have no mathematical or numerical downstream effect.
+
+\paragraph{File-by-file bibliography index.}
+\C These source locations were checked against the current files. Bibitem
+keys are authoritative if concurrent edits move the line numbers. The detailed
+B-record supplies the old field, replacement, evidence and impact.
+\small
+\begin{longtable}{@{}L{5.6cm}L{9.4cm}@{}}
+\toprule Historical file & Bibliographic errata and locations\\\midrule\endhead
+\file{corrigan-zambon/README.md} & B09 (line 3), B33 (line 12)\\
+\file{phase0/literature_map.md} & B02 (line 79), B03 (line 79), B04 (line 86), B05 (line 13), B07 (line 33), B09 (line 14), B12 (line 34), B13 (line 64), B15 (line 99), B16 (line 99), B17 (line 88), B18 (line 30), B20 (line 97), B21 (line 98), B22 (line 74), B23 (line 56), B24 (line 57), B25 (line 78), B28 (line 89), B29 (line 90), B30 (line 88), B31 (line 89), B32 (line 45)\\
+\file{phase1/review.tex} & B01 (ABCD, line 517), B02 (Ashok1, line 518), B03 (Ashok2, line 519), B05 (BC, line 521), B06 (BonaSachs, line 522), B07 (CL-GB, line 526), B08 (CD, line 530), B09 (CZ, line 531), B11 (Dickey, line 533), B12 (DMHC, line 534), B14 (DS, line 535), B15 (Gand, line 536), B17 (Gutzwiller, line 537), B18 (Hirota73, line 538), B19 (HI, line 539), B20 (Hol92, line 540), B21 (Johnson, line 542), B22 (KM, line 543), B23 (LMK, line 544), B25 (MR, line 545), B26 (Mathieu88, line 546), B27 (MathieuOevel, line 547), B28 (Mertens, line 548), B29 (SiddharthanShastry, line 551), B30 (Sklyanin, line 552), B31 (Sutherland, line 553), B32 (Zak, line 555)\\
+\file{phase2/audit_charges_action.tex} & B09 (CZ, line 261)\\
+\file{phase2/charge_frame_master.tex} & B09 (CZ2023, line 875), B10 (DHN1974, line 890), B18 (Hirota1973, line 899)\\
+\file{phase2/defect_semiclassics.tex} & B09 (CZ, line 327)\\
+\file{phase2/oneloop.tex} & B05 (BC, line 189)\\
+\file{phase2/oneloop_defect_phase.tex} & B09 (CZ2023, line 935), B10 (DHN1974, line 950), B18 (Hirota1973, line 959)\\
+\file{phase2/oneloop_phase.tex} & B09 (CZ23, line 494)\\
+\file{phase2/report.tex} & B04 (line 266), B05 (BC, line 524), B09 (CZ, line 528), B12 (DMHC, line 529), B15 (Gand, line 531), B17 (Gutzwiller, line 532), B20 (Hol92, line 534), B21 (Johnson, line 536), B28 (Mertens, line 538), B29 (SS, line 541), B30 (Sklyanin, line 540), B31 (Sutherland, line 542)\\
+\file{phase2/smatrix_ansatz.tex} & B05 (BC, line 168)\\
+\file{phase2/toda_route.tex} & B17 (Gutzwiller, line 147), B28 (Mertens, line 150), B30 (Sklyanin, line 148), B31 (Sutherland, line 149)\\
+\file{phase2/toda_wh_and_kp_synthesis.tex} & B05 (BC, line 482), B09 (CZ, line 481), B28 (Mertens, line 485), B31 (Sutherland, line 484)\\
+\bottomrule\end{longtable}\normalsize
+\paragraph{B01. Ankiewicz et al. (reference-audit row 2).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{ABCD}).
+\textit{Printed/missing:} Only starting page 104; optional completion.
+\textit{Correction:} Add pages 104--128 and DOI 10.1111/sapm.12174.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/1611.09505}.
+\url{https://doi.org/10.1111/sapm.12174}.
+\url{https://api.crossref.org/works/10.1111/sapm.12174}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B02. Ashok et al. (2024) (reference-audit row 3).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Ashok1}).
+\textit{Printed/missing:} JHEP 07 (2024), without article number or DOI.
+\textit{Correction:} JHEP 07 (2024) 179; DOI 10.1007/JHEP07(2024)179.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2405.12636}.
+\url{https://doi.org/10.1007/JHEP07(2024)179}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B03. Ashok et al. (2025) (reference-audit row 4).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Ashok2}).
+\textit{Printed/missing:} JHEP 01 (2025), without article number or DOI; authors abbreviated.
+\textit{Correction:} JHEP 01 (2025) 154; DOI 10.1007/JHEP01(2025)154. Full authors: S. K. Ashok, S. Parihar, T. Sengupta, A. Sudhakar, R. Tateo. The abbreviation et al. is stylistic, not a false attribution.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2410.11748}.
+\url{https://doi.org/10.1007/JHEP01(2025)154}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B04. Belov--Chaltikian (reference-audit row 6).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md} (cited as \file{Belov–Chaltikian lattice W₃ (hep-th/9303166)}; also named in \file{phase2/report.tex} without bibliography entry).
+\textit{Printed/missing:} Preprint-only citation; optional completion.
+\textit{Correction:} Phys. Lett. B 309 (1993) 268--274; DOI 10.1016/0370-2693(93)90932-8.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/hep-th/9303166}.
+\url{https://doi.org/10.1016/0370-2693(93)90932-8}.
+\url{https://api.crossref.org/works/10.1016/0370-2693(93)90932-8}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B05. Bogdan--Charkina (reference-audit row 7).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{BC}); \file{phase2/oneloop.tex} (bibliography key \file{BC}); \file{phase2/report.tex} (bibliography key \file{BC}); \file{phase2/smatrix_ansatz.tex} (bibliography key \file{BC}); \file{phase2/toda_wh_and_kp_synthesis.tex} (bibliography key \file{BC}).
+\textit{Printed/missing:} Phase 2i title says ``Quasiclassical quantization of the breather of the good Boussinesq equation; other entries omit pages/DOI or title.
+\textit{Correction:} Use ``Quasiclassical quantization of the Boussinesq breather emerging from the kink localized mode, Low Temp. Phys. 51(6) (2025) 763--773; DOI 10.1063/10.0036799. The source treats the bad equation, not the good equation.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; also the arXiv full-text passage at equation (6) and its ill-posedness discussion read (not the whole article); no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2502.14695}.
+\url{https://doi.org/10.1063/10.0036799}.
+\url{https://api.crossref.org/works/10.1063/10.0036799}.
+\url{https://arxiv.org/pdf/2502.14695}.
+\textit{Downstream impact:} None numerically; repair attribution and the supported hypothesis/sign/algebra.
+\paragraph{B06. Bona--Sachs (reference-audit row 8).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{BonaSachs}).
+\file{phase1/review.tex}, lines 95 and 419, sections 2.1 and 4.5.
+\textit{Printed/missing:} The review attributes ``global existence for small data to the abstract.
+\textit{Correction:} Restrict the attribution to local well-posedness, solitary-wave stability for a speed range, and global existence for data close to a stable solitary wave. The abstract does not establish the stated small-data-near-zero claim.
+\textit{Evidence/read:} publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1007/BF01218475}.
+\textit{Downstream impact:} None numerically; repair attribution and the supported hypothesis/sign/algebra.
+\paragraph{B07. Charlier--Lenells (good equation) (reference-audit row 12).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{CL-GB}).
+\textit{Printed/missing:} The review bibliography omits the preprint year.
+\textit{Correction:} Add 2020, the original submission year of arXiv:2003.02777. This does not certify a publication year.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2003.02777}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B08. Clarkson--Dowie (reference-audit row 16).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{CD}).
+\textit{Printed/missing:} Trans. Math. Appl. 1 (2017), with no article number.
+\textit{Correction:} Add article identifier tnx003 (issue 1), DOI 10.1093/imatrm/tnx003.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/1609.00503}.
+\url{https://doi.org/10.1093/imatrm/tnx003}.
+\url{https://api.crossref.org/works/10.1093/imatrm/tnx003}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B09. Corrigan--Zambon (reference-audit row 17).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{corrigan-zambon/README.md}; \file{phase1/review.tex} (bibliography key \file{CZ}); \file{phase2/audit_charges_action.tex} (bibliography key \file{CZ}); \file{phase2/charge_frame_master.tex} (bibliography key \file{CZ2023}); \file{phase2/defect_semiclassics.tex} (bibliography key \file{CZ}); \file{phase2/oneloop_defect_phase.tex} (bibliography key \file{CZ2023}); \file{phase2/oneloop_phase.tex} (bibliography key \file{CZ23}); \file{phase2/report.tex} (bibliography key \file{CZ}); \file{phase2/toda_wh_and_kp_synthesis.tex} (bibliography key \file{CZ}).
+\textit{Printed/missing:} Wrong titles, article numbers and DOI, as detailed below.
+\textit{Correction:} Use ``Adding integrable defects to the Boussinesq equation, J. Phys. A: Math. Theor. 56(38) (2023) 385701; DOI 10.1088/1751-8121/aceec9; primary arXiv class nlin.SI (hep-th is a cross-list).
+Specifically: \file{charge_frame_master.tex:CZ2023} and
+\file{oneloop_defect_phase.tex:CZ2023} say ``Integrable defects in the Boussinesq
+equations'' and 405202; \file{report.tex:CZ} also says 405202;
+\file{oneloop_phase.tex:CZ23} says 315202 and DOI \file{10.1088/1751-8121/ace204};
+\file{toda_wh_and_kp_synthesis.tex:CZ} says 345203. Other listed entries omit
+publication fields. The bad DOI returned 404; the replacement is independently
+registered for the correct title and article number.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; also full-text passages (2.1)--(2.4), (3.22), (3.37), (5.5), read (not all sections); no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2306.03772}.
+\url{https://doi.org/10.1088/1751-8121/aceec9}.
+\url{https://api.crossref.org/works/10.1088/1751-8121/aceec9}.
+\url{https://doi.org/10.1088/1751-8121/ace204}.
+\url{https://arxiv.org/html/2306.03772v1}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B10. Dashen--Hasslacher--Neveu (1974) (reference-audit row 18).}
+\C \textit{Files/locations:} \file{phase2/charge_frame_master.tex} (bibliography key \file{DHN1974}); \file{phase2/oneloop_defect_phase.tex} (bibliography key \file{DHN1974}).
+\textit{Printed/missing:} Part I and II combined, with only the Part II DOI.
+\textit{Correction:} Optional: add Part I DOI 10.1103/PhysRevD.10.4114, pages 4114--4129; retain Part II DOI 10.1103/PhysRevD.10.4130, pages 4130--4138.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1103/PhysRevD.10.4114}.
+\url{https://api.crossref.org/works/10.1103/PhysRevD.10.4114}.
+\url{https://doi.org/10.1103/PhysRevD.10.4130}.
+\url{https://api.crossref.org/works/10.1103/PhysRevD.10.4130}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B11. Dickey (reference-audit row 21).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{Dickey}).
+\textit{Printed/missing:} No identifier; explicitly marked ``not machine-verified.
+\textit{Correction:} Add DOI 10.1142/5108 for Soliton Equations and Hamiltonian Systems, second edition (2003). Metadata verification does not upgrade the reading status to full text.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1142/5108}.
+\url{https://api.crossref.org/works/10.1142/5108}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B12. Dimakis--Muller-Hoissen--Chen (reference-audit row 22).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{DMHC}); \file{phase2/report.tex} (bibliography key \file{DMHC}).
+\textit{Printed/missing:} Audit notes arXiv journal-reference year 2018 versus issue year 2019.
+\textit{Correction:} Retain Phys. Scr. 94 (2019) 035206, DOI 10.1088/1402-4896/aaf6da. The arXiv record indeed displays 2018; distinguish record/update dates from volume year. No forced replacement of 2019.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/1805.09711}.
+\url{https://doi.org/10.1088/1402-4896/aaf6da}.
+\url{https://api.crossref.org/works/10.1088/1402-4896/aaf6da}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B13. Dimakis--Muller-Hoissen (reference-audit row 23).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}.
+\textit{Printed/missing:} Preprint-only entry; optional completion.
+\textit{Correction:} Lett. Math. Phys. 110 (2020) 3015--3051; DOI 10.1007/s11005-020-01322-9.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/2001.09688}.
+\url{https://doi.org/10.1007/s11005-020-01322-9}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B14. Drinfeld--Sokolov (reference-audit row 25).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{DS}).
+\textit{Printed/missing:} No DOI; starting page only.
+\textit{Correction:} J. Sov. Math. 30 (1985) 1975--2036; DOI 10.1007/BF02105860.
+\textit{Evidence/read:} publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1007/BF02105860}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B15. Gandenberger (reference-audit row 27).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Gand}); \file{phase2/report.tex} (bibliography key \file{Gand}).
+\textit{Printed/missing:} Journal details omitted in the map and report; abbreviated pages in the review.
+\textit{Correction:} Optional: Int. J. Mod. Phys. A 13 (1998) 4553--4590; DOI 10.1142/S0217751X98002195.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/hep-th/9703158}.
+\url{https://doi.org/10.1142/S0217751X98002195}.
+\url{https://api.crossref.org/works/10.1142/S0217751X98002195}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B16. Gandenberger--MacKay (reference-audit row 28).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}.
+\textit{Printed/missing:} Preprint-only map entry; optional completion.
+\textit{Correction:} Nucl. Phys. B 457 (1995) 240--272; DOI 10.1016/0550-3213(95)00462-9.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/hep-th/9506169}.
+\url{https://doi.org/10.1016/0550-3213(95)00462-9}.
+\url{https://api.crossref.org/works/10.1016/0550-3213(95)00462-9}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B17. Gutzwiller (reference-audit row 29).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Gutzwiller}); \file{phase2/report.tex} (bibliography key \file{Gutzwiller}); \file{phase2/toda_route.tex} (bibliography key \file{Gutzwiller}).
+\textit{Printed/missing:} No DOI; starting page 304 only.
+\textit{Correction:} Ann. Phys. 133 (1981) 304--331; DOI 10.1016/0003-4916(81)90253-0.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1016/0003-4916(81)90253-0}.
+\url{https://api.crossref.org/works/10.1016/0003-4916(81)90253-0}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B18. Hirota (1973) (reference-audit row 31).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Hirota73}); \file{phase2/charge_frame_master.tex} (bibliography key \file{Hirota1973}); \file{phase2/oneloop_defect_phase.tex} (bibliography key \file{Hirota1973}).
+\file{phase1/review.tex}, lines 213 and 245--247, equations for the bilinear form and soliton polynomial.
+\textit{Printed/missing:} The review labels its good-equation bilinear form and soliton polynomial as directly established by this source.
+\textit{Correction:} The source abstract has the bad fourth-derivative sign. Attribute the bad-equation result to Hirota and label the good-sign adaptation and its convention dictionary as a project calculation. The bibliographic metadata, J. Math. Phys. 14 (1973) 810--814, DOI 10.1063/1.1666400, are correct.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; publisher-deposited abstract read, not the full text; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1063/1.1666400}.
+\url{https://api.crossref.org/works/10.1063/1.1666400}.
+\textit{Downstream impact:} None numerically; repair attribution and the supported hypothesis/sign/algebra.
+\paragraph{B19. Hirota--Ito (reference-audit row 32).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{HI}).
+\textit{Printed/missing:} No DOI; starting page only; ``not read in the review.
+\textit{Correction:} J. Phys. Soc. Japan 52 (1983) 744--748; DOI 10.1143/JPSJ.52.744. The publisher abstract was now read, not the full article.
+\textit{Evidence/read:} publisher society J-STAGE abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1143/JPSJ.52.744}.
+\url{https://www.jstage.jst.go.jp/article/jpsj1946/52/3/52_3_744/_article/-char/ja}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B20. Hollowood (1992) (reference-audit row 33).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Hol92}); \file{phase2/report.tex} (bibliography key \file{Hol92}).
+\textit{Printed/missing:} Published title differs from preprint title; DOI omitted.
+\textit{Correction:} The preprint title is ``Quantum Solitons in Affine Toda Field Theories; the published title is ``Solitons in affine Toda field theories, Nucl. Phys. B 384 (1992) 523--540, DOI 10.1016/0550-3213(92)90579-Z. Both titles are legitimate in their respective records.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/hep-th/9110010}.
+\url{https://doi.org/10.1016/0550-3213(92)90579-Z}.
+\url{https://api.crossref.org/works/10.1016/0550-3213(92)90579-Z}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B21. Johnson (reference-audit row 35).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Johnson}); \file{phase2/report.tex} (bibliography key \file{Johnson}).
+\textit{Printed/missing:} Published journal is paired with the preprint title ``Exact quantum S-matrices for solitons in simply-laced affine Toda field theories.
+\textit{Correction:} For the journal version use ``On soliton quantum S-matrices in simply laced affine Toda field theories, Nucl. Phys. B 496 (1997) 505--550, DOI 10.1016/S0550-3213(97)00239-3; retain the other title only when explicitly identifying the preprint.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/hep-th/9611117}.
+\url{https://doi.org/10.1016/S0550-3213(97)00239-3}.
+\url{https://www.sciencedirect.com/science/article/abs/pii/S0550321397002393}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B22. Kupershmidt--Mathieu (reference-audit row 36).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{KM}).
+\textit{Printed/missing:} DOI present in map but absent from review bibliography.
+\textit{Correction:} Add DOI 10.1016/S0370-2693(89)80030-9; Phys. Lett. B 227 (1989) 245--250.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1016/S0370-2693(89)80030-9}.
+\url{https://api.crossref.org/works/10.1016/S0370-2693(89)80030-9}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B23. Lambert--Musette--Kesteloot (reference-audit row 37).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{LMK}).
+\textit{Printed/missing:} No DOI; starting page only.
+\textit{Correction:} Inverse Problems 3 (1987) 275--288; DOI 10.1088/0266-5611/3/2/010.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1088/0266-5611/3/2/010}.
+\url{https://api.crossref.org/works/10.1088/0266-5611/3/2/010}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B24. Manoranjan--Ortega--Sanz-Serna (reference-audit row 39).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}.
+\textit{Printed/missing:} No DOI in map.
+\textit{Correction:} J. Math. Phys. 29 (1988) 1964--1968; DOI 10.1063/1.527850.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1063/1.527850}.
+\url{https://api.crossref.org/works/10.1063/1.527850}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B25. Masoero--Raimondo (reference-audit row 40).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{MR}).
+\textit{Printed/missing:} Review omits preprint year and published chapter details.
+\textit{Correction:} Preprint 2019; in Asymptotic, Algebraic and Geometric Aspects of Integrable Systems, Springer (2020), pp. 55--78; DOI 10.1007/978-3-030-57000-2\_5.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/1908.11559}.
+\url{https://doi.org/10.1007/978-3-030-57000-2_5}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B26. Mathieu (1988) (reference-audit row 41).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{Mathieu88}).
+\textit{Printed/missing:} No DOI; starting page only; ``not read.
+\textit{Correction:} Phys. Lett. B 208 (1988) 101--106; DOI 10.1016/0370-2693(88)91211-7. Abstract/metadata now checked, not full text.
+\textit{Evidence/read:} publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1016/0370-2693(88)91211-7}.
+\url{https://www.sciencedirect.com/science/article/pii/0370269388912117}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B27. Mathieu--Oevel (reference-audit row 42).}
+\C \textit{Files/locations:} \file{phase1/review.tex} (bibliography key \file{MathieuOevel}).
+\file{phase1/review.tex}, lines 180--187, and bibliography key \file{MathieuOevel}.
+\textit{Printed/missing:} Title loses the superscript (2); review section 2.3 cites it for the standard spin-3 W algebra.
+\textit{Correction:} Restore the title ``The W\_3\textasciicircum{}(2) conformal algebra and the Boussinesq hierarchy, Mod. Phys. Lett. A 6 (1991) 2397--2409, DOI 10.1142/S0217732391002827. Remove this citation as evidence for the standard W\_3 bracket: its abstract concerns Polyakov's algebra and a hierarchy with space and time interchanged.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; publisher-deposited abstract read, not the full text; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1142/S0217732391002827}.
+\url{https://api.crossref.org/works/10.1142/S0217732391002827}.
+\textit{Downstream impact:} None numerically; repair attribution and the supported hypothesis/sign/algebra.
+\paragraph{B28. Mertens (reference-audit row 43).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Mertens}); \file{phase2/report.tex} (bibliography key \file{Mertens}); \file{phase2/toda_route.tex} (bibliography key \file{Mertens}); \file{phase2/toda_wh_and_kp_synthesis.tex} (bibliography key \file{Mertens}).
+\textit{Printed/missing:} No DOI; starting page only.
+\textit{Correction:} Z. Phys. B 55 (1984) 353--360; DOI 10.1007/BF01304087.
+\textit{Evidence/read:} publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1007/BF01304087}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B29. Siddharthan--Shastry (reference-audit row 46).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{SiddharthanShastry}); \file{phase2/report.tex} (bibliography key \file{SS}).
+\textit{Printed/missing:} Published and preprint titles differ; no journal DOI.
+\textit{Correction:} The preprint is ``The Quantum Toda Lattice Revisited; the journal title is ``Quantizing the Toda lattice, Phys. Rev. B 55 (1997) 12196--12209; DOI 10.1103/PhysRevB.55.12196.
+\textit{Evidence/read:} arXiv abstract and bibliographic entry read; publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://arxiv.org/abs/cond-mat/9611221}.
+\url{https://doi.org/10.1103/PhysRevB.55.12196}.
+\url{https://journals.aps.org/prb/abstract/10.1103/PhysRevB.55.12196}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B30. Sklyanin (reference-audit row 47).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Sklyanin}); \file{phase2/report.tex} (bibliography key \file{Sklyanin}); \file{phase2/toda_route.tex} (bibliography key \file{Sklyanin}).
+\textit{Printed/missing:} No DOI; starting page only.
+\textit{Correction:} Lect. Notes Phys. 226 (1985) 196--233; DOI 10.1007/3-540-15213-X\_80.
+\textit{Evidence/read:} publisher landing-page abstract/metadata read; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1007/3-540-15213-X_80}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B31. Sutherland (reference-audit row 48).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Sutherland}); \file{phase2/report.tex} (bibliography key \file{Sutherland}); \file{phase2/toda_route.tex} (bibliography key \file{Sutherland}); \file{phase2/toda_wh_and_kp_synthesis.tex} (bibliography key \file{Sutherland}).
+\textit{Printed/missing:} No DOI; starting page only.
+\textit{Correction:} Rocky Mountain J. Math. 8 (1978) 413--430; DOI 10.1216/RMJ-1978-8-1-413.
+\textit{Evidence/read:} DOI landing page attempted but blocked or incomplete; publisher-deposited DOI metadata read as fallback; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1216/RMJ-1978-8-1-413}.
+\url{https://api.crossref.org/works/10.1216/RMJ-1978-8-1-413}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+\paragraph{B32. Zakharov (reference-audit row 50).}
+\C \textit{Files/locations:} \file{phase0/literature_map.md}; \file{phase1/review.tex} (bibliography key \file{Zak}).
+\textit{Printed/missing:} No identifier; audit asserts categorically ``No arXiv ID or DOI exists.
+\textit{Correction:} Retain Sov. Phys. JETP 38 (1974) 108--110, with the Russian original separately identified as Zh. Eksp. Teor. Fiz. 65 (1973) 219--225. No DOI/arXiv identifier was verified here; do not invent one. A failed search does not prove nonexistence.
+\textit{Evidence/read:} no arXiv/DOI record verified; the publisher JETP entry and the first-page bibliographic header of the publisher PDF were read. They confirm the English issue and Russian pages 219--225; the PDF says July 1973, whereas the online index misleadingly repeats January 1974 for the Russian original. This is a publisher-index discrepancy, not a disagreement with the audit; no full-text reading beyond the passages explicitly stated.
+\url{https://doi.org/10.1007/BF01218475}.
+\textit{Downstream impact:} None numerically; metadata, navigation or reading-status repair only.
+
+\url{https://www.jetp.ras.ru/cgi-bin/dn/e_038_01_0108.pdf}.
+\url{https://jetp.ras.ru/cgi-bin/e/index/e/38/1/p108?a=list}.
+\paragraph{B33. Secondary named reference, \file{corrigan-zambon/README.md}, line 12.}
+\C The audit resolves ``Heimburg--Jackson (their ref. [11])'' to T. Heimburg
+and A. D. Jackson, \emph{On soliton propagation in biomembranes and nerves},
+PNAS 102 (2005) 9790--9795, DOI \file{10.1073/pnas.0503823102}.
+The DOI landing page returned 403; the publisher-deposited metadata and
+abstract were independently read, not the full text:
+\url{https://doi.org/10.1073/pnas.0503823102};
+\url{https://api.crossref.org/works/10.1073/pnas.0503823102}.
+This optional completion changes no result. The other secondary mention,
+Tajiri--Murakami, remains explicitly indirect through Bogdan--Charkina;
+no unverified new bibliographic entry is invented here.
+
+\paragraph{Explicit convention dictionaries for attribution.}
+\C For Bogdan--Charkina equation (6), $\varphi_{\rm BC}=-\phi_b$,
+$w_{\rm BC}=-u_b$ gives the project's bad equation. For Hirota's abstract
+field, $w=u_b/2$ matches the nonlinear coefficient six to the project's
+coefficient three; its fourth-derivative sign is still bad.
+For the CZ sections used above, $u_{\rm CZ}=-3\phi_g$ and
+$\mathcal L_{\rm CZ}=9\mathcal L_g$ with $c=\kappa=\lambda_{\rm CZ}=1$.
+\test{source_dictionaries} The literature statements themselves are (a)
+as reported in those passages/abstracts; only their explicit conversion is
+claimed as a project calculation. Metadata checks do not re-prove literature
+theorems.
+
+\newpage
+\section{README status statements: exact replacement wording}
+\C These blocks refer to the README snapshot read for this task. Match the
+status heading if concurrent work moves the line numbers. Replace the named
+block with the quoted wording, retaining its existing Markdown links.
+README itself is not edited.
+
+\paragraph{R01. Phase 2i status, line 41: refuted and qualified.}
+\C ``Exact Wiener--Hopf factorisation ... proves'', ``Krein convolution
+proves'', ``derives ... analytically'', ``matches ... to $<2\times10^{-4}$'',
+and unconditional Darboux/holomorphic/physical resolution overstate the evidence.
+Evidence: I01--I11 and \file{audit_phase2i.tex}. Impact: the line cannot certify
+an exact continuum amplitude. Exact replacement:
+\begin{quote}
+\textbf{Phase 2i, conditional Wiener--Hopf asymptotics and KP bookkeeping
+(4 November 2026).} See \file{phase2/toda_wh_and_kp_synthesis.pdf},
+\file{phase2/audit_phase2i.pdf}, and \file{phase2/errata.pdf}.
+\textbf{(c), conditional:} corrected-transform reversion and independent
+numerical inversion support the stated edge coefficients; the leading
+residual and two-loop coefficient are verified evaluations of formal
+integrals. The printed Fourier symbol, momentum normalization and scale,
+inverse series, double transform, Darboux delay, kernel necessity theorem,
+and four-term reciprocity product require correction. The quoted saved-data
+agreement uses a fixed leading coefficient and one extrapolation basis;
+fit sensitivity exceeds the quoted precision. Explicit orientation offsets
+and crossing identities are algebraically checked. \textbf{(d):} uniform
+finite-sea edge asymptotics, the physical quantum frame, absolute phase and
+fusion constants, the projected determinant, and a physical all-loop
+continuum amplitude remain open. Phase 2i does not resolve all earlier audits.
+\end{quote}
+
+\paragraph{R02. Phase 0 ``only prior soliton quantisation'', line 49: scope qualification.}
+\C A literature-search conclusion is not proof of exhaustive absence.
+Evidence: the map's caveats and B05's verified record. Impact: search scope,
+not numbers. Exact replacement:
+\begin{quote}
+\textbf{Phase 0, literature search recorded.} \textbf{(c):} the project
+search found no prior Boussinesq soliton S-matrix. The recorded prior
+one-body semiclassical breather quantisation is Bogdan--Charkina,
+arXiv:2502.14695, for the bad equation. See \file{phase0/literature_map.md}
+and \file{phase2/errata.pdf} for bibliographic corrections and reading
+limitations. This search result is not a proof that no other prior work exists.
+\end{quote}
+
+\paragraph{R03. Phase 1 ``done'', lines 50--51: historical status needs errata link.}
+\C Completion should not conceal the erroneous attributions B06, B18, B27.
+Evidence: independently read abstracts and the bibliographic ledger.
+Impact: literature support, not a reversal of every classical result.
+\begin{quote}
+\textbf{Phase 1, historical classical review completed.} The source and
+PDF are \file{phase1/review.tex} and \file{phase1/review.pdf}; checks are
+in \file{phase1/scripts/}. \textbf{(c):} corrections to bibliographic
+metadata and to the Bona--Sachs, Hirota and Mathieu--Oevel attributions
+are recorded in \file{phase2/errata.pdf}. Historical completion and
+passing scripts do not certify every printed formula or attribution.
+Build the LaTeX source twice with pdflatex; run the checks from the scripts
+directory.
+\end{quote}
+
+\paragraph{R04. Phase 2b classical reproduction versus finite-$\hbar$ interpretation, lines 56--61.}
+\C Classical results survive; ``quantum corrections were computed'' does
+not establish their physical frame. Evidence: M11, I06,
+\file{audit_toda_dictionary.tex}, \file{audit_frames_defects.tex}.
+Impact: finite-$\hbar$ interpretation and continuum matching.
+\begin{quote}
+\textbf{Phase 2b, Route D (quantum Toda chain).} See
+\file{phase2/toda_route.pdf} and \file{phase2/scripts/toda_*.py}.
+\textbf{(c):} the implemented classical limit reproduces Toda soliton
+scattering with the topological terms, and its small-amplitude scaling
+recovers the Boussinesq classical phase. Finite-$\hbar$ calculations are
+available in the implemented classical frame. \textbf{(d):} a common
+physical quantum momentum and frame dictionary remains unresolved;
+classical agreement alone does not establish it. The Toda correspondence
+used here is a small-amplitude limit.
+\end{quote}
+
+\paragraph{R05. Phase 2c defect stability, line 63: convention, domain and completeness.}
+\C ``Stable iff ... (one per KP triple), so excited defects are unstable''
+needs strict/marginal and real-root distinctions. Evidence: M04, M13--M14,
+I11 and \file{audit_frames_defects.tex};
+\test{stable_triple_domain, degenerate_triple, growth_threshold}
+Impact: admissible physical states and fusion interpretation.
+\begin{quote}
+\textbf{Phase 2c, classical soliton--defect scattering (good equation).}
+See \file{phase2/defect_semiclassics.pdf} and
+\file{corrigan-zambon/defect_*.py}. \textbf{(c):} the classical transmission
+phase and its factorisation are checked in the stated normalization,
+with the scattering root determined by the unsigned CZ vacuum parameter.
+The growing-mode analysis supports the stated strict stability criterion
+on its tested admissible branch; one stable vertex refers to a triple
+of three distinct real roots. Thresholds and repeated roots must be
+separated, and finite root searches are not completeness proofs.
+\textbf{(d):} physical quantum fusion and its absolute constant are not
+established by formal triangle closure. Reflection and two-soliton decay
+are outside this calculation. See \file{phase2/errata.pdf} for the root,
+sewing-determinant and growing-branch corrections.
+\end{quote}
+
+\paragraph{R06. Phase 2c Gamma candidate, line 62: retain conjectural status throughout.}
+\C ``A guess, (d)'' is correct; the later pass/exclusion statements should
+distinguish algebraic tests from physical conclusions. Evidence:
+\file{smatrix_ansatz.tex}, its cited checks, and the determinant/frame audits.
+No new exclusion is claimed. Impact: interpretation only.
+\begin{quote}
+\textbf{Phase 2c, candidate S-matrix (bad equation).} See
+\file{phase2/smatrix_ansatz.pdf} and \file{phase2/scripts/smatrix_*.py}.
+\textbf{(d):} the Gamma-factor construction is a candidate, not a derived
+physical S-matrix. \textbf{(c):} the stated semiclassical, unitarity,
+crossing and pole tests, and the exclusions of the specifically tested
+root-Gamma and separated mirror forms, are algebraic checks in the
+specified conventions. \textbf{(d):} physical charge/frame identification,
+CDD freedom, Planck-constant renormalisation and absolute phase/Maslov
+normalization remain unresolved.
+\end{quote}
+
+\paragraph{R07. Follow-up-audit status, line 43: master-report completion claim.}
+\C ``The master report now reflects the audits throughout'' must not mean
+it is free of historical errors: M01, M04, M08 and M09 remain in the read
+snapshot. Replace just that final sentence by:
+\begin{quote}
+\textbf{(c):} the master report incorporates many audit qualifications;
+remaining action-sign, defect-root, ratio, script-name and bibliographic
+corrections are recorded in \file{phase2/errata.pdf}. The historical
+write-ups are preserved.
+\end{quote}
+\textit{Impact:} prevents an incorrect assertion of completed correction.
+
+\paragraph{R08. Already-qualified lines: retain their qualifications.}
+\C The independent-audit statuses (45, 47) and Phases 2d--2h (64--68)
+already qualify fixed-frame Toda comparisons, the complete determinant,
+orientation constants, physical fusion and leading/all-loop matching.
+They are not re-refuted here. Exact wording to append to Phase 2g, which
+currently mentions only the determinant and branch corrections:
+\begin{quote}
+\textbf{(c):} the unsigned CZ scattering-root dictionary, the displayed
+transmission factor and the KP root formulas also require the corrections
+in \file{phase2/errata.pdf}; the executable transmission functions already
+use the corrected rational form.
+\end{quote}
+The Phase 2 first-pass classical-phase statement (lines 52--55) survives;
+append an errata link rather than replacing its phase by a new convention.
+No README mutation is part of this task.
+
+\section{Numerical impact and coverage summary}
+\C ``Unchanged'' is limited to these corrections and the inspected
+implementations; it does not certify every physical interpretation.
+\begin{longtable}{@{}L{4.0cm}L{8.2cm}L{2.7cm}@{}}
+\toprule Result & Consequence & Items\\\midrule\endhead
+Normal-ordered bad energy & Boundary shift changes from positive to negative;
+relative correction $-6\hbar\sinh\beta/\pi$. Published $c=0$ soliton and
+breather tables are unchanged. & M02\\
+Displayed good energy & Lower by $k^3(5-2k^2)/15$; inspected
+one-loop/charge functions already use correct data. & M03\\
+Negative-orientation defect & Example: $z$ changes from
+$0.373565030471\ldots$ to $1.509710833986\ldots$ if erroneous prose is
+used literally. Existing unsigned-root functions are unchanged. & M04--M05\\
+Sewing determinant and rates & Algebraic determinant is 16 times
+printed expression; zeros do not move. At $s=1.9$ the missed growing rate
+is $+0.200256\ldots$, paired with $0.496894\ldots$. & M13--M14\\
+WH printed transforms/series & Momentum transform gains $\sqrt\pi$; double
+transform gains $\pi$; inverse series changes. Original script already
+used the corrected momentum normalization. & I01--I04\\
+Conditional edge coefficients & $c=-0.353987876975035\ldots$,
+$d=-0.004496962577251\ldots$, $e=0.000451097178818\ldots$ survive.
+Printed reciprocity remainder is withdrawn, not replaced by a new number.
+& I06--I09\\
+Classical phases, Toda samples & No sample overwritten. Formal
+$c_0,c_1$ integrals survive; resolved fit signs and a total
+$2\times10^{-4}$ error do not. & M08; I08--I09\\
+Bibliography & No numerical change; hypotheses, equation sign and algebra
+attributions need repair. & B01--B33\\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{@{}L{3cm}L{5.5cm}L{6.4cm}@{}}
+\toprule Claims (all c) & New check group & Evidence scope\\\midrule\endhead
+M01--M03 & \file{energies} & Exact Euler--Lagrange and integrals; 70-digit quadrature; source-energy body.\\
+M04--M07, M10 & \file{roots_defect} & Both orientations/directions, sewing and cubic substitution.\\
+M08--M09, M11--M12 & \file{minor} & Small-amplitude derivative; exact width limit; path/title checks.\\
+M13--M14, I11 & \file{defect_spectrum} & Off-shell determinant; admissible roots and threshold.\\
+I01--I04, I08 & \file{wh} & Factor products, normalization, reversion, inverse Laplace and convolution.\\
+I05, I07 & \file{darboux_kernel} & Corrected identities and counterexamples to false necessity.\\
+I06 & \file{reciprocity} & Independent finite-sea solves, 24/36 nodes; residuals below $10^{-40}/10^{-55}$.\\
+I08--I09 & \file{formal_integrals} & Formal quadratures and estimator algebra; no new dense edge fits.\\
+B conventions & \file{source_dictionaries} & Exact substitutions; references separately checked online.\\
+I10, README, bibliography & Source/record comparison & Not falsely assigned mathematical proof status.\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}[leftmargin=*]
+\item \C Historical false formulas are deliberately tested as
+counterexamples: bad cubic/Wick sign; good energy; signed defect root;
+transmission middle expression; root formulas; KdV ratio interpretation;
+WH symbol/scale/normalization/inverse series/double transform; Darboux factor;
+reciprocity product; and kernel necessity. Missing coverage and fit sensitivity
+are failures of earlier certification claims, not reasons to weaken tolerances.
+\item \C The source audits recorded a finite-$h$ root bracket failure and
+an initially inverted Darboux transmission transcription, corrected without
+changing their equations or tolerances. Those historical failures remain in
+\file{audit_phase2i.tex}; this note does not claim to have rerun its full
+finite-$h$ experiment.
+\item \C DOI requests encountered HTTP 403/503, bot challenges, empty
+redirects and occasional non-JSON registry responses. Retries and successful
+metadata reads are distinguished from inaccessible landing pages. One
+alternative fetch first failed schema validation, then reported bot blocking.
+The unresolved CZ DOI returned 404; Zakharov's identifier remains unverified.
+\item \C A read-only search initially used nonexistent
+\file{paper/draft1.tex}; the actual source is
+\file{paper/boussinesq_soliton_scattering.tex}. An intermediate inventory
+transcription named the wrong omitted S-matrix script and was repaired
+against the filesystem before final validation.
+\item \C The first document-assembly/build command used a repository-relative
+path while already in \file{phase2/}: the append failed with ``No such file'',
+and the incomplete TeX could not compile. Assembly was rerun from the root.
+A subsequent build encountered a truncated hyperref bookmark file from that
+interrupted build; errata-only auxiliary files were removed and bookmarks
+disabled before rebuilding. A later LaTeX attempt also rejected nested literal bibitem locators; these
+were replaced by plain bibliography keys. No existing file was touched. No mathematical assertion failed in the
+completed checker runs, and no mathematical tolerance was relaxed.
+\end{enumerate}
+
+\paragraph{Reproduction and limits.}
+\C Run \file{python3 -B phase2/scripts/errata_checks.py}; it prints
+\file{ALL CHECKS PASSED}. Build \file{errata.tex} twice with
+\file{pdflatex} in \file{phase2/}. The legacy suite was not run because
+some scripts write non-errata outputs; this checker writes none. The
+bibliographic access limitations and unresolved physical claims above remain.
+\end{document}
