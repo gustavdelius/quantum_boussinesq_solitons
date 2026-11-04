@@ -13,54 +13,49 @@
 \newtheorem{proposition}{Proposition}[section]
 \theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
 
-\title{Towards quantisation of Boussinesq solitons:\\ Master report through Phase 2i\\ and the November 2026 packages}
+\title{Towards quantisation of Boussinesq solitons:\\ Two-body scattering on the good branch\\ and its Toda validation tests}
 \author{Project \emph{quantum\_\allowbreak boussinesq\_\allowbreak solitons} --- PI: Gustav Delius}
-\date{4 November 2026 --- through Phase 2i and the November 2026 packages}
+\date{Phase 2 master report, 4 November 2026}
 \begin{document}\maketitle
 
 \begin{abstract}
-\Lc The strongest new result is the one-body fixed-momentum soliton coefficient
-$C_T=1/(2\pi)$ in the stipulated Toda edge limit: an unconstrained numerical
-extraction supports it to about $5\times10^{-5}$ relative precision, and a
-separate analytic calculation gives the same value. The formally continued
-continuum trace gives $2/\pi$ with different vacuum elastic renormalisation. Its sound-speed shift
-is $9/(4\pi)$, against Toda's $3/(4\pi)$. Matching vacuum elasticity alone fixes
-$\Delta\mathcal H=-3\hbar_Bu^2/(2\pi)$ and changes the continuum coefficient to
-$1/(2\pi)$. The sound-subtracted slope is already $C-s_1=-1/(4\pi)$ on both
-sides. These are conditional project results, checked by the one-body packages
-and \file{audit_onebody_scheme.py}; full quantum equivalence, a physical
-bad-equation determinant, and uniform interchange of limits remain \Ld.
+\Lc On the good Boussinesq branch the classical scattering phase is known.
+At one loop the conditional soliton trace gives a sound-subtracted one-body
+slope $C_g-s_1=1/(4\pi)$. The response of the two-soliton phase to a finite
+elastic counterterm is calculable at fixed momenta. An interior heavy soliton has an
+on-shell pair of light daughters and a localized classical growing mode.
+The light branch is consequently the starting point for a scattering sector
+whose quantum closure remains open \Ld.
 
-\Lc The classical symplectic scattering phase survives the audits, including
-its potential-tail cross terms. The projected-determinant package establishes
-an instantaneous collective geometry and charge-pair invariance at fixed
-momentum, not a complete functional determinant. The Toda endpoint identities
-and the surviving mixed classical-frame remainder are confirmed. An arbitrary
-antisymmetric addition is not a physical frame ambiguity: cluster separability
-and the Krein equation exclude the displayed Toda counterexample. On the
-continuum side one antisymmetric overtaking function remains the residual
-$O(\hbar^0)$ two-body unknown, under the local analyticity and loop-expansion
-assumptions of the S-matrix audit. It is the same kind of functional obstruction,
-not an identified common function or a freely adjustable physical convention.
+\Lc Three-body clustering, defect consistency and the one-body shift charge
+all leave the coefficient of $P_1M_2-P_2M_1$ undetermined. A classical current
+deformation changes the two-body action in precisely this direction while
+preserving the one-soliton dispersion. A contraction of the quantum $W_3$
+algebra reproduces the canonical bracket and the semiclassical spectral
+spacing, but the inherited vacuum fails positivity. \Ld The absolute phase
+requires physical soliton states and a boundary-compatible determinant or an
+equivalent dynamical calculation.
 
-\Lc Phase 2i supplies conditional formal integrals and orientation bookkeeping;
-its printed transforms, inverse series, reciprocity product and kernel necessity
-claim fail audit. Its strict two-loop accuracy and uniform finite-sea asymptotics
-are not established \Ld. \Lc The defect package supplies classical localized
-charges, a quadratic momentum trace and a boundary UV subtraction requirement;
-its universal fusion no-go is not proved. \Ld No exact physical soliton
-S-matrix, absolute one-loop phase or quantum defect fusion rule is obtained.
+\Lc For validation on the bad branch, vacuum elastic matching reproduces
+Toda's conditional one-body coefficient $1/(2\pi)$. The iterated Toda edge
+limit also gives a closed directional two-body coefficient. One continuum
+mixed difference agrees when evaluated using the Toda endpoint identity,
+but a ratio-dependent discrepancy survives in the full comparison.
+\Ld Neither two-body equivalence nor uniform interchange with the
+fixed-momentum limit is established.
 \end{abstract}\clearpage
 
 \paragraph{Audit status and evidence precedence.}
-\Lc This report consolidates the coordinator's commit digests
-\file{a111f8c^..HEAD} through \file{66e4d35}, with each package subordinated to
-its independent audit. The earlier Phase 2h, charge/action, determinant,
+The README consolidation was \file{adb9116} (12:19 UTC on 4 November);
+the previous report was \file{446bf1a} (12:30 UTC), which set the good
+equation as the PI's priority. This edition covers the subsequent work
+through \file{bfc3944} (17:08 UTC). Where a package has a later independent
+audit, its corrections govern the results below. The Phase 2h, charge/action, determinant,
 frames/defects, Toda-dictionary and projected-measure audits remain in force.
-The new controlling pairs are:
+The table distinguishes independent audits from package checks.
 \begin{center}\small
 \begin{tabular}{@{}L{7.2cm}L{7.2cm}@{}}\toprule
-Package (all under \file{phase2/}) & Controlling audit\\\midrule
+Package (under \file{phase2/}) & Independent audit or scope of evidence\\\midrule
 \file{toda_wh_and_kp_synthesis.tex} & \file{audit_phase2i.tex}\\
 \file{frame_dictionary.tex} & \file{audit_frame_dictionary.tex}\\
 \file{det_projected_oneloop.tex} & \file{audit_det_projected.tex}\\
@@ -68,24 +63,29 @@ Package (all under \file{phase2/}) & Controlling audit\\\midrule
 \file{defq_charges_fusion.tex} & \file{audit_defq.tex}\\
 \file{onebody_dispersion_test.tex}, \file{onebody_toda_precision.tex},
 \file{onebody_scheme.tex} & \file{audit_onebody.tex}, superseded where corrected
-by \file{audit_onebody_scheme.tex}\\\bottomrule
+by \file{audit_onebody_scheme.tex}\\
+\file{good_renorm.tex} & Package checks\\
+\file{good_twobody.tex} & \file{audit_good_twobody.tex}\\
+\file{resonant_channels.tex} & \file{audit_resonant_channels.tex}\\
+\file{defb_boundary.tex} & \file{audit_defb_boundary.tex}\\
+\file{defect_bootstrap.tex} & Package checks\\
+\file{twobody_toda.tex}, \file{twobody_cont.tex} &
+\file{audit_twobody_toda.tex}, \file{audit_twobody_cont.tex}\\
+\file{uniform_limits.tex} & \file{audit_uniform_limits.tex}\\
+\file{shiftcharge_oneloop.tex}, \file{shiftcharge_quantum_bridge.tex} &
+Package checks and internal cross-review in the bridge\\\bottomrule
 \end{tabular}\end{center}
-\Lc The latest scheme audit refutes the earlier one-body audit's zero continuum
-sound shift and records its still-failing numerical assertion. Its analytic
-Toda coefficient and dictionary checks survive; its claim of uniform limit
-interchange is not adopted. \file{errata.tex}, \file{../scripts_inventory.md},
-\file{../phase0/reference_audit.md} and \file{../paper/review_draft1.tex} supply
-additional corrections and coverage limits. No new equation, regularisation or
-physical phase convention is selected here. Labels mean literature proof (a),
-literature heuristic (b), project result (c), and unresolved interpretation or
-research judgment (d). Mathematical claims in the inherited classical derivation
-below are (c), except where separately labelled; their named checks are inherited
-evidence, not scripts rerun for this consolidation.
+Labels denote literature proof (a), literature heuristic (b), project
+derivation or computation (c), and unresolved interpretation or research
+judgment (d). The appendix records the verification scope and failures.
 
-\tableofcontents\clearpage
+{\small\tableofcontents}\clearpage
 
 \section{Setting}
-\Lc The initial PI-selected branch is the bad equation, with field $u_b=2(\log\tau)_{xx}$ and $k=\sinh\beta$. A soliton has velocity $v=\epsilon\cosh\beta$, with $\epsilon=+1$ for right-movers and $\epsilon=-1$ for left-movers. The potential is $u_b=\phi_x$ and the Lagrangian is
+The good equation is the PI's primary scattering problem. The classical
+derivation below starts with the bad branch used for Toda validation and
+gives the good-branch dictionary explicitly.
+\Lc On the bad branch $u_b=2(\log\tau)_{xx}$ and $k=\sinh\beta$. A soliton has velocity $v=\epsilon\cosh\beta$, with $\epsilon=+1$ for right-movers and $\epsilon=-1$ for left-movers. The potential is $u_b=\phi_x$ and the Lagrangian is
 \[
 \mathcal L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\tfrac12\phi_{xx}^2-\phi_x^3 ,
 \]
@@ -266,6 +266,70 @@ The audit refutes the printed $J$ crossing offset and Stirling cancellation:
 direct quadrature gives crossing sum zero, not $\pi/2$. It also refutes the
 printed small-amplitude interface. None is used here to fix a physical constant.
 
+\subsection{Good-equation scattering at fixed momentum}\label{sec:good}
+\paragraph{What the vacuum condition fixes.}
+\Lc Write the finite elastic term as $\hbar\lambda\int u^2\,dx$. In the
+equal-mode-count trace, with the free-vacuum tadpole subtraction held fixed,
+the one-soliton slope $C_g$ and static sound shift $s_1$ obey
+\[
+ C_g=\lambda-2/\pi,\qquad s_1=\lambda-9/(4\pi),\qquad C_g-s_1=1/(4\pi).
+\]
+Preserving the reference vacuum's classical elastic modulus would set
+$s_1=0$ and $\lambda=9/(4\pi)$. The bare sequential on-shell phonon limit
+instead gives $-3/(2\pi)$ before finite subtraction. Inverse continuation
+of the Toda counterterm gives $+3/(2\pi)$ for $\lambda$ and fails this
+static condition. Checks in \file{good_renorm_trace.py},
+\file{good_renorm_vacuum.py} and \file{good_renorm_lattice.py} distinguish
+the two orders of limits. \Ld The static condition is a proposal. The exact
+spectral sound slope and canonical quantum lattice elasticity remain open.
+
+\paragraph{Elastic response and clustering.}
+\Lc Write $\delta_0$ for the classical phase~\eqref{eq:delta}. Differentiating
+the deformed scattering action at fixed $P_1,P_2$ gives the response per
+unit $\lambda$,
+\[
+ K_\lambda=3\delta_0+4\sum_{j=1}^2 P_j\Delta X'_j .
+\]
+It is antisymmetric in the Darboux frame that reverses the chamber ordering
+on exchange. Retaining the symmetric boundary term
+$(\Pi_1M_2+\Pi_2M_1)/2$ in a fixed chamber gives a nonzero symmetric
+response. The audit verifies the connected $u^2$ insertion and all 81
+bilinear coefficients for transmission of a phonon past three solitons.
+Even the Darboux clustering test permits
+$F_{12}=c(P_1M_2-P_2M_1)$. This example has rank two in its one-body
+functions and one antisymmetric coefficient. The 270-row grid leaves the
+absolute physical phase entries unset (\file{audit_good_twobody.py}).
+\Ld A classification of the continuum ambiguity and the time-dependent,
+boundary-compatible two-body determinant are still missing.
+
+\paragraph{Which solitons can appear as scattering states?}
+\Lc In the exact Y solution the local hierarchy charges are differences of
+functions of KP chord endpoints. They telescope when two chords concatenate.
+A Darboux generating function establishes this for the formal classical
+hierarchy, with independent Riccati checks through $H_8$. Light solitons
+($0<\alpha<\pi/3$) are kinematically protected against splitting into
+lighter solitons. Each interior heavy soliton ($\pi/3<\alpha<\pi/2$) has
+an exactly on-shell pair of oppositely moving light solitons with the same
+charges. Varying the exact Y solution gives a localized growing perturbation
+with rate $\sqrt{3}(1/4-v^2)>0$. Thus already the classical heavy soliton is
+unstable. \file{audit_resonant_channels.py} checks the mode equation,
+kinematics and collision charges. \Ld Its real one-loop mismatch does not
+supply a quantum decay width. Closure of a light-particle sector, including
+possible phonon emission, remains to be shown.
+
+\paragraph{Does the shift charge fix the two-body coefficient?}
+\Lc Under the endpoint and wavepacket assumptions in
+\file{shiftcharge_oneloop.pdf}, continuity gives $\Pi=-M\dot X_{\rm cm}$.
+The conditional mean-profile mode insertion reproduces the canonical
+momentum derivative of the trace. At fixed $P$ the kink height $M$ also
+changes. Its contribution cancels the leading rational term inferred by
+varying $\Pi$ alone. The separately computed Darboux recoil gives the
+Toda rational term in Route D and has different momentum dependence from
+$F_{12}$. Checks are \file{shiftcharge_modes.py},
+\file{shiftcharge_algebra.py}, \file{shiftcharge_calibration.py} and
+\file{shiftcharge_projection.py}. \Ld Neither $c_{\rm bad}$ nor
+$c_{\rm good}(\lambda)$ has been extracted.
+
 %=====================================================================
 \section{Route B: quantum inverse scattering on the line}
 
@@ -288,6 +352,28 @@ So the companion-matrix Lax connection is \emph{non-ultralocal}.
 Dimakis et al.'s Yang--Baxter maps \cite{DMHC} concern polarisations in the matrix case and are vacuous for the scalar equation. The ``beyond Yang--Baxter'' remark there is therefore not an obstruction here. For diagonal scattering, Yang--Baxter holds trivially. \Lc
 
 %=====================================================================
+\subsection{A canonical bracket and a relative scattering test}\label{sec:bridge}
+\Lc The $W_3$ construction uses the second Gelfand--Dickey bracket, whereas
+the good potential theory uses the first. In \file{shiftcharge_quantum_bridge.pdf}
+a singular large-spin-background contraction produces the canonical bracket
+with an explicit $\hbar$ normalization. In the soliton variable $\ell$ the
+limiting Baxter arguments have spacing $\Delta\ell=-9i\hbar/2$, the unit in
+\eqref{eq:string}. The inherited highest-weight vacuum has a negative-norm
+mode under the required real-field involution (\file{shiftcharge_bridge_hikami.py}).
+\Ld The normalized Baxter operators, positive representation and associated
+line-soliton eigenstates are unknown.
+
+\Lc An anchored classical current deformation with parameter $g$ preserves
+isolated-soliton energy and momentum. To first order it changes the two-body
+action by $-g(P_1M_2-P_2M_1)$ (\file{shiftcharge_bridge_deformation.py}).
+One-body dispersion and elasticity are therefore insensitive to this relative
+two-body direction. Gaussian sector tests retain an infrared logarithm even
+when finite-volume charge compensation costs vanishing energy
+(\file{shiftcharge_bridge_sector.py}). A conserved first-bracket density
+provides a regulator test. The naive three-site discretization fails it
+(\file{shiftcharge_bridge_hierarchy.py}). \Ld The absolute phase of the
+undeformed theory and the interacting soliton state map remain open.
+
 \section[Route C: affine Toda and the quantum R-matrix]{Route C: $W_3$, sl$_3$ affine Toda and the $U_q(\widehat{\mathfrak{sl}}_3)$ R-matrix}
 
 \Ld\ \emph{What would have to be true.} Boussinesq solitons would have to be identifiable as a limit of $a_2^{(1)}$ (complex) affine Toda solitons, whose S-matrices are the $U_q(\widehat{\mathfrak{sl}}_3)$ intertwiners of Hollowood \cite{Hol93} and Gandenberger \cite{Gand}.
@@ -348,7 +434,7 @@ $0.006326$, $0.009016$, $0.004512$ (\file{../scripts_inventory.md}).
 The extrapolated table checks pass separately. \Ld Neither establishes a
 physical quantum S-matrix without the common continuum map.
 
-\paragraph{One-body coefficient: the current main result.}
+\paragraph{One-body validation at the Toda edge.}
 \Lc Define $F$ by $E(P)=E_0(P)+\hbar_B F(P)+\cdots$ and
 $C=\lim_{k\to0}F(k)/|P_0(k)|$ within the specified edge/semiclassical
 extraction. This energy correction contributes at $O(\hbar^0)$ to the
@@ -364,9 +450,10 @@ $4.73\times10^{-7}$ diagnostics. It is deterministic fit sensitivity, not a
 statistical confidence interval or rigorous error bound; the relative scale is
 about $5\times10^{-5}$. The unconstrained fit does not insert $1/(2\pi)$.
 The separate analytic calculation uses the exact Bethe derivative identity,
-momentum logarithm and harmonic vacuum normalisation
-(\file{onebody_toda_precision.pdf}, \file{onebody_prec_identities.py}, \file{onebody_prec_edge.py};
-\file{audit_onebody_scheme.pdf}). Uniform interchange with fixed nonzero
+momentum logarithm and harmonic vacuum normalisation. See
+\file{onebody_toda_precision.pdf} and \file{audit_onebody_scheme.pdf}.
+Checks are \file{onebody_prec_identities.py} and \file{onebody_prec_edge.py}.
+Uniform interchange with fixed nonzero
 momentum remains \Ld, despite the stronger wording of the earlier one-body audit.
 
 \paragraph{Vacuum elasticity resolves the leading mismatch.}
@@ -408,6 +495,11 @@ remainder. The exhibited antisymmetric addition evades only the incomplete
 one-body/reciprocity constraints; cluster separability and the microscopic
 Krein PDE exclude it as a physical Toda frame ambiguity. The parity/pole
 checks supply further restrictions (\file{audit_frame_dictionary.py}).
+The later \file{audit_twobody_toda.py} corrects the four-term characteristic
+source to $2f(u)B(v)-2\sqrt{\pi}\,f(v)$, where $B$ is the one-body edge
+response and $f=B'$ in the normalization of that audit. Homogeneous
+uniqueness with the same endpoint data still excludes the exhibited
+addition for this Toda observable.
 
 \Ld What remains is to identify the allowed one-body endpoint-response
 bilinears with continuum collective operators and the physical two-body phase.
@@ -433,15 +525,56 @@ The corrected Krein convolution has independent numerical support.
 \Ld Its finite-sea derivation still lacks zero-frequency matching and uniform
 endpoint control. The advertised $<2\times10^{-4}$ data match uses one
 fixed-leading-coefficient estimator; alternative fits exceed it and can reverse
-subleading signs \Lc. The earlier logarithmic remainder issue is therefore
-not settled. Phase 2i does not resolve all six earlier audits, derive a
-physical all-loop kernel, or fix breather/fusion constants \Ld.
+subleading signs \Lc. The later V2 tests below separate the logarithmic
+cancellation in the half-line calculation from the unresolved finite-sea limit.
+
+\subsection{Two-body validation and the order of limits}\label{sec:validation}
+\paragraph{V1. Which Toda quantity is known?}
+\Lc Take the edge limit at fixed $y_1,y_2$, then let $y_1=Y\to\infty$
+at fixed $r=\sqrt{y_2/y_1}\in(0,1)$. The Phase 2i integral above gives
+the \emph{forward} two-term residual. Subtracting the symmetric part
+$2(r+r^{-1})/\pi-\pi$, fixed by one-body endpoint responses, gives the
+antisymmetric directional coefficient
+\[
+ \vartheta_N^{(1)}(r)=\pi-\frac4\pi\chi_2(r)+\frac2\pi(r-r^{-1}).
+\]
+Its value at $r=1/2$ is $1.530527813279\ldots$. The directional head-on
+coefficient vanishes for this two-term observable, while a different
+antisymmetric endpoint representative retains a finite contribution.
+The large-$Y$ and small-$r$ fits are sensitive to the respective edge
+windows (\file{audit_twobody_toda.py}, \file{audit_twobody_cont.py}).
+
+\Lc In the lattice-matched bad continuum, the canonical recoil reproduces
+the rational term $2(r-r^{-1})/\pi$. The leading mixed rectangle
+$-(15\sqrt{2}-20)/\pi$ agrees when one uses the Toda endpoint-product
+identity to express it in terms of one-body data. The full conditional
+continuum candidate still differs from $\vartheta_N^{(1)}$ by a nonconstant
+function of $r$. The independent audit found 87 incorrect printed table
+cells and no calculation of the claimed two-body determinant
+(\file{audit_twobody_cont.py}). \Ld V1 remains open pending a physical
+bad determinant and a common momentum and endpoint dictionary.
+
+\paragraph{V2. Which asymptotics are uniform?}
+\Lc In the corrected half-line calculation the nonzero classical Taylor
+term $(\log Y)^2/Y$ cancels against the dressed-measure contribution.
+The endpoint moment vanishes. Under the matched-expansion assumptions
+the constant and $1/Y$ terms survive the endpoint layer. Independent
+inverse-Laplace convolution at $r=1/2$ supports the formal
+$c_1(1/2)\simeq-0.021445$. Finite-sea fits still change the sign of
+the subleading coefficient across extrapolation bases. At fixed $Y$,
+the classical momentum tends to zero with $h$, whereas a fixed nonzero
+momentum sends $Y$ to infinity. The phonon-first and soliton-edge limits
+of the half-line one-body slope give $3/(4\pi)$ and $1/(2\pi)$,
+respectively (\file{audit_uniform_limits.py}). \Ld Interior direct-kernel
+bounds and these fits leave uniform finite-sea resolvent control and the
+interchange with fixed momentum unresolved.
 
 \paragraph{Other discrete route.}
 \La Hikami's periodic quantum discrete Boussinesq construction \cite{Hikami}
 provides a separate algebraic starting point. \Ld A line-soliton ground state,
 particle sector and thermodynamic scattering dictionary have not been
-constructed here; this remains a longer-term alternative.
+constructed here. Section~\ref{sec:bridge} gives the later canonical
+contraction and identifies the obstruction in the inherited vacuum.
 
 \section{Route E: defects, boundary charges and qualified fusion}
 \La CZ construct type-I defects for the good equation \cite{CZ}.
@@ -482,15 +615,33 @@ roots require separate treatment. Checks: \file{audit_defq.py},
 \Ld This is not a nonlinear stability/completeness theorem or an exclusion of
 a separately constructed resonance continuation.
 
-\Lc Nonzero canonical-charge holonomies and absorbed-momentum remainders are
-confirmed at the sampled triangles. A single-valued vertex counterterm
-cannot cancel a demonstrated nonzero fixed-edge holonomy, by telescoping.
-\Ld Universal nonvanishing, unavoidable physical obstruction, and a general
-quantum-fusion no-go do not follow: roots, rapidities, the charge dictionary
-or the state space might change. The package's pole argument against root
-shifts is refuted because its alleged pole has zero residue \Lc.
-The printed energy-trace sign, negative-wavenumber phase limit and threshold
-rate are also corrected by the audit; details are in the errata addendum.
+\Lc The pole used in the original argument against root shifts has zero
+residue. The errata addendum also corrects the energy-trace sign, the
+negative-wavenumber phase limit and the threshold rate.
+
+\paragraph{Boundary subtraction and the triangle theorem.}
+\Lc The later \file{audit_defb_boundary.py} confirms the finite Casimir
+expressions in the specified subtraction and the stationary-root envelope
+identity. At $\lambda_g=0$ the canonical energy holonomy is nonzero on
+\emph{every} nondegenerate real KP triangle. The momentum holonomy has a
+single zero at the symmetric triangle. A finite bulk counterterm shifts
+the energy holonomy and can cancel the vector there at an exceptional
+coupling. Allowing the absorption rapidities to move cancels the
+counterterm contribution to the cycle balance. Consequently defect
+integrability does not select $\lambda_g=0$. A classical transmission
+slope does not fix the finite quantum boundary counterterms. \Ld The
+quantum absorption locus and a normalized boundary theory remain open.
+
+\paragraph{What defect consistency says about $F_{12}$.}
+\Lc The proposed closed absorption/emission cycle contains a heavy chord
+on every nondegenerate real KP triangle. With only light external solitons
+and stable vacua there is no such cycle. Even on the formal triangle
+$F_{12}=c(P_1M_2-P_2M_1)$ sums to zero, and a single-valued change of
+transmission phase preserves both the edge equations and two-defect
+composition. The additional rank of these constraints on $c$ is zero
+(\file{defect_bootstrap_algebra.py}, \file{defect_bootstrap_sewing.py},
+\file{defect_bootstrap_transmission.py}). \Ld Physical residues and a
+quantum boundary determinant have yet to be constructed.
 
 \paragraph{KP bookkeeping (Phases 2g--2i).}
 \Lc Abstract chord closure, dipole differences and explicit orientation
@@ -529,8 +680,25 @@ exclusions only; ring identities conditional, quantum holonomy unproved;
 Defect charges & Classical charges, momentum trace, UV subtraction and growing
 counts pass; printed sign/phase/threshold/pole argument fail;
 \file{audit_defq.py}. & \Lc\\
-Physical fusion & Sampled holonomy obstruction is conditional; no universal
-no-go or normalized quantum bootstrap. & \Ld\\
+Good vacuum & Static subtraction would give $C_g=1/(4\pi)$.
+Spectral matching is open. \file{good_renorm_trace.py},
+\file{good_renorm_vacuum.py}. & \Lc/\Ld\\
+Good two-body & Elastic response depends on chamber convention. Clustering
+retains the exhibited $P\wedge M$ term. \file{audit_good_twobody.py}. & \Lc\\
+Resonant channels & On-shell light daughters and a classical growing mode for
+each interior heavy soliton. \file{audit_resonant_channels.py}. & \Lc\\
+Boundary and fusion & All-triangle canonical energy result at $\lambda_g=0$.
+No additional constraint on the exhibited coefficient.
+\file{audit_defb_boundary.py}, \file{defect_bootstrap_algebra.py}. & \Lc\\
+Shift charge & Height response cancels the proposed leading term.
+\file{shiftcharge_modes.py}, \file{shiftcharge_calibration.py}. & Conditional \Lc\\
+Quantum bridge & Canonical bracket and Baxter spacing, failed vacuum
+positivity, relative current deformation. \file{shiftcharge_bridge_hikami.py},
+\file{shiftcharge_bridge_deformation.py}. & \Lc\\
+V1 and V2 & Directional coefficient and conditional half-line expansion.
+Full continuum comparison and uniform finite-sea limit open.
+\file{audit_twobody_toda.py}, \file{audit_twobody_cont.py},
+\file{audit_uniform_limits.py}. & \Lc/\Ld\\
 Verification record & Phase 2d step bound and one-body audit tolerance still
 fail; tautologies replaced in audits, disabled Hirota check repaired;
 \file{../scripts_inventory.md}, errata addendum. & \Lc\\
@@ -540,66 +708,63 @@ and uniform limits remain open. & \Ld\\\bottomrule
 \normalsize
 
 \section{Conclusions and ranked next steps}
-\Lc The leading one-body comparison is now reconciled by independently
-computed vacuum elasticity, with an invariant sound-subtracted coefficient.
-The factor of four is not a missing dictionary factor. \Ld This is a
-conditional leading-coefficient result, not a proof of full quantum equivalence.
-\Lc Classical scattering, finite-sea identities and boundary-charge algebra
-remain useful foundations; the November audits substantially narrow their
-claimed quantum consequences. \Ld The physical two-body phase of the
-\emph{good} equation is the main unsolved observable, and no candidate is
-promoted to an exact S-matrix.
+\Lc Fixed-momentum elastic response, the heavy growing mode and the
+rank-zero defect test constrain what can be inferred about good-equation
+scattering. An explicit relative deformation explains how two Hamiltonians
+can have the same one-soliton dispersion while their scattering phases
+differ. \Ld The main unsolved observable remains the absolute two-soliton
+phase on the light branch.
 
-\paragraph{Ranked next steps (research judgments \Ld; re-ranked by the PI, 4 November 2026).}
-The good (well-posed) equation is the main thread. The quantum Toda chain
-reaches only the \emph{bad} equation in its continuum limit, and the
-Toda-matched counterterm was traced to the bad equation's short-wave band
-near its unstable region $|q|>1$. Toda and bad-equation work therefore serves
-as validation of the method, not as the target.
+\paragraph{Good-equation priorities.}
+The order below retains the PI's decision of 4 November, with each item
+reduced to the work still open.
 \begin{enumerate}
-\item \textbf{Fix the good equation's one-loop renormalisation condition.}
-Candidates: a principled acoustic condition (the physical sound speed or
-compressibility of the good vacuum); a regularisation from an integrable
-good-equation lattice (the quantum discrete Boussinesq/$W_3$ chain of
-Hikami and Belov--Chaltikian \cite{Hikami}); and a test of whether the
-Toda-matched $\Delta\mathcal H=-(3\hbar_B/2\pi)u^2$ continues through the
-good/bad dictionary, which is expected to fail because the factor of four
-came from the bad equation's unstable band.
-(Package \texttt{good\_\allowbreak renorm}.)
-\item \textbf{Compute the good-equation two-soliton $O(\hbar^0)$ phase,
-including its antisymmetric part,} at fixed physical momenta in both
-channels, in the scheme fixed by item~1. Complete the boundary-compatible
-projected determinant as far as this requires. Test whether three-soliton
-cluster separability fixes the antisymmetric part, as it does on the Toda
-side. (Package \texttt{good\_\allowbreak twobody}.)
-\item \textbf{Determine the quantum fate of the good equation's resonant and
-number-changing channels} (Y-junctions, merging solitons, singular
-breathers): are their conservation laws compatible with fusion, and is the
-quantum soliton S-matrix elastic and factorised at all?
-(Package \texttt{resonant\_\allowbreak channels}.)
-\item \textbf{Construct the renormalised quantum defect boundary theory}
-(good equation only). Build on the localised charges and momentum trace;
-derive a boundary renormalisation condition, admissible states and quantum
-absorption shifts between stable vacua; prove or refute the holonomy
-obstruction for all KP triangles. (Package \texttt{defb\_\allowbreak boundary}.)
-\item \textbf{Return to candidate selection and ring quantisation for the
-good equation} after items~1--3: quantum seam holonomy, physical pole and
-branch data, and exclusions restricted to proved families.
+\item \Ld \textbf{Fix the physical vacuum condition.} Distinguish the
+exact spectral sound slope from the static elasticity proposal. A positive
+canonical representation and its finite subtractions would give an
+independent way to specify the good-equation coupling
+(Sections~\ref{sec:good} and~\ref{sec:bridge}).
+\item \Ld \textbf{Determine the absolute light-soliton phase.} Construct
+physical states at fixed momentum and evaluate the boundary-compatible,
+time-dependent two-soliton determinant, or derive scattering from normalized
+operators in the same representation. The chamber response and relative
+deformation are checks on such a calculation. The seed coefficient is open.
+\item \Ld \textbf{Establish the quantum scattering channels.} Determine
+whether the light sector closes under scattering and how heavy resonances
+and phonons enter. The classical instability constrains which states can
+be used as external particles.
+\item \Ld \textbf{Complete the quantum defect theory.} Determine the finite
+boundary terms, state normalization, quantum absorption locus and residues.
+The fixed-edge triangle theorem and the stable-vacuum bootstrap delimit
+what the existing constraints can fix.
+\item \Ld \textbf{Select a candidate and derive ring quantisation.} Determine
+physical poles, branch data and the quantum seam holonomy in the same
+light-particle state space.
 \end{enumerate}
 
-\paragraph{Supporting validation (bad equation and quantum Toda).}
+\paragraph{Supporting validation on the bad branch and in Toda.}
 \begin{enumerate}
-\item[V1.] \textbf{Two-body test of the method.} Compare the uniquely
-determined Toda $O(\hbar^0)$ two-body phase at fixed dressed momenta with the
-bad-equation continuum two-soliton phase in the Toda-matched scheme.
-(Packages \texttt{twobody\_\allowbreak toda}, \texttt{twobody\_\allowbreak cont}.)
-\item[V2.] \textbf{Uniform Toda edge and small-amplitude limits.} Test the
-interchange of limits at fixed $P$; refit the two-loop data with separate
-mesh, edge and amplitude errors; retain the failed bounds in the record.
-(Package \texttt{uniform\_\allowbreak limits}.)
-\item[V3.] \textbf{A physical bad-equation determinant prescription}, to be
-derived or explicitly chosen by the PI before the continued trace is extended.
+\item[V1.] \Ld Compare the full two-body phases using common physical
+momenta and endpoint references. The directional formula and mixed
+rectangle in Section~\ref{sec:validation} are benchmarks.
+\item[V2.] \Ld Establish uniform finite-sea resolvent and endpoint bounds
+that would justify the fixed-momentum limit. The half-line coefficients and
+refits do not provide this bound.
+\item[V3.] \Ld Derive a physical prescription for the bad-equation
+determinant, or obtain a PI choice before extending the continued trace.
 \end{enumerate}
+
+\paragraph{Relation to the paper.}
+Draft~3 incorporated the audited one-body, determinant, Toda, candidate
+and defect results. Its independent review required eleven corrections.
+Draft~4 applies all eleven, including the Krein source, symplectic signs,
+projector inputs, one-loop units and tadpole sign, and the lab-frame
+collision operator. It distinguishes absence of real-rate growing defect
+modes from full spectral stability and corrects the stated scope of the
+paper's checkers. The later V1 audits, defect bootstrap and shift-charge
+notes postdate Draft~4. See \file{../paper/review_draft3.pdf},
+\file{../paper/boussinesq_soliton_scattering.pdf} and
+\file{../paper/scripts/paper_draft4_checks.py}.
 
 \appendix\section{Phase 2 Write-ups and Verification Scripts}
 This revision changes the evidence status of the quantum synthesis; it does
@@ -607,10 +772,15 @@ not introduce new external references or claim to have reread the inherited
 bibliography. Literature-reading scope is recorded in the independent notes.
 Write-ups and checkers are in \file{phase2/} and \file{phase2/scripts/},
 with defect scripts also in \file{corrigan-zambon/}. Success markers apply only
-after actual assertions pass; generators and the two known failures are listed
-in \file{../scripts_inventory.md} and the errata addendum. No blanket success
-claim is made. This consolidation runs only \file{errata_checks.py}; legacy
-scripts that may rewrite caches are not rerun.
+after actual assertions pass. The inventory and errata addendum describe
+the historical generators and failed checks. For this edition we ran the Python scripts added or modified between
+\file{446bf1a} and \file{bfc3944} (42 in Phase~2 and three in the paper),
+including the six independent audits on page~2. We also ran
+\file{errata_checks.py} and the Phase~1, defect-directory and paper
+scripts. Runs used separate copies of the sources and the scripts'
+default cache modes. The Phase~1 figure generator is recorded separately
+from the verification scripts. The list below also indexes earlier Phase~2
+calculations whose results were carried forward from their audits.
 \begingroup\raggedright
 \begin{itemize}
 \item \textbf{Phase 2a (\texttt{report.pdf}):} \script{symplectic\_\allowbreak scattering.py}, \script{semiclassical\_\allowbreak phase.py}, \script{fit\_\allowbreak R.py}, \script{consistency\_\allowbreak checks.py}, \script{routes\_\allowbreak BC\_\allowbreak checks.py}.
@@ -632,14 +802,12 @@ corresponding named scripts and saved JSON results.
 \endgroup
 
 \paragraph{November evidence index.}
-\Lc The package/audit table above indexes all November notes. Their checkers
-are \file{audit_phase2i.py}, \file{audit_frame_dictionary.py},
-\file{audit_det_projected.py}, \file{audit_smx.py}, \file{audit_defq.py} and
-\file{audit_onebody_scheme.py}. The historical \file{audit_onebody.py} has a
-known unchanged failure and is not certified by this index. Precision evidence
-comes from the \file{onebody_prec_*} scripts; vacuum matching comes from
-\file{onebody_scheme_*}. \file{errata_checks.py} adds read-only checks of the
-newly consolidated corrections without rerunning those packages.
+Earlier November checkers share the basenames of their audit notes on
+page~2. The historical \file{audit_onebody.py} still fails its original
+tolerance. Its corrected interpretation is in \file{audit_onebody_scheme.pdf}.
+The \file{onebody_prec_*} scripts check the numerical extraction and its
+analytic edge value. The \file{onebody_scheme_*} scripts check the vacuum
+elastic match. \file{errata_checks.py} checks the consolidated corrections.
 
 \paragraph{November failures recorded.}
 \Lc The Phase 2d $0.004$ step bound fails at three recorded steps; the earlier
@@ -652,7 +820,32 @@ were replaced by independent checks in their audits. The disabled Hirota
 The Phase 2i, S-matrix and defect refutations, including sign/branch errors
 and tests that passed without testing their printed claims, are itemised
 in \file{errata.pdf}. Failed audit-development checks remain in the individual
-audit notes; none is erased by this consolidation.
+audit notes.
+
+\paragraph{Failures recorded in the subsequent work.}
+\begin{itemize}
+\item \Lc The good two-body counterterm response lost a symmetric boundary
+term when it was described independently of chamber. The resonant-channel
+audit corrected the printed energy slope, singular-example values and
+Gamma fusion factor. The generating-function proof replaces the invalid
+commuting-background argument for hierarchy additivity.
+\item \Lc The boundary audit refuted the fixed-momentum transmission sign
+and the inference that integrability selects the bulk subtraction. The
+defect cycle adds no condition on the displayed antisymmetric coefficient.
+\item \Lc The Toda frame audit's printed four-term source differentiates
+the wrong endpoint. The bad-continuum audit corrected the profile and
+stable-band signs, the subleading rectangle and the grid tables. The
+continuum audit flagged an incorrect $r=1/2$ example in a concurrent
+draft of the Toda audit. The committed Toda audit gives the corrected
+value in Section~\ref{sec:validation}.
+\item \Lc Freezing the kink height fails the shift-charge calibration.
+The instantaneous projection still violates fixed endpoints at the
+tested collision. The inherited highest-weight vacuum fails positivity,
+and the three-site regulator fails the higher-charge bracket test.
+\end{itemize}
+The named package and audit notes retain their individual development
+failures and repairs.
+
 
 \emph{Failures along the way (Phase 2a; later phases record their own failures in each write-up).}
 \begin{itemize}
