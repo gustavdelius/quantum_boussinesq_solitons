@@ -1,0 +1,488 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,longtable,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
+
+\newcommand{\La}{\textsf{\textbf{(a)}}}
+\newcommand{\Lb}{\textsf{\textbf{(b)}}}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}}
+\newcommand{\Ld}{\textsf{\textbf{(d)}}}
+\newcommand{\script}[1]{\texttt{scripts/\allowbreak #1}}
+\newcommand{\scrshort}{\texttt{toda\_\allowbreak wh\_\allowbreak and\_\allowbreak kp\_\allowbreak synthesis.py}}
+\newcommand{\Li}{\operatorname{Li}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Exact Wiener--Hopf Solution of the Toda Fermi-Edge Limit,\\
+Two-Loop $O(1/Y)$ Asymptotics, and KP Master-Function Synthesis}
+\author{Project \emph{quantum\_boussinesq\_solitons} (Phase 2i)}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We carry out Phase~2i of the programme while incorporating and resolving the
+mathematical findings of the six independent Phase~2h and follow-up audits
+(\texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf},
+\texttt{audit\_\allowbreak charges\_\allowbreak action.pdf},
+\texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf},
+\texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf},
+\texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}, and
+\texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}):
+\begin{enumerate}
+\item \textbf{Exact Wiener--Hopf solution of the Toda Fermi-edge Bethe integral equation \Lc:}
+  In the Fermi-edge double-scaling limit $p = q + \hbar_T u$, the Toda Bethe operator on the
+  semi-infinite Fermi sea $(-\infty,0)$ has canonical Wiener--Hopf factor
+  $\widetilde{\Phi}_{\mathrm{WH}}(s) = s^{-1/2}\Gamma(1+\frac{s}{2\pi})\exp(-\frac{s}{2\pi}\ln\frac{s}{2\pi e})$.
+  The Laplace transform of the dressed momentum $\frac{4}{3}y(u)^{3/2}$ equals
+  $\widetilde{\Phi}_{\mathrm{WH}}(s)/s^2$, yielding the exact asymptotic expansion of the
+  quasi-momentum shift $\delta u(y) = u(y) - y$:
+  \[
+    \delta u(y) = -\frac{\ln y}{2\pi} + c_{\mathrm{edge}} + \frac{d_0}{y} + \frac{e_0}{y^2} + O(y^{-3}),
+  \]
+  where all $(\ln y)/y$, $(\ln^2 y)/y^2$, and $(\ln y)/y^2$ coefficients vanish identically
+  ($d_1 = e_2 = e_1 = 0$), and
+  $c_{\mathrm{edge}} = \frac{1-\ln(8\pi)}{2\pi}$,
+  $d_0 = \frac{1}{48} - \frac{1}{4\pi^2}$,
+  $e_0 = \frac{4+6\zeta(3)-\pi^2}{96\pi^3}$.
+\item \textbf{Analytical proof of $R_0(\infty,r) = -\frac{4}{\pi}(\chi_2(r)-r)$, cancellation of
+  $\frac{\ln^2 Y}{Y}$ and $\frac{\ln Y}{Y}$, and closed-form two-loop coefficient $c_1(r)$ \Lc:}
+  For two excitations $u_1 > u_2 > 0$ outside the Fermi sea, the double Laplace transform of
+  $\partial_{u_2}\Phi_q(u_1,u_2)$ is $2\frac{\widetilde{\Phi}_{\mathrm{WH}}(s_1)\widetilde{\Phi}_{\mathrm{WH}}(s_2)-1}{s_1+s_2}$,
+  giving the Krein--Wiener--Hopf convolution
+  $\Phi_q(u(Y),u(r^2 Y)) = 4\int_0^{r^2 Y} \psi_-(u(Y)-u(r^2 Y)+u(\eta))\sqrt{\eta}\,d\eta$.
+  Because the argument shift inside $\psi_-$ is the balanced 4-term coboundary
+  $\Delta(Y,t) = \delta u(Y) - \delta u(r^2 Y) + \delta u(Yt^2) - \delta u(Y(1-r^2+t^2))$ and $d_1=0$,
+  all $\ln Y$ and $c_{\mathrm{edge}}$ terms cancel identically at both $O(Y^0)$ and $O(Y^{-1})$.
+  The leading limit is proved analytically from the integral equation to be
+  $R_0(\infty,r) = -\frac{4}{\pi}(\chi_2(r)-r)$, and the $O(1/Y)$ (two-loop) coefficient evaluates
+  in closed elementary form to
+  \[
+    c_1(r) = -\frac{r^3}{6(1-r^2)} - 2d_0\left(\frac{1-r^2}{r^2}\ln\frac{1-r}{1+r} + \frac{2}{r}\right).
+  \]
+  Subtracting the exact finite-$h$ classical Toda lattice dispersion phase $\delta_T(\kappa_1,\kappa_2)/h$
+  from the saved Phase~2f data removes the $O(Y^2 h + Y^3 h^2)$ curvature that distorted the
+  $h\ln h$ edge fit in \texttt{matching\_analysis.json}, matching the exact $c_1(r)$ to $<2\times 10^{-4}$.
+\item \textbf{Inversion-antisymmetric KP master kernel $\widetilde{K}_L(z)$, bootstrap synthesis,
+  and audit resolutions \Lc/\Ld:}
+  We prove that $\mathcal{F}_K(p,q) = -\mathcal{F}_K(q,p)$ and $\mathcal{I}_{SS}[K](1,2) = -\mathcal{I}_{SS}[K](2,1)$
+  hold iff $K(-z) = -K(z)$ and $K(1/z) = -K(z)$. Replacing $K_L(z)$ by
+  $\widetilde{K}_L(z) = \frac{K_L(z)-K_L(1/z)}{2} = K_L(z) + \frac{\pi}{8}\operatorname{sgn}(\operatorname{Re} z)$
+  resolves the $\epsilon_1=-1$ orientation discrepancies, gives exact crossing symmetry and
+  Darboux-shifted defect fusion, and continues holomorphically to the breather locus with
+  $\operatorname{Re}\mathcal{I}_{SS}[\widetilde{K}_L](\bar{\alpha}-i\gamma,\bar{\alpha}+i\gamma) = 0$.
+  Remaining open field-theoretic questions remain explicitly labelled \Ld.
+\end{enumerate}
+All \Lc\ claims are verified in \script{toda\_wh\_and\_kp\_synthesis.py} (\texttt{ALL CHECKS PASSED}).
+\end{abstract}
+
+\tableofcontents
+
+\section{Exact Wiener--Hopf Solution of the Toda Fermi-Edge Limit}
+
+\subsection{Wiener--Hopf Factorisation on the Semi-Infinite Fermi Sea}
+In \script{toda\_edge\_ba.py}, the ground-state density $\rho(p)$ and phase-shift dressing function
+$F(p|p_2)$ on $[-q,q]$ satisfy
+\begin{equation}
+  2\pi h\,\rho(p) - \int_{-q}^q K(p-p')\,\rho(p')\,dp' = 1, \qquad
+  2\pi h\,F(p|p_2) - \int_{-q}^q K(p-p')\,F(p'|p_2)\,dp' = -\Theta(p-p_2),
+\end{equation}
+where $h = \hbar_T = 3b\hbar_B$ ($a=1$, $b=e^{-1/2}$) and
+\begin{equation}
+  \Theta(D) = 2h\operatorname{Im}\ln\Gamma\!\left(1 + \frac{iD}{h}\right) + 2D\ln h, \qquad
+  K(D) = \Theta'(D) = 2\operatorname{Re}\psi\!\left(1 + \frac{iD}{h}\right) + 2\ln h.
+\end{equation}
+In the Fermi-edge scaling limit $p = q + h x$ ($h\to 0$ at fixed $x$), the left edge $-q$ recedes
+to $x = -2q/h \to -\infty$, so the Fermi sea occupies the negative half-line $x' \in (-\infty,0)$
+and the integral operator becomes a Wiener--Hopf operator with kernel $K_0(x-x') = 2\operatorname{Re}\psi(1+i(x-x'))$.
+
+\begin{theorem}[Wiener--Hopf factorisation and dressed momentum, \Lc, \scrshort]\label{thm:wh_du}
+\begin{enumerate}
+\item The Fourier symbol of $2\pi\delta(x) - K_0(x)$ is
+  \begin{equation}\label{eq:wh_symbol}
+    \Sigma_q(\omega) := \int_{-\infty}^\infty \big[2\pi\delta(x) - 2\operatorname{Re}\psi(1+ix)\big] e^{-i\omega x}\,dx
+    = \frac{2\pi^2}{\sinh(\pi|\omega|)}e^{\pi|\omega|}
+    = \Phi_{\mathrm{WH}}(i\omega)\,\Phi_{\mathrm{WH}}(-i\omega),
+  \end{equation}
+  where the canonical Wiener--Hopf factor analytic and non-vanishing in $\operatorname{Re} s > 0$ ($s = -i\omega$) is
+  \begin{equation}\label{eq:phi_wh}
+    \Phi_{\mathrm{WH}}(s) = \sqrt{\frac{2\pi}{s}}\,\Gamma\!\left(1 + \frac{s}{2\pi}\right)
+    \exp\!\left(-\frac{s}{2\pi}\ln\frac{s}{2\pi e}\right), \qquad
+    \widetilde{\Phi}_{\mathrm{WH}}(s) := \frac{\Phi_{\mathrm{WH}}(s)}{\sqrt{2\pi}} \underset{s\to+\infty}{\longrightarrow} 1.
+  \end{equation}
+\item Matching the homogeneous Wiener--Hopf edge density to the bulk classical arcsine asymptote
+  $\rho_{\mathrm{cl}}(q - hz) \sim \frac{1}{2\pi a\sqrt{bhz}}$ ($z\to+\infty$) yields the exact
+  Laplace transform of the scaled dressed momentum
+  $\lim_{h\to 0} \frac{a\,[P_{\mathrm{dr}}(q+hu)-P_{\mathrm{dr}}(q)]}{\sqrt{bh}\,h} = \frac{4}{3}y(u)^{3/2}$
+  for $u > 0$:
+  \begin{equation}\label{eq:laplace_y}
+    \int_0^\infty \left(\frac{4}{3}y(u)^{3/2}\right) e^{-su}\,du
+    = \frac{\widetilde{\Phi}_{\mathrm{WH}}(s)}{s^2}
+    = s^{-5/2}\,\Gamma\!\left(1 + \frac{s}{2\pi}\right)\exp\!\left(-\frac{s}{2\pi}\ln\frac{s}{2\pi e}\right).
+  \end{equation}
+\item Expanding~\eqref{eq:laplace_y} around the branch point $s = 0$ via
+  $\ln\Gamma(1+\frac{s}{2\pi}) = -\gamma_E\frac{s}{2\pi} + \frac{\pi^2}{12}(\frac{s}{2\pi})^2 - \frac{\zeta(3)}{3}(\frac{s}{2\pi})^3 + \cdots$
+  and inverting term-by-term via $\mathcal{L}^{-1}[s^{-\alpha}(\ln s)^k](u) = (-1)^k\partial_\alpha^k[u^{\alpha-1}/\Gamma(\alpha)]$
+  gives as $u\to+\infty$:
+  \begin{equation}\label{eq:y_of_u}
+    y(u) - u = \frac{\ln(8\pi u) - 1}{2\pi}
+    + \frac{12\ln(8\pi u) - \pi^2}{48\pi^2\,u}
+    + \frac{-12\ln(8\pi u) + 6\zeta(3) + \pi^2 - 8}{96\pi^3\,u^2}
+    + O(u^{-3}).
+  \end{equation}
+\item Inverting~\eqref{eq:y_of_u} for $\delta u(y) := u(y) - y$ as $y\to+\infty$, all
+  $\frac{\ln y}{y}$, $\frac{\ln^2 y}{y^2}$, and $\frac{\ln y}{y^2}$ terms cancel identically
+  ($d_1 = e_2 = e_1 = 0$), leaving the pure power-tail expansion after the leading logarithm:
+  \begin{equation}\label{eq:du_exact}
+    \boxed{\delta u(y) = -\frac{\ln y}{2\pi} + c_{\mathrm{edge}} + \frac{d_0}{y} + \frac{e_0}{y^2} + O(y^{-3}),}
+  \end{equation}
+  with exact analytical coefficients
+  \begin{align}
+    c_{\mathrm{edge}} &= \frac{1 - \ln(8\pi)}{2\pi} = -0.35398787697503518285\dots, \label{eq:cedge}\\
+    d_0 &= \frac{1}{48} - \frac{1}{4\pi^2} = -0.00449696257725110953\dots, \label{eq:d0}\\
+    e_0 &= \frac{4 + 6\zeta(3) - \pi^2}{96\pi^3} = +0.00045109717881779249\dots \label{eq:e0}
+  \end{align}
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}[\Lc]
+In~\eqref{eq:d0}, $\frac{1}{48} = \frac{B_2}{8}$ originates from the two-loop Stirling coefficient
+$B_2 = \frac{1}{6}$ of $\ln\Gamma(1 + \frac{s}{2\pi})$, while $-\frac{1}{4\pi^2}$ originates from
+the square of the one-loop Wiener--Hopf dressing shift. Table~\ref{tab:du_check} compares the
+analytical expansion~\eqref{eq:du_exact} against polynomial $h\to 0$ extrapolations of
+\texttt{FastNodesEdgeBA} after subtracting the exact classical root shift $2b(\cosh\kappa - 1)$.
+\end{remark}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Verification of the exact Wiener--Hopf expansion~\eqref{eq:du_exact} of $\delta u(y)$
+against cubic $h\to 0$ extrapolations ($h \in \{0.04,0.02,0.01,0.005\}$) of \texttt{FastNodesEdgeBA} \Lc.}
+\label{tab:du_check}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$y$ & $\delta u_{\mathrm{num}}(y)$ & $\delta u_{\mathrm{WH}}(y)$ (to $O(y^{-2})$) & $|\text{diff}|$ &
+$y\big(\delta u_{\mathrm{num}}(y)+\frac{\ln y}{2\pi}-c_{\mathrm{edge}}\big)$ & $d_0 + e_0/y$ \\
+\midrule
+$2.0$  & $-0.46639236$ & $-0.46644138$ & $4.9\times 10^{-5}$ & $-0.004173$ & $-0.004271$ \\
+$4.0$  & $-0.57571472$ & $-0.57571952$ & $4.8\times 10^{-6}$ & $-0.004365$ & $-0.004384$ \\
+$8.0$  & $-0.68549578$ & $-0.68549635$ & $5.7\times 10^{-7}$ & $-0.004436$ & $-0.004441$ \\
+$16.0$ & $-0.79553827$ & $-0.79553838$ & $1.1\times 10^{-7}$ & $-0.004467$ & $-0.004469$ \\
+$32.0$ & $-0.90571661$ & $-0.90571697$ & $3.5\times 10^{-7}$ & $-0.004472$ & $-0.004483$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Krein--Wiener--Hopf Convolution for the Two-Particle Dressed Phase}
+We now derive the two-particle Fermi-edge dressed phase
+\begin{equation}
+  \Phi_q(u_1,u_2) := \lim_{h\to 0}\frac{\Phi(q+hu_1\,|\,q+hu_2) - \Phi(q+hu_1\,|\,q)}{h} \qquad (u_1 > u_2 > 0)
+\end{equation}
+directly from the Bethe integral equation, resolving Section~3.2 and Section~4 of
+\texttt{independent\_phase2h\_audit.pdf} and Section~4 of \texttt{audit\_frames\_defects.pdf}.
+
+\begin{theorem}[Krein convolution and large-$Y$ expansion of $R_0(Y,r)$, \Lc, \scrshort]\label{thm:krein_c1}
+\begin{enumerate}
+\item For $u_1, u_2 > 0$ outside the Fermi sea, the Wiener--Hopf projection onto $x > 0$ yields
+  the exact double Laplace transform
+  \begin{equation}\label{eq:double_laplace}
+    \int_0^\infty du_1\,e^{-s_1 u_1}\int_0^\infty du_2\,e^{-s_2 u_2}\,\frac{\partial\Phi_q(u_1,u_2)}{\partial u_2}
+    = 2\,\frac{\widetilde{\Phi}_{\mathrm{WH}}(s_1)\,\widetilde{\Phi}_{\mathrm{WH}}(s_2) - 1}{s_1 + s_2}.
+  \end{equation}
+  For $u_1 > u_2 > 0$ (where $\mathcal{L}^{-1}[(s_1+s_2)^{-1}] = \delta(u_1-u_2) = 0$), integrating
+  with respect to $u_2$ from the edge $u_2 = 0$ ($\Phi_q(u_1,0) = 0$) gives the exact convolution
+  \begin{equation}\label{eq:krein_conv}
+    \boxed{\Phi_q(u_1,u_2) = 2\int_0^{u_2} \psi_-(u_1 - w)\,\widetilde{\Psi}_-(u_2 - w)\,dw
+    = 4\int_0^{r^2 Y} \psi_-\big(u(Y) - u(r^2 Y) + u(\eta)\big)\,\sqrt{\eta}\,d\eta,}
+  \end{equation}
+  where $\widetilde{\Psi}_-(u) = \frac{d}{du}\big(\frac{4}{3}y(u)^{3/2}\big) = 2\sqrt{y(u)}\,y'(u)$,
+  $\psi_-(u) = \widetilde{\Psi}_-'(u)$, and in the second equality we changed integration variable to
+  the dressed momentum $v = u_2 - w = u(\eta)$ with $\eta \in [0, r^2 Y]$.
+\item Setting $\eta = Yt^2$ ($t \in [0,r]$) and $\eta_0(t) := Y(1-r^2+t^2) =: Y\sigma(t)$, the argument
+  of $\psi_-$ in~\eqref{eq:krein_conv} is $u(\eta_0(t)) + \Delta(Y,t)$, where $\Delta(Y,t)$ is the
+  balanced 4-term coboundary
+  \begin{equation}\label{eq:delta_coboundary}
+    \Delta(Y,t) = \delta u(Y) - \delta u(r^2 Y) + \delta u(Yt^2) - \delta u\big(Y\sigma(t)\big)
+    = \underbrace{-\frac{1}{2\pi}\ln\frac{t^2}{r^2\sigma(t)}}_{\Delta_0(t)}
+    + \frac{d_0}{Y}\underbrace{\left(1 - \frac{1}{r^2} + \frac{1}{t^2} - \frac{1}{\sigma(t)}\right)}_{\Delta_1(t)}
+    + O(Y^{-2}),
+  \end{equation}
+  in which both $-\frac{\ln Y}{2\pi}$ and $c_{\mathrm{edge}}$ cancel identically. Moreover, because
+  $d_1 = 0$, $\psi_-(u(\eta)) = \big(\frac{1}{u'(\eta)}\frac{d}{d\eta}\big)^2(\frac{4}{3}\eta^{3/2})
+  = \eta^{-1/2}\big[1 - (2d_0 + \frac{3}{4\pi^2})\eta^{-2} + O(\eta^{-3})\big]$ contains neither
+  $\ln\eta$ nor $c_{\mathrm{edge}}$. Consequently, $\Phi_q(u(Y),u(r^2 Y))$ has \textbf{no} $\ln Y$ or
+  $c_{\mathrm{edge}}$ terms at $O(Y^0)$ or $O(Y^{-1})$: the $\frac{1-r^2}{4\pi^2 r}\frac{\ln^2 Y}{Y}$
+  and $\frac{\ln Y}{Y}$ terms in the bare classical Hessian $Q = \frac{(\delta u_2 - r^2\delta u_1)^2}{r(1-r^2)Y}$
+  are cancelled identically by opposite terms in $d\Phi_{\mathrm{loop}}(Y,r) = \Phi_q(u_1,u_2) - \Phi_{\mathrm{cl}}(u_1,u_2)$.
+\item Under the rationalising substitution $s = \frac{t}{\sqrt{1-r^2+t^2}} \in [0,r]$
+  ($\Delta_0(t) = -\frac{1}{\pi}\ln\frac{s}{r}$, $\frac{t^2\,dt}{\sigma(t)^{3/2}} = (\frac{1}{1-s^2}-1)\,ds$),
+  the $O(Y^0)$ integral gives in one line the analytical proof of the leading residual:
+  \begin{equation}\label{eq:r0_inf_proof}
+    \boxed{\lim_{Y\to\infty} R_0(Y,r) = -4\int_0^r \Delta_0(t)\frac{t^2\,dt}{(1-r^2+t^2)^{3/2}}
+    = \frac{4}{\pi}\int_0^r \ln\!\left(\frac{s}{r}\right)\left(\frac{1}{1-s^2} - 1\right)ds
+    = -\frac{4}{\pi}\big(\chi_2(r) - r\big).}
+  \end{equation}
+\item At $O(1/Y)$ (two loops in the Boussinesq/KdV scaling limit), the Wiener--Hopf integral evaluates
+  in closed elementary form to
+  \begin{equation}\label{eq:c1_exact}
+    \boxed{R_0(Y,r) = -\frac{4}{\pi}\big(\chi_2(r)-r\big) + \frac{c_1(r)}{Y} + O(Y^{-2}), \qquad
+    c_1(r) = -\frac{r^3}{6(1-r^2)} - 2d_0\left(\frac{1-r^2}{r^2}\ln\frac{1-r}{1+r} + \frac{2}{r}\right),}
+  \end{equation}
+  where $d_0 = \frac{1}{48} - \frac{1}{4\pi^2}$. Relative to the bare two-body Gamma-ratio Stirling
+  coefficient $c_1^\Gamma(r) = -\frac{r^2}{6(1-r^2)}$ of \texttt{smatrix\_ansatz.tex}, the $\frac{1}{1-r}$
+  threshold pole cancels identically in the collective Fermi-sea dressing shift:
+  \begin{equation}\label{eq:dc1_exact}
+    \Delta c_1(r) := c_1(r) - c_1^\Gamma(r)
+    = \frac{r^2}{6(1+r)} - 2d_0\left(\frac{1-r^2}{r^2}\ln\frac{1-r}{1+r} + \frac{2}{r}\right), \qquad
+    \lim_{r\to 1^-} \Delta c_1(r) = \frac{1}{\pi^2}.
+  \end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}[Resolution of \texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf} Section~4, \texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf} Section~3, and \texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf} Section~3.1, \Lc]
+\begin{enumerate}
+\item As correctly pointed out in Section~4 of \texttt{audit\_frames\_defects.pdf}, the subtracted edge
+  term $-\Phi(p_1|e_2)/h$ in $\Psi_{2,T}$ depends only on $y_1 = Y$ and not on $y_2 = r^2 Y$, so
+  $\partial_r\Phi(p_1|e_2) = 0$; its sole role in~\eqref{eq:krein_conv} is to fix the lower integration
+  limit $u_2 = 0$ ($\Phi_q(u_1,0) = 0$). Equation~\eqref{eq:r0_inf_proof} shows where the $+\frac{4}{\pi}r$
+  term in $R_0(\infty,r)$ actually comes from: it is the integral $-\frac{4}{\pi}\int_0^r \ln(s/r)\,ds = +\frac{4}{\pi}r$
+  of the $-1$ part of $\frac{s^2}{1-s^2} = \frac{1}{1-s^2} - 1$ inside the $u_2$-dependent dressed phase
+  convolution, i.e.\ the one-loop counterpart of the $+4rY$ classical frame cancellation.
+\item Directly connecting to the exact endpoint reciprocity identity of \texttt{audit\_toda\_dictionary.pdf}
+  Eqs.~(6)--(12), differentiating~\eqref{eq:krein_conv} gives
+  $(\partial_{u_1}+\partial_{u_2})\Phi_q(u_1,u_2) = 2\psi_-(u_1)\widetilde{\Psi}_-(u_2)$, so the
+  four-term symmetric sum in the Fermi-edge limit $h\to 0$ is the factorised endpoint product
+  \[
+    \widehat{\Phi}_q\big(u(y_1),u(y_2)\big) + \widehat{\Phi}_q\big(u(y_2),u(y_1)\big)
+    = 2\widetilde{\Psi}_-\big(u(y_1)\big)\widetilde{\Psi}_-\big(u(y_2)\big)
+    = \frac{8\sqrt{y_1 y_2}}{u'(y_1)\,u'(y_2)}.
+  \]
+  Subtracting the classical frame sum $-8\sqrt{y_1 y_2}$ yields the exact edge limit of the
+  symmetric remainder $S_{\mathrm{rem}}/h$ of \texttt{audit\_toda\_dictionary.pdf} Section~4:
+  \[
+    \lim_{h\to 0}\frac{S_{\mathrm{rem}}(Y,r^2 Y)}{h}
+    = 8rY\left(\frac{1}{u'(Y)\,u'(r^2 Y)} - 1\right)
+    = \frac{4}{\pi}\left(r + \frac{1}{r}\right)
+    + \frac{1}{Y}\left[\frac{2+8\pi^2 d_0}{\pi^2}\left(r + \frac{1}{r^3}\right) + \frac{2}{\pi^2 r}\right]
+    + O(Y^{-2}).
+  \]
+  The $O(Y^0)$ term $\frac{4}{\pi}(r + \frac{1}{r})$ is precisely the symmetric sum of the $+\frac{4}{\pi}r$
+  term in $R_0(\infty,r)$ and its $(1\leftrightarrow 2)$ partner $+\frac{4}{\pi}(1/r)$, arising from the
+  quantum Jacobian $u'(y) = 1 - \frac{1}{2\pi y} - \frac{d_0}{y^2} + O(y^{-3}) \ne 1$.
+\item In \texttt{matching\_toda.py}, the raw residual subtracted $2Y(1-r^2)\ln\frac{1-r}{1+r}$ rather than
+  the finite-$h$ classical Toda phase $\delta_T(\kappa_1,\kappa_2)/h$, leaving a classical lattice
+  dispersion series $a_1^{\mathrm{cl}}(r)Y^2 h + a_2^{\mathrm{cl}}(r)Y^3 h^2 + O(Y^4 h^3)$. Because
+  $p_j - q(h)$ is measured from the quantum Fermi edge $q(h)$ (which already absorbs the $-\frac{1}{2\pi}h\ln h$
+  shift), the finite-$h$ error at fixed $(Y,r)$ is a smooth power series in $h$. When
+  \texttt{matching\_analysis.py} fitted $1, h, h\ln h$ to three points, the spurious $h\ln h$ basis
+  function absorbed the $O(Y^3 h^2)$ classical curvature and flipped the sign of $\widehat{c}_1(r)$.
+  Subtracting $\delta_T(\kappa_1,\kappa_2)/h$ from the saved \texttt{matching\_toda\_data.json} and
+  \texttt{matching\_toda\_fine.json} phases yields $c_1^{\mathrm{num}}(0.4,0.5,0.6) = (-0.00783, -0.02157, -0.04861)$,
+  agreeing with the exact formula~\eqref{eq:c1_exact} ($-0.00774, -0.02144, -0.04844$) to $<2\times 10^{-4}$
+  (Table~\ref{tab:c1_table}).
+\end{enumerate}
+\end{remark}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Exact one-loop limit $R_0(\infty,r)$, two-loop coefficient $c_1(r) = c_1^{\mathrm{rat}}(r) + c_1^{(1/\pi^2)}(r)$,
+bare Gamma-ratio coefficient $c_1^\Gamma(r)$, collective dressing difference $\Delta c_1(r)$, and comparison
+with classical-subtracted saved Phase~2f Toda data \Lc.}
+\label{tab:c1_table}
+\begin{tabular}{@{}rrrrrrr@{}}
+\toprule
+$r$ & $R_0(\infty,r)$ & Exact $c_1(r)$ & $c_1^{\mathrm{rat}}(r)$ & $c_1^{(1/\pi^2)}(r)$ &
+$\Delta c_1(r)$ & Saved Toda $c_1^{\mathrm{num}}(r)$ \\
+\midrule
+$0.20$ & $-0.00114841$ & $+0.00102901$ & $-0.01259045$ & $+0.01361946$ & $+0.00797346$ & --- \\
+$0.30$ & $-0.00394949$ & $-0.00128010$ & $-0.02192391$ & $+0.02064381$ & $+0.01520342$ & --- \\
+$0.40$ & $-0.00962286$ & $-0.00773659$ & $-0.03568534$ & $+0.02794875$ & $+0.02400944$ & $-0.007827$ \\
+$0.50$ & $-0.01951541$ & $-0.02144459$ & $-0.05711791$ & $+0.03567332$ & $+0.03411097$ & $-0.021566$ \\
+$0.60$ & $-0.03545557$ & $-0.04843599$ & $-0.09245042$ & $+0.04401443$ & $+0.04531401$ & $-0.048613$ \\
+$0.70$ & $-0.06018350$ & $-0.10263222$ & $-0.15591408$ & $+0.05328186$ & $+0.05749850$ & --- \\
+$0.80$ & $-0.09840626$ & $-0.22566817$ & $-0.28970625$ & $+0.06403809$ & $+0.07062813$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{KP Master Function Synthesis, Bootstrap Constraints, and Audit Resolutions}
+
+\subsection{Exchange-Antisymmetry Criterion and the Subtracted Kernel $\widetilde{K}_L(z)$}
+We now resolve Section~2 of \texttt{independent\_phase2h\_audit.pdf} and Section~2 of
+\texttt{audit\_determinant\_foundations.pdf}.
+
+\begin{theorem}[Inversion-antisymmetry and 4-orientation identities, \Lc, \scrshort]\label{thm:inversion_orientation}
+\begin{enumerate}
+\item Under particle exchange $(1 \leftrightarrow 2)$ or KP-vertex swap $(p \leftrightarrow q)$,
+  every root-ratio argument $z = w_r(\alpha_1,\epsilon_1)/w_s(\alpha_2,\epsilon_2)$ inverts: $z \mapsto 1/z$.
+  Consequently, $\mathcal{F}_K(p,q) = -\mathcal{F}_K(q,p)$ and
+  $\mathcal{I}_{SS}[K](1,2) = -\mathcal{I}_{SS}[K](2,1)$ hold universally if and only if $K(z)$ is
+  \textbf{both odd ($K(-z) = -K(z)$) and inversion-antisymmetric ($K(1/z) = -K(z)$)}.
+\item For the one-loop kernel $K_L(z) = -\frac{1}{\pi}\chi_2(z) - \frac{1}{2\pi}\ln|z|\ln\big|\frac{1-z}{1+z}\big|$,
+  Euler's identity $\chi_2(z) + \chi_2(1/z) = \frac{\pi^2}{4}\operatorname{sgn}(\operatorname{Re} z)$ yields the
+  inversion anomaly $K_L(z) + K_L(1/z) = -\frac{\pi}{4}\operatorname{sgn}(\operatorname{Re} z)$.
+  Defining the inversion-antisymmetrised kernel
+  \begin{equation}\label{eq:ktilde_L}
+    \boxed{\widetilde{K}_L(z) := \frac{K_L(z) - K_L(1/z)}{2} = K_L(z) + \frac{\pi}{8}\operatorname{sgn}(\operatorname{Re} z)}
+  \end{equation}
+  makes $\widetilde{K}_L(-z) = -\widetilde{K}_L(z)$ and $\widetilde{K}_L(1/z) = -\widetilde{K}_L(z)$
+  exact on all of $\mathbb{C}\setminus i\mathbb{R}$, so that
+  $\mathcal{F}_{\widetilde{K}_L}(p,q) = -\mathcal{F}_{\widetilde{K}_L}(q,p)$ and
+  $\mathcal{I}_{SS}[\widetilde{K}_L](1,2) = -\mathcal{I}_{SS}[\widetilde{K}_L](2,1)$
+  (with $\mathcal{I}_{SS}[\widetilde{K}_L](\alpha,\epsilon;\alpha,\epsilon) = 0$).
+\item Because $\cot(\phi_r/2)$ has the same signs $(+,-,+)$ as $\tan(\phi_r/2)$ for all $\alpha \in (0,\pi/3)$,
+  $\sum_{r=1}^3 c_r\operatorname{sgn}(w_r(\alpha,\epsilon)) = -2$ for \textbf{both} $\epsilon = \pm 1$.
+  Across all four orientations $(\epsilon_1,\epsilon_2) \in \{+1,-1\}^2$ and all three defect regimes
+  ($s < -1$, $|s| < 1$, $s > 1$, with Levinson winding $\Delta\theta_D(s,\eta) \in \{+2\pi\eta, 0, -2\pi\eta\}$):
+  \begin{align}
+    I_{SS}^{\mathrm{raw}}(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)
+    &= \mathcal{I}_{SS}[\widetilde{K}_L](1,2) - \epsilon_1\frac{\pi}{2}
+     = \mathcal{I}_{SS}[K_L](1,2) + \frac{1-\epsilon_1}{2}\pi, \label{eq:iss_orient}\\
+    J_{12}(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)
+    &:= \frac{I_{SS}^{\mathrm{raw}}(1,2) - I_{SS}^{\mathrm{raw}}(2,1)}{2}
+     = \mathcal{I}_{SS}[\widetilde{K}_L](1,2) - \frac{\epsilon_1 - \epsilon_2}{4}\pi, \label{eq:j12_orient}\\
+    I_{SD}^{\mathrm{phys}}(\alpha,\epsilon;s,\eta)
+    &= \mathcal{I}_{SD}[\widetilde{K}_L](\alpha,\epsilon;q_D,\eta) + \frac{\epsilon}{4}\Delta\theta_D(s,\eta)
+     = \mathcal{I}_{SD}[K_L](\alpha,\epsilon;q_D,\eta) - \frac{1-\epsilon}{4}\Delta\theta_D(s,\eta). \label{eq:isd_orient}
+  \end{align}
+  Equations~\eqref{eq:iss_orient}--\eqref{eq:isd_orient} explain the $-\pi$ two-soliton difference and
+  $+\eta\pi$ stable-defect difference for $\epsilon_1 = -1$ found in \texttt{independent\_phase2h\_audit.pdf}
+  Check~1, as well as $I_{12}^{\mathrm{raw}} + I_{21}^{\mathrm{raw}} = -\frac{\pi}{2}(\epsilon_1+\epsilon_2)$
+  in \texttt{audit\_determinant\_foundations.pdf}. Moreover, $\mathcal{I}_{SS}[\widetilde{K}_L]$ satisfies
+  exact KP defect fusion and \textbf{zero} KP-triangle defect without any $\pi/2$ offset.
+\end{enumerate}
+\end{theorem}
+
+\subsection{Crossing Symmetry, Darboux Delay Fusion, and Breather Continuation}
+\begin{proposition}[Crossing, Darboux coboundary, and breather continuation, \Lc, \scrshort]\label{prop:bootstrap_synthesis}
+\begin{enumerate}
+\item \textbf{Crossing symmetry:} Under $\alpha_2 \mapsto \alpha_2 + \pi$ (which reverses the KP chord
+  $(q_{2,a},q_{2,b}) \mapsto (q_{2,b}^{\mathrm{ho}},q_{2,a}^{\mathrm{ho}})$ and inverts $A_{12}^{\mathrm{ov}} \mapsto 1/A_{12}^{\mathrm{ho}}$),
+  both the KP master functional and the canonical/mode renormalisation shifts
+  $\delta_{\mathrm{renorm}}(1,2) = \sum_{j=1}^2 \Delta X_j'(1,2)\Delta P(j)$ flip sign:
+  \begin{align}
+    \mathcal{I}_{SS}[\widetilde{K}_L]^{\mathrm{ov}}(\alpha_1,\alpha_2+\pi) &= -\mathcal{I}_{SS}[\widetilde{K}_L]^{\mathrm{ho}}(\alpha_1,\alpha_2), \\
+    \delta_{\mathrm{renorm}}^{\mathrm{can/mode,ov}}(\alpha_1,\alpha_2+\pi) &= -\delta_{\mathrm{renorm}}^{\mathrm{can/mode,ho}}(\alpha_1,\alpha_2),
+  \end{align}
+  while under spatial reflection $\alpha_2 \mapsto \pi - \alpha_2$ at positive width $k_2 > 0$, both are
+  strictly invariant.
+\item \textbf{Darboux delay coboundary:} Defining the Darboux-shifted defect delay
+  $\Delta X_D'(1;q_D,\eta) := \Delta x_D(1;q_D,\eta) - 2\sqrt{3}\,\epsilon_1\eta\gamma_1 q_D$
+  ($\gamma_1 = d\Pi_1/dP_1 = -\frac{3\cos 2\alpha_1}{\sin\alpha_1\sin 3\alpha_1}$), the Darboux-shifted
+  two-soliton delay is an exact 1-coboundary on the KP vertices:
+  \begin{equation}
+    \Delta X_1'(1,2) = -\frac{\ln|A_{12}|}{k_1} + \gamma_1 M_2
+    = \epsilon_1\big[\Delta X_D'(1;q_{2,b},+1) - \Delta X_D'(1;q_{2,a},+1)\big].
+  \end{equation}
+  This pairs cleanly with the field-theoretic finding of \texttt{audit\_determinant\_foundations.pdf} Eq.~(8)
+  that the asymptotic potential tail $\phi_\alpha(+\infty) = 2\cos\alpha = M'(\alpha)$ induces the
+  cross-symplectic pairing $\Omega(\partial_{\alpha_1},\partial_{\alpha_2}) \to -M_1'\Pi_2'$, which is
+  precisely the term removed by passing to Darboux coordinates $X_j'$.
+\item \textbf{Analytical continuation to breather kinematics:} On the complex-conjugate breather locus
+  $\alpha_{1,2} = \bar{\alpha} \mp i\gamma$, the $z = +1$ logarithmic branch points of $K_{\chi_2}(z)$
+  and $K_{\ln}(z)$ cancel identically in $K_L(z)$ ($L'(z) = \frac{2\ln z}{1-z^2} \to -1$), and
+  \begin{equation}
+    \operatorname{Re}\mathcal{I}_{SS}[\widetilde{K}_L](\bar{\alpha}-i\gamma,\bar{\alpha}+i\gamma) = 0, \qquad
+    \operatorname{Im}\big[\Delta P_{\mathrm{can}}(\bar{\alpha}-i\gamma) + \Delta P_{\mathrm{can}}(\bar{\alpha}+i\gamma)\big] = 0
+  \end{equation}
+  identically. Thus $\exp(i\mathcal{I}_{SS}[\widetilde{K}_L])$ is a positive, pole-free real residue
+  multiplier, while re-expressing $\eta$ in physical rapidities shifts the Bogdan--Charkina
+  quantisation condition \La~\cite{BC} to
+  $I_{\mathrm{br}}(\alpha_1^{\mathrm{phys}},\alpha_2^{\mathrm{phys}}) = \big[N - 2\operatorname{Im}(\frac{\partial I_{\mathrm{br}}}{\partial P_1}\Delta P(\alpha_1))\big]\hbar + O(\hbar^2)$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Additional Audit Corrections and Open Field-Theoretic Questions}
+We record and verify in \scrshort\ the remaining algebraic corrections
+and physical qualifications established by the six audit reports:
+\begin{enumerate}
+\item \textbf{Separated head-on kernel asymptotics and soliton profile (\texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf} Section~5) \Lc:}
+  For $(\alpha_1,+1;\alpha_2,-1) = (r\lambda,+1;\lambda,-1)$ as $\lambda\to 0^+$,
+  $I_{\chi_2}^{\mathrm{head}} = \frac{9r}{\pi}\lambda^2 + O(\lambda^4)$ is purely analytic while all of
+  the $\lambda^2\ln(r\lambda^2)$ non-analyticity resides in
+  $I_{\ln}^{\mathrm{head}} = \frac{r\lambda^2}{\pi}\big[-3\ln(r\lambda^2)+6\ln 2-\frac{3}{2}\ln 3-12\big] + O(\lambda^4|\ln\lambda|)$.
+  Under $\tau = 1 + e^{k(x-vt)}$ and $u = 2(\ln\tau)_{xx}$, the soliton profile is
+  $u = +\frac{k^2}{2}\operatorname{sech}^2\frac{k(x-vt)}{2}$.
+\item \textbf{Off-shell $4\times 4$ defect sewing determinant and branch switch at $s = \sqrt{3}$ (\texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf} Section~2) \Lc:}
+  Away from its zeros, the $4\times 4$ linearised Corrigan--Zambon sewing matrix \La~\cite{CZ} satisfies
+  \[
+    \frac{\det M}{(\kappa_1 - \kappa_2)^2} = -\frac{2}{3}S^2(S^2-1)P_-(S;s)P_+(S;s)
+  \]
+  (a factor of $16$ larger than the $-1/24$ prefactor displayed in \texttt{oneloop\_defect\_phase.tex}).
+  Because $P_-(1;s) = \frac{1}{2}(s+1)(s-\sqrt{3})$ and $P_+(1;s) = \frac{1}{2}(s-1)(s-\sqrt{3})$,
+  at $s = \sqrt{3}$ the root $S_{-,+}$ drops below $S = 1$ while $S_{+,-}$ rises above $S = 1$.
+  Thus across all $1 < s < 2$, the two admissible positive growth rates ($S > 1$) are
+  $g_1(s) = \frac{s\sqrt{4-s^2}+\sqrt{3}(s^2-2)}{8} > 0$ and
+  $g_2(s) = \frac{|s\sqrt{4-s^2}-\sqrt{3}(s^2-2)|}{8} \ge 0$, which coalesce at $g_1(2) = g_2(2) = +\frac{\sqrt{3}}{4}$.
+\item \textbf{Scope of field-theoretic and defect identifications \Ld:}
+  As documented in \texttt{audit\_\allowbreak charges\_\allowbreak action.pdf},
+  \texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf},
+  \texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf},
+  \texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}, and
+  \texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}, the full fourth-order projected fluctuation determinant
+  (including the non-compact translational/boost collective-coordinate measure and zero-mode subtraction,
+  as well as the overall constant $Z$ left open by Faddeev--Korepin \La~\cite{FK}),
+  the boundary counterterm derivation for the fifth-degree Corrigan--Zambon defect potential,
+  and the physical interpretation of KP-triangle fusion across unstable intermediate defect vacua
+  remain open field-theoretic questions \Ld.
+\end{enumerate}
+
+\section{Summary of Claims, Verification, and Failures Recorded}
+
+\begin{longtable}{@{}L{6.5cm}cL{4.2cm}L{2.8cm}@{}}
+\toprule
+Claim & Label & Script / Check & Precision \\
+\midrule
+\endhead
+Wiener--Hopf factorisation~\eqref{eq:wh_symbol}--\eqref{eq:laplace_y} and exact $\delta u(y)$ expansion~\eqref{eq:du_exact} with $d_1=e_2=e_1=0$ & \Lc & \scrshort\ (\texttt{verify\_1}) & Exact SymPy + $<6\times 10^{-5}$ \\
+Krein convolution~\eqref{eq:krein_conv}, exact $\ln Y$ cancellation, and proof of $R_0(\infty,r) = -\frac{4}{\pi}(\chi_2(r)-r)$ & \Lc & \scrshort\ (\texttt{verify\_2}) & Exact SymPy + 70 digits \\
+Closed-form two-loop coefficient $c_1(r)$~\eqref{eq:c1_exact} and $\Delta c_1(r)$~\eqref{eq:dc1_exact} & \Lc & \scrshort\ (\texttt{verify\_2}) & Exact SymPy + $<10^{-55}$ \\
+Classical-dispersion subtraction of saved Toda data matching exact $c_1(r)$ & \Lc & \scrshort\ (\texttt{verify\_3}) & $<2\times 10^{-4}$ \\
+Inversion-antisymmetric kernel $\widetilde{K}_L(z)$ and exact 4-orientation identities~\eqref{eq:iss_orient}--\eqref{eq:isd_orient} & \Lc & \scrshort\ (\texttt{verify\_4a}) & $<10^{-64}$ (70 dps) \\
+Crossing symmetry and Darboux delay coboundary $\Delta X_1'(1,2)$ & \Lc & \scrshort\ (\texttt{verify\_4b}) & $<10^{-64}$ (70 dps) \\
+Breather continuation $\operatorname{Re}\mathcal{I}_{SS}[\widetilde{K}_L]=0$ and $\operatorname{Im}\Delta P_{\mathrm{can,br}}=0$ & \Lc & \scrshort\ (\texttt{verify\_4c}) & $<10^{-65}$ (70 dps) \\
+Off-shell defect determinant ($-2/3$ prefactor) and $s=\sqrt{3}$ branch switch & \Lc & \scrshort\ (\texttt{verify\_4d}) & $<10^{-60}$ (70 dps) \\
+Fermi-edge reciprocity bilinear $8rY(\frac{1}{u'(Y)u'(r^2 Y)}-1) = \frac{4}{\pi}(r+\frac{1}{r})+O(Y^{-1})$ & \Lc & \scrshort\ (\texttt{verify\_4e}) & Exact SymPy + 70 digits \\
+Full fourth-order projected determinant, zero-mode measure, defect UV counterterm, and all-loop S-matrix outside the Toda corner & \Ld & Open field-theoretic questions & --- \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item All prior-claim failures identified by the six independent audit reports
+  (\texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf},
+  \texttt{audit\_\allowbreak charges\_\allowbreak action.pdf},
+  \texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf},
+  \texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf},
+  \texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}, and
+  \texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}) are
+  reproduced and mathematically resolved above without modifying the audited files (whose
+  SHA-256 hashes are verified by the audit scripts).
+\item During the derivation of~\eqref{eq:c1_exact}, an initial 2-integration-by-parts evaluation
+  of the Krein convolution~\eqref{eq:krein_conv} expanded $\widetilde{\Psi}_-(v)$ asymptotically
+  down to $v = 0$, where the large-$v$ expansion is singular, producing a spurious offset in
+  $c_1(r)$. Changing variables to the exact dressed momentum $v = u(\eta)$ ($\widetilde{\Psi}_-(v)\,dv = 2\sqrt{\eta}\,d\eta$
+  identically down to $\eta = 0$) removed the endpoint singularity and yielded exact agreement
+  between the closed form~\eqref{eq:c1_exact} and 70-digit numerical quadrature to $<10^{-55}$.
+\item During testing of off-real-axis inversion $K(1/z) = -K(z)$ at complex $z = 0.85 + 0.23i$,
+  $K_{\ln}(z) + K_{\ln}(1/z)$ alone gave $0.13213\ne 0$ because $\ln\frac{1-1/z}{1+1/z} = \ln\frac{1-z}{1+z} \pm i\pi$
+  acquires a branch shift off the real axis that cancels against the $-\frac{i\pi}{2}\ln z$ term
+  of $\chi_2(z) + \chi_2(1/z)$ inside the full kernel $\widetilde{K}_L(z)$.
+\end{enumerate}
+
+\begin{thebibliography}{9}\small
+\bibitem{FK} L.~D.~Faddeev and V.~E.~Korepin, \emph{Quantum theory of solitons}, Phys.\ Rept.\ \textbf{42} (1978) 1--87, doi:10.1016/0370-1573(78)90058-3. (Full text in \texttt{literature/}.)
+\bibitem{CZ} E.~Corrigan and C.~Zambon, \emph{Adding integrable defects to the Boussinesq equation}, J.\ Phys.\ A \textbf{56} (2023) 345203, arXiv:2306.03772. (Full text in \texttt{literature/}.)
+\bibitem{BC} M.~M.~Bogdan and O.~V.~Charkina, \emph{Quasiclassical quantization of the breather of the good Boussinesq equation}, Low Temp.\ Phys.\ \textbf{51} (2025), arXiv:2502.14695. (Full text in \texttt{literature/}.)
+\bibitem{PM} M.~Pustilnik and K.~A.~Matveev, \emph{Phys.\ Rev.\ B} \textbf{92} (2015) 195146, arXiv:1507.05639. (Full text read in Phase~2d.)
+\bibitem{Sutherland} B.~Sutherland, \emph{Rocky Mountain J.\ Math.} \textbf{8} (1978) 413. (Cited in \texttt{toda\_route.tex}.)
+\bibitem{Mertens} F.~G.~Mertens, \emph{Z.\ Phys.\ B} \textbf{55} (1984) 353. (Cited in \texttt{toda\_route.tex}.)
+\end{thebibliography}
+
+\end{document}
