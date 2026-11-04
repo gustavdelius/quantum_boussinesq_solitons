@@ -1,6 +1,7 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,xcolor}
+\emergencystretch=2em
 \usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!40!black,urlcolor=blue!60!black]{hyperref}
 \newcommand{\La}{\textsf{\textbf{(a)}}}
 \newcommand{\Lb}{\textsf{\textbf{(b)}}}
@@ -11,7 +12,7 @@
 \theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
 
 \title{Towards quantisation of Boussinesq solitons:\\ Phase 2 master report (Routes A--E, Phases 2a--2h)}
-\author{Project \emph{quantum\_boussinesq\_solitons} --- PI: Gustav Delius}
+\author{Project \emph{quantum\_\allowbreak boussinesq\_\allowbreak solitons} --- PI: Gustav Delius}
 \date{Updated 4 November 2026}
 \begin{document}\maketitle
 
@@ -32,15 +33,35 @@ Two-soliton scattering is an exactly symplectic map for the canonical structure 
 \item Continued to complex conjugate rapidities, $i\cdot\tfrac29(\ell_1-\ell_2)$ reproduces \emph{exactly} the adiabatic invariant of the Boussinesq breather computed independently by Bogdan and Charkina \cite{BC}, turning breather quantisation into a string condition $\ell_1-\ell_2 = -\tfrac{9i}{2}N\hbar$.
 \end{itemize}
 
-\paragraph{One-loop ($O(\hbar^0)$), Toda Fermi-edge, and defect-fusion synthesis (Routes A, D, E; Phases 2b--2h).}
-\begin{itemize}
-\item \emph{Candidate Gamma S-matrix tested and ruled out at $O(\hbar^0)$:} A natural Gamma-function ansatz $S \propto \frac{\Gamma(1\pm i\eta)}{\Gamma(1\mp i\eta)}$ in $\eta = \frac{2}{9}(\ell_1-\ell_2)/\hbar$ (\texttt{smatrix\_ansatz.pdf}, \Ld) matches the semiclassical limit, unitarity, crossing, and the Bogdan--Charkina breather poles, but is \emph{not exact}: it is ruled out at $O(\hbar^0)$ by the quantum Toda Fermi-edge limit (\texttt{toda\_edge.pdf}), by the direct one-loop DHN calculation on the good equation (\texttt{oneloop\_phase.pdf}), and by KP-triangle defect fusion (\texttt{oneloop\_defect\_phase.pdf}).
-\item \emph{Exact one-loop Legendre $\chi_2$ phase and canonical soliton momentum:} On the good equation, phonon scattering on $N$ solitons and Corrigan--Zambon defects is reflectionless (\texttt{oneloop\_phase.pdf}, \texttt{oneloop\_defect\_phase.pdf}). While $\delta$ at $O(\hbar^{-1})$ is elementary, the one-loop ($O(\hbar^0)$) phase evaluates in closed form to a 4-vertex KP coboundary of Legendre's dilogarithm $\chi_2(z) = \tfrac12(\operatorname{Li}_2(z)-\operatorname{Li}_2(-z))$ plus a logarithmic coboundary. In the co-moving one-loop effective Lagrangian $L_1(v) = v\Delta P_{\rm mode}-\Delta E_1^{\rm ren}$, the light root $\phi_3=\alpha$ drops out of $dL_1/d\alpha$ identically, yielding an $\alpha\ln\alpha$-free canonical collective-coordinate momentum $\Delta P_{\rm can}(\alpha,\epsilon) = -\frac{4\epsilon}{\pi}\alpha + O(\alpha^3)$ satisfying $d\Delta E_{\rm can} = v\,d\Delta P_{\rm can}$ (\texttt{charge\_frame\_master.pdf}).
-\item \emph{Exact analytical match to the quantum Toda Fermi-edge limit:} In the quantum Toda Fermi-edge limit (\texttt{toda\_edge\_ba.py}, \texttt{matching.pdf}, \texttt{charge\_frame\_master.pdf}), measuring dressed momentum relative to the quantum Fermi edge absorbs the $\ln\hbar_T$ divergence into $q$, the classical frame term $+4\sqrt{u_1 u_2}=-M_1\Pi_2/\hbar_T$ cancels the $-2/r$ Darboux singularity in $\partial\Phi_{\rm cl}/\partial u_2 = -2\ln\frac{1-r}{1+r}$, and the overtaking amplitude-ordering reversal ($v_{\rm good}=\cos\alpha$ vs $v_{\rm bad}=\cosh\beta$) flips $H_{\rm bad}(r)=-H_{\rm good}(r)=+\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$, leaving the exact $Y\to\infty$ residual $\lim_{Y\to\infty} R_0(Y,r) = -\frac{4}{\pi}(\chi_2(r)-r)$, which matches the numerical Phase~2f table to $<7.1\times 10^{-5}$.
-\item \emph{Universal KP-Coboundary Master Function:} For any odd kernel $K(z)=-K(-z)$, the soliton--defect phase $\mathcal{I}_{SD}[K]$ and two-soliton phase $\mathcal{I}_{SS}[K]$ are the first and second KP-chord differences of a $2\times 2$ dipole--dipole master function $\mathcal{F}_K(p,q)$ on the KP root space (\texttt{charge\_frame\_master.pdf}). We end with an updated ranked list of next steps towards the higher-loop / all-loop kernel $K(z;\hbar)$.
-\end{itemize}
+\paragraph{One-loop, Toda, and defect results after independent audits.}
+The continuum phase integrals have closed dilogarithmic expressions, and the
+regulated co-moving mode sum supports the proposed one-loop charge Lagrangian
+when its cutoff endpoint is retained. These are checked results \Lc;
+the complete projected fluctuation determinant and absolute scattering-phase
+normalisation remain unestablished \Ld.
+The quantum Toda calculations supply a separate small-amplitude test, but a
+common quantum momentum/frame dictionary and an independent derivation of the
+proposed leading residual are still required \Ld.
+The KP chord identities are algebraic results \Lc. Their identification with
+physical phases in every orientation, and their use as quantum defect fusion
+rules, require additional boundary, state-normalisation, and stability input
+\Ld. In particular, neither exact one-loop reconciliation nor an all-loop
+S-matrix is claimed here.
+
+\begingroup\raggedright
+\paragraph{Audit status.}
+This revision incorporates \texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf},
+\texttt{audit\_\allowbreak charges\_\allowbreak action.pdf}, \texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf},
+\texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf},
+and the follow-up notes \texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}
+and \texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}. Their independent scripts, precision,
+failed claims, and limitations are recorded in those notes. The historical
+phase write-ups remain available; the qualifications in this report supersede
+their stronger physical conclusions. No new regularisation or phase convention
+is selected.\par\endgroup
+
 \end{abstract}
-\tableofcontents
+\clearpage\tableofcontents\clearpage
 
 \section{Setting}
 Throughout, $v=2(\log\tau)_{xx}$ and $k=\sinh\beta$. A soliton has velocity $v=\epsilon\cosh\beta$, with $\epsilon=+1$ for right-movers and $\epsilon=-1$ for left-movers. The potential is $v=\phi_x$ and the Lagrangian is
@@ -88,12 +109,12 @@ Consider two well-separated solitons, with $\phi$ normalised by $\phi(-\infty)=c
 
 The argument is as follows. $\pi_i$ is localised at $X_i$, and there $\phi_j$ equals $0$ or $M_j$ according to whether soliton $i$ is to the left or right of soliton $j$. The self-term $dP\wedge dX$ was derived in Phase~1. In sine-Gordon the analogous cross term vanishes, because the kink height $2\pi/\beta$ is fixed. Here $M=2k$ varies with the soliton parameter.
 
-\begin{proposition}[\Lc, \script{symplectic\_scattering.py}]\label{prop:symp}
+\begin{proposition}[\Lc, \script{symplectic\_\allowbreak scattering.py}]\label{prop:symp}
 The classical scattering map $X_j\mapsto X_j+\Delta x_j$ (with $k_j$ and $c$ fixed) preserves $\Omega$, i.e.
 \[
 \sum_jdP_j\wedge d\Delta x_j=(\text{cross term})_{\rm in}-(\text{cross term})_{\rm out}.
 \]
-This was verified to 40 digits for overtaking and head-on collisions at five parameter points each. It was also verified for the \emph{good} equation in its regular region (\script{consistency\_checks.py}). Without the cross terms the identity fails by $O(1)$ amounts; for example, the left side equals $19.79$ at $\beta=(0.9,0.3)$.
+This was verified to 40 digits for overtaking and head-on collisions at five parameter points each. It was also verified for the \emph{good} equation in its regular region (\script{consistency\_\allowbreak checks.py}). Without the cross terms the identity fails by $O(1)$ amounts; for example, the left side equals $19.79$ at $\beta=(0.9,0.3)$.
 \end{proposition}
 
 This is a non-trivial confirmation of the classical picture. It also shows that a semiclassical S-matrix built from the naive rule ``$\Delta x_j=-\partial\delta/\partial P_j$'' does not exist: the shifts are not curl-free in the canonical momenta.
@@ -106,9 +127,9 @@ X_j'=X_j+\gamma_j\sum_{i\text{ left of }j}M_i,\qquad \gamma_j=\frac{d\Pi_j/dk_j}
 \]
 The mirrored rule (normalising $\phi$ at $+\infty$) gives the same in--out differences. The shifts $\Delta x_j'$ are then curl-free. Their potential is the semiclassical phase $\delta$, with $\Delta x_j'=-\partial\delta/\partial P_j$ and $S\simeq\exp(i\delta/\hbar)$, by stationary phase on two-particle wave packets \cite{FK}.
 
-\begin{proposition}[\Lc, \script{semiclassical\_phase.py}, \script{consistency\_checks.py}]\label{prop:delta}
+\begin{proposition}[\Lc, checked semiclassical phase]\label{prop:delta}
 \begin{enumerate}
-\item $\dfrac{dP}{d\beta}=\tfrac23\,k\,\sinh3\beta$ for the bad equation. For the good equation, $\dfrac{dP}{d\alpha}=\tfrac23\,k\sin3\alpha$ with $k=\sin\alpha$; this vanishes at the cusp $\alpha=\pi/3$ found in Phase~1.
+\item $\dfrac{dP}{d\beta}=\tfrac23\,\epsilon k\,\sinh3\beta$ for the bad equation. For the good equation, $\dfrac{dP}{d\alpha}=\tfrac23\,\epsilon k\sin3\alpha$ with $k=\sin\alpha$; this vanishes at the cusp $\alpha=\pi/3$ found in Phase~1.
 \item For both overtaking and head-on collisions, and both equations,
 \begin{equation}\label{eq:delta}
 \boxed{\ \delta(1,2)=\tfrac29\,(\ell_1-\ell_2)\,\log A_{12}+\tfrac23\,M_1M_2\,(v_1-v_2)\ }
@@ -118,6 +139,7 @@ with $\ell=\epsilon\cosh3\beta$ (bad) or $\ell=-\epsilon\cos3\alpha$ (good). The
 \item \emph{Crossing-type relation:} $\delta_{\rm ov}(\beta_1,\beta_2+i\pi)=-\delta_{\rm ho}(\beta_1,\beta_2)$. The shift $\beta\to\beta+i\pi$ maps a right-mover to a left-mover with $M\to-M$.
 \end{enumerate}
 \end{proposition}
+Checks: \script{semiclassical\_\allowbreak phase.py} and \script{consistency\_\allowbreak checks.py}.
 
 \begin{remark}
 \begin{itemize}
@@ -156,14 +178,34 @@ Equation~\eqref{eq:string} is the form in which bound states appear in Bethe-ans
 
 \begin{itemize}
 \item \emph{Obtained at tree level ($O(\hbar^{-1})$).} The leading semiclassical phase~\eqref{eq:delta}, which is unitary, crossing-type covariant and consistent with breather quantisation. Also an asymptotic Bethe-ansatz quantisation of $N$ solitons on a ring, $P_j\Lambda+\sum_{k\ne j}\delta(j,k)=2\pi\hbar n_j$. \Ld: the twisted boundary conditions forced by $\phi$-winding on a ring have not been worked out. Unlike in the relativistic Toda case \cite{Hol93,Johnson}, the tree-level phase $\delta$ is \emph{elementary}: no dilogarithm appears at $O(\hbar^{-1})$, because $dP\propto k\sinh3\beta\,d\beta$ and integration by parts closes.
-\item \emph{Update (Phase 2c, \texttt{smatrix\_ansatz.pdf}): Candidate Gamma ansatz.} Setting $\eta=\tfrac29(\ell_1-\ell_2)/\hbar$ and $R(x)=\Gamma(1+ix)/\Gamma(1-ix)$, a candidate exact S-matrix was proposed \Ld: $S=R(\eta)(e^2 A/\eta^2)^{i\eta}e^{iT/\hbar}$ (overtaking) and $S=R(\eta)^{-1}(A\eta^2/e^2)^{i\eta}e^{iT/\hbar}$ (head-on). Its semiclassical expansion gives $\arg S - \delta/\hbar \to \pm\tfrac\pi2\operatorname{sgn}\eta + O(\hbar)$ and its poles match the Bogdan--Charkina breather levels~\eqref{eq:string}.
+\item \emph{Update (Phase 2c, \texttt{smatrix\_\allowbreak ansatz.pdf}): Candidate Gamma ansatz.} Setting $\eta=\tfrac29(\ell_1-\ell_2)/\hbar$ and $R(x)=\Gamma(1+ix)/\Gamma(1-ix)$, a candidate exact S-matrix was proposed \Ld: $S=R(\eta)(e^2 A/\eta^2)^{i\eta}e^{iT/\hbar}$ (overtaking) and $S=R(\eta)^{-1}(A\eta^2/e^2)^{i\eta}e^{iT/\hbar}$ (head-on). Its semiclassical expansion gives $\arg S - \delta/\hbar \to \pm\tfrac\pi2\operatorname{sgn}\eta + O(\hbar)$ and its poles match the Bogdan--Charkina breather levels~\eqref{eq:string}.
 \item \emph{Update (Phase 2d, \texttt{oneloop.pdf}): Bad-equation one-loop DHN analysis.} For the bad equation, modes with $|q|>1$ are exponentially unstable ($|A(\text{sol},\text{ph})|\ne 1$), so the DHN sum is well posed only on the Charlier--Lenells invariant stable subspace $|q|<1$ (Scheme~A). There the breather one-loop energy and momentum are holomorphic continuations of the constituent soliton values, so the string condition~\eqref{eq:string} receives no $O(\hbar^0)$ shift at fixed rapidity; however, a reversed-group-velocity mode at $q^*=-\sqrt3/2$ is captured by slow solitons, making Scheme~A differ from the Toda continuum limit at $\beta\to 0$. \Lc
-\item \emph{Update (Phase 2e, \texttt{oneloop\_phase.pdf}): Good-equation one-loop two-soliton phase.} For the well-posed good equation ($k=\sin\alpha$, $v=\epsilon\cos\alpha$), the $4\times 4$ linearised operator is reflectionless for all $q\in\mathbb R$, with a 3-root continuum phase shift $\theta_S'(q;\alpha,\epsilon)=\sum_{r=1}^3 c_r\Theta'(q;\phi_r^{(\epsilon)})$, weights $(c_1,c_2,c_3)=(1,1,-2)$, and angles $(\phi_1,\phi_2,\phi_3)=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$. By Levinson's theorem, the mode count jumps at the cusp $\alpha=\pi/3$ where a heavy-branch instability appears. On the two-soliton background, the Faddeev--Korepin one-loop phase evaluates in closed form to a $3\times 3$ sum over $L(z)=-2\chi_2(z)-\ln|z|\ln\big|\frac{1-z}{1+z}\big|$, where $\chi_2(z)=\tfrac12(\operatorname{Li}_2(z)-\operatorname{Li}_2(-z))$ is Legendre's dilogarithm! Thus \textbf{dilogarithms enter at one loop ($O(\hbar^0)$) rather than at tree level ($O(\hbar^{-1})$)}, ruling out both the continued Gamma candidate~(A) and the pure exponential~(B) as exact. \Lc
-\item \emph{Update (Phase 2h, \texttt{charge\_frame\_master.pdf}): One-loop soliton charge audit.} Because the Boussinesq soliton profile $u_0(x-vt;\alpha)$ changes width $k=\sin\alpha=\sqrt{1-v^2}$ with velocity $v=\epsilon\cos\alpha$, the fixed-profile mode-sum charges $(\Delta E_1^{\rm ren},\Delta P_{\rm mode})$ have a non-zero velocity anomaly $\mathcal A_v(\alpha)=d\Delta E_1^{\rm ren}/d\alpha - v\,d\Delta P_{\rm mode}/d\alpha\ne 0$. In the co-moving one-loop effective Lagrangian $L_1(v)=v\Delta P_{\rm mode}-\Delta E_1^{\rm ren}$, the total weight $\cos(2\phi_r)-\cos(\alpha+\phi_r)$ vanishes identically on the light root $\phi_3=\alpha$, cancelling all $\ln\alpha$ singularities to all orders and giving the canonical collective-coordinate momentum \Lc
+\item \emph{Update (Phase 2e, \texttt{oneloop\_\allowbreak phase.pdf}): Continuum one-loop integral.}
+For the good equation, the tau-function construction gives reflectionless
+phonon modes and a three-root transmission phase. The corresponding
+Faddeev--Korepin continuum integral evaluates to a sum of Legendre
+$\chi_2$ and logarithmic terms \Lc. Independent potential-field quadrature
+confirms the spectral-density identity; it does not establish completeness,
+the collective-coordinate measure, or the full time-dependent determinant
+(\texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf}). The nonconstant integral is
+therefore a conditional test of the continued Gamma and pure-exponential
+candidates, not a completed physical exclusion \Ld.
+The separate projected-measure audit now proves factorisation of the finite
+collective symplectic density despite the tail cross terms, and verifies its
+Wronskian matrix on the exact collision background \Lc
+(\texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}). Its explicit
+projector does not preserve a fixed-potential-endpoint fluctuation domain
+\Lc. The field and constraint measures and the time-boundary determinant
+therefore remain open \Ld.
+\item \emph{Update (Phase 2h, \texttt{charge\_\allowbreak frame\_\allowbreak master.pdf}): One-loop soliton charge audit.} Because the Boussinesq soliton profile $u_0(x-vt;\alpha)$ changes width $k=\sin\alpha=\sqrt{1-v^2}$ with velocity $v=\epsilon\cos\alpha$, the fixed-profile mode-sum charges $(\Delta E_1^{\rm ren},\Delta P_{\rm mode})$ have a non-zero velocity anomaly $\mathcal A_v(\alpha)=d\Delta E_1^{\rm ren}/d\alpha - v\,d\Delta P_{\rm mode}/d\alpha\ne 0$. In the co-moving one-loop effective Lagrangian $L_1(v)=v\Delta P_{\rm mode}-\Delta E_1^{\rm ren}$, the total weight $\cos(2\phi_r)-\cos(\alpha+\phi_r)$ vanishes identically on the light root $\phi_3=\alpha$, cancelling all $\ln\alpha$ singularities to all orders and giving the following conditional collective-coordinate momentum \Lc
 \[
 \Delta P_{\rm can}(\alpha,\epsilon)=\frac{\partial L_1}{\partial v}=-\epsilon\frac{\sqrt3\cos\alpha}{\pi}\ln\left|\frac{\tan\frac{\alpha+2\pi/3}{2}}{\tan\frac{\alpha-2\pi/3}{2}}\right|=-\frac{4\epsilon}{\pi}\alpha+\frac{8\epsilon}{9\pi}\alpha^3-\frac{8\epsilon}{45\pi}\alpha^5+O(\alpha^7),
 \]
 which satisfies $d\Delta E_{\rm can}/dv = v\,d\Delta P_{\rm can}/dv$ identically.
+The regulated mode sum reproduces $L_1$ when its cutoff endpoint is included
+(\texttt{audit\_\allowbreak charges\_\allowbreak action.pdf}, \Lc). Identifying its derivative with the
+renormalised field-theory momentum still requires the projected determinant,
+stationary-profile correction, and boundary terms \Ld.
 \end{itemize}
 
 %=====================================================================
@@ -171,7 +213,7 @@ which satisfies $d\Delta E_{\rm can}/dv = v\,d\Delta P_{\rm can}/dv$ identically
 
 \emph{What would have to be true.} The Lax matrix $U(x,\lambda)$ would need an ultralocal $r$-matrix Poisson algebra, so that it can be regularised on a lattice and quantised à la Faddeev--Korepin--Sklyanin. Then a Bethe ansatz over a pseudo-vacuum with soliton excitations would give $S$.
 
-\begin{proposition}[\Lc, \script{routes\_BC\_checks.py}]
+\begin{proposition}[\Lc, \script{routes\_\allowbreak BC\_\allowbreak checks.py}]
 In canonical variables the Lax data of Phase~1 are $q=\tfrac32\phi_x-\tfrac14$ and $r=\tfrac12q_x+\tfrac{\sqrt3}4\pi$ (good-equation real form; the bad one differs by $i$'s). Their brackets are
 \[
 \{q(x),r(y)\}=\tfrac{3\sqrt3}{8}\,\delta'(x-y),\qquad\{q,q\}=\{r,r\}=0 .
@@ -188,11 +230,11 @@ So the companion-matrix Lax connection is \emph{non-ultralocal}.
 Dimakis et al.'s Yang--Baxter maps \cite{DMHC} concern polarisations in the matrix case and are vacuous for the scalar equation. The ``beyond Yang--Baxter'' remark there is therefore not an obstruction here. For diagonal scattering, Yang--Baxter holds trivially. \Lc
 
 %=====================================================================
-\section{Route C: $W_3$, sl$_3$ affine Toda and the $U_q(\widehat{\mathfrak{sl}}_3)$ R-matrix}
+\section[Route C: affine Toda and the quantum R-matrix]{Route C: $W_3$, sl$_3$ affine Toda and the $U_q(\widehat{\mathfrak{sl}}_3)$ R-matrix}
 
 \emph{What would have to be true.} Boussinesq solitons would have to be identifiable as a limit of $a_2^{(1)}$ (complex) affine Toda solitons, whose S-matrices are the $U_q(\widehat{\mathfrak{sl}}_3)$ intertwiners of Hollowood \cite{Hol93} and Gandenberger \cite{Gand}.
 
-\begin{proposition}[\Lc, \script{routes\_BC\_checks.py}]\label{prop:fact}
+\begin{proposition}[\Lc, \script{routes\_\allowbreak BC\_\allowbreak checks.py}]\label{prop:fact}
 Take Hollowood's $a_2^{(1)}$ interaction constant \cite[(1.19)]{Hol92}, $A^{(12)}(\theta)=\frac{2\cosh\theta+1}{2(1+\cosh\theta)}$, between the two fundamental species. With $S=\beta_1+\beta_2$ and $D=\beta_1-\beta_2$,
 \[
 A^{\rm bad}_{\rm ov}(\beta_1,\beta_2)=\frac{A^{(12)}(S)}{A^{(12)}(D)}\cdot\frac{\tanh^2(D/2)}{\tanh^2(S/2)},\qquad A^{\rm bad}_{\rm ho}(\beta_1,\beta_2)=\frac1{A^{\rm bad}_{\rm ov}(\beta_1,\beta_2+i\pi)} .
@@ -231,7 +273,7 @@ Further obstructions:
 \item The small-amplitude scaling limit should give~\eqref{eq:delta}.
 \end{enumerate}
 
-\paragraph{Update (Phase 2b, \texttt{toda\_route.pdf}).} Steps 2--4 were carried out in the classical limit, and step 2 at finite $\hbar$ to $O(\hbar)$. \Lc
+\paragraph{Update (Phase 2b, \texttt{toda\_\allowbreak route.pdf}).} Steps 2--4 were carried out in the classical limit, and step 2 at finite $\hbar$ to $O(\hbar)$. \Lc
 \begin{itemize}
 \item The classical limit of the Bethe ansatz reproduces the Toda soliton energies, momenta and exact two-soliton shifts.
 \item Its two-body phases carry exactly the predicted topological cross terms.
@@ -239,94 +281,206 @@ Further obstructions:
 \item In the scaling limit, $\delta_T\to3b\,\delta_{\rm bad}$ for overtaking \emph{and} head-on collisions. This independently confirms~\eqref{eq:delta}, including its topological term, from an exactly solvable quantum model.
 \end{itemize}
 
-\paragraph{Update (Phases 2d, 2f, 2h, \texttt{toda\_edge.pdf}, \texttt{matching.pdf}, \texttt{charge\_frame\_master.pdf}): Fermi-edge double-scaling limit and exact analytical resolution.}
-Setting $y_j = \beta_j^2/\hbar_B = b\kappa_j^2/\hbar_T$ fixed as $\hbar_T=3b\hbar_B\to 0$ (\script{toda\_edge\_ba.py}, \script{matching\_toda.py}): \Lc
+\paragraph{Update (Phases 2d, 2f, 2h): Fermi-edge limit and open quantum matching.}
+The existing numerical implementation fixes
+$y_j=\beta_j^2/\hbar_B=b\kappa_j^2/\hbar_T$ as
+$\hbar_T=3b\hbar_B\to0$, and uses the classical frame conversion
+(\script{toda\_\allowbreak edge\_\allowbreak ba.py}, \script{matching\_\allowbreak toda.py}). \Lc
 \begin{itemize}
-\item \emph{Head-on channel:} The exact Fermi-edge phase equals $\delta/\hbar_B$ with vanishing $O(\hbar^0)$ residual ($<10^{-6}$ as $y_j\to\infty$), matching the small-amplitude head-on continuum limit $I_{\rm head}(\alpha_1,\alpha_2)=O(\alpha_1\alpha_2\ln(\alpha_1\alpha_2))\to 0$.
-\item \emph{Overtaking channel ($y_1=Y > y_2=r^2 Y$, $r\in(0,1)$):} The Phase~2c Gamma candidate matches the Fermi-edge phase to $\lesssim 10^{-3}$ for $\eta\gtrsim 2.5$ but leaves a genuine two-body discrepancy of up to $\sim 0.1$ near threshold (\texttt{toda\_edge.pdf}). In the semiclassical limit $Y\to\infty$ after $\hbar_T\to 0$, the Toda residual $R_0(Y,r)$ approaches a smooth non-zero $O(\hbar^0)$ function $c_0(r)$ (\texttt{matching.pdf}, \texttt{matching\_tables.tex}).
-\item \emph{Exact analytical resolution of $R_0(Y,r)$ (\texttt{charge\_frame\_master.pdf}):} Measuring dressed momentum relative to the quantum Fermi edge $P_{\rm dr}(p_j)-P_{\rm dr}(q)=P_n(\kappa_j)/a$ absorbs the $\ln\hbar_T$ ($\ln\lambda$) infrared divergence into $q$, shifting $u_j:=\lim_{\hbar_T\to 0}(p_j-q)/\hbar_T = y_j - \frac{1}{2\pi}\ln y_j + c_{\rm edge} + O(y_j^{-1})$. In the classical edge Bethe phase $\Phi_{\rm cl}(u_1,u_2)=2(u_1-u_2)\ln\frac{1-r}{1+r}+4\sqrt{u_1 u_2}$, the topological frame term $+4\sqrt{u_1 u_2}=-M_1\Pi_2/\hbar_T$ cancels the $-2/r$ Darboux singularity in $\partial\Phi_{\rm cl}/\partial u_2 = -2\ln\frac{1-r}{1+r}$ identically. Furthermore, because $v_{\rm good}(\alpha)=\cos\alpha$ decreases with amplitude while $v_{\rm bad}(\beta)=\cosh\beta$ increases with amplitude, overtaking collisions ($v_1>v_2$) reverse the amplitude ordering ($\alpha_1<\alpha_2$ vs $\beta_1>\beta_2$), flipping $H_{\rm bad}(r)=-H_{\rm good}(r)=+\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$. Combining the quasi-momentum shift $d\Phi_{\rm cl}(Y,r)$ and the intrinsic loop shift $d\Phi_{\rm loop}(Y,r)$, both the $\pm 4r\delta u_1 \sim \mp\frac{2r}{\pi}\ln Y$ topological terms and the $\pm\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ logarithmic terms cancel identically, yielding the exact $Y\to\infty$ limit \Lc
+\item \emph{Head-on channel:} the reported small residual is evidence within
+that implemented dictionary. The vanishing small-amplitude continuum integral
+alone does not prove matching at fixed physical quantum momenta \Ld
+(\texttt{matching.pdf}).
+\item \emph{Overtaking channel:} the numerical comparison in
+\texttt{toda\_\allowbreak edge.pdf} finds a discrepancy from the Gamma candidate within
+the chosen dictionary \Lc. Phase~2h proposes, for $y_1=Y$, $y_2=r^2Y$,
 \begin{equation}\label{eq:R0_exact}
-\boxed{\ \lim_{Y\to\infty} R_0(Y,r) = -\frac{4}{\pi}\big(\chi_2(r) - r\big) = -\frac{4}{\pi}\sum_{n=1}^\infty \frac{r^{2n+1}}{(2n+1)^2}\ }
+ c_0^*(r)=-\frac4\pi\bigl(\chi_2(r)-r\bigr),
+ \qquad \lim_{Y\to\infty}R_0(Y,r)\ \stackrel{?}{=}\ c_0^*(r).
 \end{equation}
-(where $+\frac{4r}{\pi}$ is the Fermi-edge reference subtraction at $r\to 0$), which matches the numerical Phase~2f intercepts ($r=0.4,0.5,0.6$) to $1.2\text{--}7.0\times 10^{-5}$ and the $r$-slope to $2.9\times 10^{-4}$ (\script{charge\_and\_frame\_audit.py}).
+The limiting equality is a conjecture \Ld. Agreement with central fitted
+intercepts is smaller than the spread among saved edge-extrapolation
+alternatives; it is not an analytical derivation. The script's purported
+intrinsic loop contribution is defined using this target, so cannot independently
+establish it (\texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf}, \Lc).
+\item \emph{Frame and remainder checks:} the classical frame limit is verified,
+but its quantum correction is not derived \Ld. At fixed ground state and $y_1$,
+the implemented edge reference is independent of $r$; it cannot alone generate
+the $4r/\pi$ term attributed to it \Lc
+(\texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf}). Conditional on the proposed logarithmic
+momentum shift, the classical second-order Taylor term contains
+$(\log Y)^2/Y$ \Lc. Cancellation in the full phase remains to be shown;
+the previously quoted pure $1/Y$ coefficient is not resolved by the saved fits.
 \end{itemize}
 
 %=====================================================================
-\section{Route E: integrable defects and the Universal KP-Coboundary Master Function}
+\paragraph{Follow-up: an exact quantum endpoint diagnostic.}
+The independent Toda dictionary audit derives
+$P_{\rm dr}(q)=\pi\hbar_T/a$ and an endpoint bilinear for the symmetric
+part of the directional dressed phase from the existing Fredholm equations
+\Lc (\texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}). The edge
+spectral coordinate is not the dressed physical momentum; their Jacobian
+must be retained. A converged finite-$\hbar_T$ mixed-difference check finds
+a nonseparable symmetric remainder after the implemented classical frame
+subtraction, reproduced with the original solver \Lc. At the fixed momentum
+dictionary, one-body phase-reference terms cannot remove that remainder.
+This is a reciprocity diagnostic, not an assertion about a second physical
+collision or a proof that the correction survives the nested edge limit.
+The antisymmetric quantum frame contribution and its identification with
+continuum charges remain unestablished \Ld.
+
+\section{Route E: integrable defects and KP chord identities}
 
 Corrigan and Zambon (CZ) constructed integrable type-I Bäcklund defects for the Boussinesq equation \La~\cite{CZ}. Each defect carries a single KP root $q_D=-s/(2\sqrt3)$ ($s=\eta\sigma$, $\eta=\pm 1$), whereas a soliton carries a KP chord $(p_a,p_b)$ connecting two roots of the KP cubic $4q^3-q-\ell/(3\sqrt3)=0$.
 
-\paragraph{Semiclassical soliton--defect transmission (Phase 2c, \texttt{defect\_semiclassics.pdf}).} \Lc
+\paragraph{Semiclassical soliton--defect transmission (Phase 2c).} \Lc
 \begin{itemize}
 \item The classical soliton--defect transmission phase is $\delta_D = \frac29(\ell-\ell_D)\ln|z_t| - \frac23(\Pi M_D - \Pi_D M)$ with $z_t=((p_b-q_D)/(p_a-q_D))^{\epsilon\eta}$ and $\ell_D=(3s-s^3)/2$. The static defect adds no ordering-dependent cross terms; two-soliton + defect scattering is symplectic and factorises.
 \item A defect vacuum $q_D$ is linearly stable if and only if $s = \eta\sigma < -1$ ($q_D > 1/(2\sqrt3)$), which selects the unique ground state in each KP triple $\{q_1,q_2,q_3\}$.
 \item Along any edge $q_i\to q_{i+1}$ of a KP triangle where a soliton $S_i$ on $\{q_i,q_{i+1}\}$ is absorbed by the defect, the tree-level phases satisfy exact defect fusion $\delta_D(q_{i+1})(3)-\delta_D(q_i)(3)=\rho_{{\rm tree},i}[\delta(3,S_i)+M_{S_i}\Pi_3]$.
 \end{itemize}
 
-\paragraph{One-loop soliton--defect phase and KP-triangle closure (Phase 2g, \texttt{oneloop\_defect\_phase.pdf}).} \Lc
+\paragraph{One-loop soliton--defect phase and KP-triangle closure (Phase 2g, \texttt{oneloop\_\allowbreak defect\_\allowbreak phase.pdf}).} \Lc
 \begin{itemize}
 \item Phonon scattering on $N$-soliton + CZ defect backgrounds is reflectionless ($R(q)=0$) with factorised transmission amplitude $T_{\rm tot}(q)=\big(\prod_{j=1}^N A(j,{\rm ph}(q))\big)z_{\rm ph}(q;q_D,\eta)$.
 \item Setting $q_D=-(\cos\gamma)/\sqrt3$, the defect phase-shift derivative is a \emph{2-root $(-\eta,+\eta)$ dipole} $\theta_D'(q;s,\eta)=\operatorname{Re}\sum_{s'=1}^2 c_{D,s'}\Theta'(q;\psi_{s'})$ at $\psi_{1,2}=\pm 2\pi/3-\gamma$, whose difference across $(p_a,p_b)$ reproduces the 3-root $(1,1,-2)$ soliton kernel $\theta_S'(q;\alpha,\epsilon)$.
-\item The $4\times 4$ defect-vacuum localised-mode determinant factors into two quadratics with closed-form eigenvalues $\omega_{1,2}(\sigma,\eta)=\frac{i}{8}[\eta\sigma\sqrt{4-\sigma^2}\pm\sqrt3(2-\sigma^2)]$, explaining the Levinson jumps at $s=-1$ and $s=2$.
-\item Because the static defect has no translational zero mode ($\theta_D^{\rm phys}(0^\pm)=0$), $I_{SD}=J_{SD}^{\rm phys}$ evaluates in closed form to a $3\times 2$ Legendre $\chi_2$ sum. One-loop defect vacuum shifts $(\Delta E_D^{\rm ren},\Delta P_D)$ balance $(\Delta E_1^{\rm ren},\Delta P_{\rm mode})$ in soliton absorption, and one-loop defect fusion $I_{SD}(3;q_{i+1},\eta)-I_{SD}(3;q_i,\eta)=\rho_i I_{SS}(3,S_i)$ holds on every KP edge and closes around every KP triangle ($\sum_{i=1}^3 \rho_i I_{SS}(3,S_i)=0$), whereas the $+\tfrac\pi2\delta_{\epsilon_3,\epsilon_{S_i}}$ constant of $J_{SS}$ fails to close by $\pm\pi/2$.
+\item The defect sewing determinant factors into two quadratics \Lc.
+The printed prefactor misses a factor of sixteen, and the quoted growing-mode
+pair misses an admissible-root branch change. Independent checks away from
+zeros and at $s=1.9$ expose these errors
+(\texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf}); the old frequency formula is not retained
+as a complete spectrum.
+\item With the existing zero-endpoint branch, the raw and antisymmetrised
+soliton--defect continuum integrals coincide, and chord differences obey
+formal fusion identities \Lc. Physical quantum absorption and fusion require
+more: the defect carries a localized momentum operator, its boundary
+renormalisation is not supplied by the bulk tadpole alone, and unstable
+intermediate vacua cannot simply be treated as asymptotic states \Ld
+(\texttt{audit\_\allowbreak charges\_\allowbreak action.pdf}, \texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf}).
+These identities do not select the absolute scattering phase or exclude a
+candidate through its exchange constant alone.
 \end{itemize}
 
-\paragraph{Universal KP-Coboundary Master Function (Phase 2h, \texttt{charge\_frame\_master.pdf}).} \Lc
-For \emph{any} odd ratio kernel $K(z)=-K(-z)$, the $2\times 2$ dipole--dipole \textbf{two-vertex master function} on the KP root space (\script{kp\_master\_and\_toda\_edge.py}),
+\paragraph{Universal KP-Coboundary Master Function (Phase 2h, \texttt{charge\_\allowbreak frame\_\allowbreak master.pdf}).} \Lc
+For \emph{any} odd ratio kernel $K(z)=-K(-z)$, the $2\times 2$ dipole--dipole \textbf{two-vertex master function} on the KP root space (\script{kp\_\allowbreak master\_\allowbreak and\_\allowbreak toda\_\allowbreak edge.py}),
 \begin{equation}\label{eq:F_master}
 \mathcal F_K(p,q) := \sum_{s_1=1}^2\sum_{s_2=1}^2 (-1)^{s_1+s_2}\operatorname{Re} K\!\left(\tan\frac{\psi_{s_1}(p)}{2}\cot\frac{\psi_{s_2}(q)}{2}\right),
 \end{equation}
-generates the soliton--defect functional as its first difference $\mathcal I_{SD}[K](\alpha,\epsilon;q_D,\eta)=\eta(\mathcal F_K(p_b,q_D)-\mathcal F_K(p_a,q_D))$ and the two-soliton functional as its 4-vertex second difference
+defines the abstract soliton--defect functional as its first difference $\mathcal I_{SD}[K](\alpha,\epsilon;q_D,\eta)=\eta(\mathcal F_K(p_b,q_D)-\mathcal F_K(p_a,q_D))$ and the two-soliton functional as its 4-vertex second difference
 \begin{equation}\label{eq:ISS_coboundary}
 \boxed{\ \mathcal I_{SS}[K](1,2) = \mathcal F_K(p_{1,b},p_{2,b}) - \mathcal F_K(p_{1,a},p_{2,b}) - \mathcal F_K(p_{1,b},p_{2,a}) + \mathcal F_K(p_{1,a},p_{2,a})\ }
 \end{equation}
-guaranteeing defect fusion and KP-triangle closure for any odd $K(z)$. Splitting the one-loop kernel into $K_L=K_{\chi_2}+K_{\ln}$ with $K_{\chi_2}(z)=-\frac1\pi\chi_2(z)$ and $K_{\ln}(z)=-\frac{1}{2\pi}\ln|z|\ln\big|\frac{1-z}{1+z}\big|\operatorname{sgn}(\operatorname{Re}z)$ shows that at finite amplitude $\mathcal I_{SS}[K_{\ln}]$ is the logarithmic quasi-momentum coboundary (which cancels $H_{\rm bad}(r)$ in the small-amplitude overtaking corner), leaving the pure Legendre $\chi_2$ coboundary $\mathcal I_{SS}[K_{\chi_2}]\to -\frac{4}{\pi}\chi_2(r)$.
+guaranteeing algebraic chord closure for these defined functionals \Lc.
+This does not prove that they equal the physical raw integrals in every
+orientation. Independent quadrature finds orientation-dependent multiples of
+$\pi$ in the Phase~2h identification, and oddness of $K$ alone does not imply
+exchange antisymmetry (\texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf}, \Lc).
+The decomposition $K_L=K_{\chi_2}+K_{\ln}$ remains useful algebraically;
+its proposed physical cancellation against the quantum momentum conversion
+and its all-loop extension remain unestablished \Ld.
 
 %=====================================================================
 \section{Consistency checks across candidates and orders}
 
 \begin{center}\small
-\begin{tabular}{@{}p{4.1cm}p{7.8cm}p{2.6cm}@{}}\toprule
-Condition & Result & Status\\\midrule
-Unitarity & $\delta(1,2)=-\delta(2,1)$ and $I_{SS}(1,2)=-I_{SS}(2,1)$, exact & \Lc\ passed\\
-Crossing (substitute) & $\delta_{\rm ov}(\beta_1,\beta_2+i\pi)=-\delta_{\rm ho}(\beta_1,\beta_2)$; $I_{SD}(\alpha,-1;s,\eta)=I_{SD}(\alpha,+1;-s,\eta)$ & \Lc\ passed\\
-Yang--Baxter / KP-triangle fusion & Diagonal YBE trivial; tree-level $\delta$ and one-loop $I_{SS}$ close around all 12 KP defect triangles ($\sum_i\rho_i I_{SS}=0$); Gamma candidate's $\pm\pi/2$ constant fails closure by $\pm\pi/2$ & \Lc\ decisive\\
-Semiclassical limit vs.\ time delays & $\Delta x_j'=-\partial\delta/\partial P_j$ by symplectic consistency (Prop.~\ref{prop:symp}); canonical one-loop momentum $\Delta P_{\rm can}$ obeys $d\Delta E_{\rm can}=v\,d\Delta P_{\rm can}$ with zero $\alpha\ln\alpha$ term & \Lc\ passed\\
-Bound states / bootstrap & Breather existence boundary and Bogdan--Charkina action reproduced (Prop.~\ref{prop:breather}); one-loop string condition unshifted at fixed rapidity in Scheme~A (\texttt{oneloop.pdf}) & \Lc\ passed\\
-Good equation (cusp \& resonances) & One-loop phase $I_{SS}$ finite and smooth across all 3 resonance lines ($A_{12}\to 0,\infty$); jumps by $\pm\pi$ at the cusp $\alpha=\pi/3$ where a heavy-branch instability appears (\texttt{oneloop\_phase.pdf}) & \Lc\ passed\\
-Quantum Toda Fermi-edge limit & Tree-level $\delta_T\to 3b\,\delta_{\rm bad}$; $O(\hbar^0)$ head-on residual $=0$; $O(\hbar^0)$ overtaking residual $\lim_{Y\to\infty} R_0(Y,r)=-\frac{4}{\pi}(\chi_2(r)-r)$ matches Phase~2f table to $<7.1\times 10^{-5}$ (\texttt{charge\_frame\_master.pdf}) & \Lc\ passed\\
+\begin{tabular}{@{}p{3.0cm}p{8.6cm}p{2.5cm}@{}}\toprule
+Claim & Audited status and evidence & Label\\\midrule
+Classical phase & Symplectic scattering and Darboux phase checked by
+\texttt{symplectic\_\allowbreak scattering.py} and \texttt{semiclassical\_\allowbreak phase.py} & \Lc\\
+Continuum density & Direct potential-mode quadrature confirms the
+one-soliton density identity; \texttt{audit\_\allowbreak determinant\_\allowbreak foundations.py} & \Lc\\
+Collective volume & Tail cross terms cancel from the finite symplectic
+volume; verified through collision. The projector does not preserve fixed
+potential endpoints; \texttt{audit\_\allowbreak projected\_\allowbreak measure.py} & \Lc\\
+Raw phase exchange & Raw integrals are not antisymmetric and do not vanish
+on the diagonal; the physical exchange constant remains open & \Lc/\Ld\\
+Collective charges & Regulated mode-sum $L_1$ and its derivative agree with
+the proposed formula; full field-theory identification remains conditional;
+\texttt{audit\_\allowbreak charges\_\allowbreak action.py} & \Lc/\Ld\\
+Defect spectrum & Prefactor and growing-branch errors reproduced;
+\texttt{audit\_\allowbreak frames\_\allowbreak defects.py} & \Lc\\
+KP closure & Abstract chord identity passes; physical fusion requires
+normalised states and boundary renormalisation & \Lc/\Ld\\
+Toda endpoint test & Exact dressed edge momentum and phase reciprocity
+verified; the classical frame leaves a nonseparable finite-$\hbar_T$ remainder;
+\texttt{audit\_\allowbreak toda\_\allowbreak dictionary.py} & \Lc\\
+Toda matching & Classical scaling passes; quantum dictionary and proposed
+limiting residual remain open. Saved fits do not resolve the subleading sign;
+\texttt{audit\_\allowbreak phase2h\_\allowbreak foundations.py} & \Lc/\Ld\\
+Full one-loop S-matrix & Projected determinant, completeness, phase
+normalisation, and fixed-charge comparison are not established & \Ld\\
 \bottomrule\end{tabular}\end{center}
 
-%=====================================================================
 \section{Conclusions and ranked open problems}
 
-\paragraph{Conclusions (Phases 2a--2h).}
+\paragraph{Conclusions after the independent audits.}
 \begin{enumerate}
-\item \emph{Tree-level ($O(\hbar^{-1})$) and one-loop ($O(\hbar^0)$) two-soliton scattering are completely solved and reconciled.} At $O(\hbar^{-1})$, the phase is~\eqref{eq:delta}, where the ordering-dependent topological cross term $d\Pi_i\wedge dM_j$ is essential. At $O(\hbar^0)$, the continuum phase is the 4-vertex KP coboundary~\eqref{eq:ISS_coboundary} of the dilogarithm kernel $K_L = K_{\chi_2}+K_{\ln}$, whose small-amplitude Fermi-edge limit reproduces the quantum Toda Bethe ansatz residual $-\frac{4}{\pi}(\chi_2(r)-r)$ to $O(10^{-5})$. \Lc
-\item \emph{Both simple candidates (the Gamma ansatz and the pure exponential) are ruled out at $O(\hbar^0)$.} A single Gamma factor $\Gamma(1+i\eta)/\Gamma(1-i\eta)$ in $\eta=\frac29(\ell_1-\ell_2)/\hbar$ has only rational/Bernoulli asymptotic corrections in $\eta$ and cannot produce the dilogarithm $\chi_2(z)$ at $O(\hbar^0)$; moreover, its $\pm\pi/2$ constant violates KP-triangle defect fusion. \Lc
-\item \emph{Every physical soliton observable is a KP-chord difference.} Both at $O(\hbar^{-1})$ ($\ln A_{12}$ as the 4-vertex cross-ratio of $\ln|p-q|$) and at $O(\hbar^0)$ ($\mathcal I_{SS}[K]$ as the 4-vertex second difference~\eqref{eq:ISS_coboundary} of the $2\times 2$ dipole--dipole master function $\mathcal F_K(p,q)$), two-soliton scattering is governed by a two-vertex master function on the KP root space. \Lc
+\item \emph{The classical symplectic phase is supported by the existing checks}
+\Lc. The continuum one-loop integrals are explicit, but a fully normalised
+physical one-loop S-matrix and its quantum Toda reconciliation remain open
+\Ld. Thus ``completely solved and reconciled'' is withdrawn.
+\item \emph{Candidate comparisons must specify their assumptions.} Numerical
+Toda discrepancies are checks within the implemented dictionary \Lc;
+continuum dilogarithms and formal defect fusion do not yet provide independent,
+unconditional physical exclusions \Ld.
+\item \emph{KP chord differences provide a useful algebraic representation}
+\Lc. Their extension to every physical soliton observable or to an all-loop
+kernel is a conjecture \Ld.
 \end{enumerate}
 
-\paragraph{Updated ranked next steps (after Phase 2h).}
+\paragraph{Ranked next steps.} The priorities below are research judgments \Ld.
 \begin{enumerate}
-\item \textbf{Analytical $O(1/Y)$ (two-loop, $O(\hbar^1)$) expansion of the quantum Toda Fermi-edge Bethe ansatz.} Carry the analytical Fermi-edge expansion of \script{toda\_edge\_ba.py} one order further in $1/Y$ (combining the $O(\hbar/D)$ Stirling/Bernoulli tail of the Toda loggamma kernel, the $O(1/y_j)$ quasi-momentum shift, and the rank-1 Hessian of $\Phi_{\rm cl}$) to derive a closed-form formula for the two-loop coefficient $c_1(r)$ extracted numerically in \script{kp\_master\_and\_toda\_edge.py} ($c_1(0.4)=-0.00708$, $c_1(0.5)=-0.02099$, $c_1(0.6)=-0.04822$).
-\item \textbf{All-loop KP master kernel $K(z;\hbar)$ and quantum dilogarithm test.} Use the exact tree-level ($\ln$), one-loop ($\chi_2$), and two-loop ($c_1(r)/Y$) data together with the Universal KP-Coboundary representation~\eqref{eq:ISS_coboundary} to test whether the all-loop master function $\mathcal F_K(p,q;\hbar)$ is given by a quantum dilogarithm (Faddeev--Volkov / Barnes double Gamma function) on the KP root space.
-\item \textbf{Ring quantisation with $\phi$-winding and twisted boundary conditions.} Formulate the periodic $N$-soliton Bethe equations incorporating the topological cross term $-\frac23(\Pi_i M_j-\Pi_j M_i)$ and the one-loop phase $\mathcal I_{SS}[K_L]$.
-\item \textbf{Non-ultralocal quantum inverse scattering} (Maillet) for the Boussinesq Lax pair (lowest priority).
+\item \textbf{Derive the common quantum momentum and frame dictionary.}
+Track dressed Toda momentum, the quantum edge reference, collective soliton
+charges, and the frame contribution at fixed physical observables, using
+the new endpoint reciprocity identity as a check. Continue
+the direct Toda expansion independently, including logarithmic terms and
+separate numerical errors; do not use the old fitted $c_1(r)$ values as
+established two-loop targets.
+\item \textbf{Construct the projected one-loop determinant.}
+Build on the verified finite collective symplectic density. Specify the
+spatial domain and admissible endpoint variations, then derive the field and
+constraint measures, projection, time-boundary determinant, continuum
+completeness, and phase normalisation together.
+\item \textbf{If pursuing quantum defect fusion, derive boundary charges and
+renormalisation first.} Retain admissible spectral branches and distinguish
+stable external states from unstable intermediate configurations.
+\item \textbf{Audit the uniformity of the Toda expansion when available.}
+Check logarithmic remainders, nearly equal amplitudes, and the vanishing
+smaller-soliton limit. Establish which limits commute before identifying
+coefficients with continuum loop orders.
+\item \textbf{Revisit all-loop kernels and ring quantisation after these tests.}
+Quantum-dilogarithm guesses and twisted Bethe equations remain possible
+research directions; they should not be constrained by unproved phase
+constants or unresolved fitted coefficients. Non-ultralocal quantum inverse
+scattering remains a separate longer-term route.
 \end{enumerate}
+
 
 \appendix\section{Phase 2 Write-ups and Verification Scripts}
-All write-ups are in \texttt{phase2/*.pdf} and all scripts are in \texttt{phase2/scripts/*.py} (plus \texttt{corrigan-zambon/defect\_*.py}); each script ends with \texttt{ALL CHECKS PASSED}.
+This revision changes the evidence status of the quantum synthesis; it does
+not introduce new external references or claim to have reread the inherited
+bibliography. Literature-reading scope is recorded in the independent notes.
+All write-ups are in \texttt{phase2/*.pdf} and all scripts are in \texttt{phase2/scripts/*.py} (plus \texttt{corrigan-zambon/defect\_\allowbreak *.py}); each script ends with \texttt{ALL CHECKS PASSED}.
+\begingroup\raggedright
 \begin{itemize}
-\item \textbf{Phase 2a (\texttt{report.pdf}):} \script{symplectic\_scattering.py}, \script{semiclassical\_phase.py}, \script{fit\_R.py}, \script{consistency\_checks.py}, \script{routes\_BC\_checks.py}.
-\item \textbf{Phase 2b (\texttt{toda\_route.pdf}):} \script{toda\_bethe\_classical.py}, \script{toda\_bethe\_quantum.py}, \script{toda\_ba\_vs\_label.py}, \script{toda\_scaling\_fast.py}, \script{toda\_quantum\_correction.py}.
-\item \textbf{Phase 2c (\texttt{smatrix\_ansatz.pdf}, \texttt{defect\_semiclassics.pdf}):} \script{smatrix\_ansatz.py}, \script{smatrix\_boot.py}, \script{defect\_smatrix\_good\_continuation.py}, \texttt{corrigan-zambon/defect\_*.py}.
-\item \textbf{Phase 2d (\texttt{toda\_edge.pdf}, \texttt{oneloop.pdf}):} \script{toda\_edge\_ba.py}, \script{toda\_edge\_twoterm.py}, \script{oneloop\_step0\_wellposedness.py}, \script{oneloop\_phase\_shifts.py}, \script{oneloop\_soliton\_energy.py}, \script{oneloop\_breather.py}.
-\item \textbf{Phase 2e (\texttt{oneloop\_phase.pdf}):} \script{oneloop\_good\_phonon\_scattering.py}, \script{oneloop\_good\_twosoliton\_phase.py}, \script{oneloop\_good\_limits\_cusp\_resonance.py}.
-\item \textbf{Phase 2f (\texttt{matching.pdf}):} \script{matching\_conventions.py}, \script{matching\_toda.py}, \script{matching\_analysis.py}.
-\item \textbf{Phase 2g (\texttt{oneloop\_defect\_phase.pdf}):} \script{oneloop\_defect\_scattering\_and\_stability.py}, \script{oneloop\_defect\_phase\_and\_fusion.py}.
-\item \textbf{Phase 2h (\texttt{charge\_frame\_master.pdf}):} \script{charge\_and\_frame\_audit.py}, \script{kp\_master\_and\_toda\_edge.py}.
+\item \textbf{Phase 2a (\texttt{report.pdf}):} \script{symplectic\_\allowbreak scattering.py}, \script{semiclassical\_\allowbreak phase.py}, \script{fit\_\allowbreak R.py}, \script{consistency\_\allowbreak checks.py}, \script{routes\_\allowbreak BC\_\allowbreak checks.py}.
+\item \textbf{Phase 2b (\texttt{toda\_\allowbreak route.pdf}):} \script{toda\_\allowbreak bethe\_\allowbreak classical.py}, \script{toda\_\allowbreak bethe\_\allowbreak quantum.py}, \script{toda\_\allowbreak ba\_\allowbreak vs\_\allowbreak label.py}, \script{toda\_\allowbreak scaling\_\allowbreak fast.py}, \script{toda\_\allowbreak quantum\_\allowbreak correction.py}.
+\item \textbf{Phase 2c (\texttt{smatrix\_\allowbreak ansatz.pdf}, \texttt{defect\_\allowbreak semiclassics.pdf}):} \script{smatrix\_\allowbreak ansatz.py}, \script{smatrix\_\allowbreak boot.py}, \script{defect\_\allowbreak smatrix\_\allowbreak good\_\allowbreak continuation.py}, \texttt{corrigan-zambon/defect\_\allowbreak *.py}.
+\item \textbf{Phase 2d (\texttt{toda\_\allowbreak edge.pdf}, \texttt{oneloop.pdf}):} \script{toda\_\allowbreak edge\_\allowbreak ba.py}, \script{toda\_\allowbreak edge\_\allowbreak twoterm.py}, \script{oneloop\_\allowbreak step0\_\allowbreak wellposedness.py}, \script{oneloop\_\allowbreak phase\_\allowbreak shifts.py}, \script{oneloop\_\allowbreak soliton\_\allowbreak energy.py}, \script{oneloop\_\allowbreak breather.py}.
+\item \textbf{Phase 2e (\texttt{oneloop\_\allowbreak phase.pdf}):} \script{oneloop\_\allowbreak good\_\allowbreak phonon\_\allowbreak scattering.py}, \script{oneloop\_\allowbreak good\_\allowbreak twosoliton\_\allowbreak phase.py}, \script{oneloop\_\allowbreak good\_\allowbreak limits\_\allowbreak cusp\_\allowbreak resonance.py}.
+\item \textbf{Phase 2f (\texttt{matching.pdf}):} \script{matching\_\allowbreak conventions.py}, \script{matching\_\allowbreak toda.py}, \script{matching\_\allowbreak analysis.py}.
+\item \textbf{Phase 2g (\texttt{oneloop\_\allowbreak defect\_\allowbreak phase.pdf}):} \script{oneloop\_\allowbreak defect\_\allowbreak scattering\_\allowbreak and\_\allowbreak stability.py}, \script{oneloop\_\allowbreak defect\_\allowbreak phase\_\allowbreak and\_\allowbreak fusion.py}.
+\item \textbf{Phase 2h (\texttt{charge\_\allowbreak frame\_\allowbreak master.pdf}):} \script{charge\_\allowbreak and\_\allowbreak frame\_\allowbreak audit.py}, \script{kp\_\allowbreak master\_\allowbreak and\_\allowbreak toda\_\allowbreak edge.py}.
+\item \textbf{Independent audits:} \texttt{independent\_\allowbreak phase2h\_\allowbreak audit.pdf},
+\texttt{audit\_\allowbreak charges\_\allowbreak action.pdf}, \texttt{audit\_\allowbreak determinant\_\allowbreak foundations.pdf},
+and \texttt{audit\_\allowbreak frames\_\allowbreak defects.pdf}, with the corresponding
+\texttt{audit\_\allowbreak *.py} scripts listed in the consistency table.
+\item \textbf{Follow-up audits:} \texttt{audit\_\allowbreak projected\_\allowbreak measure.pdf}
+and \texttt{audit\_\allowbreak toda\_\allowbreak dictionary.pdf}, checked by the
+corresponding named scripts and saved JSON results.
 \end{itemize}
+\endgroup
 
 \emph{Failures along the way (Phase 2a; later phases record their own failures in each write-up).}
 \begin{itemize}
@@ -335,6 +489,36 @@ All write-ups are in \texttt{phase2/*.pdf} and all scripts are in \texttt{phase2
 \item A tolerance set below double precision caused spurious failures.
 \item The KdV-limit comparison with Bonnemain--Doyon \emph{does not} agree. This is recorded as a finding, not a passed test.
 \end{itemize}
+
+\paragraph{Failures recorded by the independent quantum audits.}
+\begin{itemize}
+\item Initial PDF builds had overfull filename lines and a temporary text-group
+scoping error; line breaking and group closure were repaired before the final
+rendered-page inspection.
+\item During this report revision, the Phase~2h audit's source-snapshot guard
+failed because the report was edited while the script was running. The guard
+was retained; verification was repeated after editing stopped.
+\item The classical momentum derivatives in this report omitted the orientation
+factor $\epsilon$ and therefore applied only to right-movers. Both signed
+identities are now checked in \texttt{audit\_\allowbreak projected\_\allowbreak measure.py}.
+\item Raw-phase antisymmetry, zero diagonal, and orientation-independent
+master identification failed independent continuum checks.
+\item The displayed defect determinant prefactor and the complete growing-mode
+pair failed checks away from zeros and between the old sampled parameters.
+\item The proposed Toda residual was used to define part of its purported
+derivation; saved extrapolation alternatives changed the subleading sign.
+The claimed edge-reference explanation of a ratio-dependent slope also failed.
+\item Potential amplitude modes have nonlocal tails, invalidating the stated
+localization-only cancellation argument. Equal endpoint frequencies do not
+by themselves establish localized determinant cancellation.
+\item Profile, weighted-sum, and derivative-sign errors in intermediate
+charge formulas were found although the final conditional charge derivative
+passed. Boundary counterterms and localized defect momentum were not accounted
+for in the claimed physical absorption argument.
+\end{itemize}
+Development failures, repairs, precision, and the scope of each successful
+\texttt{ALL CHECKS PASSED} run are recorded in the audit notes. A successful
+algebraic script does not certify the unresolved physical identifications.
 
 \begin{thebibliography}{99}\small
 \bibitem{BC} M.~M.~Bogdan, O.~V.~Charkina, arXiv:2502.14695, \emph{Low Temp. Phys.} 51 (2025).

@@ -1,0 +1,259 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak toda\_\allowbreak dictionary.py}}
+\newcommand{\dd}{\mathrm d}
+\emergencystretch=2em
+\title{An exact endpoint diagnostic for the Toda momentum and phase dictionary}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The implemented Toda Fredholm equations imply an exact edge momentum and an
+endpoint reciprocity identity for their directional phases. \Lc\ These fix
+the symmetric part of a possible quantum frame correction. They do not fix
+its antisymmetric part or identify it with a physical charge transformation.
+\Ld\ An independent 60-digit calculation finds a nonseparable symmetric
+remainder after the classical frame subtraction actually used in the
+overtaking code. \Lc\ This shows that the retained classical subtraction does not
+antisymmetrise the directional kernel at finite $\hbar$; it does not
+by itself refute the forward ordered physical amplitude or determine the
+edge limit. The existing model, momentum prescription, and normalizations are
+retained; no replacement physical convention is selected. \Ld
+\end{abstract}
+
+\section{Definitions and scope}
+All results below are consequences of the existing asymptotic Bethe-ansatz
+integral equations, not a new proof of their physical applicability. \Lc
+denotes project derivations and checks; \Ld\ marks unresolved physical
+identifications. The core high-precision checker \scr\ is independent;
+an isolated final comparison uses the original implementation.
+It records input hashes in \texttt{audit\_\allowbreak toda\_\allowbreak dictionary\_\allowbreak results.json}.
+No external literature claim is introduced.
+
+Use $h=\hbar_T$, $t=2\pi h$, and the quantum ground-state interval $[-q,q]$.
+The code \texttt{toda\_\allowbreak edge\_\allowbreak ba.py:26--67} defines
+\begin{align}
+ \Theta(d)&=2h\,\operatorname{Im}\log\Gamma(1+id/h)+2d\log h,
+ &K(d)&=\Theta'(d),\\
+ (\mathcal A f)(x)&=tf(x)-\int_{-q}^q K(x-y)f(y)\,\dd y,
+ &\mathcal A\rho&=1,\qquad \int_{-q}^q\rho=1/a,\\
+ \mathcal A F_p(x)&=\Theta(p-x),
+ &P(p)&=p+\int_{-q}^q\Theta(p-x)\rho(x)\,\dd x,\\
+ \Phi(p,z)&=\Theta(p-z)-\int_{-q}^q K(p-x)F_z(x)\,\dd x.
+ \label{eq:definitions}
+\end{align}
+Here $p$ is the bare Bethe spectral parameter. $P(p)$ is its dressed
+momentum. Assume the ground-state integral operator is invertible and its
+solutions are smooth up to the finite endpoints, as in the tested case.
+The even kernel makes $\mathcal A$ self-adjoint for the unweighted integral
+inner product. The ground density is even, and $P$ is odd.
+
+\section{The edge subtraction in momentum is exact}
+Differentiation and the ground-state equation give, inside the sea,
+$P'(p)=t\rho(p)$. Integrating this identity from $-q$ to $q$ and using
+oddness yields \Lc\ (\scr)
+\begin{equation}
+ \boxed{P(q)=\frac{\pi h}{a},\qquad P(-q)=-\frac{\pi h}{a}.}
+ \label{eq:edgeP}
+\end{equation}
+Self-adjointness also gives
+$P(p)=p+\int_{-q}^q F_p(x)\,\dd x$, the total momentum including backflow.
+Thus the relative physical momentum used by the code is a subtraction of
+the known quantum Fermi momentum, rather than a new definition of the bare
+coordinate. \Lc
+
+For a right-moving excitation, the implemented label is fixed through
+\begin{equation}
+ P(p)-P(q)=\frac{4b}{a}(\kappa\cosh\kappa-\sinh\kappa),\quad
+ b=e^{-a/2},\quad \kappa=\sqrt{yh/b},\quad u=\frac{p-q}{h}.
+ \label{eq:dictionary}
+\end{equation}
+These are the existing $\kappa=\sqrt3\beta$,
+$h=3b\hbar_B$, $y=\beta^2/\hbar_B$ conventions. Differentiating at fixed
+ground state gives an exact Jacobian \Lc\ (\scr)
+\begin{equation}
+ \frac{\dd u}{\dd y}=\frac{2\sinh\kappa}{aP'(p)}.
+ \label{eq:Jacobian}
+\end{equation}
+This specifies what an asymptotic derivation of $u(y)$ must invert;
+identifying $u$ with dressed physical momentum would skip this Jacobian.
+Equation~\eqref{eq:edgeP} alone neither proves nor disproves the proposed
+large-$y$ logarithmic expansion for $u(y)$. \Ld
+
+There is a small implementation distinction: \texttt{edge()} returns
+$e=q(1+10^{-10})$, not $q$. Its displacement in edge units is exactly
+$(e-q)/h=10^{-10}q/h$. \Lc\ The offset is tiny in the saved runs but is
+not uniform in a literal $h\to0$ limit. A controlled edge derivation must
+specify that numerical offset tends to zero faster than $h$, or use the
+exact endpoint analytically. This audit changes no production code. \Ld
+
+\section{Exact reciprocity and its proof}
+For arbitrary real external arguments define the symmetric dressed kernel
+\[
+ \mathcal R(p,z)=K(p-z)+\int_{-q}^q
+       K(p-x)\,[\mathcal A^{-1}K(z-\cdot)](x)\,\dd x.
+\]
+Differentiate \eqref{eq:definitions}, and integrate once by parts in the
+equation for $F_z$. The resulting identities are \Lc\ (\scr\ checks the
+integrated consequences below)
+\begin{align}
+ \partial_z\Phi(p,z)&=-\mathcal R(p,z),\\
+ (\partial_p+\partial_z)\Phi(p,z)
+   &=\mathcal R(p,q)F_z(q)-\mathcal R(p,-q)F_z(-q),\\
+ \partial_pF_p(\pm q)&=\mathcal R(\pm q,p)/t.
+\end{align}
+Consequently the derivative in either argument of
+$\Phi(p,z)+\Phi(z,p)$ equals that of the following endpoint bilinear.
+The integration constant vanishes at $p=z=0$ by parity. Hence \Lc
+\begin{equation}
+ \boxed{\Phi(p,z)+\Phi(z,p)
+       =t\{F_p(q)F_z(q)-F_p(-q)F_z(-q)\}.}
+ \label{eq:reciprocity}
+\end{equation}
+This retains the finite-sea boundary terms. Discarding them would incorrectly
+make the directional Bethe phase antisymmetric.
+
+Let $e_1,e_2$ be either exact edge, and set
+\begin{align}
+ \widehat\Phi(p,z)&=\Phi(p,z)-\Phi(p,e_2)-\Phi(e_1,z)+\Phi(e_1,e_2),\\
+ f_p^\pm&=F_p(\pm q)-F_{e_1}(\pm q),\qquad
+ g_z^\pm=F_z(\pm q)-F_{e_2}(\pm q).
+\end{align}
+The reverse phase uses exchanged references. Subtracting four copies of
+\eqref{eq:reciprocity} gives \Lc\ (same-side and opposite-side checks)
+\begin{equation}
+ \widehat\Phi(p,z)+\widehat\Phi(z,p)
+       =t(f_p^+g_z^+-f_p^-g_z^-).
+ \label{eq:four}
+\end{equation}
+For clarity, write this as $\mathfrak M_1\mathfrak Q_2+
+\mathfrak M_2\mathfrak Q_1$ using the computable response functions
+\begin{align}
+ \mathfrak M(p;e)&=ta\rho(q)\{F_p(q)-F_p(-q)-F_e(q)+F_e(-q)\},\\
+ \mathfrak Q(p;e)&=\frac{F_p(q)+F_p(-q)-F_e(q)-F_e(-q)}{2a\rho(q)}.
+ \label{eq:responses}
+\end{align}
+Integration of the differentiated $F$ equation gives
+$t\rho(q)[F_p(q)-F_p(-q)]=1-P'(p)$, so equivalently \Lc
+\begin{align}
+ \mathfrak M(p;e)&=-a[P'(p)-P'(e)].
+ \label{eq:Mresponse}
+\end{align}
+These symbols denote spectral response functions, not newly established
+physical compression and momentum charges. \Ld\ Their normalization is
+useful for comparison: the classical expressions have
+$P_0'(p)=2\kappa/a$, $P_0'(2b)=0$, and
+$-a\partial_aP_0(p)|_p=P_0(p)-2b\sinh\kappa$, verified symbolically in
+\scr. \Lc\ This does not prove a uniform limit of the quantum endpoint
+functions.
+
+Any frame correction intended to make the four-term phase antisymmetric
+must have the symmetric part \eqref{eq:four}. The product
+$\mathfrak M_1\mathfrak Q_2$ is an algebraic example with that symmetric
+part. Adding an arbitrary antisymmetric two-body function leaves the
+condition unchanged. No such product is selected here as the physical
+quantum frame, and the identity supplies no Ward identity relating these
+functions to continuum quantum charges. \Ld
+
+\section{The actual two-term overtaking subtraction fails this test}
+The overtaking code \texttt{toda\_\allowbreak edge\_\allowbreak twoterm.py:11--17} uses only
+$N(p,z)=\Phi(p,z)-\Phi(p,e_2)$. For its reverse directional expression,
+an exact rearrangement gives \Lc\ (\scr)
+\begin{align}
+ N(p,z)+N(z,p)
+ &=\widehat\Phi(p,z)+\widehat\Phi(z,p)+U(z)+V(p),\\
+ U(z)&=\Phi(e_1,z)-\Phi(e_1,e_2),\qquad
+ V(p)=\Phi(e_2,p)-\Phi(e_2,e_1).
+\end{align}
+Thus two-term and four-term normalizations have identical mixed dependence;
+they are not the same phase. A rectangular mixed difference removes $U,V$
+and any other one-body reference without selecting a convention.
+
+At each fixed dressed momentum, retain the original classical frame
+\[
+ C_{\rm cl}(\kappa_1,\kappa_2)
+ =(-2\kappa_1)\left[\frac{P_n(\kappa_2)}a-2b\sinh\kappa_2\right].
+\]
+Let $S_{\rm rem}=N(p_1,p_2)+N(p_2,p_1)-C_{\rm cl}(1,2)-C_{\rm cl}(2,1)$,
+where the bare $p_j$ are obtained by inverting \eqref{eq:dictionary}.
+For $\kappa_1\in\{0.8,1.0\}$ and $\kappa_2\in\{0.35,0.5\}$, define
+the mixed rectangle as the upper--upper minus lower--upper minus
+upper--lower plus lower--lower values. At $h=0.4$, $q=1.5$, the count
+equation fixes $a=1.160312923180467\ldots$. Independent calculations give
+\Lc
+\begin{center}
+\begin{tabular}{rrr}\toprule
+Gauss nodes & Largest endpoint identity error & Rectangle of $S_{\rm rem}/h$\\\midrule
+40 & $1.93\,10^{-10}$ & $-0.1125712665447065$\\
+64 & $4.42\,10^{-16}$ & $-0.1125712665272591$\\
+88 & $1.09\,10^{-21}$ & $-0.1125712665272590$\\\bottomrule
+\end{tabular}
+\end{center}
+The original \texttt{EdgeBA} implementation at 120 nodes, including its
+fixed edge offset, gives $-0.1125712665368\ldots$, differing by less than
+$10^{-11}$. The same independent rectangle is obtained directly from
+$\mathfrak M_1\mathfrak Q_2+\mathfrak M_2\mathfrak Q_1
+-C_{\rm cl}(1,2)-C_{\rm cl}(2,1)$.
+At the fixed spectral-to-dressed-momentum dictionary used here, it cannot
+be removed by one-body phase/reference subtractions, including switching
+between the displayed two- and four-term phase normalizations. \Lc
+Changing the momentum reference and re-inverting the bare parameters is a
+different operation and is not tested by this rectangle.
+The reverse directional phase here is used as a reciprocity diagnostic;
+it is not asserted to be a second overtaking collision in the same
+ordering sector. This test is necessary for a scalar antisymmetric
+frame identification, not a complete derivation of that identification.
+\Ld
+
+Any extension to a common antisymmetric scalar frame therefore requires
+an additional mixed symmetric correction at finite $h$. It does not determine whether its normalized correction
+vanishes, remains finite, or diverges in the particular nested edge and
+large-$Y$ limits. The direct Toda expansion should use the implemented
+quantity as defined; comparison to continuum physical scattering still
+requires the antisymmetric frame part and the physical charge dictionary.
+\Ld
+
+\section{Verification and failures recorded}
+\scr\ uses exact SymPy identities and a fresh 60-digit mpmath Nystr\"om
+solver. Fixing $(h,q)$ and determining $a$ from the count condition selects
+the same ground-state family as fixing $(h,a)$ and solving for $q$.
+The dense quadrature, rather than decimal arithmetic, limits the displayed
+accuracy. Checks include backflow momentum, edge momentum, reciprocity,
+both reference orientations, the response derivative, physical-momentum
+inversion, and the actual classical-frame mixed rectangle. Intermediate
+resolvent and endpoint derivative identities are also checked directly. All pass.
+
+\begin{center}\small
+\begin{tabular}{p{.40\linewidth}p{.07\linewidth}p{.40\linewidth}}
+\toprule Claim & Label & Verification\\\midrule
+Dressed edge momentum and backflow & (c) & Independent Fredholm solve\\
+Momentum Jacobian and classical responses & (c) & Exact symbolic derivatives\\
+Reciprocity and endpoint bilinear & (c) & Mesh convergence and direct derivative checks\\
+Two-/four-term phase relation & (c) & Exact rearrangement and numerical comparison\\
+Classical-frame mixed remainder & (c) & Three meshes and original-code comparison\\
+Physical frame and nested edge limit & (d) & Not established by these identities\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Failures recorded:
+\begin{enumerate}
+\item Exploratory 24- and 40-node meshes gave reciprocity discrepancies
+about $3.5\,10^{-7}$ and $6.3\,10^{-11}$. Mesh refinement was required;
+the identity and subtraction were not changed to suppress those errors.
+\item The implemented classical frame fails the nonseparable symmetric
+two-body test above. This failure is retained as the substantive result.
+\item An initial PDF layout edit mismatched an equation environment. The
+LaTeX build stopped; the environment was corrected before the final build.
+\item No implementation assertion failed, and no test tolerance was
+weakened. The fixed relative edge offset is recorded explicitly rather
+than treated as an exact endpoint in a formal limit.
+\end{enumerate}
+The script ends with \texttt{ALL CHECKS PASSED} for the stated identities
+and detected discrepancy. Physical interpretation of the remaining
+antisymmetric frame and of the continuum quantum charges remains open. \Ld
+\end{document}

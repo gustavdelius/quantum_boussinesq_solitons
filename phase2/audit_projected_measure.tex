@@ -1,0 +1,266 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,hyperref}
+\hypersetup{hidelinks}
+\renewcommand{\theequation}{\arabic{equation}c}
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+\title{Projected collective measure: exact Wronskians,\\tail cancellation and a boundary-domain obstruction}
+\author{Independent project audit}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Concrete result.}
+The nonzero potential-tail cross terms do \emph{not} change the finite-dimensional
+collective symplectic volume. Their contribution cancels from the collective Wronskian determinant, as
+verified directly on the exact two-soliton background during the collision
+\Lc. There is nevertheless a precise obstruction to treating this result as a
+projected field determinant: the natural symplectic projector onto the full
+soliton family can send a localized fluctuation to a variation with nonzero
+potential endpoint. It therefore does not preserve a fluctuation domain with
+fixed potential endpoints \Lc. A boundary-domain prescription and a
+finite-time determinant construction remain necessary \Ld.
+
+This continues \texttt{audit\_determinant\_foundations.tex}; it neither selects
+a field regularisation nor assigns an exchange phase. The repository good
+equation, canonical form $\Omega=\int d\pi\wedge d\phi$ and potential gauge
+$\phi(-\infty)=0$ are retained. The calculations are for solution-parameter
+variations in that gauge. Every numbered formula carries a claim-(c) suffix and is checked in
+\texttt{scripts/audit\_\allowbreak projected\_\allowbreak measure.py}, with exact SymPy algebra and
+55-digit mpmath quadrature. Numerical results are saved in
+\texttt{scripts/audit\_\allowbreak projected\_\allowbreak measure\_\allowbreak results.json}.
+
+\section{The collective Wronskian has a factorised determinant}
+Let $a_j=\alpha_j$, $d_j=dP_j/da_j$, and order the tangent coordinates as
+$z=(a_1,a_2,X_1,X_2)$. For separated solitons with particle~1 on the left,
+\begin{equation}\label{eq:W}
+ W_{AB}=\Omega(\partial_{z_A},\partial_{z_B})
+ =\begin{pmatrix}C&D\\-D&0\end{pmatrix},\qquad
+ D=\operatorname{diag}(d_1,d_2),\quad
+ C=\begin{pmatrix}0&c\\-c&0\end{pmatrix},\quad
+ c=-M'_1\Pi'_2.
+\end{equation}
+Here $M=2\sin a$, $\Pi=-2\epsilon\sin a\cos a$ and
+$P=(2/3)\epsilon\sin^3a\cos a$. The earlier audit directly checked the
+mixed entry by spatial integration. We now retain it in the full matrix.
+For arbitrary $c$, not only its Boussinesq value, exact matrix algebra gives
+\begin{equation}\label{eq:det}
+ \det W=(d_1d_2)^2,\qquad
+ W^{-1}=\begin{pmatrix}0&-D^{-1}\\D^{-1}&D^{-1}CD^{-1}\end{pmatrix}.
+\end{equation}
+Hence the positive Liouville density is
+\begin{equation}\label{eq:volume}
+ d\mu_{\rm coll}=|d_1d_2|\,da_1\,da_2\,dX_1\,dX_2.
+\end{equation}
+There is no tail-dependent factor in this density. This resolves a specific
+concern raised in the earlier audit: individual mixed Wronskians need not
+vanish for their determinant to factorise.
+
+The established Darboux coordinates make the cancellation explicit:
+\begin{equation}
+ X'_1=X_1,\qquad X'_2=X_2+\gamma_2 M_1,\qquad
+ \gamma_2=\Pi'_2/P'_2.
+\end{equation}
+Their tangent Jacobian is triangular with unit determinant. Pulling
+$\sum_jdP_j\wedge dX'_j$ back gives \eqref{eq:W}; derivatives of $\gamma_2$
+contribute only to a wedge with itself. The symbolic test verifies the full
+matrix pullback, not merely its determinant. Switching the spatial ordering
+changes $c$ and the corresponding shear, but leaves \eqref{eq:det} and
+\eqref{eq:volume} unchanged. These formulas require $d_1d_2\ne0$ and do not
+extend through the cusp by division.
+
+\section{Exact collision-time verification}
+Use the actual tau solution
+\begin{equation}
+ \tau=1+E_1+E_2+AE_1E_2,\quad
+ E_j=e^{k_j(x-v_jt-x_{0j})},\quad
+ \phi=2\partial_x\log\tau,\quad \pi=\partial_t\phi,
+\end{equation}
+with the repository's real KP cross-ratio $A>0$. The script differentiates
+$\phi$ and $\pi$ with respect to $(a_1,a_2,x_{01},x_{02})$ analytically,
+then integrates every entry of their $4\times4$ Wronskian matrix. The
+Hirota parameters $x_{0j}$ are not confused with both sets of physical
+asymptotic centers.
+
+For $v_1>v_2$, the incoming centers are
+$X_1^{\rm in}=x_{01}$ and $X_2^{\rm in}=x_{02}-\log A/k_2$; the outgoing
+ones are $X_1^{\rm out}=x_{01}-\log A/k_1$ and
+$X_2^{\rm out}=x_{02}$. Thus, in the fixed Hirota parameter basis, the
+mixed entry becomes
+\begin{align}\label{eq:c_tau}
+ c_\tau
+ &=\frac{d_2}{k_2}\partial_{a_1}\log A-M'_1\Pi'_2\nonumber\\
+ &=-\frac{d_1}{k_1}\partial_{a_2}\log A+\Pi'_1M'_2.
+\end{align}
+The other blocks in \eqref{eq:W} remain $D$ and zero. The equality of the
+two expressions is checked numerically along with the full spatial integral.
+At $(a_1,a_2,\epsilon_1,\epsilon_2)=(0.3,0.7,+1,+1)$, all entries were
+checked at $t=-8,0,8$; the maximum discrepancy is below $1.3\times10^{-55}$.
+A head-on point $(0.25,0.45,+1,-1)$ at $t=0$ gives an error below
+$4.1\times10^{-56}$. In every case the determinant divided by
+$(d_1d_2)^2$ is one to the stated precision \Lc. These are observed
+residuals; the assertions require entry errors below $10^{-43}$ and a
+determinant-ratio error below $10^{-42}$.
+
+\paragraph{Why this is conserved despite the tails.}
+For potential-field linearised solutions $f,g$, write
+$L=\partial_x^4-\partial_x^2+6\partial_xu\partial_x$.
+A direct symbolic identity gives
+\begin{align}
+ \partial_x B(f,g)&=fLg-gLf,\\
+ B(f,g)&=fg'''-f'g''+f''g'-f'''g
+                  +(6u-1)(fg'-gf').
+\end{align}
+Since $f_{tt}=-Lf$, the time derivative of
+$\int(f_tg-g_tf)dx$ is the endpoint difference of $B$.
+Soliton-family potential variations are bounded at spatial infinity and
+all their spatial derivatives decay there; therefore this boundary flux
+vanishes. The integrated Wronskian is conserved even though the amplitude
+variations themselves have constant tails. This supplies the missing direct
+justification for comparing the finite-time matrix to its asymptotic value.
+It proves a property of the finite collective solution space, not
+completeness of the continuum field modes.
+
+\section{An explicit symplectic projector and its limitation}
+Let $Z_A$ denote the collective tangent solutions at a fixed time, and suppose
+a variation $\eta$ belongs to a domain on which all pairings converge. Define
+\begin{equation}\label{eq:projector}
+ b_A=\Omega(Z_A,\eta),\qquad
+ \mathcal P\eta=Z_A(W^{-1})^{AB}b_B,\qquad
+ \mathcal Q=1-\mathcal P.
+\end{equation}
+Matrix multiplication gives
+\begin{equation}
+ \mathcal P^2=\mathcal P,\quad \mathcal PZ_A=Z_A,\quad
+ \Omega(Z_A,\mathcal Q\eta)=0.
+\end{equation}
+Replacing $Z$ by $ZR$ for an invertible collective-coordinate change leaves
+$\mathcal P$ unchanged, since $W$ changes to $R^TWR$. The script verifies
+these identities in a six-dimensional canonical embedding with arbitrary
+$d_1,d_2,c$, including the Darboux shear. Thus tail cross terms can be
+incorporated in a concrete projector, rather than discarded.
+
+\paragraph{A localized counterexample to domain preservation.}
+Already for one soliton, take the localized initial-data perturbation
+$\eta=(\eta_\phi,\eta_\pi)=(0,u)$, where
+$u=(k^2/2)\operatorname{sech}^2[k(x-X)/2]$.
+Since $\phi_X=-u$ and $\phi_a(+\infty)=2\cos a$, one finds
+\begin{align}
+ b_X&=\int u^2dx=\frac23 k^3,\\
+ (\mathcal P\eta)^a&=-\frac{2k^3}{3P'},\qquad
+ (\mathcal P\eta)_\phi(+\infty)
+ =-\frac{4\cos a\,k^3}{3P'}\ne0.
+\end{align}
+The integral and projection are checked exactly. The original perturbation
+has zero potential variation at both endpoints; its projected part and its
+complement have compensating nonzero right tails. Consequently neither is
+in the same fixed-endpoint domain. This is an explicit obstruction, not
+merely the observation that $\phi_a$ is not square-integrable.
+
+An enlarged space allowing such endpoint variations can accommodate
+\eqref{eq:projector}. A fixed-total-$M$ space instead restricts the collective
+family. On that constraint,
+\begin{equation}
+ da_2=-\frac{M'_1}{M'_2}da_1,\qquad
+ \ker\Omega\big|_{dM_{\rm tot}=0}
+ =\operatorname{span}\left\{
+ \frac{M'_1}{P'_1}\partial_{X_1}
+ +\frac{M'_2}{P'_2}\partial_{X_2}\right\}.
+\end{equation}
+The three-dimensional pullback has rank two, as checked symbolically.
+It therefore cannot simply inherit the four-dimensional measure
+\eqref{eq:volume}. Whether the quantum problem includes boundary variables,
+uses a constrained reduction, or has an equivalent scattering-state
+construction is not fixed by this calculation \Ld. No such choice is made
+here.
+
+\section{What the measure result does not determine}
+\paragraph{Solution variations are not automatically determinant zero modes.}
+The tangent fields solve the linearised equation, but they do not generally
+satisfy the time-endpoint conditions used to define a propagator determinant.
+A finite-dimensional benchmark makes the distinction precise. The free
+collective equation has solutions $1$ and $t$, but neither is a nontrivial
+solution with zero values at both finite endpoints. For the elementary
+Dirichlet matrix $K_N=\operatorname{tridiag}(-1,2,-1)$,
+\begin{equation}
+ \det\left(\frac{m}{h}K_N\right)
+ =(N+1)\left(\frac{m}{h}\right)^N\ne0.
+\end{equation}
+Laplace expansion gives $D_N=2D_{N-1}-D_{N-2}$ with $D_0=1,D_1=2$;
+substituting $D_N=N+1$ proves the formula by induction. The recurrence and
+base cases are checked symbolically, alongside direct determinants for
+$N=1,\ldots,6$. This is a finite matrix diagnostic, not a
+proposed field regularisation. ``Remove the zero modes'' must specify which
+operator domain and which boundary problem are meant. A conserved solution
+Wronskian is not a proof that the finite-time operator has a kernel.
+
+\paragraph{Volume and endpoint maps do not fix the propagation phase.}
+A second exact control is the unit-frequency harmonic oscillator. Its
+classical symplectic flow returns to the identity at time $2\pi$, preserves
+volume throughout, and has the same endpoint Jacobian as no evolution.
+But the ground-state wavefunction $e^{-x^2/2}$ satisfies
+$(-\partial_x^2+x^2)\psi/2=\psi/2$, so its phase after that evolution is
+$e^{-i\pi}=-1$ \Lc. The script verifies both identities. Thus identical
+symplectic volumes and endpoint maps do not specify the phase carried by
+the evolution. This does not assign a Boussinesq Maslov index; it shows why
+\eqref{eq:det} cannot do so.
+
+\paragraph{The remaining determinant task.}
+The exact result now established is factorisation of the collective
+\emph{symplectic} volume and of the determinant of its solution Wronskian.
+A Faddeev--Popov measure, a constrained Gaussian functional integral and a
+spectral determinant depend on more data. One must give a common spatial
+and temporal domain, identify permissible collective directions on that
+domain, construct its complement or constraint Jacobian, and compare the
+interacting and one-body time evolutions with the same state normalization.
+The phase of the Gaussian square root must then be continued from an
+explicit reference. These are genuine outstanding field-theory requirements
+\Ld. They cannot be supplied by choosing $I$ or $J$ because one satisfies
+an algebraic identity.
+
+\section{Checks, corrected derivatives and failures}
+For either direction, the signed momentum derivatives are
+\begin{equation}
+ P'_{\rm good}(a)=\frac23\epsilon\sin a\sin3a,\qquad
+ P'_{\rm bad}(b)=\frac23\epsilon\sinh b\sinh3b.
+\end{equation}
+Both are checked symbolically, including the factor $\epsilon$ omitted
+from formulas presented for both directions in the earlier report.
+
+\begin{longtable}{p{0.51\linewidth}p{0.07\linewidth}p{0.32\linewidth}}
+\toprule Result & Label & Check\\\midrule
+Tail-independent collective Wronskian determinant and Darboux density
+ & (c) & Exact symbolic matrices\\
+Collision-time realization of that matrix
+ & (c) & Four full spatial quadratures, 55 digits\\
+Fourth-order symplectic boundary flux
+ & (c) & Exact differential identity\\
+Basis-independent collective projector
+ & (c) & Exact canonical embedding\\
+Fixed-endpoint obstruction and fixed-$M$ rank loss
+ & (c) & Explicit localized test and symbolic restriction\\
+Boundary-condition and phase controls
+ & (c) & Exact finite matrices and oscillator eigenstate\\
+Projected field determinant and absolute phase
+ & (d) & Not computed; domain and propagation data remain\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+A PDF rebuild initially failed because removing a manual equation tag left
+a blank paragraph inside a display; removing that blank line fixed the build.
+The initial auxiliary six-dimensional canonical embedding had the opposite
+sign, producing $Z^TJZ=-W$ instead of $W$. The exact matrix check caught this;
+the embedding signs were corrected. No tolerance was changed. No collision
+quadrature failed. The fixed-endpoint failure of the projector is an intended
+audit finding, not a numerical failure. The earlier sign omission in the
+momentum derivatives is corrected explicitly above.
+
+\paragraph{References and provenance.}
+This note uses the repository's tau solution and prior classical symplectic
+form as stated conventions and independently checks the needed derivatives,
+Wronskians and matrix identities. It adds no external literature claims or
+new references. The preceding determinant audit records the extent of the
+FK source passages actually read.
+\end{document}
