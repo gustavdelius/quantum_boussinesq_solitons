@@ -546,34 +546,59 @@ The factor of four is not a missing dictionary factor. \Ld This is a
 conditional leading-coefficient result, not a proof of full quantum equivalence.
 \Lc Classical scattering, finite-sea identities and boundary-charge algebra
 remain useful foundations; the November audits substantially narrow their
-claimed quantum consequences. \Ld The physical two-body phase is still the
-main unsolved observable, and no candidate is promoted to an exact S-matrix.
+claimed quantum consequences. \Ld The physical two-body phase of the
+\emph{good} equation is the main unsolved observable, and no candidate is
+promoted to an exact S-matrix.
 
-\paragraph{Ranked next steps (research judgments \Ld).}
+\paragraph{Ranked next steps (research judgments \Ld; re-ranked by the PI, 4 November 2026).}
+The good (well-posed) equation is the main thread. The quantum Toda chain
+reaches only the \emph{bad} equation in its continuum limit, and the
+Toda-matched counterterm was traced to the bad equation's short-wave band
+near its unstable region $|q|>1$. Toda and bad-equation work therefore serves
+as validation of the method, not as the target.
 \begin{enumerate}
-\item \textbf{Compute the residual two-body phase in a common physical frame.}
-Use the vacuum-matched one-body result as a constraint; derive the continuum
-collective-operator map to Toda endpoint responses, enforcing cluster
-separability and the Krein equation. Determine the remaining antisymmetric
-function and its crossing/absolute-phase normalisation.
-\item \textbf{Complete the boundary-compatible projected determinant.}
-Specify spatial and temporal domains and admissible potential endpoints;
-resolve kinetic tails, constraint/Schur evolution, completeness and the
-absolute determinant phase. A physical bad-equation prescription must be
-derived or explicitly chosen by the PI before extending the continued trace.
-\item \textbf{Establish uniform Toda edge and small-amplitude limits.}
-Supply zero-frequency and endpoint matching, test fixed-$P$ interchange,
-near-equal and vanishing amplitudes, and logarithmic remainders. Refit the
-two-loop data with separate mesh, edge and amplitude errors; retain the
-failed bounds in the record.
-\item \textbf{Construct the renormalised quantum defect boundary theory.}
-Build on the localized charges and momentum trace; derive finite boundary
-renormalisation, admissible states and quantum sewing/absorption shifts.
-Test holonomy beyond samples before claiming a universal fusion obstruction.
-\item \textbf{Return to candidate selection and ring quantisation.}
-Derive quantum seam holonomy and physical pole/branch data after the phase
-and determinant are fixed. Restrict exclusions to proved families; keep
-all-loop kernels and non-ultralocal line quantisation as longer-term work.
+\item \textbf{Fix the good equation's one-loop renormalisation condition.}
+Candidates: a principled acoustic condition (the physical sound speed or
+compressibility of the good vacuum); a regularisation from an integrable
+good-equation lattice (the quantum discrete Boussinesq/$W_3$ chain of
+Hikami and Belov--Chaltikian \cite{Hikami}); and a test of whether the
+Toda-matched $\Delta\mathcal H=-(3\hbar_B/2\pi)u^2$ continues through the
+good/bad dictionary, which is expected to fail because the factor of four
+came from the bad equation's unstable band.
+(Package \texttt{good\_\allowbreak renorm}.)
+\item \textbf{Compute the good-equation two-soliton $O(\hbar^0)$ phase,
+including its antisymmetric part,} at fixed physical momenta in both
+channels, in the scheme fixed by item~1. Complete the boundary-compatible
+projected determinant as far as this requires. Test whether three-soliton
+cluster separability fixes the antisymmetric part, as it does on the Toda
+side. (Package \texttt{good\_\allowbreak twobody}.)
+\item \textbf{Determine the quantum fate of the good equation's resonant and
+number-changing channels} (Y-junctions, merging solitons, singular
+breathers): are their conservation laws compatible with fusion, and is the
+quantum soliton S-matrix elastic and factorised at all?
+(Package \texttt{resonant\_\allowbreak channels}.)
+\item \textbf{Construct the renormalised quantum defect boundary theory}
+(good equation only). Build on the localised charges and momentum trace;
+derive a boundary renormalisation condition, admissible states and quantum
+absorption shifts between stable vacua; prove or refute the holonomy
+obstruction for all KP triangles. (Package \texttt{defb\_\allowbreak boundary}.)
+\item \textbf{Return to candidate selection and ring quantisation for the
+good equation} after items~1--3: quantum seam holonomy, physical pole and
+branch data, and exclusions restricted to proved families.
+\end{enumerate}
+
+\paragraph{Supporting validation (bad equation and quantum Toda).}
+\begin{enumerate}
+\item[V1.] \textbf{Two-body test of the method.} Compare the uniquely
+determined Toda $O(\hbar^0)$ two-body phase at fixed dressed momenta with the
+bad-equation continuum two-soliton phase in the Toda-matched scheme.
+(Packages \texttt{twobody\_\allowbreak toda}, \texttt{twobody\_\allowbreak cont}.)
+\item[V2.] \textbf{Uniform Toda edge and small-amplitude limits.} Test the
+interchange of limits at fixed $P$; refit the two-loop data with separate
+mesh, edge and amplitude errors; retain the failed bounds in the record.
+(Package \texttt{uniform\_\allowbreak limits}.)
+\item[V3.] \textbf{A physical bad-equation determinant prescription}, to be
+derived or explicitly chosen by the PI before the continued trace is extended.
 \end{enumerate}
 
 \appendix\section{Phase 2 Write-ups and Verification Scripts}
