@@ -264,6 +264,125 @@ def defect_spectrum():
         for eta in [-1,1]:check('stable_triple_domain',sum(eta*z < -1 for z in triples)==1)
     check('degenerate_triple',sp.factor(s*s+2*s+1)==(s+1)**2)
 
+def november_records():
+    """Read-only reproduction of failures; no old script is run or imported."""
+    import json
+    inventory=(ROOT/'scripts_inventory.md').read_text()
+    violations=['0.006326021899488055','0.009016412921681649','0.004511945128394146']
+    for value in violations:
+        check('recorded_toda_step_violation_'+value,value in inventory and mp.mpf(value)>mp.mpf('.004'))
+    saved=json.loads((ROOT/'phase2/scripts/onebody_toda_results.json').read_text(),parse_float=mp.mpf)
+    frame=json.loads((ROOT/'phase2/scripts/frame_analysis.json').read_text(),parse_float=mp.mpf)
+    rows={mp.mpf(str(r['y'])):r for r in frame['one_body']}
+    residuals={}
+    for r in saved['rows']:
+        y=mp.mpf(str(r['y']))
+        residuals[y]=abs(r['velocity']['value']-saved['sound']['value']-y*rows[y]['jacobian_minus_one']['value']/2)
+    maximum=max(residuals.values())
+    check('onebody_line383_recorded_failure',maximum>mp.mpf('3e-6') and close(maximum,mp.mpf('2.2546734882e-4'),mp.mpf('1e-13')))
+    check('onebody_line383_three_failed_samples',all(residuals[mp.mpf(y)]>mp.mpf('3e-6') for y in [16,32,64]))
+    print('NUMERIC unchanged line-383 residual:',mp.nstr(maximum,18))
+    tree=ast.parse((ROOT/'phase1/scripts/hirota_solitons.py').read_text())
+    disabled=[n for n in ast.walk(tree) if isinstance(n,ast.Assert) and any(isinstance(q,ast.BoolOp) and isinstance(q.op,ast.Or) and any(isinstance(v,ast.Constant) and v.value is True for v in q.values) for q in ast.walk(n.test))]
+    check('hirota_disabled_assertion_removed',not disabled)
+    x=sp.symbols('x'); hs=[sp.Rational(1,50),sp.Rational(1,100),sp.Rational(1,200)]
+    weights=[sp.prod(-j/(i-j) for j in hs if j!=i) for i in hs]
+    check('quadratic_extrapolation_weights',weights==[sp.Rational(1,3),-2,sp.Rational(8,3)] and sum(w*h**3 for w,h in zip(weights,hs))!=0)
+
+
+def november_onebody():
+    U,k,z,lam=sp.symbols('U k z lam',real=True)
+    Wg=-((1-6*U)**sp.Rational(3,2)-1+9*U)/(6*sp.pi)
+    Wb=-Wg.subs(U,-U)
+    # Independent harmonic lattice integral in Boussinesq units.
+    K=sp.symbols('K',real=True)
+    WTbare=sp.integrate(2*sp.exp(3*U)*sp.sin(K/2),(K,0,2*sp.pi))/(48*sp.pi)
+    WT=WTbare-WTbare.subs(U,0)-U*sp.diff(WTbare,U).subs(U,0)
+    shifts=[sp.diff(W,U,2).subs(U,0)/2 for W in [Wg,Wb,WT]]
+    check('vacuum_sound_shifts',shifts==[-9/(4*sp.pi),9/(4*sp.pi),3/(4*sp.pi)])
+    counter=sp.expand((WT-Wb).series(U,0,3).removeO()).coeff(U,2)
+    check('vacuum_only_elastic_counterterm',counter==-3/(2*sp.pi))
+    pulse=k*k*(1-z*z)/2
+    moment=sp.integrate(pulse**2*2/(k*(1-z*z)),(z,-1,1))
+    P=sp.sqrt(1+k*k)*moment
+    check('fixed_momentum_elastic_shift',sp.simplify(moment-2*k**3/3)==0 and sp.limit(lam*moment/P,k,0)==lam)
+    Fac=sp.sqrt(3)*(k*k+sp.Rational(3,4))*sp.atan(2*k/sp.sqrt(3))/sp.pi-3*k/(2*sp.pi)
+    Cac=sp.limit(Fac/P,k,0)
+    check('continued_soliton_and_matched_slope',Cac==2/sp.pi and sp.simplify(Cac+counter-1/(2*sp.pi))==0)
+    check('sound_subtracted_scheme_invariant',sp.simplify((Cac+lam)-(shifts[1]+lam)+1/(4*sp.pi))==0 and sp.simplify(1/(2*sp.pi)-shifts[2]+1/(4*sp.pi))==0)
+    q=sp.symbols('q',positive=True)
+    integral=sp.integrate(q/(1+q*q)**sp.Rational(3,2),(q,0,sp.oo))
+    check('independent_vacuum_bubble',integral==1 and -9*integral/(4*sp.pi)==shifts[0])
+    numeric=mp.quad(lambda Q:Q/(1+Q*Q)**mp.mpf('1.5'),[0,1,mp.inf])
+    check('vacuum_bubble_70digit',close(numeric,1))
+    # Leading logarithmic term, not a proof of uniform interchange of limits.
+    y=sp.symbols('y',positive=True); A=1/(2*sp.pi)
+    correction=sp.Rational(3,4)*y**sp.Rational(-3,2)*sp.integrate(-A*sp.sqrt(z),(z,0,y))
+    check('toda_logarithmic_energy_coefficient',sp.simplify(correction+1/(4*sp.pi))==0 and sp.simplify(shifts[2]+correction-1/(2*sp.pi))==0)
+    e=sp.symbols('e')
+    tail=sp.Rational(3,4)*y**sp.Rational(-3,2)*sp.integrate(-2*e*y**sp.Rational(-3,2),y)
+    check('onebody_energy_tail_factor',sp.simplify(tail-3*e/y**2)==0)
+    qn=sp.symbols('qn',negative=True); omega=-qn*sp.sqrt(1-qn*qn); qstar=-sp.sqrt(3)/2
+    check('stable_band_group_velocity_resonance',sp.simplify(omega.subs(qn,qstar)-sp.sqrt(3)/4)==0 and sp.diff(omega,qn).subs(qn,qstar)==1)
+    # Numerical error budget is a diagnostic, not a probability interval.
+    envelope=sum(map(mp.mpf,['5.68e-8','7.70e-6','4.73e-7']))
+    check('precision_envelope_rounding',envelope<mp.mpf('8.24e-6') and envelope/(1/(2*mp.pi))<mp.mpf('5.2e-5'))
+
+
+def november_smx():
+    for X in map(mp.mpf,['.2','.9']):
+        check('dilog_blanket_counterexample_'+str(X),close(mp.polylog(2,-mp.exp(X))+mp.polylog(2,-mp.exp(-X)),-mp.pi**2/6-X*X/2))
+    x=mp.mpf('.7')
+    check('constant_mirror_counterexample',close(mp.exp(mp.j*x**3)*mp.exp(mp.j*(-x)**3),1))
+    check('breather_false_positivity_threshold',1-2*2+mp.mpf('.5')*2**2<0)
+    for a in map(mp.mpf,['.4','.65','1.2']):
+        b=mp.mpf('.1'); aa=(1-3*mp.cot(a)**2)/(1+3*mp.coth(b)**2)
+        actual=cross(sol(a-mp.j*b),sol(a+mp.j*b))
+        check('good_breather_interaction_'+str(a),close(actual,aa) and aa<mp.mpf('.25') and mp.sign(aa)==mp.sign(a-mp.pi/3))
+    a=mp.mpf('.2'); b=a+mp.pi/3
+    check('false_difference_resonance',close(cross(sol(a),sol(b)),mp.mpf('0.355465479849'),mp.mpf('1e-12')) and abs(sol(a)['ell']-sol(b)['ell'])>1)
+    check('arctangent_sum_not_difference',close(mp.atan(2)+mp.atan(mp.mpf('.5')),mp.pi/2) and abs(mp.atan(2)-mp.atan(mp.mpf('.5'))-mp.pi/2)>mp.mpf('.5'))
+    for r in map(mp.mpf,['.3','.7']):
+        scale=mp.mpf('1e-12')
+        val=(cross(sol(scale*r,1),sol(scale,-1))-1)/scale**2
+        check('headon_small_amplitude_'+str(r),close(val,3*r,mp.mpf('1e-20')))
+    # Direct elementary phase quadrature, not the imposed J_cont offset.
+    def phase_data(a):return [(mp.sin(a+d),mp.cos(a+d),c) for d,c in [(2*mp.pi/3,1),(-2*mp.pi/3,1),(0,-2)]]
+    def theta(Q,data,e):
+        R=abs(Q); root=mp.sqrt(1+Q*Q)
+        return -sum(c*(mp.sign(Q)*mp.atan(sn/R)+e*mp.atan(sn*cs/(R*root+R*R+sn*sn))) for sn,cs,c in data)
+    def derivative(Q,data,e):
+        return sum(c*sn/(Q*Q+sn*sn)*(1+e*mp.sign(Q)*cs/mp.sqrt(1+Q*Q)) for sn,cs,c in data)
+    def raw(a,b,e,f):
+        da,db=phase_data(a),phase_data(b)
+        cuts=sorted(set([mp.mpf(0),mp.mpf('.1'),mp.mpf(1)]+[abs(sn) for sn,cs,c in da+db]))+[mp.inf]
+        return mp.quad(lambda Q:theta(Q,da,e)*derivative(Q,db,f)+theta(-Q,da,e)*derivative(-Q,db,f),cuts)/(4*mp.pi)
+    a,b=mp.mpf('.2'),mp.mpf('.55')
+    for Q in map(mp.mpf,['-.8','.3']):
+        check('phase_derivative_'+str(Q),close(mp.diff(lambda t:theta(t,phase_data(a),1),Q),derivative(Q,phase_data(a),1)))
+    ih=raw(a,b,1,-1); ihrev=raw(b,a,-1,1)
+    ic=raw(a,b+mp.pi,1,1); icrev=raw(b+mp.pi,a,1,1)
+    crossing=(ic-icrev+ih-ihrev)/2
+    check('raw_I_crossing',close(ic+ih,0))
+    check('J_crossing_zero_not_pi_over_two',close(crossing,0) and abs(crossing-mp.pi/2)>1)
+
+
+def november_defect():
+    p,q=sp.symbols('p q'); ell=lambda z:3*sp.sqrt(3)*(4*z**3-z)
+    quotient=sp.cancel((ell(p)-ell(q))/(p-q))
+    check('defect_false_pole_cancels',sp.expand(quotient-3*sp.sqrt(3)*(4*(p*p+p*q+q*q)-1))==0)
+    c=sp.sqrt(3); S=((sp.sqrt(3)+1)*c+(sp.sqrt(3)-1)*sp.sqrt(4-c*c))/4
+    check('defect_switch_remaining_rate',sp.simplify((S*S-1)/2-sp.sqrt(3)/4)==0 and sp.simplify(sp.sqrt(3)/4-(2*sp.sqrt(3)-1)/8)!=0)
+    t,w=sp.symbols('t w',positive=True)
+    mean=sp.integrate(sp.cos(t)**2,(t,0,2*sp.pi))/(2*sp.pi)
+    check('real_mode_variance_factor',mean/(sp.pi*w)==1/(2*sp.pi*w) and mean/(2*sp.pi*w)==1/(4*sp.pi*w))
+    for eta,sign in itertools.product([-1,1],repeat=2):
+        Q=sign*mp.mpf('1e30'); s=mp.mpf('1.5'); vv=sign*mp.sqrt(1+Q*Q)
+        z=((vv+s-mp.j*R3*Q)/(vv+s+mp.j*R3*Q))**eta
+        check('defect_same_phase_at_infinities_'+str((eta,sign)),close(z,mp.exp(-2*mp.pi*mp.j*eta/3),mp.mpf('1e-28')))
+
+
 if __name__=='__main__':
     source_dictionaries(); energies(); roots_defect(); minor(); defect_spectrum(); wh(); darboux_kernel(); reciprocity(); formal_integrals()
+    november_records(); november_onebody(); november_smx(); november_defect()
     print('ALL CHECKS PASSED')

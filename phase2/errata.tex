@@ -957,6 +957,307 @@ The Phase 2 first-pass classical-phase statement (lines 52--55) survives;
 append an errata link rather than replacing its phase by a new convention.
 No README mutation is part of this task.
 
+\section{Addendum: findings after the original errata (4 November 2026)}
+\C This addendum follows the coordinator digests through \file{66e4d35}.
+The preceding entries preserve the original errata's historical snapshot;
+references there to files not edited describe that earlier task. In this
+consolidation the master report and README receive the requested corrections;
+the historical package sources and audit scripts remain unchanged. The later
+\file{audit_onebody_scheme.tex} overrides the earlier one-body audit where they
+disagree. No old phase script is run here, because some rewrite tracked caches.
+The new read-only groups in \file{errata_checks.py} are named below; independent
+audit checks are explicitly distinguished from this consolidation's rerun.
+
+\subsection{N01--N05: failed assertions and verification gaps}
+\paragraph{N01. Phase 2d successive-step bound is false.}
+\C \file{scripts_inventory.md} records that
+\file{phase2/scripts/toda_edge_twoterm.py} now asserts the literal
+\file{toda_edge.tex} claim of successive raw Toda phase changes below $0.004$.
+It fails at the following steps:
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$(y_1,y_2)$ & $h$ before & $h$ after & Absolute change\\\midrule
+$(3,1)$ & 0.01 & 0.005 & 0.006326021899488055\\
+$(6,1)$ & 0.01 & 0.005 & 0.009016412921681649\\
+$(6,1)$ & 0.005 & 0.0025 & 0.004511945128394146\\\bottomrule
+\end{tabular}\end{center}
+\C All eight extrapolated table rows, residual dependence and sign checks
+passed separately in the hygiene run. The script remains failing; the bound
+was not relaxed. This refutes the finite-step claim, not every extrapolated
+entry. \test{november_records} checks these recorded violations against the
+inventory without running the cache-writing script.
+
+\paragraph{N02. The one-body audit fails its own line-383 tolerance.}
+\C \file{audit_onebody.py} asserts
+\file{max_cv_id_diff < 3e-6}. Reading its saved inputs gives the maximum
+$2.2546734882\times10^{-4}$ at $y=64$, with violations also at $y=16,32$.
+The source's claim of agreement below $2.8\times10^{-6}$ is false.
+\file{onebody_scheme.tex} and \file{audit_onebody_scheme.tex} diagnose the
+three-point quadratic extrapolation as too crude: its weights on
+$h=(0.02,0.01,0.005)$ are $(1/3,-2,8/3)$ and leave cubic truncation error.
+Independent inverse-Laplace computations confirm the limiting identity to
+below $10^{-45}$; a finer seven-point quartic fit reduces the $y=64$ residual
+to $-9.38\times10^{-7}$. This does not make the unchanged original assertion
+pass. \test{november_records} recomputes the discrepancy from saved JSON;
+\file{audit_onebody_scheme.py} supplies the independent limiting-identity
+check. No tolerance is weakened here.
+
+\paragraph{N03. Four tautological check groups in the determinant package.}
+\C \file{audit_det_projected.tex}, Point 5, identifies:
+\begin{enumerate}[leftmargin=*]
+\item \file{det_geometry.py:26,33}: the expanded spatial derivative is
+compared with itself; the boundary variation is not tested.
+\item \file{det_spectrum.py:19--20}: equivalent polynomial forms of the
+co-moving operator are compared without differentiating the moving ansatz.
+The preceding vacuum substitution makes each derivative separately zero.
+\item \file{det_charges.py:24,63}: substitution of a defined Legendre
+expression checks only the cancellation of identical terms, not momentum
+inversion or physical effective-action identification.
+\item \file{det_charges.py:27}: rearranging the defined label phase checks
+commutativity of multiplication, not a Taylor expansion of the phase.
+\end{enumerate}
+\C The independent \file{audit_det_projected.py} supplies non-circular checks.
+It also supplies the missing projector-tail check and a genuinely symbolic
+small-amplitude expansion where the package used numerical differentiation.
+The instantaneous geometry survives; its kinetic divergence is intrinsic to
+the varying kink height. Fixed-momentum charge-pair invariance survives at
+fixed $L_1$, but the numerical trace value depends on the endpoint and finite
+tadpole subtraction. \D A full projected functional determinant is still absent.
+The same audit confirms the earlier heavy-mode pairing error in
+\file{oneloop_phase.tex}: reversing the growing rate requires the reflected
+spatial profile, not the same profile with the opposite time exponent.
+These are inherited audit results, not newly rerun phase scripts.
+
+\paragraph{N04. One tautology in the frame dictionary.}
+\C \file{frame_identities.py:30--32} compares a scalar-symbol chain rule
+with its own expanded form. \file{audit_frame_dictionary.py}, Check 1,
+replaces this with actual symbolic momentum-series inversion and independent
+numerical derivatives of the inverted coordinate and energy. The endpoint,
+Jacobian and pressure identities survive. The audit also removes the
+package's arbitrary antisymmetric example as a physical Toda frame freedom
+using cluster separability and the Krein PDE. \D The continuum operator map
+and physical two-body phase remain unresolved; see N06 for the distinct
+residual continuum function.
+
+\paragraph{N05. Disabled Hirota check repaired.}
+\C The old \file{phase1/scripts/hirota_solitons.py} assertion ending in
+\file{or True} was disabled. The hygiene commit replaces it with the exact
+sech identity rewritten in exponentials and adds genuine interaction/PDE
+assertions at the existing precision. The inventory records a passing full
+run; no computation or tolerance was changed to hide a failure. Its selected
+rational amplitudes and finite direction/sample coverage are not a proof for
+arbitrary amplitudes. \test{november_records} verifies from the current AST
+that no assertion contains the former \file{or True}; it does not rerun that
+script. The inventory distinguishes verification scripts from two generators.
+
+\subsection{N06: refuted formulas in \file{smx_candidates.tex}}
+\C The controlling source is \file{audit_smx.tex}; its independent
+\file{audit_smx.py} checks the following corrected statements and explicit
+counterexamples. A successful original checker did not certify the printed
+formulas. The consolidation's \file{november_smx} group rechecks selected
+algebra and independent crossing quadrature, as specified below.
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Universal dilogarithm exclusion and diagonal residues.}
+The blanket exclusion is false: logarithms from different mixed arguments
+can cancel. For example
+\[
+ \operatorname{Li}_2(-e^{xy})+\operatorname{Li}_2(-e^{-xy})
+ =-\pi^2/6-x^2y^2/2.
+\]
+For the restricted nine root ratios with constant coefficients the repaired
+residues are $1/[d\sin\varphi_r]$ for a diagonal dilogarithm and
+$-4\sin3\alpha/(3d)$ for the good classical dynamical phase, with
+$d=\alpha_1-\alpha_2$. The printed signs/factors and boundedness argument
+are wrong; the repaired meromorphic-pole argument excludes this restricted
+basis. It is not a universal quantum-dilogarithm theorem.
+\item \textbf{Mirror products.} Unitarity implies
+$F(D)F(-D)=C$ and $G(S)^2=C^{-1}$ on a connected smooth branch. A constant
+$G$ survives; $G=1$, $F(D)=e^{iD^3}$ is a counterexample to the blanket claim.
+The separate classical nonseparability obstruction has its stated scope.
+\item \textbf{Good breathers and pole examples.} For the specified conjugate
+pair $A=(1-3\cot^2a)/(1+3\coth^2b)<1/4$, the sign boundary is $a=\pi/3$,
+not $\pi/6$. Positivity of $1+2X\cos I+AX^2$ for every $X>0,I$ requires
+$A>1$, not $A>1/4$. The two printed $N=1$, $\hbar=0.05$ examples actually
+have $(b,A)=(-0.040137301855,-0.008461762797)$ at $a=0.4$, and
+$(-0.040269708896,-0.002261837165)$ at $a=0.65$; both $A$ are negative.
+The bad Gamma candidate has no zero-level pole. \D Candidate pole locations
+and singular classical Hirota breathers do not themselves establish the
+physical quantum sheet or exact spectrum. \C
+\item \textbf{Resonances.} The asserted overtaking line
+$|\alpha_1-\alpha_2|=\pi/3$ is false. The stated real-square lines that
+survive are the head-on sum $\pi/3$ and overtaking sum $2\pi/3$.
+Their phase limits are continuous but generally have transverse
+$t\log t$ terms, so ``smooth'' is too strong.
+\item \textbf{Darboux signs and Bethe derivative.} For a particle crossing
+left to right, the corrected shifts are
+\[
+ \Delta X'_j=\Delta x_{jl}+\gamma_jM_l,\qquad
+ \Delta X'_l=\Delta x_{lj}-\gamma_lM_j.
+\]
+The seam endpoint difference is the negative of the coordinate reset.
+Its generating function integrates the endpoint difference against $dP_j$,
+not $P_j$ against its differential. The full assumed Bethe left side obeys
+\[
+ \partial_{P_j}\mathcal B_j
+ =\Lambda-\sum_{l\ne j}\Delta x_{jl}+\partial_{P_j}(\Pi_jM_j).
+\]
+The last self-winding derivative was omitted. The directional derivative
+and summed charge rule survive conditionally; quantum seam holonomy is not
+derived \D. \C
+\item \textbf{Continuum crossing and Stirling claim.} The earlier definitions
+are $I_{12}=(4\pi)^{-1}\int\theta_1\theta'_2dq$ and
+$J_{12}=(I_{12}-I_{21})/2$, not an extra contribution $I+J$.
+The printed weight/kernel and arctangent formulas do not implement those
+integrals. Direct quadrature gives
+\[
+ I^{\rm same}(\alpha_1,\alpha_2+\pi)=-I^{\rm head}(\alpha_1,\alpha_2),
+ \qquad J^{\rm same}(\alpha_1,\alpha_2+\pi)+J^{\rm head}(\alpha_1,\alpha_2)=0.
+\]
+The original script inserts $\pi/2$ into its definition of continued $J$.
+There is no constant raw-$J$ cusp jump at $\alpha_2=\pi/3$ in the audited
+quadrature. The printed arctangent difference identity should be a sum;
+$\cos3\alpha$ changes sign at $\pi/6$. Even with a stipulated offset,
+the crossing coefficient would be $c_M-c_{\rm loop}$, not
+$c_M-c_{\rm loop}/2$; the stated light head-on sign of $\eta$ is reversed.
+\D The claimed absolute Stirling/Maslov cancellation is not established. \C
+\item \textbf{Small-amplitude interface.} With
+$\alpha_1=\lambda r$, $\alpha_2=\lambda$, $0<r<1$,
+$\Delta P=c_{\ln}\alpha\log\alpha+c_{\rm lin}\alpha+\cdots$ and
+$\mathcal C=c_{\ln}\log\lambda+c_{\rm lin}$, the corrected terms are
+\begin{align*}
+ H_{\rm ov}&\longrightarrow-2c_{\ln}\log r\log\frac{1-r}{1+r},\\
+ D_{\rm ov}&=-2(r^{-1}-r)\mathcal C-2c_{\ln}\frac{\log r}{r}+o(1),\\
+ (H+D)_{\rm ho}&=-2(r^{-1}+r)\mathcal C-2c_{\ln}\frac{\log r}{r}+o(1).
+\end{align*}
+The mode charge has $c_{\ln}=1/\pi$ and
+$c_{\rm lin}=(-\log2-1+\tfrac14\log3)/\pi$, not $c_{\ln}=-2/\pi$.
+Also $A_{\rm ho}=1+3r\lambda^2+O(\lambda^4)$ and
+\[
+ I_{\rm KdV}=-\frac4\pi\chi_2(r)
+ -\frac2\pi\log r\log\frac{1-r}{1+r},\qquad
+ J_{\rm KdV}=\frac\pi2+I_{\rm KdV},
+\]
+so $J$ does not generally vanish. The logarithmic product cancels in
+$I_{\rm KdV}-H_{\rm ov}$, not their sum.
+\end{enumerate}
+\C Under the audit's local zero-free analytic-branch and loop-expansion
+assumptions, one antisymmetric overtaking function remains the residual
+continuum two-body unknown. It is the same \emph{kind} of obstruction as the
+frame example; equality of functions requires a quantum map \D. The frame
+audit excludes that example on the Toda side; neither result establishes an
+arbitrary physical freedom in either theory. One-body inputs alone do not
+compute the residual. \C Evidence: \file{audit_smx.py}, groups
+\file{classical}, \file{families}, \file{poles}, \file{interfaces},
+\file{quadrature}; this addendum does not relabel their conditional physical
+claims as proofs.
+
+\subsection{N07: refuted formulas in \file{defq_charges_fusion.tex}}
+\C The controlling source is \file{audit_defq.tex} and its independent
+70-digit \file{audit_defq.py}. M04's distinction remains essential:
+scattering uses $s=\sigma_{\rm vac}$, growth uses $c=\eta\sigma_{\rm vac}$.
+The following corrections supplement M04--M14.
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Absorption input.} The extra orientation in
+\file{s_abs = -2 * r3 * q1 * eta_abs} passes $s=+1.5$ where $-1.5$ is
+required. It gives $z=1.58257569495584$, not $z=0$.
+Conservation on that transmitting solution does not test absorption.
+The audit's genuine absorption tests pass in both orientations.
+\item \textbf{Energy trace and real-mode normalisation.} For
+$K=a_tF_1+b_tG_1$, the correct trace is
+\[
+ \langle K\rangle_q+\langle K\rangle_{-q}
+ =+\frac{\omega}{4\pi}\{\theta'(q)+\theta'(-q)\},
+\]
+with a plus sign. The script asserts that sign but prints the opposite one.
+A real mode with amplitude $1/\sqrt{\pi\omega}$ has time average
+$1/(2\pi\omega)$; the covariance used in the calculation is
+$1/(4\pi\omega)$, requiring an explicit half weight or amplitude
+$1/\sqrt{2\pi\omega}$. The momentum trace survives the independent audit.
+\item \textbf{Asymptotic phase.} The sewn transmission has
+$z(+\infty)=z(-\infty)=e^{-2\pi i\eta/3}$, not the printed signed limit.
+This changes the cutoff phase reference, though not its derivative.
+The corrected linear UV divergence and boundary subtraction survive;
+no finite boundary scheme is thereby selected.
+\item \textbf{Threshold rate.} At $c=\sqrt3$ the remaining positive rate is
+$\sqrt3/4$, not $(2\sqrt3-1)/8$. The other branch is marginal.
+The generic real-triple counts $(0,1,2)$ and switching counts $(0,1,1)$
+survive, with repeated roots and completeness qualified as in the audit.
+\item \textbf{Pole argument against root shifts.} On the soliton root locus,
+\[
+ \frac{\ell(p)-\ell(q)}{p-q}
+ =3\sqrt3\{4(p^2+pq+q^2)-1\},\qquad
+ \ell(p)=3\sqrt3(4p^3-p).
+\]
+The alleged pole cancels, so this argument cannot exclude shifts.
+\D It does not follow that consistent quantum root shifts exist. \C
+\item \textbf{Scope of fusion obstructions.} Nonzero canonical holonomies
+and absorbed-momentum remainders are verified examples. A vertex counterterm
+telescopes and cannot remove a demonstrated nonzero holonomy at fixed edge
+data. \D Universal nonvanishing and a general physical no-go are unproved;
+shifted absorption data, the charge map and admissible states remain open.
+The restricted boundary-potential test does not classify every quantum
+counterterm. \C
+\end{enumerate}
+\test{november_defect} independently checks the asymptotic phase, threshold,
+real-mode variance and polynomial pole cancellation. The energy-operator and
+absorption checks remain attributed to \file{audit_defq.py}, not falsely
+claimed as fresh runs of this consolidation.
+
+\subsection{N08: one-body scheme result and corrections to its earlier audit}
+\C The analytic Toda coefficient and precision extraction survive:
+$C_T=1/(2\pi)$ and $0.1591549414\pm8.24\times10^{-6}$ (rounded-up deterministic
+envelope, about $5\times10^{-5}$ relative). The earlier interpretation as an
+unexplained structural factor of four is superseded. Define
+$E(P)=E_0(P)+\hbar_BF(P)+\cdots$, $C=\lim_{k\to0}F(k)/|P_0(k)|$ and
+$c_s=1+\hbar_Bs_1+\cdots$. The later scheme audit confirms
+\[
+ (C_{\rm ac},s_{1,\rm ac})=\left(\frac2\pi,\frac9{4\pi}\right),\qquad
+ (C_T,s_{1,T})=\left(\frac1{2\pi},\frac3{4\pi}\right).
+\]
+The vacuum elastic matching term, fixed without soliton input, is
+\[
+ \Delta\mathcal H=-\frac{3\hbar_B}{2\pi}u^2,
+ \qquad C_{\rm matched}=\frac1{2\pi},\qquad C-s_1=-\frac1{4\pi}.
+\]
+The last quantity is invariant under a common finite quadratic elastic
+subtraction. The continuum zero-sound-shift assumption and unmatched ratio
+$-8$ in \file{audit_onebody.tex} are refuted. \D Full quantum equivalence,
+the physical bad-equation determinant, and uniform limits remain open; the
+stable-band resonance is not repaired. Toda does not force a prescription on
+the good equation.
+
+\C Four further printed corrections to \file{audit_onebody.tex} are confirmed
+in \file{audit_onebody_scheme.tex}: use $b=e^{-a/2}$, not $\pi/a$;
+subtracting only the sound speed gives the edge velocity term
+$ay u'(y)/6$, not $ay(u'(y)-1)/6$; the latter subtraction also removes the
+classical soliton velocity excess. The $e_0/y^2$ term in $C_E$ has coefficient
+$3$, not $3/2$. At $q_*=-\sqrt3/2$, $v=1$, the stable-band resonance obeys
+$\omega_b'(q_*)=1$ and $\omega_b(q_*)=\sqrt3/4$, not the stated phase-velocity
+relation or derivative $-1/2$. Uniform interchange of limits is not established
+by the formal expansion. The scheme table's combined spreads at $y=8,16,32$
+omit the $1.685\times10^{-8}$ sound-speed spread; the script includes it.
+
+\test{november_onebody} independently differentiates the vacuum energies,
+checks the elastic coefficient and soliton moment, the invariant slopes,
+the leading Toda logarithmic contribution and the resonance/series corrections.
+\file{audit_onebody_scheme.py} remains the full independent package audit.
+No new regularisation is selected by recording its conditional matching result.
+
+\paragraph{Addendum coverage and failures recorded.}
+\C N01 and N02 are still-failing original checks, explicitly asserted as
+counterexamples in \file{november_records}; success of this errata checker
+means those discrepancies were reproduced, not repaired. N03--N05 record
+test coverage and repairs with their actual audit/inventory evidence. N06--N08
+retain all physical qualifications and identify which algebra is freshly
+rechecked here. No original tolerance or old script is edited. Audit-development
+failures, including the corrected cusp expectation in \file{audit_smx} and
+wrong asymptotic phase reference in \file{audit_defq}, remain in those audits'
+failures lists. No new mathematical tolerance is relaxed in this consolidation.
+\C The extended \file{errata_checks.py} completed with
+\texttt{ALL CHECKS PASSED}; no mathematical assertion failed during this
+consolidation. Both revised PDFs were built twice with \file{pdflatex};
+intermediate build and render files were kept outside the repository.
+
 \section{Numerical impact and coverage summary}
 \C ``Unchanged'' is limited to these corrections and the inspected
 implementations; it does not certify every physical interpretation.
@@ -1038,7 +1339,7 @@ completed checker runs, and no mathematical tolerance was relaxed.
 
 \paragraph{Reproduction and limits.}
 \C Run \file{python3 -B phase2/scripts/errata_checks.py}; it prints
-\file{ALL CHECKS PASSED}. Build \file{errata.tex} twice with
+\texttt{ALL CHECKS PASSED}. Build \file{errata.tex} twice with
 \file{pdflatex} in \file{phase2/}. The legacy suite was not run because
 some scripts write non-errata outputs; this checker writes none. The
 bibliographic access limitations and unresolved physical claims above remain.

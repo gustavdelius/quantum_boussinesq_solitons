@@ -41,6 +41,8 @@ When you use a source with different conventions, write down the explicit dictio
 | `phase2/` | quantisation write-ups (`*.tex`/`*.pdf`) and `scripts/` |
 | `corrigan-zambon/` | integrable defects: scripts and README |
 | `docs/` | standalone interactive page (GitHub Pages) |
+| `paper/` | the final paper |
+| `scripts_inventory.md` | verification-script inventory, coverage and recorded failures |
 
 - Write-ups are in **LaTeX**; commit both the `.tex` and the compiled `.pdf`. Build with `pdflatex` run twice. Do not commit `*.aux`, `*.log`, `*.out` or `*.toc`.
 - Follow the style of the existing write-ups: labelled claims, script names next to each claim, a summary table of claims and checks, failures recorded, and verified references only.
