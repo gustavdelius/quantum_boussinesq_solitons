@@ -1,0 +1,491 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=2em
+
+\newcommand{\La}{\textbf{(a)}}
+\newcommand{\Lb}{\textbf{(b)}}
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+\newcommand{\script}[1]{\texttt{#1}}
+\newcommand{\dd}{\mathrm{d}}
+
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}[proposition]{Corollary}
+\newtheorem{remark}[proposition]{Remark}
+
+\title{\textbf{Continuum Two-Soliton $O(\hbar^0)$ Phase in the Lattice-Matched Scheme:\\
+Bad-Equation Small-Amplitude Corner, Boundary Determinant Analysis,\\
+and Symmetric/Antisymmetric Separation}}
+\author{Continuum Two-Body Package (\script{twobody\_cont}) --- Research Note for Gustav Delius}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We compute and audit-harden the continuum one-loop ($O(\hbar_B^0)$) two-soliton scattering phase of the \textbf{bad} Boussinesq equation at \textbf{fixed physical momenta} in the \textbf{lattice-matched renormalisation scheme} ($\Delta\mathcal{H}=-\frac{3\hbar_B}{2\pi}u^2$), in the small-amplitude corner ($\beta_1=\varepsilon>\beta_2=r\varepsilon$, $0<r<1$) and at finite amplitudes, in both the overtaking and head-on channels \Lc. First, we show that while all implementations of $\Delta\mathcal{H}$ yield the same one-body fixed-momentum dispersion coefficient $C_{\rm matched}=\frac{1}{2\pi}=C_T$ \Lc, the two-body Faddeev--Korepin frame shift $\delta_{\rm renorm}=\Delta X_1'\Delta P_1+\Delta X_2'\Delta P_2=H_{12}[\Delta P]+D_{12}[\Delta P]$ depends on the one-soliton momentum shift $\Delta P_j$ alone and splits into three distinct prescriptions \Lc: (i) using the lattice-matched canonical collective momentum $p_{\rm can,matched}=\frac{\dd L_{1,\rm matched}}{\dd v}=-\frac{\epsilon}{\pi}\beta+\frac{10\epsilon}{9\pi}\beta^3+O(\beta^5)$ eliminates all $\ln\varepsilon$ infrared divergences, drives the Hirota shift to zero ($H_{12}=O(\varepsilon^2)$), and reduces the scale-invariant Darboux shifts by a factor of $4$ to $D_{\rm ov}[p_{\rm can,matched}](r)=-\frac{2}{\pi}(r^{-1}-r)$ and $D_{\rm ho}[p_{\rm can,matched}](r)=+\frac{2}{\pi}(r^{-1}+r)$ \Lc; (ii) using the fixed-profile mode-sum momentum $p_{\rm mode}$ leaves $H_{\rm ov}[p_{\rm mode}]=\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ and retains a logarithmic $\pm\frac{2}{\pi}(r^{-1}\mp r)\ln\varepsilon$ divergence in $D_{12}[p_{\rm mode}]$ \Lc; (iii) implementing $\Delta\mathcal{H}$ by direct on-shell sound-speed rescaling $c_s=\sqrt{1+2\hbar_B\lambda}$ yields $\Delta_{\rm ct}^{\rm sound}\delta=\lambda(3\delta_0+4P_{0,1}\Delta X_1'+4P_{0,2}\Delta X_2')=O(\varepsilon^2)\to 0$ in both channels \Lc. Second, addressing open problem~\#2, we compute the exact finite-$R$ configuration-space kinetic norm of the time-modulated bad-branch soliton, prove that any local analytic counterterm of order $O(\sinh^5\beta)$ vanishes in $C_{\rm matched}$ and in the $O(1)$ two-body frame shifts, and state the three quantities that remain undetermined on the continuum side \Lc/\Ld. Third, we separate the symmetric and antisymmetric parts under particle exchange: in the directional Bethe/Darboux frame of the Toda comparison, the lattice-matched continuum prediction for the large-$Y$ mixed second difference (rectangle) is $\lim_{Y\to\infty}\mathcal{D}_0(Y)=-2C_{\rm matched}(15\sqrt2-20)=-\frac{15\sqrt2-20}{\pi}\approx -0.386175$, matching the Toda extrapolation $\mathcal{D}_0(32)=-0.39575\pm 0.0217$ within $0.0096$ (whereas the bare continued value $C_{\rm ac}=\frac{2}{\pi}$ gives $-1.544699$, off by a factor of $4$) \Lc. All continuum phase components are tabulated at 55-digit precision in \script{twobody\_cont\_grid.json}.
+\end{abstract}
+
+\tableofcontents
+
+\section{Conventions, Bad/Toda Dictionary, and Scope}
+
+We follow the ground rules of \texttt{AGENTS.md} and the audit hierarchy of \texttt{README.md} and \texttt{phase2/report.tex}: every nontrivial claim is labelled \La\ (proved in the literature), \Lb\ (conjectured or heuristic in the literature), \Lc\ (derived and script-verified in this project), or \Ld\ (a guess or unestablished identification), and every \Lc\ formula is verified by one of the three standalone scripts
+\[
+\script{twobody\_cont\_phase.py},\qquad
+\script{twobody\_cont\_det\_antisym.py},\qquad
+\script{twobody\_cont\_grid.py},
+\]
+each ending with \texttt{ALL CHECKS PASSED}.
+
+\paragraph{Good and bad Boussinesq conventions.}
+In the repository normalisation (\texttt{AGENTS.md}, \texttt{phase1/review.tex}), the \textbf{good} Boussinesq equation is $u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ with potential $u=\phi_x=2(\ln\tau)_{xx}$ and symplectic form $\Omega=\int\dd\pi\wedge\dd\phi$ ($\pi=\phi_t$). The \textbf{bad} Boussinesq equation, obtained by analytic continuation $\alpha=-i\beta$ ($\beta>0$) and curated in \texttt{phase2/toda\_route.tex} and \texttt{phase2/onebody\_scheme.tex}, is
+\begin{equation}\label{eq:bad_pde}
+u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx},\qquad u=\phi_x=2(\ln\tau)_{xx},
+\end{equation}
+with supersonic one-soliton parameters ($\epsilon\in\{\pm 1\}$):
+\begin{equation}\label{eq:bad_onesol}
+\begin{aligned}
+u_0(x,t)&=-\frac{k^2}{2}\operatorname{sech}^2\frac{k(x-X-vt)}{2},\qquad \Phi(\xi;v,C)=C-k\tanh\frac{k\xi}{2},\\
+k&=\sinh\beta,\qquad v=\epsilon\cosh\beta,\qquad \ell=\epsilon\cosh 3\beta,\qquad M=\int_{-\infty}^\infty(-u_0)\,\dd x=2\sinh\beta,\\
+\Pi&=-2\epsilon\sinh\beta\cosh\beta,\qquad P_0=\frac23\epsilon\sinh^3\beta\cosh\beta,\qquad E_0=\frac23\sinh^3\beta+\frac{8}{15}\sinh^5\beta,
+\end{aligned}
+\end{equation}
+and classical collective Lagrangian $L_0(\beta)=vP_0-E_0=-\frac{2}{15}\sinh^5\beta$, which satisfies $\frac{\dd L_0}{\dd v}=P_0$ and $\frac{\dd P_0}{\dd\beta}=\frac23\epsilon\sinh\beta\sinh 3\beta$ \Lc\ (\script{twobody\_cont\_phase.py}, \script{twobody\_cont\_grid.py}).
+
+\paragraph{Bad-Boussinesq / Toda Fermi-edge dictionary.}
+From \texttt{phase2/toda\_route.tex} eqs.~(13)--(24) and \texttt{phase2/onebody\_dispersion\_test.tex} eqs.~(30)--(36), the hyperbolic Toda chain with potential $V(r)=e^{-r}+r-1$ at finite background strain $a>0$ ($b=e^{-a/2}$, sound speed $c_s=a\sqrt{b}$) maps in its right-moving plus left-moving continuum limit to the bad Boussinesq equation~\eqref{eq:bad_pde} via \Lc\ (\script{twobody\_cont\_grid.py}):
+\begin{equation}\label{eq:toda_dict}
+\begin{aligned}
+\kappa_j&=\sqrt{3}\,\beta_j,\qquad h=3b\,\hbar_B,\qquad \hbar_B=\frac{h}{3b},\\
+y_j&=\frac{b\kappa_j^2}{h}=\frac{\beta_j^2}{\hbar_B},\qquad \beta_j=\sqrt{\hbar_B\,y_j},\qquad r:=\frac{\beta_2}{\beta_1}=\sqrt{\frac{y_2}{y_1}},\\
+P_B&=\frac{a\,\overline{P}}{6\sqrt{3}\,b},\qquad E_B=\frac{\overline{E}}{6\sqrt{3}\,b^2},\qquad S_T=3b\,S_B\implies \frac{\delta_T}{h}=\frac{\delta_B}{\hbar_B}.
+\end{aligned}
+\end{equation}
+Because $S_T/h=S_B/\hbar_B$ holds identically, dimensionless semiclassical scattering phases $\delta(\beta_1,\beta_2)=\hbar_B^{-1}\delta_{0,B}+\delta_{1,B}+O(\hbar_B)$ require \emph{no overall rescaling factor} between the bad Boussinesq continuum ($O(\hbar_B^0)$) and the Toda lattice ($O(h^0)$) \Lc\ (\script{twobody\_cont\_grid.py}). In the Fermi-edge scaling regime where $y_j=\beta_j^2/\hbar_B$ is held fixed as $\hbar_B\to 0$, expanding at small amplitude $\beta_1=\varepsilon>\beta_2=r\varepsilon$ ($\varepsilon=\sqrt{\hbar_B y_1}$) organises the continuum phase into a power series in $\varepsilon^2=y_1\hbar_B$.
+
+\section{Bad-Equation Two-Soliton Phase in the Lattice-Matched Scheme (Task 1)}
+
+\subsection{Exact Factored Hirota Ratio and Classical Phase on the Bad Branch}
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_phase.py}, \script{twobody\_cont\_grid.py}]\label{prop:bad_classical}
+On the bad Boussinesq branch ($k_j=\sinh\beta_j$, $v_j=\epsilon_j\cosh\beta_j$, $w_j=k_j v_j$, $\ell_j=\epsilon_j\cosh 3\beta_j$, $M_j=2\sinh\beta_j$), the single-soliton dispersion relation $P_-(k_j,w_j)=w_j^2-k_j^2-k_j^4=0$ factors a common $2k_1 k_2$ divisor out of the Hirota interaction coefficient $A_{12,b}=-P_-(k_1-k_2,w_1-w_2)/P_-(k_1+k_2,w_1+w_2)$, reducing it to the exact degree-2 form
+\begin{equation}\label{eq:A12_bad_factored}
+A_{12,b}(\beta_1,\epsilon_1;\beta_2,\epsilon_2)
+=\frac{\epsilon_1\epsilon_2\cosh\beta_1\cosh\beta_2-1-2(\sinh^2\beta_1+\sinh^2\beta_2)+3\sinh\beta_1\sinh\beta_2}{\epsilon_1\epsilon_2\cosh\beta_1\cosh\beta_2-1-2(\sinh^2\beta_1+\sinh^2\beta_2)-3\sinh\beta_1\sinh\beta_2}.
+\end{equation}
+Unlike the good branch (which has resonant poles at $\alpha_1\mp\alpha_2=\pi/3$), $A_{12,b}(\beta_1,\epsilon_1;\beta_2,\epsilon_2)>0$ for all $\beta_1\neq\beta_2>0$ in both the overtaking ($\epsilon_1=\epsilon_2$) and head-on ($\epsilon_1=-\epsilon_2$) channels \Lc. For $v_1>v_2$ (which covers overtaking with $\beta_1>\beta_2$, $\epsilon_1=\epsilon_2=+1$ and head-on with $\epsilon_1=+1,\epsilon_2=-1$), the classical action phase shift is
+\begin{equation}\label{eq:delta0_bad}
+\delta_{0,b}(\beta_1,\epsilon_1;\beta_2,\epsilon_2)
+=\frac29(\ell_1-\ell_2)\ln A_{12,b}+\frac23 M_1 M_2(v_1-v_2),
+\end{equation}
+and in all four sign sectors $(\epsilon_1,\epsilon_2)\in\{\pm 1\}^2$ its canonical momentum derivatives satisfy identically
+\begin{equation}\label{eq:d_delta0_dP}
+-\frac{\partial\delta_{0,b}}{\partial P_{0,1}}=\Delta X_1'=\Delta x_{12}+\gamma_1 M_2,\qquad
+-\frac{\partial\delta_{0,b}}{\partial P_{0,2}}=\Delta X_2'=\Delta x_{21}-\gamma_2 M_1,
+\end{equation}
+where $\Delta x_{12}=-\frac{\ln A_{12,b}}{\sinh\beta_1}$, $\Delta x_{21}=+\frac{\ln A_{12,b}}{\sinh\beta_2}$, and $\gamma_j=\frac{\dd\Pi_j}{\dd P_{0,j}}=-\frac{3\cosh 2\beta_j}{\sinh\beta_j\sinh 3\beta_j}$ (independent of $\epsilon_j$).
+\end{proposition}
+
+In the small-amplitude corner $\beta_1=\varepsilon>\beta_2=r\varepsilon$ ($0<r<1$), Proposition~\ref{prop:bad_classical} expands as \Lc\ (\script{twobody\_cont\_phase.py}):
+\begin{itemize}
+\item \textbf{Overtaking channel} ($\epsilon_1=\epsilon_2=+1$, $v_1>v_2>1$):
+\begin{align}
+\frac{A_{\rm ov}(\varepsilon,r\varepsilon)}{A_0(r)}&=1+r\varepsilon^2+\frac12 r^2\varepsilon^4+O(\varepsilon^6),\qquad A_0(r):=\left(\frac{1-r}{1+r}\right)^2,\label{eq:A_ov_small}\\
+\delta_{0,b}^{\rm ov}(\varepsilon,r\varepsilon)&=(1-r^2)\ln A_0(r)\,\varepsilon^2+\left[\frac34(1-r^4)\ln A_0(r)+\frac73 r(1-r^2)\right]\varepsilon^4+O(\varepsilon^6).\label{eq:d0_ov_small}
+\end{align}
+\item \textbf{Head-on channel} ($\epsilon_1=+1,\epsilon_2=-1$, $v_1>0>v_2$):
+\begin{align}
+A_{\rm ho}(\varepsilon,r\varepsilon)&=1-3r\varepsilon^2+\left[\frac92 r^2+\frac{13}{4}r(1+r^2)\right]\varepsilon^4+O(\varepsilon^6),\qquad
+\ln A_{\rm ho}=-3r\varepsilon^2+\frac{13}{4}r(1+r^2)\varepsilon^4+O(\varepsilon^6),\label{eq:A_ho_small}\\
+\delta_{0,b}^{\rm ho}(\varepsilon,r\varepsilon)&=4r\varepsilon^2+\frac23 r(1+r^2)\varepsilon^4+O(\varepsilon^6).\label{eq:d0_ho_small}
+\end{align}
+\end{itemize}
+Notice that in the head-on channel the Hirota trajectory shift is $\Delta x_{12}^{\rm ho}=-\frac{\ln A_{\rm ho}}{\sinh\beta_1}=+3r\varepsilon+O(\varepsilon^3)$, which is $O(\varepsilon^2)$ smaller than the Darboux tail shift $\gamma_1 M_2=-\frac{2r}{\varepsilon}+O(\varepsilon)$, so the leading classical head-on phase $\delta_{0,b}^{\rm ho}=4\beta_1\beta_2+O(\varepsilon^4)$ arises from adding $-\frac43\beta_1\beta_2$ (from $\frac29(\ell_1-\ell_2)\ln A_{\rm ho}$) and $+\frac{16}{3}\beta_1\beta_2$ (from $\frac23 M_1 M_2(v_1-v_2)$) \Lc\ (\script{twobody\_cont\_phase.py}).
+
+\subsection{Phonon Determinant Phase Integrals $I_{12}$ and $J_{12}$}
+
+Following \texttt{phase2/oneloop\_phase.tex}, \texttt{phase2/errata.tex}, and \texttt{phase2/audit\_determinant\_foundations.tex}, let $I_{12}=\frac{1}{4\pi}\int_{\mathbb{R}\setminus\{0\}}\theta_1(q)\theta_2'(q)\,\dd q$ be the raw stationary-phase phonon integral and $J_{12}=\frac12(I_{12}-I_{21})$ its antisymmetrised partner. Because the $q=0^\pm$ Levinson endpoint constants on the light good branch ($\alpha_j\in(0,\pi/3)$) are $\theta_j(0^\pm;\alpha_j,\epsilon_j)=\pi(\pm 1+\epsilon_j)$ \Lc\ (\texttt{phase2/audit\_determinant\_foundations.tex}), integration by parts yields \Lc:
+\begin{equation}\label{eq:I_J_relation}
+I_{12}+I_{21}=-\frac{\pi}{2}(\epsilon_1+\epsilon_2),\qquad
+I_{12}=J_{12}-\frac{\pi}{4}(\epsilon_1+\epsilon_2).
+\end{equation}
+On the bad branch ($\alpha_j=-i\beta_j$), the three Lax roots are complex conjugates of one real root:
+\begin{equation}\label{eq:bad_roots}
+\kappa_{j,1}=\frac12\sinh\beta_j+i\frac{\sqrt3}{2}\cosh\beta_j,\qquad
+\kappa_{j,2}=\overline{\kappa_{j,1}},\qquad
+\kappa_{j,3}=-\sinh\beta_j,
+\end{equation}
+with weights $(c_1,c_2,c_3)=(+1,+1,-2)$. Although the bad-Boussinesq vacuum is linearly unstable on the long-wavelength band $|q|\in(0,1)$ (and $|q|\in(0,\sqrt{1+\sinh^2\beta_j})$ around one soliton), the two-body scattering phase integral continued via $\alpha_j=-i\beta_j$ (or integrated directly along real $q\in\mathbb{R}\setminus\{0\}$ using the branch-continuous odd/even decomposition of $\theta_j(q)$ with $t=\sqrt{1+q^2}$) is real and UV-convergent for all $\beta_1\neq\beta_2>0$ \Lc\ (\script{twobody\_cont\_phase.py}).
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_phase.py}]\label{prop:bad_det_small}
+In the small-amplitude corner $\beta_1=\varepsilon>\beta_2=r\varepsilon$ ($0<r<1$) on the bad branch:
+\begin{enumerate}
+\item \textbf{Overtaking channel} ($\epsilon_1=\epsilon_2=+1$): The $r=3,s=3$ real-root sector ($\kappa_{j,3}=-\sinh\beta_j$) reproduces the scale-invariant KdV integral $I_{\rm KdV}(r)$ at $O(1)$, while the complex conjugate root pairs $\kappa_{j,1},\kappa_{j,2}$ contribute starting at $O(\varepsilon^2)$:
+\begin{align}
+I_{12,b}^{\rm ov}(\varepsilon,r\varepsilon)&=I_{\rm KdV}(r)+c_{2,\rm det}^{\rm ov}(r)\,\varepsilon^2+O(\varepsilon^4),\qquad
+J_{12,b}^{\rm ov}(\varepsilon,r\varepsilon)=\frac{\pi}{2}+I_{12,b}^{\rm ov}(\varepsilon,r\varepsilon),\label{eq:I_ov_bad_small}\\
+I_{\rm KdV}(r)&=-\frac{4}{\pi}\chi_2(r)-\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}=\frac{4}{\pi}\int_0^r\frac{\ln x}{1-x^2}\,\dd x,\label{eq:I_KdV_def}\\
+c_{2,\rm det}^{\rm ov}(r)&=-\frac{1}{3\pi}\left[2(1-r^2)\ln\frac{1-r}{1+r}+9r\right],\label{eq:c2_det_ov}
+\end{align}
+where $\chi_2(r)=\frac12[\operatorname{Li}_2(r)-\operatorname{Li}_2(-r)]$. Formula~\eqref{eq:c2_det_ov} is verified to 60 digits against direct 2D quadrature of the $q$-integral and to $O(\varepsilon^4)$ against the exact 9-term dilogarithm sum \Lc\ (\script{twobody\_cont\_phase.py}).
+\item \textbf{Head-on channel} ($\epsilon_1=+1,\epsilon_2=-1$): Both $I_{12,b}^{\rm ho}$ and $J_{12,b}^{\rm ho}$ vanish at $O(1)$ and start at $O(\varepsilon^2)$:
+\begin{equation}\label{eq:I_ho_bad_small}
+I_{12,b}^{\rm ho}(\varepsilon,r\varepsilon)=J_{12,b}^{\rm ho}(\varepsilon,r\varepsilon)
+=c_{2,\rm det}^{\rm ho}(r)\,\varepsilon^2+O(\varepsilon^4),\qquad
+c_{2,\rm det}^{\rm ho}(r)=-\frac{8}{\pi}r.
+\end{equation}
+\item \textbf{Invariance under $\Delta\mathcal{H}$:} Because the lattice-matching counterterm $\Delta\mathcal{H}=\hbar_B\lambda u^2$ ($\lambda=-\frac{3}{2\pi}$) is explicitly $O(\hbar_B)$, it enters the one-loop effective action directly at $O(\hbar_B)$ evaluated on the classical saddle $u_{\rm cl}$ and does not modify the $O(\hbar_B^0)$ quadratic fluctuation operator $\mathcal{D}_v$ or the phonon phase shift $\theta_j(q)$. Thus $I_{12,b}$ and $J_{12,b}$ are unchanged at $O(\hbar_B^0)$ \Lc.
+\end{enumerate}
+\end{proposition}
+
+\subsection{The Three Continuum Implementations of the Lattice-Matched Scheme at Two-Body}
+
+In \texttt{phase2/onebody\_scheme.tex} and \texttt{phase2/audit\_onebody\_scheme.tex}, matching the continuum vacuum sound-speed elasticity to the Toda chain fixes the local counterterm
+\begin{equation}\label{eq:Delta_H}
+\Delta\mathcal{H}=\hbar_B\lambda u^2,\qquad
+\lambda=s_{1,T}-s_{1,b,\rm ac}=\frac{3}{4\pi}-\frac{9}{4\pi}=-\frac{3}{2\pi}.
+\end{equation}
+On a stationary one-soliton background $u_0$, $\int_{-\infty}^\infty u_0^2\,\dd x=\frac23\sinh^3\beta$, so $\Delta\mathcal{H}$ adds $\Delta_{\rm ct}F(\beta)=\frac23\lambda\sinh^3\beta=-\frac{1}{\pi}\sinh^3\beta$ to the one-loop collective energy $F(\beta)=-L_1(\beta)=\Delta E|_P(\beta)/\hbar_B$, shifting \Lc\ (\script{twobody\_cont\_phase.py}):
+\begin{align}
+F_{\rm ac}(\beta)&=\frac{\sqrt3}{\pi}\left(\sinh^2\beta+\frac34\right)\arctan\frac{2\sinh\beta}{\sqrt3}-\frac{3}{2\pi}\sinh\beta
+=\frac{4}{3\pi}\beta^3+\frac{14}{45\pi}\beta^5+\frac{97}{1890\pi}\beta^7+O(\beta^9),\label{eq:F_ac}\\
+F_{\rm matched}(\beta)&=F_{\rm ac}(\beta)-\frac{1}{\pi}\sinh^3\beta
+=\frac{1}{3\pi}\beta^3-\frac{17}{90\pi}\beta^5-\frac{431}{7560\pi}\beta^7+O(\beta^9),\label{eq:F_matched}\\
+C_{\rm matched}&=\lim_{\beta\to 0}\frac{F_{\rm matched}(\beta)}{|P_0(\beta)|}=\frac{1}{2\pi}=C_T\qquad\left(\text{vs.\ }C_{\rm ac}=\frac{2}{\pi}=4C_T\right).\label{eq:C_matched}
+\end{align}
+
+As noted in \texttt{phase2/audit\_onebody\_scheme.tex} and \texttt{phase2/audit\_smx.tex}, at the one-body level the fixed-momentum energy shift $\Delta E|_P=\hbar_B(e-vp)=-\hbar_B L_1$ is invariant under any redefinition $(e,p)\mapsto(e+v\delta p,\,p+\delta p)$ because $v\delta p$ cancels out of $e-vp$. At the \textbf{two-body} level, however, converting the fixed-parameter saddle phase into the fixed-physical-momentum scattering phase produces the Faddeev--Korepin frame shift
+\begin{equation}\label{eq:delta_renorm_def}
+\delta_{\rm renorm}(1,2)=-\frac{\partial\delta_0}{\partial P_{0,1}}p_1-\frac{\partial\delta_0}{\partial P_{0,2}}p_2
+=\Delta X_1' p_1+\Delta X_2' p_2=H_{12}[p]+D_{12}[p],
+\end{equation}
+where $P_{\rm phys,j}=P_{0,j}+\hbar_B p_j$, $H_{12}[p]=\Delta x_{12}p_1+\Delta x_{21}p_2$ is the Hirota part, and $D_{12}[p]=\gamma_1 M_2 p_1-\gamma_2 M_1 p_2$ is the Darboux tail part. Equation~\eqref{eq:delta_renorm_def} depends on $p_j(\beta_j,\epsilon_j)$ alone! We therefore evaluate all three candidate implementations of the lattice-matched scheme in \script{twobody\_cont\_phase.py}:
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_phase.py}]\label{prop:three_prescriptions}
+In the lattice-matched scheme ($\lambda=-\frac{3}{2\pi}$), the three continuum fixed-momentum prescriptions give the following analytical expansions in the small-amplitude corner $\beta_1=\varepsilon>\beta_2=r\varepsilon$ ($0<r<1$):
+\begin{enumerate}
+\item \textbf{Prescription C-matched (Canonical collective momentum $p_{\rm can,matched}=\frac{\dd L_{1,\rm matched}}{\dd v}$):}
+Since $L_{1,\rm matched}(v)=-F_{\rm matched}(\beta(v))$ is the one-loop effective collective Lagrangian, Noether's theorem on the collective coordinate $X(t)$ defines the canonical momentum shift $p_{\rm can,matched}(\beta,\epsilon)=\frac{\epsilon}{\sinh\beta}\frac{\dd L_{1,\rm matched}}{\dd\beta}$:
+\begin{align}
+p_{\rm can,matched}(\beta,\epsilon)&=-\frac{2\epsilon\sqrt3}{\pi}\cosh\beta\arctan\frac{2\sinh\beta}{\sqrt3}+\frac{3\epsilon}{\pi}\sinh\beta\cosh\beta\nonumber\\
+&=-\frac{\epsilon}{\pi}\beta+\frac{10\epsilon}{9\pi}\beta^3+\frac{2\epsilon}{9\pi}\beta^5+O(\beta^7),\label{eq:p_can_matched}\\
+p_{\rm can,ac}(\beta,\epsilon)&=-\frac{2\epsilon\sqrt3}{\pi}\cosh\beta\arctan\frac{2\sinh\beta}{\sqrt3}
+=-\frac{4\epsilon}{\pi}\beta-\frac{8\epsilon}{9\pi}\beta^3-\frac{4\epsilon}{15\pi}\beta^5+O(\beta^7).\label{eq:p_can_ac}
+\end{align}
+More generally, for any smooth $F(\beta)=\frac23 C\beta^3+O(\beta^5)$, the linear slope of $p_{\rm can}$ is universally $c_1(p_{\rm can})=-2C$, and the dressed momentum Jacobian satisfies
+\begin{equation}\label{eq:jac_matched}
+\frac{\dd(P_0+\hbar_B p_{\rm can,matched})}{\dd P_0}
+=1-\frac{C_{\rm matched}}{y}+\frac{5\beta^2}{2\pi y}+O(\beta^4)
+=1-\frac{1}{2\pi y}+O(\hbar_B),
+\end{equation}
+which matches the large-$y$ Toda Bethe Jacobian $u'(y)=1-\frac{1}{2\pi y}+O(y^{-3/2})$ in \texttt{phase2/frame\_dictionary.tex} \Lc\ (\script{twobody\_cont\_det\_antisym.py}). Because $c_{\ln}=0$ in~\eqref{eq:p_can_matched}, \textbf{all $\ln\varepsilon$ infrared divergences vanish}, $H_{12}$ vanishes at $O(1)$, and $D_{12}$ is finite and scale-invariant in both channels:
+\begin{align}
+H_{\rm ov}[p_{\rm can,matched}]&=-\frac{23}{18\pi}(1-r^2)\ln A_0(r)\,\varepsilon^2+O(\varepsilon^4)\xrightarrow{\varepsilon\to 0}0,\label{eq:H_ov_can_m}\\
+D_{\rm ov}[p_{\rm can,matched}]&=-\frac{2}{\pi}\left(r^{-1}-r\right)-\frac{1}{3\pi}\left(r^{-1}-r^3\right)\varepsilon^2+O(\varepsilon^4)
+\qquad\left(\text{vs.\ }-\frac{8}{\pi}(r^{-1}-r)\text{ for }p_{\rm can,ac}\right),\label{eq:D_ov_can_m}\\
+H_{\rm ho}[p_{\rm can,matched}]&=-\frac{6}{\pi}r\varepsilon^2+O(\varepsilon^4)\xrightarrow{\varepsilon\to 0}0,\label{eq:H_ho_can_m}\\
+D_{\rm ho}[p_{\rm can,matched}]&=+\frac{2}{\pi}\left(r^{-1}+r\right)+\frac{1}{\pi}\left[\frac13\left(r^{-1}+r^3\right)-\frac{28}{9}r\right]\varepsilon^2+O(\varepsilon^4)
+\qquad\left(\text{vs.\ }+\frac{8}{\pi}(r^{-1}+r)\text{ for }p_{\rm can,ac}\right).\label{eq:D_ho_can_m}
+\end{align}
+
+\item \textbf{Prescription M (Fixed-profile mode-sum momentum $p_{\rm mode}$):}
+Because $\Delta\mathcal{L}=-\Delta\mathcal{H}=-\hbar_B\lambda\phi_x^2$ contains no time derivatives $\phi_t$, the field momentum density $\mathcal{P}=-\pi\phi_x$ is independent of $\lambda$, so at fixed classical profile $\Delta_{\rm ct}p_{\rm mode}=0$ (\texttt{phase2/audit\_onebody\_scheme.tex}). Thus $p_{\rm mode}$ retains its bare expansion
+\begin{equation}\label{eq:p_mode_exp}
+p_{\rm mode}(\beta,\epsilon)=\epsilon\left(c_{\ln}\beta\ln\beta+c_{\rm lin}\beta\right)+O(\beta^3\ln\beta),\qquad
+c_{\ln}=\frac{1}{\pi},\quad c_{\rm lin}=\frac{-\ln 2-1+\frac14\ln 3}{\pi},
+\end{equation}
+which yields a non-zero $O(1)$ Hirota shift in the overtaking channel that cancels the log-product term of $I_{\rm KdV}(r)$, alongside a scale-dependent $\ln\varepsilon$ infrared divergence in the Darboux shifts:
+\begin{align}
+H_{\rm ov}[p_{\rm mode}]&=+\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}+O(\varepsilon^2\ln\varepsilon),\label{eq:H_ov_mode}\\
+D_{\rm ov}[p_{\rm mode}]&=2\left(r^{-1}-r\right)\left(\frac{1}{\pi}\ln\varepsilon+c_{\rm lin}\right)+\frac{2}{\pi r}\ln r+O(\varepsilon^2\ln\varepsilon),\label{eq:D_ov_mode}\\
+H_{\rm ho}[p_{\rm mode}]&=O(\varepsilon^2\ln\varepsilon)\to 0,\qquad
+D_{\rm ho}[p_{\rm mode}]=-2\left(r^{-1}+r\right)\left(\frac{1}{\pi}\ln\varepsilon+c_{\rm lin}\right)-\frac{2}{\pi r}\ln r+O(\varepsilon^2\ln\varepsilon).\label{eq:D_ho_mode}
+\end{align}
+
+\item \textbf{Prescription S (Direct on-shell sound-speed rescaling $c_s=\sqrt{1+2\hbar_B\lambda}$):}
+Absorbing $\Delta\mathcal{H}=\hbar_B\lambda u^2$ into the modified equation of motion $u_{tt}=c_s^2 u_{xx}+u_{xxxx}+3(u^2)_{xx}$ with $c_s^2=1+2\hbar_B\lambda$ rescales the exact $N$-soliton solutions via $x=c_s^{-1}\tilde x$, $t=c_s^{-2}\tilde t$, $\phi=c_s\tilde\phi$, $u=c_s^2\tilde u$, under which
+\begin{equation}\label{eq:sound_scaling}
+S_{c_s}=c_s^3\tilde S,\qquad P_{c_s}=c_s^4\tilde P,\qquad E_{c_s}=c_s^5\tilde E,\qquad v_{c_s}=c_s\tilde v.
+\end{equation}
+Differentiating with respect to $c_s^2$ at $c_s=1$ ($\frac{\dd c_s}{\dd(\hbar_B\lambda)}=1$) at fixed physical momentum $P_{c_s}=P_0$ yields the exact one-soliton Virial identity $5E_0(\beta)-4v(\beta)P_0(\beta)=\frac23\sinh^3\beta=\int u_0^2\,\dd x$ and the two-soliton fixed-momentum counterterm phase shift
+\begin{equation}\label{eq:sound_ct_delta}
+\Delta_{\rm ct}^{\rm sound}\delta(1,2)=\lambda\left(3\delta_{0,b}+4P_{0,1}\Delta X_1'+4P_{0,2}\Delta X_2'\right).
+\end{equation}
+Because the leading small-amplitude classical phase $\delta_{0,b}^{(0)}\propto |P_{0,1}|^{1/3}|P_{0,2}|^{1/3}\hat\delta_0((P_{0,2}/P_{0,1})^{1/3})$ is homogeneous of degree $\frac23<\frac34$ in $(P_{0,1},P_{0,2})$, $\Delta_{\rm ct}^{\rm sound}\delta(1,2)$ has \emph{no $O(1)$ piece} and starts at $O(\varepsilon^2)$ in both channels:
+\begin{align}
+\Delta_{\rm ct}^{\rm sound}\delta^{\rm ov}(\varepsilon,r\varepsilon)&=-\frac{1}{2\pi}(1-r^2)\ln A_0(r)\,\varepsilon^2+O(\varepsilon^4)\xrightarrow{\varepsilon\to 0}0,\label{eq:sound_ov}\\
+\Delta_{\rm ct}^{\rm sound}\delta^{\rm ho}(\varepsilon,r\varepsilon)&=-\frac{2}{\pi}r\varepsilon^2-\frac{3}{\pi}r(1+r^2)\varepsilon^4+O(\varepsilon^6)\xrightarrow{\varepsilon\to 0}0.\label{eq:sound_ho}
+\end{align}
+\end{enumerate}
+\end{proposition}
+
+\section{Open Problem \#2: Boundary-Compatible Determinant and Undetermined Terms (Task 2)}
+
+\subsection{Exact Finite-$R$ Kinetic Norm and Non-Commuting Projector Tails on the Bad Branch}
+
+In \texttt{phase2/det\_projected\_oneloop.tex} and \texttt{phase2/audit\_det\_projected.tex}, the instantaneous collective phase space was completed to a four-dimensional symplectic space $(X,P,C,\Pi)$ with finite symplectic pairing $\Omega(\xi_X,\xi_P)=\frac{\dd P_0}{\dd v}$ and $\Omega(\xi_C,\xi_\Pi)=1$, but the configuration-space kinetic norm of time-modulated shift and width variations was shown to diverge linearly with the box size $R$. We establish the exact bad-branch formula including the finite $O(1)$ remainder:
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_det\_antisym.py}]\label{prop:kinetic_norm}
+For the bad-Boussinesq potential profile $\Phi(\xi;v,C)=C-\sinh\beta\tanh(\frac12\xi\sinh\beta)$ with $k=\sinh\beta$ and $v=\epsilon\cosh\beta$:
+\begin{enumerate}
+\item The collective symplectic pairing is $\Omega(\xi_X,\xi_P)=\frac{\dd P_0}{\dd v}=\frac23\sinh 3\beta=\frac23 k(3+4k^2)>0$ for all $\beta>0$ \Lc.
+\item The velocity tangent is $\partial_v\Phi=-\epsilon\coth\beta\left(\tanh z+z\operatorname{sech}^2 z\right)$ where $z=\frac12 k\xi$, with non-vanishing spatial limits $\partial_v\Phi(\pm\infty)=\mp\epsilon\coth\beta=\mp\frac{v}{k}$. On $[-R,R]$, using $\int_{-\infty}^\infty[(\tanh z+z\operatorname{sech}^2 z)^2-1]\,\dd z=2\int_0^\infty z^2\operatorname{sech}^4 z\,\dd z=+\frac{\pi^2-6}{9}$, the configuration-space kinetic integral of a time-modulated profile $\dot\Phi=\dot C+\dot v\,\partial_v\Phi$ is
+\begin{equation}\label{eq:bad_kinetic_norm}
+\frac12\int_{-R}^R\left(\dot C+\dot v\,\partial_v\Phi\right)^2\dd\xi
+=R\left(\dot C^2+\frac{v^2}{k^2}\dot v^2\right)+\frac{v^2(\pi^2-6)}{9k^3}\dot v^2+O\!\left(R^2 e^{-kR}\right).
+\end{equation}
+\item For any localized smooth phase-space fluctuation $\eta=(\delta\phi,\delta\pi)$, the symplectic projector $\mathcal{P}=I-\Pi_{\rm coll}$ onto the orthogonal complement of the collective subspace produces non-vanishing spatial tails $(\mathcal{P}\eta)_\phi(\pm\infty)=b_r\pm\frac{v}{k}b_X$, and the non-zero collective Poisson brackets $\{X,P\}=1$, $\{C,\Pi\}=1$ imply $[\partial_t-v\partial_\xi,\mathcal{P}]\neq 0$ \Lc.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Cutoff-Endpoint and Subtraction Sensitivity of $L_1(\beta)=-F(\beta)$}
+
+As proved in \texttt{phase2/det\_projected\_oneloop.tex} eq.~(30) and audited in \texttt{phase2/audit\_det\_projected.tex}, in a finite-cutoff phonon trace with upper endpoint $B_\Lambda=\Lambda+b_1 k+b_2 k^2+b_3 k^3+O(\Lambda^{-1})$ and finite subtraction $C_\Lambda$, the one-loop collective energy $F(\beta)=-L_1(\beta)$ acquires local polynomial terms in $k=\sinh\beta$:
+\begin{equation}\label{eq:F_gen}
+F(\beta;c_{\rm tad},\lambda,c_5)=F_{\rm ac}(\beta)+2c_{\rm tad}\sinh\beta+\frac23\lambda\sinh^3\beta+c_5\sinh^5\beta+O(\sinh^7\beta),
+\end{equation}
+corresponding to local counterterms $c_{\rm tad}\int(-u_0)\,\dd x=2c_{\rm tad}\sinh\beta$, $\lambda\int u_0^2\,\dd x=\frac23\lambda\sinh^3\beta$, and $c_5\sinh^5\beta$ (from $u_x^2$ or $u^3$). In \script{twobody\_cont\_det\_antisym.py} we verify \Lc:
+\begin{align}
+\frac{F(\beta;c_{\rm tad},\lambda,c_5)}{|P_0(\beta)|}
+&=\frac{3c_{\rm tad}}{\beta^2}+\left(\frac{2}{\pi}+\lambda\right)+\left(\frac32 c_5-\frac{47}{60\pi}\right)\beta^2+O(\beta^4)\qquad\left(\text{at }\lambda=-\frac{3}{2\pi}\right),\label{eq:F_over_P0_gen}\\
+p_{\rm can}(\beta,\epsilon;c_{\rm tad},\lambda,c_5)
+&=-\frac{2\epsilon c_{\rm tad}}{\beta}+\epsilon\left(-\frac{4}{\pi}-2\lambda\right)\beta+\epsilon\left(\frac{10}{9\pi}-5c_5\right)\beta^3+O(\beta^5).\label{eq:p_can_gen}
+\end{align}
+From~\eqref{eq:F_over_P0_gen}--\eqref{eq:p_can_gen} we establish three structural facts \Lc\ (\script{twobody\_cont\_det\_antisym.py}):
+\begin{enumerate}
+\item A non-zero tadpole/endpoint-linear coefficient $c_{\rm tad}\neq 0$ produces a $\frac{3c_{\rm tad}}{\beta^2}$ singularity in $F/|P_0|$ and a $-\frac{2\epsilon c_{\rm tad}}{\beta}$ singularity in $p_{\rm can}$. It is set to zero ($c_{\rm tad}=0$) by the equal-mode-count / zero-tadpole vacuum condition $\langle u\rangle_{\rm vac}=0$; moreover, in the two-soliton determinant ratio $\det\mathcal{D}(u_{12})/[\det\mathcal{D}(u_1)\det\mathcal{D}(u_2)]$ any local tadpole term $\propto\int u\,\dd x=-M$ cancels identically because $M_{12}=M_1+M_2$.
+\item The elastic $u^2$ counterterm coefficient $\lambda$ is uniquely fixed to $\lambda=-\frac{3}{2\pi}$ by matching the vacuum sound-speed shift to the Toda lattice (\texttt{phase2/onebody\_scheme.tex}).
+\item Once $c_{\rm tad}=0$ and $\lambda=-\frac{3}{2\pi}$ are fixed, \textbf{any local analytic higher-derivative counterterm} $c_5\sinh^5\beta+O(\sinh^7\beta)$ starts at $O(\beta^2)$ in $F/|P_0|$, starts at $O(\beta^3)$ in $p_{\rm can}$, and contributes only at $O(\varepsilon^2)\to 0$ to $H_{12}$ and $D_{12}$ in the small-amplitude corner.
+\item By contrast, if one defines the bad-branch one-body trace by restricting the $q$-integral to the real stable band $|q|>\sqrt{1+\sinh^2\beta}$, the resulting energy $F_{\rm band}(\beta)=F_{\rm ac}(\beta)-\frac{\sqrt3}{2}(\sinh^2\beta+\frac34)$ has a non-zero $O(1)$ threshold constant $F_{\rm band}(0)=-\frac{3\sqrt3}{8}$ from cutting out the unstable window $|q|\in(0,\sqrt{1+\sinh^2\beta})$ \Lc\ (\script{twobody\_cont\_det\_antisym.py}, confirming \texttt{phase2/onebody\_dispersion\_test.tex}).
+\end{enumerate}
+
+\subsection{Precise Statement of What Remains Undetermined After Lattice-Matched Renormalisation}
+
+Combining Propositions~\ref{prop:three_prescriptions} and~\ref{prop:kinetic_norm} with the audit verdicts (\texttt{phase2/audit\_det\_projected.tex}, \texttt{phase2/audit\_determinant\_foundations.tex}, \texttt{phase2/audit\_onebody\_scheme.tex}, \texttt{phase2/audit\_smx.tex}), we state precisely which constants or terms remain undetermined on the continuum side after fixing $\Delta\mathcal{H}=-\frac{3\hbar_B}{2\pi}u^2$:
+\begin{enumerate}
+\item \textbf{One-body non-commuting projector / boundary Schur complement $\Delta L_{1,\rm Schur}(\beta)$ \Ld:} Because $[\partial_t-v\partial_\xi,\mathcal{P}]\neq 0$ and $(\mathcal{P}\eta)_\phi(\pm\infty)\neq 0$ (Proposition~\ref{prop:kinetic_norm}), the time-dependent Gaussian integral over projected fluctuations on a finite-action history with compensating endpoint tails differs from the adiabatic phonon trace by a boundary Schur-complement determinant. While any \emph{local analytic} counterterm starting at $O(\sinh^5\beta)$ has zero effect on $C_{\rm matched}=\frac{1}{2\pi}$ and zero $O(1)$ effect on $H_{12},D_{12}$ in the small-amplitude corner \Lc, a non-local or threshold-singular boundary contribution is not ruled out by the instantaneous phase-space projector alone \Ld.
+\item \textbf{Two-body overall determinant normalisation constant $Z=e^{i\delta_{\rm const}}$ ($I_{12}$ vs.\ $J_{12}$) \Ld:} Because the $q=0^\pm$ Levinson endpoint values $\theta_j(0^\pm)$ are piecewise constant in each regular chamber, the Faddeev--Korepin gradient identities $\nabla_\beta I_{12}=\nabla_\beta J_{12}$ cannot fix the chamber-constant offset $J_{12}-I_{12}=\frac{\pi}{4}(\epsilon_1+\epsilon_2)$ ($+\frac{\pi}{2}$ in the overtaking channel, $0$ in the head-on channel) without an independent time-boundary / Maslov determinant normalisation (\texttt{phase2/audit\_determinant\_foundations.tex}).
+\item \textbf{Two-body collective momentum shift prescription in $\delta_{\rm renorm}=\Delta X_1'\Delta P_1+\Delta X_2'\Delta P_2$ \Ld:} As shown in Proposition~\ref{prop:three_prescriptions}, the one-body identity $e-vp=-L_1$ leaves open whether the one-soliton momentum shift entering the two-body frame conversion is the canonical collective momentum $p_{\rm can,matched}$ (giving $D_{\rm ov}=-\frac{2}{\pi}(r^{-1}-r)$, $D_{\rm ho}=+\frac{2}{\pi}(r^{-1}+r)$, $H_{12}=0$), the mode-sum momentum $p_{\rm mode}$ (giving $H_{\rm ov}=+\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ and an infrared $\ln\varepsilon$ divergence in $D_{12}$), or whether the Darboux tail shift is cancelled by the two-soliton zero-mode Wronskian measure leaving only the sound-rescaled shift $\Delta_{\rm ct}^{\rm sound}\delta=O(\varepsilon^2)\to 0$.
+\end{enumerate}
+
+\section{Symmetric vs.\ Antisymmetric Separation and the Residual Unknown $\vartheta(1,2)$ (Task 3)}
+
+\subsection{Exact Exchange Decomposition in the Symmetric-Cutoff Darboux Frame}
+
+Under full particle exchange $1\leftrightarrow 2$, meaning $(\beta_1,\epsilon_1)\leftrightarrow(\beta_2,\epsilon_2)$ (which sends $r=\beta_2/\beta_1\mapsto 1/r$ in the overtaking channel and swaps the right-mover and left-mover labels in the head-on channel), any two-body phase decomposes into $\delta_1(1,2)=\delta_1^{\rm sym}(1,2)+\delta_1^{\rm anti}(1,2)$ with $\delta_1^{\rm sym}(2,1)=+\delta_1^{\rm sym}(1,2)$ and $\delta_1^{\rm anti}(2,1)=-\delta_1^{\rm anti}(1,2)$.
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_phase.py}, \script{twobody\_cont\_det\_antisym.py}]\label{prop:sym_antisym}
+In the symmetric-cutoff Darboux frame:
+\begin{enumerate}
+\item \textbf{Phonon determinant integral:} For all $r>0$ ($r\neq 1$), the KdV integral~\eqref{eq:I_KdV_def} satisfies the exact inversion identity
+\begin{equation}\label{eq:I_KdV_inversion}
+I_{\rm KdV}(r)+I_{\rm KdV}(1/r)=-\pi,\qquad
+J_{\rm KdV}(r)=\frac{\pi}{2}+I_{\rm KdV}(r)=\frac{I_{\rm KdV}(r)-I_{\rm KdV}(1/r)}{2}=-J_{\rm KdV}(1/r).
+\end{equation}
+More generally, at any finite $(\beta_1,\beta_2)$, the raw integral $I_{12}$ has symmetric part $I_{12}^{\rm sym}=-\frac{\pi}{4}(\epsilon_1+\epsilon_2)$ ($-\frac{\pi}{2}$ for overtaking $++$, $0$ for head-on $+-$) and antisymmetric part $I_{12}^{\rm anti}=J_{12}$ \Lc.
+\item \textbf{Frame conversion shifts:} Because $\Delta x_{21}(\beta_2,\epsilon_2;\beta_1,\epsilon_1)=-\Delta x_{12}(\beta_1,\epsilon_1;\beta_2,\epsilon_2)$ and the Darboux shift $D_{12}[p]=\gamma_1 M_2 p_1-\gamma_2 M_1 p_2$ reverses sign when $(1)\leftrightarrow(2)$, both $H_{12}[p]$ and $D_{12}[p]$ (for \emph{every} one-body shift $p(\beta,\epsilon)$) as well as $\Delta_{\rm ct}^{\rm sound}\delta(1,2)$ in~\eqref{eq:sound_ct_delta} are \textbf{strictly antisymmetric} under full particle exchange $(\beta_1,\epsilon_1)\leftrightarrow(\beta_2,\epsilon_2)$ at all orders in $\beta_1,\beta_2$ \Lc:
+\begin{equation}\label{eq:strict_antisym}
+H_{21}[p]=-H_{12}[p],\qquad D_{21}[p]=-D_{12}[p],\qquad \Delta_{\rm ct}^{\rm sound}\delta(2,1)=-\Delta_{\rm ct}^{\rm sound}\delta(1,2).
+\end{equation}
+In particular, in the overtaking small-amplitude limit, $D_{\rm ov}[p_{\rm can,matched}](r)=-\frac{2}{\pi}(r^{-1}-r)$ is manifestly odd under $r\mapsto 1/r$. In the head-on channel ($\epsilon_1=+1,\epsilon_2=-1$), swapping $(1)\leftrightarrow(2)$ sends $(\beta_1,+1;\beta_2,-1)\mapsto(\beta_2,-1;\beta_1,+1)$; since $p(\beta,\epsilon)=\epsilon\,p(\beta,+1)$ is odd in $\epsilon$, $D_{\rm ho}[p](\beta_1,+1;\beta_2,-1)=\left(\gamma_1 M_2 p(\beta_1,+1)+\gamma_2 M_1 p(\beta_2,+1)\right)$ is symmetric in $(\beta_1,\beta_2)$ at fixed signs $(+1,-1)$ and therefore \emph{antisymmetric} when the signs $\epsilon_1,\epsilon_2$ are swapped along with the amplitudes \Lc\ (\script{twobody\_cont\_phase.py}).
+\end{enumerate}
+\end{proposition}
+
+\subsection{Directional Frame Decomposition and Lattice-Matched Prediction for the Toda Mixed Rectangle $\mathcal{D}_0(Y)$}
+
+Why does a non-trivial \emph{symmetric} piece appear in the Toda finite-sea frame analysis (\texttt{phase2/frame\_dictionary.tex}, \texttt{phase2/audit\_frame\_dictionary.tex})? Because on a finite open chain of length $N$ ordered from left to right, the collective / Bethe coordinate transformation is \emph{directional}: a soliton at position $X_j$ shifts the phase of solitons to its right differently from solitons to its left ($\tilde X_1=X_1$, $\tilde X_2=X_2-\gamma_2 M_1$ rather than the symmetrised $\pm\frac12\gamma_j M_{3-j}$). Consequently, as derived in \texttt{phase2/frame\_dictionary.tex} eqs.~(144), (247)--(248), and (303)--(308), the directional frame conversion $C_{\rm cl}(1,2)=C_{\rm cl}^{\rm sym}(1,2)+C_{\rm cl}^{\rm anti}(1,2)$ acquires a symmetric cross term $S_h(y,z)$ built from the one-body momentum Jacobian $u'(y)=\frac{\dd P_{\rm phys}}{\dd P_{\rm bare}}$ and the sea-edge endpoint responses.
+
+In \script{twobody\_cont\_det\_antisym.py}, we combine the exact finite-sea endpoint identity of \texttt{phase2/frame\_dictionary.tex} eq.~(144),
+\begin{equation}\label{eq:exact_sea_identity}
+2at\,\rho(q)\eta(q)=\frac{2a}{t}D(q)V(q)=\frac{2a}{2\pi h}\cdot\frac{\pi h}{a}=1,
+\end{equation}
+with the continuum one-loop Jacobian expansion $u'(y)=1-\frac{C}{y}+O(y^{-3/2})$, which gives $-\frac{2\sqrt{y}}{u'(y)}=-2\sqrt{y}-\frac{2C}{\sqrt{y}}+O(y^{-1})$. Applying the mixed second difference (rectangle) operator $\mathcal{D}_0(Y):=S_0(2Y,Y/2)-S_0(Y,Y/2)-S_0(2Y,Y/4)+S_0(Y,Y/4)$ annihilates all additive one-body terms (including the sea-edge endpoint constants) and isolates the multiplicative cross term $8\left[\frac{\sqrt{y}}{u'(y)}\frac{\sqrt{z}}{u'(z)}-\sqrt{yz}\right]$:
+
+\begin{proposition}[\Lc, \script{twobody\_cont\_det\_antisym.py}]\label{prop:mixed_rectangle}
+For any one-body dispersion with large-$y$ Jacobian $u'(y)=1-\frac{C}{y}+O(y^{-3/2})$, the symmetric mixed rectangle $\mathcal{D}_0(Y)$ has the exact large-$Y$ expansion
+\begin{equation}\label{eq:D0_asymptotic}
+\mathcal{D}_0(Y)=-2C\left(15\sqrt2-20\right)+\frac{8C^2(\sqrt2-1)^2}{Y}+O(Y^{-3/2}).
+\end{equation}
+Evaluating~\eqref{eq:D0_asymptotic} in the \textbf{lattice-matched scheme} ($C_{\rm matched}=\frac{1}{2\pi}$) versus the bare analytically continued scheme ($C_{\rm ac}=\frac{2}{\pi}$) gives
+\begin{equation}\label{eq:D0_matched_vs_ac}
+\lim_{Y\to\infty}\mathcal{D}_0^{\rm matched}(Y)=-\frac{15\sqrt2-20}{\pi}\approx -0.38617465,\qquad
+\lim_{Y\to\infty}\mathcal{D}_0^{\rm ac}(Y)=-\frac{4(15\sqrt2-20)}{\pi}\approx -1.54469859.
+\end{equation}
+Comparing against the read-only Toda finite-sea data in \texttt{phase2/scripts/frame\_analysis.json} (Table~\ref{tab:rectangle_toda}), the lattice-matched continuum prediction agrees with $\mathcal{D}_0^{\rm Toda}(32)=-0.39575\pm 0.0217$ to within $0.0096$ (well inside the Toda edge spread $0.0217$), whereas the bare continued value is off by a factor of $4$ (residual $1.149$) \Lc.
+\end{proposition}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of the continuum lattice-matched ($C_{\rm matched}=\frac{1}{2\pi}$) and bare continued ($C_{\rm ac}=\frac{2}{\pi}$) predictions for the symmetric mixed rectangle $\mathcal{D}_0(Y)$ against the Toda finite-sea data from \texttt{frame\_analysis.json} \Lc\ (\script{twobody\_cont\_det\_antisym.py}).}
+\label{tab:rectangle_toda}
+\medskip
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$Y$ & Toda $\mathcal{D}_0(Y)$ & Toda edge spread & Factorised $u'(y)$ & Cont.\ matched ($Y\to\infty$) & Cont.\ bare ac ($Y\to\infty$) \\
+\midrule
+$4.0$  & $-0.504362$ & $0.000365$ & $-0.504365$ & $-0.386175$ & $-1.544699$ \\
+$8.0$  & $-0.434983$ & $0.001323$ & $-0.435004$ & $-0.386175$ & $-1.544699$ \\
+$16.0$ & $-0.408705$ & $0.005203$ & $-0.408882$ & $-0.386175$ & $-1.544699$ \\
+$32.0$ & $-0.395752$ & $0.021669$ & $-0.397257$ & $-0.386175$ & $-1.544699$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The Antisymmetric Residual Phase $\vartheta(1,2)$ and the Missing Ingredient}
+
+In \texttt{phase2/smx\_candidates.tex} and \texttt{phase2/audit\_smx.tex}, the full quantum two-soliton scattering phase at fixed physical momenta is written in terms of the classical action phase $\delta_0/\hbar_B$, the symmetric frame / Stirling pieces, and a single residual antisymmetric $O(\hbar_B^0)$ function $\vartheta(1,2)=-\vartheta(2,1)$ (or $\delta_1^{\rm anti}(1,2)$). From Propositions~\ref{prop:bad_det_small}, \ref{prop:three_prescriptions}, and~\ref{prop:sym_antisym}, the continuum antisymmetric $O(\hbar_B^0)$ phase in the small-amplitude corner ($r=\beta_2/\beta_1=\sqrt{y_2/y_1}\in(0,1)$) is assembled from two well-defined building blocks:
+\begin{equation}\label{eq:delta1_anti_decomp}
+\delta_1^{\rm anti}(1,2)=J_{12}(1,2)+H_{12}[\Delta P]+D_{12}[\Delta P],
+\end{equation}
+which takes the following explicit forms across the three continuum momentum prescriptions \Lc\ (\script{twobody\_cont\_det\_antisym.py}, \script{twobody\_cont\_grid.py}):
+\begin{enumerate}
+\item \textbf{Candidate C-matched (Lattice-matched canonical momentum $p_{\rm can,matched}$, scale-invariant):}
+\begin{align}
+\delta_{1,\rm ov}^{\rm anti,[C\text{-matched}]}(r)&=J_{\rm KdV}(r)+D_{\rm ov}[p_{\rm can,matched}](r)
+=\frac{\pi}{2}-\frac{4}{\pi}\chi_2(r)-\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}-\frac{2}{\pi}\left(r^{-1}-r\right),\label{eq:anti_ov_can_m}\\
+\delta_{1,\rm ho}^{\rm anti,[C\text{-matched}]}(r)&=D_{\rm ho}[p_{\rm can,matched}](r)=+\frac{2}{\pi}\left(r^{-1}+r\right).\label{eq:anti_ho_can_m}
+\end{align}
+(If the raw integral $I_{\rm KdV}(r)=J_{\rm KdV}(r)-\frac{\pi}{2}$ is used in place of $J_{\rm KdV}(r)$ on the $0<r<1$ chamber, subtract $\frac{\pi}{2}$ from~\eqref{eq:anti_ov_can_m}.)
+\item \textbf{Candidate S / Phonon-Only (Darboux tail shift cancelled by zero-mode Wronskian measure, or sound-rescaled $\Delta_{\rm ct}^{\rm sound}\delta=O(\varepsilon^2)\to 0$):}
+\begin{equation}\label{eq:anti_sound}
+\delta_{1,\rm ov}^{\rm anti,[S]}(r)=J_{\rm KdV}(r)=\frac{\pi}{2}-\frac{4}{\pi}\chi_2(r)-\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r},\qquad
+\delta_{1,\rm ho}^{\rm anti,[S]}(r)=0.
+\end{equation}
+\item \textbf{Candidate M (Mode-sum momentum $p_{\rm mode}$, scale-dependent):}
+\begin{align}
+\delta_{1,\rm ov}^{\rm anti,[M]}(r;\varepsilon)&=\frac{\pi}{2}-\frac{4}{\pi}\chi_2(r)+2\left(r^{-1}-r\right)\left(\frac{1}{\pi}\ln\varepsilon+c_{\rm lin}\right)+\frac{2}{\pi r}\ln r,\label{eq:anti_ov_mode}\\
+\delta_{1,\rm ho}^{\rm anti,[M]}(r;\varepsilon)&=-2\left(r^{-1}+r\right)\left(\frac{1}{\pi}\ln\varepsilon+c_{\rm lin}\right)-\frac{2}{\pi r}\ln r.\label{eq:anti_ho_mode}
+\end{align}
+\end{enumerate}
+
+\paragraph{Why $\vartheta(1,2)$ cannot be uniquely closed from the existing continuum ingredients alone \Lc/\Ld.}
+Selecting unconditionally among~\eqref{eq:anti_ov_can_m}, \eqref{eq:anti_sound}, and~\eqref{eq:anti_ov_mode} on the continuum side requires one missing continuum ingredient: \emph{a time-dependent two-soliton collective-coordinate path-integral reduction in the potential field $\phi$ that simultaneously tracks (i) the compensating spatial endpoint tails of Proposition~\ref{prop:kinetic_norm} during the collision and (ii) the ratio of the two-soliton zero-mode Wronskian determinant to the product of one-soliton zero-mode norms in the Darboux coordinates $(X_1',X_2')$.} As established in \texttt{phase2/audit\_determinant\_foundations.tex} eq.~(9), the asymptotic two-soliton collective symplectic block has non-vanishing tail cross-pairing $\Omega(\partial_{\alpha_1},\partial_{\alpha_2})\to -M_1'\Pi_2'$, which is precisely the classical generator of the Darboux shift $D_{12}$. Whether the quantum Jacobian of transforming from the naive collective basis to the asymptotic Darboux basis cancels $D_{12}$ (leaving Candidate~S) or retains $D_{12}[p_{\rm can,matched}]$ (giving Candidate~C-matched) is not determined by one-soliton data or by the static projected operator \Ld. Tabulating each well-defined piece separately in \script{twobody\_cont\_grid.json} allows the coordinator's comparison with the parallel Toda two-body calculation to test each candidate directly.
+
+\section{Tabulated Continuum Grids and Error Budget (Task 4)}
+
+All well-defined continuum two-soliton phase components have been computed at 55-digit working precision in \script{twobody\_cont\_grid.py} and saved to \script{phase2/scripts/twobody\_cont\_grid.json}. Table~\ref{tab:ratio_grid} displays representative values on the small-amplitude ratio grid $r\in(0,1)$, together with the exact $r$-derivatives at $r=0.5$:
+\begin{equation}\label{eq:r05_derivs}
+\begin{aligned}
+\left.\frac{\dd I_{\rm KdV}(r)}{\dd r}\right|_{r=0.5}&=\left.\frac{4\ln r}{\pi(1-r^2)}\right|_{r=0.5}=-\frac{16\ln 2}{3\pi}\approx -1.17680872,\\
+\left.\frac{\dd D_{\rm ov}[p_{\rm can,matched}](r)}{\dd r}\right|_{r=0.5}&=\left.\frac{2}{\pi}\left(r^{-2}+1\right)\right|_{r=0.5}=+\frac{10}{\pi}\approx +3.18309886,\\
+\left.\frac{\dd\left(I_{\rm KdV}+D_{\rm ov}[p_{\rm can,matched}]\right)}{\dd r}\right|_{r=0.5}&=\frac{30-16\ln 2}{3\pi}\approx +2.00629014.
+\end{aligned}
+\end{equation}
+Notice that at $r=0.5$, the bare continued slope $\frac{\dd}{\dd r}(I_{\rm KdV}+D_{\rm ov}[p_{\rm can,ac}])|_{r=0.5}\approx +11.555587$ was dominated by the unrenormalised Darboux term $+\frac{40}{\pi}\approx +12.7324$ (\texttt{phase2/matching.tex}); in the lattice-matched scheme ($C_{\rm matched}=\frac{1}{2\pi}$) this Darboux slope is reduced by a factor of $4$ to $+\frac{10}{\pi}\approx +3.1831$ \Lc\ (\script{twobody\_cont\_grid.py}).
+
+\begin{table}[htbp]
+\centering
+\caption{Small-amplitude continuum $O(\hbar_B^0)$ phase components as functions of $r=\beta_2/\beta_1=\sqrt{y_2/y_1}\in(0,1)$ in the overtaking ($\epsilon_1=\epsilon_2=+1$) and head-on ($\epsilon_1=+1,\epsilon_2=-1$) channels, plus exact $\dd/\dd r$ derivatives at $r=0.5$ \Lc\ (\script{twobody\_cont\_grid.py}). Numerical evaluation uncertainty is $<10^{-50}$; truncating the small-amplitude expansion at $O(1)$ has an explicit $O(\varepsilon^2=y_1\hbar_B)$ error budget given by the subleading coefficients in Eqs.~\eqref{eq:I_ov_bad_small}, \eqref{eq:I_ho_bad_small}, and~\eqref{eq:H_ov_can_m}--\eqref{eq:D_ho_can_m}.}
+\label{tab:ratio_grid}
+\medskip
+\small
+\begin{tabular}{@{}rrrrrrrrr@{}}
+\toprule
+$r$ & $\hat\delta_{0,\rm ov}(r)$ & $I_{\rm KdV}(r)$ & $J_{\rm KdV}(r)$ & $-\frac{4}{\pi}\chi_2(r)$ & $D_{\rm ov}^{\rm C\text{-m}}(r)$ & $I_{\rm KdV}+D_{\rm ov}^{\rm C\text{-m}}$ & $J_{\rm KdV}+D_{\rm ov}^{\rm C\text{-m}}$ & $D_{\rm ho}^{\rm C\text{-m}}(r)$ \\
+\midrule
+$0.10$ & $-0.397328$ & $-0.421623$ & $+1.149173$ & $-0.127466$ & $-6.302536$ & $-6.724159$ & $-5.153363$ & $+6.429860$ \\
+$0.20$ & $-0.778493$ & $-0.671236$ & $+0.899560$ & $-0.255796$ & $-3.055775$ & $-3.727011$ & $-2.156214$ & $+3.310423$ \\
+$0.25$ & $-0.957798$ & $-0.771397$ & $+0.799399$ & $-0.320572$ & $-2.387324$ & $-3.158721$ & $-1.587925$ & $+2.705634$ \\
+$0.30$ & $-1.125164$ & $-0.859994$ & $+0.710803$ & $-0.386035$ & $-1.931080$ & $-2.791074$ & $-1.220277$ & $+2.313052$ \\
+$0.40$ & $-1.419101$ & $-1.013172$ & $+0.557624$ & $-0.518919$ & $-1.336902$ & $-2.350073$ & $-0.779277$ & $+1.846197$ \\
+$0.49$ & $-1.629584$ & $-1.129047$ & $+0.441750$ & $-0.642077$ & $-0.987279$ & $-2.116326$ & $-0.545529$ & $+1.611167$ \\
+$0.50$ & $-1.647918$ & $-1.140921$ & $+0.429875$ & $-0.656135$ & $-0.954930$ & $-2.095851$ & $-0.525054$ & $+1.591549$ \\
+$0.51$ & $-1.665279$ & $-1.152583$ & $+0.418213$ & $-0.670281$ & $-0.923845$ & $-2.076428$ & $-0.505632$ & $+1.573192$ \\
+$0.60$ & $-1.775313$ & $-1.250225$ & $+0.320572$ & $-0.799399$ & $-0.679061$ & $-1.929286$ & $-0.358489$ & $+1.443038$ \\
+$0.70$ & $-1.769000$ & $-1.344734$ & $+0.226062$ & $-0.951636$ & $-0.463823$ & $-1.808557$ & $-0.237761$ & $+1.355085$ \\
+$0.75$ & $-1.701476$ & $-1.388489$ & $+0.182307$ & $-1.032107$ & $-0.371362$ & $-1.759851$ & $-0.189055$ & $+1.326391$ \\
+$0.80$ & $-1.582005$ & $-1.430439$ & $+0.140358$ & $-1.116634$ & $-0.286479$ & $-1.716918$ & $-0.146121$ & $+1.305071$ \\
+$0.90$ & $-1.118873$ & $-1.510567$ & $+0.060230$ & $-1.304641$ & $-0.134396$ & $-1.644963$ & $-0.074166$ & $+1.280312$ \\
+\midrule
+$\dd/\dd r|_{0.5}$ & $-1.784839$ & $-1.176809$ & $-1.176809$ & $-1.398799$ & $+3.183099$ & $+2.006290$ & $+2.006290$ & $-1.909859$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:finite_beta} displays representative values from the non-perturbative finite-amplitude bad-branch grid $(\beta_1,\beta_2)$ in \script{twobody\_cont\_grid.json}, illustrating the $O(\varepsilon^2)$ convergence of $\delta_{\rm renorm}[p_{\rm can,matched}]=H_{12}+D_{12}$ toward the small-amplitude limits $D_{\rm ov}^{\rm C\text{-m}}(0.5)=-3/(2\pi)\approx -0.954930$ and $D_{\rm ho}^{\rm C\text{-m}}(0.5)=+5/(2\pi)\approx +1.591549$ as $\beta_1\to 0$ at fixed $r=\beta_2/\beta_1=0.5$.
+
+\begin{table}[htbp]
+\centering
+\caption{Exact finite-amplitude bad-branch classical phase $\delta_{0,b}$, Hirota shift $H_{12}[p_{\rm can,matched}]$, Darboux shift $D_{12}[p_{\rm can,matched}]$, total canonical frame shift $\delta_{\rm renorm}^{\rm C\text{-m}}=H_{12}+D_{12}$, and sound-rescaled counterterm shift $\Delta_{\rm ct}^{\rm sound}\delta$ at fixed ratio $r=\beta_2/\beta_1=0.5$ \Lc\ (\script{twobody\_cont\_grid.py}).}
+\label{tab:finite_beta}
+\medskip
+\small
+\begin{tabular}{@{}rrrrrrrrr@{}}
+\toprule
+& \multicolumn{4}{c}{Overtaking ($\epsilon_1=+1,\epsilon_2=+1$)} & \multicolumn{4}{c}{Head-on ($\epsilon_1=+1,\epsilon_2=-1$)} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+$(\beta_1,\beta_2)$ & $\delta_{0,b}^{\rm ov}$ & $H_{\rm ov}^{\rm C\text{-m}}$ & $D_{\rm ov}^{\rm C\text{-m}}$ & $\delta_{\rm renorm,\rm ov}^{\rm C\text{-m}}$ & $\delta_{0,b}^{\rm ho}$ & $H_{\rm ho}^{\rm C\text{-m}}$ & $D_{\rm ho}^{\rm C\text{-m}}$ & $\delta_{\rm renorm,\rm ho}^{\rm C\text{-m}}$ \\
+\midrule
+$(0.10,0.05)$ & $-0.016501$ & $+0.006635$ & $-0.956925$ & $-0.950290$ & $+0.020042$ & $-0.009403$ & $+1.588672$ & $+1.579269$ \\
+$(0.20,0.10)$ & $-0.066270$ & $+0.025369$ & $-0.963038$ & $-0.937670$ & $+0.080671$ & $-0.035425$ & $+1.578916$ & $+1.543491$ \\
+$(0.30,0.15)$ & $-0.150257$ & $+0.052882$ & $-0.973672$ & $-0.920790$ & $+0.183440$ & $-0.072185$ & $+1.559301$ & $+1.487116$ \\
+$(0.40,0.20)$ & $-0.270127$ & $+0.084691$ & $-0.989524$ & $-0.904833$ & $+0.331026$ & $-0.112842$ & $+1.525697$ & $+1.412854$ \\
+$(0.60,0.30)$ & $-0.631750$ & $+0.145675$ & $-1.041982$ & $-0.896307$ & $+0.785907$ & $-0.179563$ & $+1.404155$ & $+1.224592$ \\
+\midrule
+$\beta_1\to 0$ & $0$ & $0$ & $-0.954930$ & $-0.954930$ & $0$ & $0$ & $+1.591549$ & $+1.591549$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Summary of Claims, Verification Scripts, and Failures Recorded}
+
+\subsection{Summary Table of Claims and Verification Coverage}
+
+\begin{longtable}{@{}p{0.58\textwidth}cp{0.30\textwidth}@{}}
+\toprule
+Claim / Formula & Label & Verification Script \\
+\midrule
+\endfirsthead
+\toprule
+Claim / Formula & Label & Verification Script \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Exact degree-2 factored bad-branch Hirota coefficient~\eqref{eq:A12_bad_factored}, classical phase~\eqref{eq:delta0_bad}, and canonical derivatives $-\partial\delta_{0,b}/\partial P_{0,j}=\Delta X_j'$ in all 4 sign sectors~\eqref{eq:d_delta0_dP} & \Lc & \script{twobody\_cont\_phase.py}, \script{twobody\_cont\_grid.py} \\
+Small-amplitude expansions of $A_{12,b}$ and $\delta_{0,b}$ in both overtaking~\eqref{eq:A_ov_small}--\eqref{eq:d0_ov_small} and head-on~\eqref{eq:A_ho_small}--\eqref{eq:d0_ho_small} channels & \Lc & \script{twobody\_cont\_phase.py} \\
+Small-amplitude expansions of bad-branch determinant integrals $I_{12,b},J_{12,b}$ in both channels~\eqref{eq:I_ov_bad_small}--\eqref{eq:I_ho_bad_small}, including $c_{2,\rm det}^{\rm ov}(r)$ and $c_{2,\rm det}^{\rm ho}(r)=-8r/\pi$ & \Lc & \script{twobody\_cont\_phase.py} \\
+Lattice-matched one-body energy $F_{\rm matched}(\beta)$~\eqref{eq:F_matched}, canonical momentum $p_{\rm can,matched}(\beta,\epsilon)$~\eqref{eq:p_can_matched}, universal slope $c_1(p_{\rm can})=-2C$, and Jacobian match~\eqref{eq:jac_matched} & \Lc & \script{twobody\_cont\_phase.py}, \script{twobody\_cont\_det\_antisym.py} \\
+Small-amplitude frame shifts $H_{12},D_{12}$ under Prescription C-matched~\eqref{eq:H_ov_can_m}--\eqref{eq:D_ho_can_m} ($D_{\rm ov}=-\frac{2}{\pi}(r^{-1}-r)$, $D_{\rm ho}=+\frac{2}{\pi}(r^{-1}+r)$) vs.\ Prescription M~\eqref{eq:H_ov_mode}--\eqref{eq:D_ho_mode} & \Lc & \script{twobody\_cont\_phase.py} \\
+Direct on-shell sound-speed rescaling identities~\eqref{eq:sound_scaling}, Virial identity $5E_0-4vP_0=\frac23\sinh^3\beta$, and $\Delta_{\rm ct}^{\rm sound}\delta=O(\varepsilon^2)\to 0$~\eqref{eq:sound_ct_delta}--\eqref{eq:sound_ho} & \Lc & \script{twobody\_cont\_phase.py} \\
+Exact finite-$R$ bad-branch configuration-space kinetic norm~\eqref{eq:bad_kinetic_norm} with finite constant $+\frac{v^2(\pi^2-6)}{9k^3}\dot v^2$ & \Lc & \script{twobody\_cont\_det\_antisym.py} \\
+Cutoff-endpoint / tadpole / higher-derivative sensitivity~\eqref{eq:F_over_P0_gen}--\eqref{eq:p_can_gen} and invariance of $C_{\rm matched}$ and $O(1)$ $H_{12},D_{12}$ under any analytic $O(\sinh^5\beta)$ counterterm & \Lc & \script{twobody\_cont\_det\_antisym.py} \\
+Exact $r\leftrightarrow 1/r$ inversion $I_{\rm KdV}(r)+I_{\rm KdV}(1/r)=-\pi$~\eqref{eq:I_KdV_inversion} and strict exchange antisymmetry~\eqref{eq:strict_antisym} of $H_{12},D_{12},\Delta_{\rm ct}^{\rm sound}\delta$ & \Lc & \script{twobody\_cont\_phase.py}, \script{twobody\_cont\_det\_antisym.py} \\
+Large-$Y$ continuum formula $\lim_{Y\to\infty}\mathcal{D}_0(Y)=-2C(15\sqrt2-20)$~\eqref{eq:D0_asymptotic} and agreement of $C_{\rm matched}=\frac{1}{2\pi}$ ($\mathcal{D}_0\to -0.386175$) with Toda data in Table~\ref{tab:rectangle_toda} & \Lc & \script{twobody\_cont\_det\_antisym.py} \\
+Unsettled continuum status of (i) non-commuting projector Schur complement $\Delta L_{1,\rm Schur}$, (ii) Maslov/Levinson constant $Z=e^{i\delta_{\rm const}}$, and (iii) two-body collective momentum / Wronskian measure prescription selecting $\vartheta(1,2)$ & \Ld & \script{twobody\_cont\_det\_antisym.py} \\
+55-digit tabulation of all continuum phase components on $r$, $(Y,r)$, $(y_1,y_2)$, $(\beta_1,\beta_2)$, and $(\alpha_1,\alpha_2)$ grids & \Lc & \script{twobody\_cont\_grid.py} \\
+\end{longtable}
+
+\subsection{Failures Recorded}
+
+In compliance with \texttt{AGENTS.md}, we list every intermediate assertion failure encountered during the development of the verification scripts and how each was resolved without weakening any check:
+\begin{enumerate}
+\item \textbf{\script{twobody\_cont\_phase.py} (Series coefficients of $F_{\rm ac}$ and $F_{\rm matched}$):} Hand-estimated $O(\beta^7)$ coefficient of $F_{\rm ac}(\beta)$ (\texttt{-62/(945*pi)}) and $O(\beta^5)$ coefficient of $F_{\rm matched}(\beta)=F_{\rm ac}(\beta)-\sinh^3\beta/\pi$ (\texttt{-31/(45*pi)}, using $-\beta^5/\pi$ instead of $-\frac12\beta^5/\pi$ from $\sinh^3\beta=\beta^3+\frac12\beta^5+\frac{13}{120}\beta^7$) failed the exact SymPy series assertions and were corrected to $+\frac{97}{1890\pi}\beta^7$ for $F_{\rm ac}$ and $-\frac{17}{90\pi}\beta^5-\frac{431}{7560\pi}\beta^7$ for $F_{\rm matched}$ (giving $p_{\rm can,matched}=-\frac{\epsilon}{\pi}\beta+\frac{10\epsilon}{9\pi}\beta^3+\frac{2\epsilon}{9\pi}\beta^5$).
+\item \textbf{\script{twobody\_cont\_phase.py} (Subleading Jacobian term):} The $O(\beta^2)$ term of $\beta^2\frac{\dd p_{\rm can,matched}/\dd\beta}{\dd P_0/\dd\beta}$ was briefly changed from $+\frac{5}{2\pi}\beta^2$ to $+\frac{2}{\pi}\beta^2$ and failed the SymPy assertion at line 203; restored to $+\frac{5}{2\pi}\beta^2$.
+\item \textbf{\script{twobody\_cont\_phase.py} (Bad-branch $A_{\rm ov}/A_0(r)$ subleading ratio):} Before factoring out $w_j^2-k_j^2-k_j^4=0$, initial test targets $1\mp\frac23 r\varepsilon^2$ and $1+\frac{13}{9}r\varepsilon^2$ for $A_{\rm ov}/A_0(r)$ failed; factoring $A_{12,b}$ into~\eqref{eq:A12_bad_factored} both reduced the script runtime from $\sim 200\,\mathrm{s}$ to $20\,\mathrm{s}$ and proved $A_{\rm ov}/A_0(r)=1+r\varepsilon^2+\frac12 r^2\varepsilon^4+O(\varepsilon^6)$.
+\item \textbf{\script{twobody\_cont\_phase.py} (Exponent of $r$ in $-\gamma_2 M_1$ for $D_{\rm mode}$):} In \texttt{D\_ov\_mode\_lead} and \texttt{D\_ho\_mode\_lead}, $-\gamma_2 M_1=+\frac{2}{r^2\varepsilon}$ was initially typed as \texttt{2/(r\_s*eps\_s)} instead of \texttt{2/(r\_s**2*eps\_s)}; caught by SymPy expansion assertions and fixed.
+\item \textbf{\script{twobody\_cont\_phase.py} (Power of $r$ in $4P_{0,2}\Delta X_2'$ for $\Delta_{\rm ct}^{\rm sound}\delta^{\rm ho}$):} In \texttt{c2\_sound\_ho}, $4P_{0,2}\Delta X_2'$ was initially written as $-\frac{16}{3}r^2\varepsilon^2$ instead of $-\frac{16}{3}r\varepsilon^2$; caught by the SymPy assertion and corrected to $\Delta_{\rm ct}^{\rm sound}\delta^{\rm ho}=-\frac{2}{\pi}r\varepsilon^2+O(\varepsilon^4)$, consistent with Euler's homogeneous function theorem for $\delta_{0,\rm ho}^{(0)}=4\beta_1\beta_2\propto |P_{0,1}P_{0,2}|^{1/3}$.
+\item \textbf{\script{twobody\_cont\_det\_antisym.py} (Sign of finite kinetic-norm integral):} In the initial draft, $\int_{-\infty}^\infty[(\tanh z+z\operatorname{sech}^2 z)^2-1]\,\dd z$ was written as $-\frac{2(\pi^2-6)}{9}$ instead of $+\frac{\pi^2-6}{9}$ (since $\int_0^\infty(-\operatorname{sech}^2 z+2z\tanh z\operatorname{sech}^2 z)\,\dd z=-1+1=0$, leaving $2\int_0^\infty z^2\operatorname{sech}^4 z\,\dd z=+\frac{\pi^2-6}{9}>0$). Caught by the 70-digit \texttt{mpmath} quadrature assertion at line 61 and corrected.
+\item \textbf{\script{twobody\_cont\_det\_antisym.py} ($O(\beta^2)$ coefficient of $F_{\rm matched}/P_0$):} Line 102 initially carried the un-updated coefficient $-\frac{79}{60\pi}$ instead of $-\frac{47}{60\pi}$ from $(1-\frac{17}{30}\beta^2)/(1+\beta^2)=1-\frac{47}{30}\beta^2$; caught by SymPy assertion and corrected.
+\item \textbf{\script{twobody\_cont\_det\_antisym.py} (Prefactor of $\lim_{Y\to\infty}\mathcal{D}_0(Y)$ in terms of $C$):} Line 179 initially wrote $-8C(15\sqrt2-20)$ instead of $-2C(15\sqrt2-20)$ (since $8\cdot[-C(15\sqrt2-20)/4]=-2C(15\sqrt2-20)$, which equals $-\frac{15\sqrt2-20}{\pi}$ at $C_{\rm matched}=\frac{1}{2\pi}$). Caught by SymPy limit assertion and corrected.
+\item \textbf{\script{twobody\_cont\_grid.py} (Derivative $\dd I_{\rm KdV}/\dd r$, closed-form $\delta_{0,b}$, and good-branch resonance boundary):} (a) Line 260 initially included a non-cancelling boundary term in $\dd I_{\rm KdV}/\dd r$, caught by 55-digit \texttt{mp.diff} check and simplified to $\frac{4\ln r}{\pi(1-r^2)}$; (b) \texttt{delta0\_bad\_mp} and \texttt{dP0\_db\_bad\_mp} initially had transcription typos caught by the 50-digit path-quadrature check on $[0.1,0.2]$ and corrected to~\eqref{eq:delta0_bad} and $\frac23\sinh\beta\sinh 3\beta$; (c) the initial good-branch pairs $(0.8,0.4)$ and $(0.6,0.45)$ had $\alpha_1+\alpha_2>\pi/3$ where $A_{12,g}^{\rm ho}<0$, and were replaced with regular-chamber pairs satisfying $\alpha_1+\alpha_2<\pi/3$; (d) the finite-amplitude convergence check at $\varepsilon=0.1,0.2$ was upgraded to subtract the exact $O(\varepsilon^2)$ term and verify $O(\varepsilon^4)$ scaling (ratio $\approx 16$).
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{FK78}
+L.~D.~Faddeev and V.~E.~Korepin, ``Quantum theory of solitons,'' \emph{Phys.\ Rept.}\ \textbf{42} (1978) 1--87 (full text verified in project literature).
+\bibitem{CZ23}
+E.~Corrigan and C.~Zambon, ``Integrable defects in the Boussinesq equations,'' arXiv:2306.03772 (full text verified in project literature; dictionary $u_{\rm CZ}=-3\phi$, $L_{\rm CZ}=9L$).
+\bibitem{RepoNotes}
+Internal repository packages and audits (all full texts read and cross-checked): \texttt{phase1/review.tex}, \texttt{phase2/report.tex}, \texttt{phase2/errata.tex}, \texttt{phase2/oneloop\_phase.tex}, \texttt{phase2/det\_projected\_oneloop.tex}, \texttt{phase2/audit\_det\_projected.tex}, \texttt{phase2/audit\_determinant\_foundations.tex}, \texttt{phase2/onebody\_scheme.tex}, \texttt{phase2/audit\_onebody\_scheme.tex}, \texttt{phase2/onebody\_dispersion\_test.tex}, \texttt{phase2/toda\_route.tex}, \texttt{phase2/smx\_candidates.tex}, \texttt{phase2/audit\_smx.tex}, \texttt{phase2/frame\_dictionary.tex}, \texttt{phase2/audit\_frame\_dictionary.tex}.
+\end{thebibliography}
+
+\end{document}
