@@ -1,0 +1,180 @@
+{
+  "precision": 70,
+  "prior_claim_failures": [
+    "The Phase 2h master functional is not the Phase 2g physical raw integral for all orientations: checked two-soliton difference -pi when eps1=-1 and stable-defect difference +pi when eps=-1.",
+    "The raw same-direction phase is not antisymmetric: I12+I21=-pi, and I(a,a)=-pi/2, not zero. Exchange/branch constants remain unresolved.",
+    "Claim 4.3 head-on parts are incorrect: the chi2 part has leading 9*r*lambda^2/pi with no lambda^2 log(lambda) term. The stated total head-on asymptotic is nevertheless reproduced.",
+    "Conditional on the stated logarithmic quasi-momentum shift, the classical first-order Taylor remainder contains log(Y)^2/Y; it is not O(1/Y). Cancellation in the full residual needs a separate derivation.",
+    "The quoted c1 values are not resolved by the saved fits: their sign changes under the already-recorded h log h edge extrapolation.",
+    "The Phase 2h displayed profile -k^2 sech^2(k*x/2) conflicts with u=2(log tau)_xx; the convention requires +(k^2/2) sech^2(k*x/2)."
+  ],
+  "physical_phase": {
+    "two_soliton": [
+      {
+        "eps1": 1,
+        "eps2": 1,
+        "quadrature": "-1.103812435242480192713237",
+        "phase2g_error": "0.0",
+        "master": "-1.103812435242480192713237",
+        "master_difference_over_pi": "0.0"
+      },
+      {
+        "eps1": 1,
+        "eps2": -1,
+        "quadrature": "0.4913343970436215911984578",
+        "phase2g_error": "0.0",
+        "master": "0.4913343970436215911984578",
+        "master_difference_over_pi": "-1.153004870759306066633877e-71"
+      },
+      {
+        "eps1": -1,
+        "eps2": 1,
+        "quadrature": "-0.4913343970436215911984578",
+        "phase2g_error": "0.0",
+        "master": "-3.632927050633414829661101",
+        "master_difference_over_pi": "-1.0"
+      },
+      {
+        "eps1": -1,
+        "eps2": -1,
+        "quadrature": "1.103812435242480192713237",
+        "phase2g_error": "0.0",
+        "master": "-2.037780218347313045749407",
+        "master_difference_over_pi": "-1.0"
+      }
+    ],
+    "defect": [
+      {
+        "eps": 1,
+        "qD": "0.4",
+        "quadrature": "0.9325238892233246346537225",
+        "master_difference_over_pi": "-1.441256088449132583292346e-71"
+      },
+      {
+        "eps": -1,
+        "qD": "0.4",
+        "quadrature": "-0.2167832001327805898589051",
+        "master_difference_over_pi": "1.0"
+      }
+    ],
+    "same_exchange_sum": "-3.141592653589793238462643",
+    "same_diagonal": "-1.570796326794896619231322",
+    "rational_symmetric_value": "2.295789186826731086480824"
+  },
+  "head_split": {
+    "mixed_coefficient": "9/pi",
+    "rows": [
+      {
+        "r": "0.25",
+        "lam": "1e-4",
+        "chi_over_lam2": "0.7161972483524598826273465",
+        "log_over_lam2": "3.973453600891219110287832",
+        "total_asymptotic_scaled_error": "5.235927318789146219869686e-8"
+      },
+      {
+        "r": "0.25",
+        "lam": "1e-7",
+        "chi_over_lam2": "0.7161972439135334498908116",
+        "log_over_lam2": "7.271663747928387512106689",
+        "total_asymptotic_scaled_error": "9.032304624076027313275994e-14"
+      },
+      {
+        "r": "0.25",
+        "lam": "1e-10",
+        "chi_over_lam2": "0.7161972439135290109644159",
+        "log_over_lam2": "10.56987394288572646204267",
+        "total_asymptotic_scaled_error": "1.282868198389671834056953e-19"
+      },
+      {
+        "r": "0.5",
+        "lam": "1e-4",
+        "chi_over_lam2": "1.432394498271601264408562",
+        "log_over_lam2": "7.615953813984862549715698",
+        "total_asymptotic_scaled_error": "0.0000001187166295941715118019819"
+      },
+      {
+        "r": "0.5",
+        "lam": "1e-7",
+        "chi_over_lam2": "1.432394487827068466463094",
+        "log_over_lam2": "14.2123740956278234644988",
+        "total_asymptotic_scaled_error": "2.080431540560417644502857e-13"
+      },
+      {
+        "r": "0.5",
+        "lam": "1e-10",
+        "chi_over_lam2": "1.432394487827058021930398",
+        "log_over_lam2": "20.80879448554247553402989",
+        "total_asymptotic_scaled_error": "2.973696801694691078176461e-19"
+      },
+      {
+        "r": "0.75",
+        "lam": "1e-4",
+        "chi_over_lam2": "2.148591751324105659884565",
+        "log_over_lam2": "11.13353776373365234590479",
+        "total_asymptotic_scaled_error": "0.0000002176781750912125109002193"
+      },
+      {
+        "r": "0.75",
+        "lam": "1e-7",
+        "chi_over_lam2": "2.148591731740606616398319",
+        "log_over_lam2": "21.02816815051163596536861",
+        "total_asymptotic_scaled_error": "3.851654074643350826814322e-13"
+      },
+      {
+        "r": "0.75",
+        "lam": "1e-10",
+        "chi_over_lam2": "2.148591731740587032899514",
+        "log_over_lam2": "30.92279873538354488579524",
+        "total_asymptotic_scaled_error": "5.526526439270095388800161e-19"
+      }
+    ]
+  },
+  "hessian": {
+    "quadratic": "(-d1*r**2 + d2)**2/(Y*r*(1 - r**2))",
+    "log_squared_coefficient": "(1 - r**2)/(4*pi**2*r)",
+    "numerical_relative_error": "5.081519058822160671054516e-12"
+  },
+  "edge_data": [
+    {
+      "r": 0.4,
+      "c1_quadratic": "-0.007080057067693888",
+      "c1_cubic": "-0.007261211864705344",
+      "c1_hlogh": "0.009148110650812672",
+      "c1_spread": "0.01827503625614790336",
+      "c0_candidate_distance": "0.00001254972326611498820776706",
+      "c0_edge_spread": 0.0015033089792959586
+    },
+    {
+      "r": 0.5,
+      "c1_quadratic": "-0.02099128868409312",
+      "c1_cubic": "-0.021363126685716096",
+      "c1_hlogh": "0.017818642899104768",
+      "c1_spread": "0.04508958303335475328",
+      "c0_candidate_distance": "0.00003695872887903363650715828",
+      "c0_edge_spread": 0.00369359245082562
+    },
+    {
+      "r": 0.6,
+      "c1_quadratic": "-0.04821936298268128",
+      "c1_cubic": "-0.04890743468668672",
+      "c1_hlogh": "0.03031737965194016",
+      "c1_spread": "0.0931946760482875728",
+      "c0_candidate_distance": "0.0000704728589737407201676805",
+      "c0_edge_spread": 0.007614654053665316
+    }
+  ],
+  "charges": {
+    "legendre_momentum_error": "2.716703723648013710252736e-71",
+    "quoted_profile_ode_residual_at_zero": "9*k**4/2"
+  },
+  "source_sha256": {
+    "phase2/report.tex": "13011d5e5bc8f7b652aa97093226d4d12834512d5572bcdbccddb14b5cf833cd",
+    "phase2/charge_frame_master.tex": "9aaa3801186e79b7a23aab33a2c28b6e7c0be480531f92f0f4e34eddd60ad903",
+    "phase2/oneloop_defect_phase.tex": "615509ba2c27bf50bcccfe0c7d03845400ea95d8fc150984c0bc86fb34628084",
+    "phase2/oneloop_phase.tex": "f1f9c5c0beed4c09b1714e3e56459b7b1872ea659b504e457f92d35f4b31bf15",
+    "phase2/scripts/charge_and_frame_audit.py": "18a8884fe4fe24302c86a64915c21c088eeee857231bfe843bc06165909c7185",
+    "phase2/scripts/kp_master_and_toda_edge.py": "586ced42cf458a534c044f6aedada3868f1952364f3bb4807c67e9c6ccbf8dbd",
+    "phase2/scripts/oneloop_defect_phase_and_fusion.py": "556e6cd980bc86b9540a56319499a73227a5c7087704c51fecd5441d27d5a53a",
+    "phase2/scripts/matching_analysis.json": "2beb4345880201a7d46c3d920e916b7e9546715889a9d89f98fbea45fb7dc25e"
+  }
+}

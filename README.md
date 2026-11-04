@@ -38,6 +38,8 @@ Phase 1 may need other forms (potential form, the first-order W₃ / Lax system 
 
 ## Status
 
+- **Independent Phase 2h audit (4 November 2026).** [`phase2/independent_phase2h_audit.pdf`](phase2/independent_phase2h_audit.pdf); checks and results `phase2/scripts/audit_phase2h_*`. **(c):** independent phonon quadrature finds orientation-dependent π discrepancies in the master-function identification; raw-phase antisymmetry and the separated head-on asymptotics need correction. Saved Toda extrapolation alternatives reverse the quoted subleading coefficient signs, and the proposed momentum shift generates a classical `(log Y)^2/Y` Taylor term. **(d):** the exact leading Toda match and the physical all-loop kernel remain unestablished; this audit qualifies the earlier Phase 2h claims below.
+
 - **Phase 0, done.** No prior soliton S-matrix for Boussinesq was found. The only prior soliton quantisation is the one-body Bohr–Sommerfeld quantisation of the breather of the ill-posed equation (Bogdan–Charkina, arXiv:2502.14695). See the map for details and caveats.
 - **Phase 1, done.** The review is [`phase1/review.pdf`](phase1/review.pdf), source `phase1/review.tex`. The verification scripts are in `phase1/scripts/`; each ends with `ALL CHECKS PASSED`. Rebuild with
   `cd phase1 && pdflatex review.tex`, and run the checks with `cd phase1/scripts && for f in *.py; do python3 $f; done`.

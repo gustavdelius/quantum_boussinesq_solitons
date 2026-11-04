@@ -1,0 +1,321 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}\ }
+\newcommand{\Ld}{\textsf{\textbf{(d)}}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak phase2h\_\allowbreak foundations.py}}
+\newcommand{\Li}{\operatorname{Li}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=2em
+\title{Independent audit of Phase 2h:\\physical phase conventions and the Toda expansion}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The proposed Toda expansion remains worthwhile, but its numerical targets and
+the all-loop master-function interpretation require qualifications. \Ld
+Independent phonon quadrature detects an orientation-dependent discrepancy
+between the Phase 2h master functional and the Phase 2g physical raw integrals.
+The claimed exchange antisymmetry of the raw phase is false in the regular
+right-moving sector. The saved edge-extrapolation alternatives do not resolve
+even the sign of the quoted subleading Toda coefficients. Conditional on the
+stated quasi-momentum shift, the classical Taylor remainder contains
+$(\log Y)^2/Y$, whose cancellation in the full phase is unproved. \Lc
+We also correct the separated head-on kernel asymptotics and a displayed
+soliton profile. Existing calculations are left intact; this note supplies
+independent checks and a handoff for concurrent work.
+\end{abstract}
+
+\section{Scope, conventions, and reproducibility}
+Labels follow the repository convention: (a) established in the literature,
+(b) heuristic in the literature, (c) derived or checked in this project,
+and (d) conjecture or research judgment. No new external literature claims
+are used here. All mathematical checks in this note are implemented in
+\texttt{phase2/scripts/}\scr, with results in
+\texttt{audit\_phase2h\_results.json}. The script uses 70-digit mpmath arithmetic
+and exact SymPy identities. Its JSON records SHA-256 hashes of the source
+documents, implementations, and saved data used, and it verifies that these
+inputs have not changed during execution. The checkout at the start was
+\texttt{0440ed6d345f7a8e94468b16209bc90b92bcdc6d}.
+
+We retain the good-equation convention
+\[
+ u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\qquad
+ u=2(\log\tau)_{xx},\qquad k=\sin\alpha,\quad v=\epsilon\cos\alpha.
+\]
+The phase audit is in the regular region $0<\alpha_j<\pi/3$; its directly
+integrated sample has $(\alpha_1,\alpha_2)=(0.3,0.7)$. No new phase convention,
+regularisation, or definition of physical charge is selected. The Toda
+analysis reuses the saved Phase 2f data and does not claim a new continuum
+limit or a fresh high-resolution Bethe-ansatz solve.
+
+\paragraph{What survives.}
+The two existing Phase 2h scripts both finish with
+\texttt{ALL CHECKS PASSED}. Their algebraic coboundary tests and the
+Legendre-transform identity for the proposed collective-coordinate momentum
+are reproduced. \Lc\ This audit distinguishes those identities from the
+physical identification of the quantities being compared.
+
+\section{The master functional is not yet the physical phase in all orientations}
+\subsection{Independent phonon quadrature}
+For $\phi_j=\alpha+(2\pi/3,-2\pi/3,0)_j$ and $c_j=(1,1,-2)_j$, we implement
+the Phase 2e elementary phase independently:
+\begin{align*}
+ \theta(q;\alpha,\epsilon)
+ &=-\sum_j c_j\left[\operatorname{sgn}(q)\arctan\frac{\sin\phi_j}{|q|}
+ +\epsilon\arctan\frac{\sin\phi_j\cos\phi_j}
+ {|q|\sqrt{1+q^2}+q^2+\sin^2\phi_j}\right],\\
+ I^{\rm raw}_{12}&=\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}
+             \theta_1(q)\theta'_2(q)\,dq.
+\end{align*}
+The phase tends to zero at each infinity, and the integral is split at zero.
+These are the existing raw-integral conventions, not a choice of physical
+exchange normalization. The independently implemented derivative and
+quadrature agree with the Phase 2g closed form to better than $10^{-60}$ at
+the four sampled orientations. \Lc\ (\scr, check 1.)
+
+\begin{center}\small
+\begin{tabular}{@{}ccrrr@{}}\toprule
+$\epsilon_1$ & $\epsilon_2$ & Direct raw integral & Phase 2h master
+ & $(\text{master}-\text{raw})/\pi$\\\midrule
+$+1$ & $+1$ & $-1.10381243524$ & $-1.10381243524$ & $0$\\
+$+1$ & $-1$ & $+0.49133439704$ & $+0.49133439704$ & $0$\\
+$-1$ & $+1$ & $-0.49133439704$ & $-3.63292705063$ & $-1$\\
+$-1$ & $-1$ & $+1.10381243524$ & $-2.03778021835$ & $-1$\\\bottomrule
+\end{tabular}
+\end{center}
+
+The same closed-form mismatch is checked at two additional angle pairs.
+For a defect with $q_D=0.4$, $\eta=+1$ and $\alpha=0.3$, direct quadrature
+also agrees with Phase 2g, whereas the Phase 2h first-difference functional
+exceeds that raw soliton--defect integral by $\pi$ for $\epsilon=-1$ and agrees
+for $\epsilon=+1$. This example lies in the previously identified stable
+defect sector. \Lc
+
+\paragraph{Interpretation.}
+The Phase 2h scripts compare a master-function difference to a newly defined
+ratio-kernel functional. Those comparisons can pass while the functional
+differs from the previously computed physical integral. The identification
+across orientations has therefore failed; the numerical algebraic
+coboundary identities themselves have not been disproved. \Lc
+
+\subsection{Exchange constants cannot be dropped}
+For two right-moving regular solitons, the raw integral obeys
+\begin{equation}
+ I^{\rm raw}_{12}+I^{\rm raw}_{21}=-\pi,\qquad
+ I^{\rm raw}(\alpha,\alpha)=-\frac\pi2.
+ \label{eq:raw}
+\end{equation}
+These statements are independently checked in \scr. \Lc\ They agree with
+the integration-by-parts discussion in \texttt{oneloop\_phase.tex}, but
+contradict the master report's unqualified claim of antisymmetry and the
+paragraph in \texttt{oneloop\_defect\_phase.tex} claiming that the raw phase
+vanishes on the diagonal. Adding $\pi/2$ gives an antisymmetric expression
+in this right-moving regular sector; it changes the bare triangle identities.
+This is a consistency problem to resolve, not a justification for selecting
+either normalization here. \Ld
+
+There is also no implication from oddness of a general kernel to exchange
+antisymmetry: the already-tested $K(z)=z/(1+z^2)$ yields
+$\mathcal I_{SS}(1,2)=\mathcal I_{SS}(2,1)=2.29578918683$ at the same angles.
+The independent check reproduces that nonzero symmetric value. \Lc
+Consequently, fusion within the algebraic representation does not by itself
+select a physical all-loop scattering amplitude. \Ld
+
+\section{What the saved Toda data establish}
+\subsection{The quoted subleading coefficients are not resolved}
+The coefficient used in the proposed next step is obtained from only two
+edge-extrapolated values:
+\begin{equation}
+ \widehat c_1(r)=32\,[R_0(16,r)-R_0(32,r)].
+ \label{eq:c1}
+\end{equation}
+This is the slope under an assumed linear dependence on $1/Y$, not an
+independent extraction of an asymptotic coefficient. \Lc\ The saved
+\texttt{matching\_analysis.json} already contains alternative edge fits.
+Applying \eqref{eq:c1} to each yields the following checked results
+(\scr, check 4):
+\begin{center}\small
+\begin{tabular}{@{}crrrr@{}}\toprule
+$r$ & Quadratic edge fit & Cubic edge fit & $h\log h$ edge fit
+ & Propagated spread\\\midrule
+0.4 & $-0.007080$ & $-0.007261$ & $+0.009148$ & $0.018275$\\
+0.5 & $-0.020991$ & $-0.021363$ & $+0.017819$ & $0.045090$\\
+0.6 & $-0.048219$ & $-0.048907$ & $+0.030317$ & $0.093195$\\\bottomrule
+\end{tabular}
+\end{center}
+Here the last column is $32(s_{16}+s_{32})$, with $s_Y$ the recorded edge-fit
+spread. It is a sensitivity diagnostic, not a rigorous or statistical error
+bar. The sign change in the preceding columns uses a common alternative fit
+at both $Y$ values, so it does not depend on treating their errors as
+independent. \Lc\ Better asymptotic control could eventually exclude that
+alternative, but the present data do not do so. \Ld
+
+\subsection{The proposed leading limit remains a candidate}
+The central large-$Y$ intercepts lie within $1.3\times10^{-5}$ to
+$7.1\times10^{-5}$ of the proposed
+\[
+ c_0^*(r)=-\frac4\pi\big(\chi_2(r)-r\big).
+\]
+This numerical proximity is reproduced. \Lc\ However, the propagated
+edge-fit spreads are $0.00150$, $0.00369$, and $0.00761$, respectively,
+more than fifty times those discrepancies. Agreement of central estimates
+does not establish accuracy at the displayed discrepancy scale. \Ld
+
+In \texttt{charge\_and\_frame\_audit.py}, the statement
+\begin{quote}\small\ttfamily
+dPhi\_loop\_asymp = R0\_target - dPhi\_cl\_asymp
+\end{quote}
+builds the proposed answer into the loop asymptotic. The subsequent check
+is a numerical compatibility check, not an independent analytical
+derivation of the answer. \Lc\ Claim 3.2 of
+\texttt{charge\_frame\_master.tex} asserts the corresponding loop expansion
+but does not derive it from the Bethe integral equation. This audit neither
+proves nor disproves $c_0^*(r)$; an independent edge-equation derivation is
+still needed. \Ld
+
+\section{A logarithmic term that the next Toda calculation must track}
+Retain the Phase 2h classical edge function and its proposed shifts:
+\begin{align*}
+ \Phi_{\rm cl}(u_1,u_2)
+ &=2(u_1-u_2)\log\frac{1-\sqrt{u_2/u_1}}{1+\sqrt{u_2/u_1}}
+       +4\sqrt{u_1u_2},\\
+ (y_1,y_2)&=(Y,r^2Y),\qquad
+ \delta u_1=-\frac{\log Y}{2\pi}+c,\qquad
+ \delta u_2=\delta u_1-\frac{\log r}{\pi}.
+\end{align*}
+The shift formulas are inputs to this conditional calculation, not newly
+derived Bethe-ansatz results. Exact differentiation gives the quadratic
+Taylor term \Lc\ (\scr, check 3):
+\begin{equation}
+ Q=\frac12\delta u^T D^2\Phi_{\rm cl}\,\delta u
+   =\frac{(\delta u_2-r^2\delta u_1)^2}{r(1-r^2)Y}.
+ \label{eq:Q}
+\end{equation}
+In particular,
+\begin{equation}
+ Q=\frac{1-r^2}{4\pi^2r}\frac{(\log Y)^2}{Y}
+      +O\!\left(\frac{\log Y}{Y}\right),\qquad 0<r<1.
+ \label{eq:logQ}
+\end{equation}
+SymPy verifies the rank-one Hessian and this coefficient; an independent
+70-digit Taylor comparison at $Y=10^{12}$ verifies the quadratic term with
+relative error below $10^{-10}$. \Lc
+
+Thus the stated $O(Y^{-1})$ remainder after the first-order classical Taylor
+term is not a correct strict asymptotic bound under the proposed logarithmic
+shift. \Lc\ This does \emph{not} prove a surviving logarithm in the full
+residual: the intrinsic loop phase and further momentum corrections may
+cancel it. The next calculation must establish those cancellations before
+assuming a pure $c_1(r)/Y$ expansion. \Ld
+
+\section{Additional checks: one correction and one positive control}
+\subsection{The separated head-on kernels}
+Let $\alpha_1=r\lambda$, $\alpha_2=\lambda$, with directions $(+1,-1)$.
+Claim 4.3 of Phase 2h assigns a leading logarithm to each separated kernel.
+An independent expansion instead gives \Lc\ (\scr, check 2)
+\begin{align}
+ I_{\chi_2}^{\rm head}
+ &=\frac{9r}{\pi}\lambda^2+O(\lambda^4),\label{eq:chihead}\\
+ I_{\ln}^{\rm head}
+ &=\frac{r\lambda^2}{\pi}
+ \left[-3\log(r\lambda^2)+6\log2-\frac32\log3-12\right]
+       +O(\lambda^4|\log\lambda|).
+ \label{eq:loghead}
+\end{align}
+Their sum reproduces the existing total head-on formula, including its
+nonzero logarithmic term. The old script checked only that sum; its passing
+status did not verify the separately stated asymptotics. \Lc
+
+For a short derivation of \eqref{eq:chihead}, at zero amplitudes the three
+half-angle tangents and their derivatives are
+$w=(\sqrt3,-\sqrt3,0)$ and $w'=(2,2,1/2)$. For
+$K_{\chi_2}=-\operatorname{Re}\chi_2/\pi$, the mixed derivative of
+$K_{\chi_2}(w_iw_j)$ is
+$-w'_iw'_j/[\pi(1-w_i^2w_j^2)]$. The weighted sum is $9/\pi$, verified
+exactly by SymPy. The sum is odd in each amplitude and analytic in a
+neighbourhood of zero, giving the displayed remainder. Independent numerical
+checks use $r=0.25,0.5,0.75$ and $\lambda=10^{-4},10^{-7},10^{-10}$. \Lc
+
+\subsection{Charges and the profile}
+The identity $\Delta P_{\rm can}=dL_1/dv$, using the proposed
+$L_1=v\Delta P_{\rm mode}-\Delta E_1^{\rm ren}$, agrees with the existing
+closed form to better than $10^{-60}$ at the regular sampled points. \Lc
+This is a positive algebraic control. It does not independently derive the
+renormalised effective action, or settle which full conserved charges enter
+soliton absorption and the Toda frame dictionary. Those physical
+identifications remain outside this audit. \Ld
+
+The displayed profile in Phase 2h also has a sign and amplitude error. From
+its stated $\tau=1+e^{k(x-vt)}$ convention one obtains
+\[
+ u=\frac{k^2}{2}\operatorname{sech}^2\frac{k(x-vt)}2,
+\]
+not $-k^2\operatorname{sech}^2(k(x-vt)/2)$. SymPy verifies the tau derivative.
+Substituting the quoted profile in the travelling-wave equation
+$u''-k^2u+3u^2=0$ gives residual $9k^4/2$ at its centre. \Lc
+This displayed error alone does not invalidate the implemented charge
+identities, which are checked separately.
+
+\section{Handoff, claims summary, and failures recorded}
+\paragraph{Recommended division of work.}\Ld
+The other investigation can proceed with the direct Toda edge expansion.
+It should treat $c_0^*$ as a candidate, retain logarithmic subleading terms,
+and avoid fitting to the quoted $c_1$ numbers. An all-loop physical kernel
+or ring quantisation should explicitly track orientation and zero-mode
+constants; the algebraic master functional cannot yet be substituted for
+the physical phase without that work. These recommendations select no new
+regularisation or normalization on the PI's behalf.
+
+\begin{center}\small
+\begin{tabular}{@{}L{6.1cm}L{3.6cm}L{4.5cm}@{}}\toprule
+Claim or test & Audit status & Evidence\\\midrule
+Physical raw phase equals the master functional in all directions
+ & Contradicted \Lc & Check 1: independent quadrature; $\pi$ discrepancies\\
+Raw phase is antisymmetric and vanishes on the diagonal
+ & Contradicted \Lc & Check 1; Eq.~\eqref{eq:raw}\\
+Algebraic coboundary tests
+ & Existing tests pass \Lc & Original master script rerun\\
+Quoted $c_1$ values are established two-loop targets
+ & Unsupported \Ld & Check 4: saved fit alternatives reverse their signs \Lc\\
+Proposed exact $c_0^*$ limit
+ & Open \Ld & Numerical compatibility; independent derivation missing\\
+First-order classical remainder is $O(1/Y)$
+ & Contradicted conditionally \Lc & Check 3; Eqs.~\eqref{eq:Q}--\eqref{eq:logQ}\\
+Separated head-on logarithms
+ & Corrected \Lc & Check 2; total asymptotic survives\\
+Legendre-transform momentum formula
+ & Confirmed conditionally \Lc & Check 5; $<10^{-60}$ residual\\
+Displayed negative soliton profile
+ & Contradicted \Lc & Check 5; tau derivative and ODE residual\\\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The physical-identification, antisymmetry, diagonal-value,
+separated-head-on, strict-remainder, and displayed-profile claims fail the
+checks detailed above. These failures are retained explicitly as audit
+results; no tolerances were relaxed to make those claims pass.
+\item The first audit run stalled while simplifying a Hessian written with
+nested square roots and was interrupted. Replacing $u_1=s^2$, $u_2=t^2$
+and applying the exact chain rule makes the same symbolic Hessian check
+tractable; no mathematical assertion is weakened.
+\item The tau-profile equality check initially rewrote only one side into
+exponentials, leaving a mixed exponential/hyperbolic expression unevaluated
+and failing the symbolic-zero assertion. Rewriting both sides consistently
+and applying exact rational cancellation proves the same identity. No
+numerical tolerance is involved.
+\end{enumerate}
+
+\paragraph{Verification scope.}
+The standalone audit and both original Phase 2h scripts were run. The
+full repository suite was not rerun: the audit changes no existing
+implementation, and does not claim to revalidate all earlier phases.
+\texttt{ALL CHECKS PASSED} in the new script means that its positive controls
+and reproductions of the recorded prior-claim failures passed. It does
+not mean the prior claims are now correct. The LaTeX note is built twice
+with \texttt{pdflatex} and its rendered pages are inspected.
+\end{document}
