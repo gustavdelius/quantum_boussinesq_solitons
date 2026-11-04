@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "convention": "H_g=pi^2/2+u^2/2-u^3+u_x^2/2; Delta H=hbar*lambda*integral(u^2 dx)",
+  "lambda_reference": "finite addition to free-good-vacuum normal ordering at U=0; fixed reference x,t",
+  "s1_definition": "thermodynamic: c_hyd=1+hbar*s1; do not substitute the sequential on-shell coefficient",
+  "tadpole_reference": "E_vac(0)=0 and E_vac_prime(0)=0; no extra finite mu*M",
+  "adopted_condition": null,
+  "recommendation": {
+    "id": "classical_curvature_at_U0",
+    "label": "d",
+    "lambda_exact": "9/(4*pi)"
+  },
+  "conditions": [
+    {
+      "id": "free_vacuum_normal_ordering",
+      "lambda_exact": "0",
+      "lambda_decimal": "0",
+      "C_good_exact": "-2/pi",
+      "C_good_decimal": "-0.6366197723675813430755350534900574481378385829618257949906693762355872",
+      "s1_thermodynamic_exact": "-9/(4*pi)",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "well_defined_perturbative",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "classical_curvature_at_U0",
+      "lambda_exact": "9/(4*pi)",
+      "lambda_decimal": "0.7161972439135290109599769351763146291550684058320540193645030482650356",
+      "C_good_exact": "1/(4*pi)",
+      "C_good_decimal": "0.07957747154594766788444188168625718101722982287022822437383367202944840",
+      "s1_thermodynamic_exact": "0",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "recommended_not_adopted",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "classical_hydrodynamic_sound_at_U0",
+      "lambda_exact": "9/(4*pi)",
+      "lambda_decimal": "0.7161972439135290109599769351763146291550684058320540193645030482650356",
+      "C_good_exact": "1/(4*pi)",
+      "C_good_decimal": "0.07957747154594766788444188168625718101722982287022822437383367202944840",
+      "s1_thermodynamic_exact": "0",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "conditional_on_hydrodynamic_identification",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "classical_curvature_all_U",
+      "lambda_exact": "9/(4*pi)",
+      "lambda_decimal": "0.7161972439135290109599769351763146291550684058320540193645030482650356",
+      "C_good_exact": "1/(4*pi)",
+      "C_good_decimal": "0.07957747154594766788444188168625718101722982287022822437383367202944840",
+      "s1_thermodynamic_exact": "0",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "requires_full_local_function_G",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "inverse_Toda_matching",
+      "lambda_exact": "3/(2*pi)",
+      "lambda_decimal": "0.4774648292756860073066512901175430861033789372213693462430020321766904",
+      "C_good_exact": "-1/(2*pi)",
+      "C_good_decimal": "-0.1591549430918953357688837633725143620344596457404564487476673440588968",
+      "s1_thermodynamic_exact": "-3/(4*pi)",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "formal_continuation_not_lattice_matching_for_good",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "literal_bad_coefficient",
+      "lambda_exact": "-3/(2*pi)",
+      "lambda_decimal": "-0.4774648292756860073066512901175430861033789372213693462430020321766904",
+      "C_good_exact": "-7/(2*pi)",
+      "C_good_decimal": "-1.114084601643267350382186343607600534241217520183195141233671408412278",
+      "s1_thermodynamic_exact": "-15/(4*pi)",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "arbitrary_finite_good_scheme_not_dictionary_continuation",
+      "claim_label": "c, conditional trace for C_good"
+    },
+    {
+      "id": "sequential_bare_on_shell_subtraction",
+      "lambda_exact": "3/(2*pi)",
+      "lambda_decimal": "0.4774648292756860073066512901175430861033789372213693462430020321766904",
+      "C_good_exact": "-1/(2*pi)",
+      "C_good_decimal": "-0.1591549430918953357688837633725143620344596457404564487476673440588968",
+      "s1_thermodynamic_exact": "-3/(4*pi)",
+      "C_good_minus_s1_exact": "1/(4*pi)",
+      "status": "not_exact_q_to_zero_phonon_condition",
+      "claim_label": "c, conditional trace for C_good"
+    }
+  ],
+  "functions": {
+    "F_good": "sqrt(3)/pi*(3/4-k^2)*atanh(2*k/sqrt(3))-3*k/(2*pi)+2*lambda*k^3/3",
+    "C_good": "lambda-2/pi",
+    "s1": "lambda-9/(4*pi)",
+    "invariant": "1/(4*pi)",
+    "all_background_G": "((1-6*u)^1.5-1+9*u)/(6*pi)"
+  },
+  "domain": "0<k<sqrt(3)/2; C is lim k->0 of one-loop coefficient after hbar expansion",
+  "precision_dps": 80,
+  "trace_rows": [
+    {
+      "k": "0.12",
+      "e": "-0.1346702975208375568617741041071829108925730184030929852914089575929708638780813",
+      "p": "-0.13490893852053626735735195869660393535316276096808946906450755547957033528245788",
+      "F": "-0.00073622560348558726964516238152567614114003720366155333776818852839942609193621554",
+      "error": "0.0"
+    },
+    {
+      "k": "0.31",
+      "e": "-0.25145856182065919272412431435917166464802507620995571367008675102329034740114516",
+      "p": "-0.25082834806516574811322680776930290473221317440075897841421896429347254303036182",
+      "F": "-0.012986881890854878311507283912914054466505293763413680711670909999595625944856039",
+      "error": "2.6355494858076308060871435128175047519274903455921268875194407562770360727424399e-82"
+    },
+    {
+      "k": "0.6",
+      "e": "-0.36539082950812932964201978083015689943679693288214900677624996983485703048918111",
+      "p": "-0.32799968818714888225335635712663579966953789443732005817422263845131772532893863",
+      "F": "-0.10299107895841022383933469512884825970116661733229296023687185907380285022603021",
+      "error": "2.6355494858076308060871435128175047519274903455921268875194407562770360727424399e-82"
+    },
+    {
+      "k": "0.8",
+      "e": "-0.45857625738449836248990162715536069747388160300944969276038571958555401596697341",
+      "p": "-0.29082011922548150033953235538172518316015671138895760050459761388804403723625517",
+      "F": "-0.2840841858492094622861822139263255875777875761760751324576271512527275936252203",
+      "error": "5.2710989716152616121742870256350095038549806911842537750388815125540721454848798e-82"
+    }
+  ],
+  "small_k_extrapolation_error": "8.7989621688901199516770124532151934267486328908699354749069581427595077027728284e-45",
+  "physical_determinant_completed": false,
+  "lattice_lambda": null,
+  "qualifications": [
+    "C and its invariant use the audited conditional equal-mode-count trace.",
+    "The invariant is only within the specified quadratic bulk-counterterm class with fixed tadpole, units and boundary prescription.",
+    "No global ground-state completion or uniform finite-hbar small-amplitude limit is claimed."
+  ]
+}

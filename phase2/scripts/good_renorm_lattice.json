@@ -1,0 +1,45 @@
+{
+  "precision_dps": 80,
+  "source_continuum": "U_TT=-U_XXXX/3-2*(U^2)_XX/3",
+  "dictionary": "X=x, T=sqrt(3)*t, U=-1/4+3*u/2; BC pi=(4*sqrt(3)/3)*(W-U_X/2); Hikami reverses T",
+  "lattice_critical_discriminant": "-4*(1-cos(K))^2/27",
+  "linear_modes": [
+    {
+      "K": "0.1",
+      "eigenvalue_error": "2.0266524006496886621182572069714549361463403257435744493085571200911678449075028e-81"
+    },
+    {
+      "K": "0.7",
+      "eigenvalue_error": "1.4798065351475725824740492807083955471355581746280605523819518868997667233555723e-81"
+    },
+    {
+      "K": "1.8",
+      "eigenvalue_error": "1.0542215031010276780357181405385363139787773493323631702883290825756365527341779e-81"
+    },
+    {
+      "K": "3.0",
+      "eigenvalue_error": "1.0547110352022228032156604598214421324490592562620940934824246146455232466596167e-81"
+    }
+  ],
+  "base_flow_background_discriminant": "-d^4*(Q^4+4*U*Q^2)/27+O(d^6)",
+  "lambda_lattice": null,
+  "source_reading": [
+    {
+      "arxiv": "hep-th/9303166",
+      "scope": "abstract and HTML full-text sections 1-6; focus on 4-5"
+    },
+    {
+      "arxiv": "nlin/0102021",
+      "scope": "abstract and PDF excerpts: section 1, section 2.1 commutators and boundary condition, section 5 opening and section 7 opening; not whole paper"
+    }
+  ],
+  "missing": [
+    "self-adjoint real form and a Hamiltonian combination generating the desired higher flow",
+    "stable uniform background for that Hamiltonian and its physical positive-frequency phonons",
+    "canonical symplectic/action and hbar dictionary, not merely a PDE dictionary",
+    "strain-dependent full Brillouin-zone mode sum with energy and pressure subtractions"
+  ],
+  "failures_recorded": [
+    "Naive use of the base-flow discriminant with the printed continuum U-background expansion has the opposite acoustic U sign to the displayed higher-flow continuum equation. This fails the proposed shortcut, not the higher-flow construction."
+  ]
+}

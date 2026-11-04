@@ -1,0 +1,528 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\A}{\textbf{(a)}\ }
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\vac}{\file{good_renorm_vacuum.py}}
+\newcommand{\trc}{\file{good_renorm_trace.py}}
+\newcommand{\lat}{\file{good_renorm_lattice.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Good Boussinesq one-loop renormalisation:\\vacuum elasticity, acoustic limits and lattice qualifications}
+\author{Research note for PI Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C Free-good-vacuum normal ordering leaves a finite curvature
+$W''(0)=-9/(2\pi)$. Requiring the reference vacuum's elastic modulus to
+retain its classical value fixes
+$\Delta H=\hbar\frac9{4\pi}\int u^2\dd x$.
+The audited, conditional equal-mode-count soliton trace then gives
+$C_{\rm good}=1/(4\pi)$ and $C_{\rm good}-s_1=1/(4\pi)$, where $s_1$
+is the thermodynamic acoustic coefficient. This does not complete the
+projected determinant.
+
+\C A bare-on-shell one-loop calculation has a different sequential
+limit, $s_{1,\mathrm{pole,seq}}=-3/(2\pi)$ before a finite subtraction,
+because soft internal phonons contribute at threshold. An exact
+phonon-slope condition cannot silently replace the static condition.
+\D We recommend the static reference-vacuum condition; no PI choice is
+imposed. \C Consistent inverse continuation of Toda matching gives
+$+3/(2\pi)$, an admissible finite local term which fails the classical
+static acoustic condition. The classical Belov--Chaltikian continuum
+flow has the good sign, but no canonical quantum lattice elasticity is
+extracted. Fresh symbolic and high-precision checks, limitations and
+failures are recorded below.
+\end{abstract}
+
+\section{Scope and the physical response being defined}
+Labels mean (a) literature result, (b) literature heuristic, (c) project
+derivation or check, (d) recommendation or unestablished identification.
+Numerical checks are evidence, not rigorous error bounds. All new scripts
+are under \file{phase2/scripts/}; they import no historical checker and
+write only \file{good_renorm} outputs. Existing files and git state are
+unchanged. No old scripts were run.
+
+The controlling internal sources are \file{audit_onebody_scheme.tex},
+\file{audit_det_projected.tex} and \file{errata.tex}; their qualifications
+override the packages. The one-body scheme, Toda precision and projected
+one-loop packages, README Status and the master report's conclusions
+and ranked programme were consulted. Toda is method validation, not the
+target regulator.
+
+\paragraph{Canonical convention \C (\vac).}
+Keep reference coordinates, normalization and $\hbar$ fixed:
+\begin{align}
+ H_g&=\int[\tfrac12\pi^2+V(u)+\tfrac12u_x^2]\dd x,
+ &V(u)&=\tfrac12u^2-u^3, &u&=\phi_x,\quad\pi=\phi_t,\\
+ u_t&=\partial_x\pi,
+ &\pi_t&=\partial_x(u-3u^2-u_{xx}),\\
+ u_{tt}&=u_{xx}-u_{xxxx}-3(u^2)_{xx}.\label{eq:pde}
+\end{align}
+The mean $U$ is fixed within a sector. Comparing sectors introduces a
+source $J$ conjugate to $\int u\dd x$. For perturbative uniform energy
+\emph{density} $e(U)$ in fixed reference length, define
+\begin{equation}
+ J=e'(U),\qquad K(U)=\partial J/\partial U=e''(U),\qquad
+ \chi_U=\partial U/\partial J=K^{-1}.\label{eq:response}
+\end{equation}
+Here $\chi_U$ is strain compliance, the precise ``compressibility'' used
+below. A particle-density compressibility needs an additional dictionary.
+Using total energy requires dividing its second derivative by length.
+
+\C Uniform momentum costs its canonical quadratic energy:
+$\tfrac12(\pi+b)^2-\tfrac12\pi^2=b\pi+b^2/2$.
+Thus the local long-wavelength theory has unit uniform inertia.
+Linearizing $U_t=\pi_x$, $\pi_t=\partial_x e'(U)$ defines
+$c_{\rm hyd}^2=K$. This is a thermodynamic/hydrodynamic speed.
+\D Equality to the slope of an exact spectral phonon requires a specified
+state and an infrared argument; Section~\ref{sec:pole} shows why the
+naive on-shell perturbative replacement is insufficient.
+
+\paragraph{The vacuum is a local perturbative branch \C (\vac).}
+Putting $u=U+\eta_x$ gives quadratic elastic coefficient $m^2=1-6U$ and
+\begin{equation}
+ \omega(q;U)=|q|\sqrt{q^2+1-6U},\qquad U<1/6.\label{eq:disp}
+\end{equation}
+The sign in the question is correct. However the cubic Hamiltonian is
+unbounded below even at fixed mean. On a period $2\pi$, take
+$f=\cos x+\cos2x$: $\int f=0$ and $\int f^3=3\pi/2>0$.
+The energy of $u=U+A f$ has a negative leading $A^3$ term, whereas its
+gradient energy is quadratic. ``Vacuum'' therefore means the stable
+Gaussian branch and its perturbative effective energy, not a constructed
+global ground state. A stable quantum completion is extra input \D.
+
+\section{Vacuum curvature and finite counterterms}
+\paragraph{Fixed-cutoff calculation \C (\vac).}
+The zero-point coefficient at a strain-independent wave-number cutoff is
+\begin{align}
+ W_\Lambda^{\rm bare}(U)&=\frac1{2\pi}\int_0^\Lambda
+ q\sqrt{q^2+1-6U}\dd q\\
+ &=\frac{(\Lambda^2+1-6U)^{3/2}-(1-6U)^{3/2}}{6\pi}.
+\end{align}
+Write $e=V+\hbar W+O(\hbar^2)$. The required vacuum constant and linear
+counterterms are
+\begin{equation}
+ \Delta\mathcal H_{0,1}=-\hbar W_\Lambda^{\rm bare}(0)
+ +\frac{3\hbar}{2\pi}(\sqrt{1+\Lambda^2}-1)u.\label{eq:linear}
+\end{equation}
+The linear term is precisely free-good-vacuum Wick ordering of $-u^3$:
+\begin{equation}
+ \langle u^2\rangle_0=\frac{\hbar}{2\pi}(\sqrt{1+\Lambda^2}-1),
+ \qquad -:u^3:=-u^3+3\langle u^2\rangle_0u.
+\end{equation}
+This fixes $e(0)=e'(0)=0$ at one loop, including the finite pressure/charge
+origin. The Fock reference is fixed at $U=0$, not reset for each background.
+
+\C The finite result is
+\begin{align}
+ W(U)&=-\frac{(1-6U)^{3/2}-1+9U}{6\pi},\label{eq:W}\\
+ W''(U)&=-\frac9{2\pi}\int_0^\infty
+ \frac{q\dd q}{(q^2+1-6U)^{3/2}}
+ =-\frac9{2\pi\sqrt{1-6U}}.\label{eq:Wpp}
+\end{align}
+The curvature is UV- and IR-convergent. Bounded, background-independent
+regulator functions tending to one give the same limit by dominated
+convergence. This independence holds within the specified Hamiltonian and
+subtractions; it does not forbid finite local additions or changes of UV
+completion. No divergent quadratic counterterm is needed for this
+homogeneous one-loop calculation.
+
+\C Independent 80-digit quadratures use the cancellation-free identity
+\begin{equation}
+ q\left(\sqrt{q^2+1-6U}-\sqrt{q^2+1}
+       +\frac{3U}{\sqrt{q^2+1}}\right)
+ =\frac{-18U^2q}{\sqrt{q^2+1}(\sqrt{q^2+1-6U}+\sqrt{q^2+1})^2}.
+\end{equation}
+At $U=-.08,0,.02,.10$, energy and curvature discrepancies are below
+$3\times10^{-80}$. Smooth damping at $U=0$ independently verifies
+\begin{equation}
+ \int_0^\infty\frac{q e^{-\delta q^2}}{(1+q^2)^{3/2}}\dd q
+ =1-\sqrt{\pi\delta}e^\delta\operatorname{erfc}\sqrt\delta\longrightarrow1.
+\end{equation}
+Finite regulator error is distinct from quadrature error.
+
+\paragraph{Classical reference-vacuum elasticity \C (\vac).}
+Adding $\Delta\mathcal H=\hbar\lambda u^2$ to the normal-ordered reference
+produces
+\begin{align}
+ K(U)&=1-6U+\hbar\left(2\lambda-
+       \frac9{2\pi\sqrt{1-6U}}\right)+O(\hbar^2),\\
+ \chi_U&=\frac1{1-6U}-\hbar
+ \frac{2\lambda-9/(2\pi\sqrt{1-6U})}{(1-6U)^2}+O(\hbar^2),\\
+ c_{\rm hyd}(0)&=1+\hbar s_1+O(\hbar^2),
+ &s_1&=\lambda-\frac9{4\pi}.\label{eq:s1}
+\end{align}
+Consequently $K(0)=1+O(\hbar^2)$, $\chi_U(0)=1+O(\hbar^2)$ and
+$c_{\rm hyd}(0)=1+O(\hbar^2)$ are equivalent and fix
+\begin{equation}
+ \boxed{\lambda_{\rm acoustic}=\frac9{4\pi}
+ =0.71619724391352901096\ldots .}\label{eq:lambda}
+\end{equation}
+Normal ordering alone instead prescribes $\lambda=0$, leaving
+$s_1=-9/(4\pi)$. The finite bubble is not a Wick tadpole.
+These expansions are not uniform near $U=1/6$.
+
+\paragraph{Preserving the entire background family \C (\vac).}
+A constant $\lambda$ cannot cancel the $U$ dependence in \eqref{eq:Wpp}.
+Requiring $K(U)=1-6U+O(\hbar^2)$ throughout $U<1/6$, with the same
+energy/pressure origins, instead requires
+\begin{equation}
+ \Delta\mathcal H=\hbar G(u),\quad
+ G(u)=-W(u)=\frac{(1-6u)^{3/2}-1+9u}{6\pi}
+ =\frac9{4\pi}u^2+\frac9{4\pi}u^3+\frac{81}{16\pi}u^4+\cdots .
+ \label{eq:G}
+\end{equation}
+This is an additional finite nonlinear condition, not a UV necessity.
+The closed function is real only for $u<1/6$; its small-field expansion
+specifies local vertices, not a completion for arbitrary cores or fields.
+Its quadratic coefficient suffices for the small-amplitude table; using
+only $\lambda u^2$ does not implement it at finite amplitude.
+
+\section{Exact phonon slope versus a sequential perturbative pole}
+\label{sec:pole}
+\paragraph{Status of the candidate \D.}
+In a specified stable quantum completion one could impose the classical
+slope of the low-$q$ spectral edge or phonon pole. This cubic model supplies
+neither that completion nor a proof of an isolated pole. If hydrodynamics
+identifies its slope with $\sqrt K$, the condition gives \eqref{eq:lambda}.
+That is an explicit assumption. Evaluating the one-loop self-energy on
+the bare dispersion before sending $q$ to zero is a different limit.
+
+\paragraph{A direct infrared test \C (\vac).}
+Expansion of $\frac12\operatorname{Tr}\log(D_0+\delta D)$ to second order
+in a background insertion gives
+\begin{equation}
+ \frac{\Sigma_E(\Omega,q)}{\hbar q^2}
+ =-18\int\frac{\dd p\dd\nu}{(2\pi)^2}
+ \frac{p^2(q-p)^2}{(\nu^2+\omega_p^2)
+ ((\Omega-\nu)^2+\omega_{q-p}^2)}.\label{eq:bubble}
+\end{equation}
+Here each insertion is $-6u$ times the two spatial derivatives. The factor
+$-18$ is the corresponding quadratic-kernel coefficient.
+The frequency convolution, independently integrated numerically, is
+\begin{equation}
+ \int\frac{\dd\nu}{2\pi}
+ \frac1{(\nu^2+a^2)((\Omega-\nu)^2+b^2)}
+ =\frac{a+b}{2ab((a+b)^2+\Omega^2)}.
+\end{equation}
+Its static limit reproduces \eqref{eq:Wpp}. Continuing
+$\Omega=-i\omega_q$ leaves the integral without the $-18$ factor,
+\begin{equation}
+ I(q)=\int_{\mathbb R}\frac{\dd p}{2\pi}
+ \frac{p^2(q-p)^2(\omega_p+\omega_{q-p})}
+ {2\omega_p\omega_{q-p}[(\omega_p+\omega_{q-p})^2-\omega_q^2]}.
+\end{equation}
+For $q>0$, a split at $p=0,q$ gives
+\begin{equation}
+ \lim_{q\downarrow0}I_{0<p<q}=-\frac1{12\pi},\qquad
+ \lim_{q\downarrow0}I_{p<0\,\text{or}\,p>q}=\frac1{4\pi},\qquad
+ \lim I(q)=\frac1{6\pi}.\label{eq:soft}
+\end{equation}
+Putting $p=qx$ makes the interior integrand, including $\dd p$ but before
+$1/(2\pi)$, tend to $-\dd x/6$. The exterior tends to the static bubble.
+The endpoint numerator zeros make this integral finite. The script
+rationalizes the denominator to avoid cancellation and checks the soft
+scaling symbolically as well as by split quadrature.
+
+\C The resulting sequential pole slope is
+\begin{equation}
+ s_{1,\mathrm{pole,seq}}=-9\lim I(q)+\lambda
+ =-\frac3{2\pi}+\lambda,\label{eq:pole}
+\end{equation}
+which is not $s_1$ in \eqref{eq:s1}. At $\lambda=0$, the finite-$q$
+value is $-0.477443610314\ldots$ at $q=.01$; its residual from the limit
+is below $3\times10^{-25}$ at $q=10^{-12}$ (asserted at $10^{-21}$).
+The order of limits is expansion in $\hbar$ at fixed $q$, then $q\to0$.
+The bare collinear frequency splitting is $O(q^3)$, while a one-loop
+velocity shift changes frequency by $O(\hbar q)$; this threshold expansion
+loses uniformity when $q^2$ is comparable to $\hbar$.
+\D Resummation or an exact low-energy solution is needed for the strict
+fixed-$\hbar$, $q\to0$ spectral slope. No value of $\lambda$ is asserted
+to settle that exact condition unconditionally.
+\C Formally cancelling \eqref{eq:pole} chooses $3/(2\pi)$ and leaves a
+nonclassical static elasticity. The table retains this diagnostic.
+
+\section{Conditional one-body result and candidate table}
+\paragraph{Trace and fixed momentum \C (\trc).}
+Retain the audited equal-mode-count endpoint and finite Wick pressure
+origin. For the stable small-amplitude branch $0<k<\sqrt3/2$,
+\begin{align}
+ F_0(k)&=\frac{\sqrt3}{\pi}(\tfrac34-k^2)
+ \operatorname{artanh}\frac{2k}{\sqrt3}-\frac{3k}{2\pi},\\
+ P_0&=\epsilon\frac23k^3\sqrt{1-k^2},\qquad
+ E_0=\frac2{15}k^3(5-4k^2),\qquad \dd E_0=v\dd P_0.
+\end{align}
+Here $\hbar F_0$ is the conditional energy correction at fixed momentum.
+Fresh convergent quadratures of the energy and momentum phase densities
+reproduce it at four independent widths to below $10^{-65}$. The endpoint
+and tadpole subtraction are combined in the convergent energy integrand;
+no fitted target sets the constant.
+
+\C The classical moments are $\int u^2=2k^3/3$,
+$\int u^3=4k^5/15$ and $\int u_x^2=2k^5/15$.
+At fixed $P$, stationarity of $H_0-vP$ removes first-order profile
+variation. Hence
+\begin{align}
+ F_\lambda(k)&=F_0(k)+\frac{2\lambda}{3}k^3,\label{eq:Flambda}\\
+ F_0(k)&=-\frac4{3\pi}k^3-\frac{16}{45\pi}k^5+O(k^7),\\
+ C_{\rm good}(\lambda)&=\lim_{k\to0}\frac{F_\lambda(k)}{|P_0(k)|}
+ =\lambda-\frac2\pi,\qquad
+ \boxed{C_{\rm good}-s_1=\frac1{4\pi}.}\label{eq:C}
+\end{align}
+Independent differentiation of the exact classical soliton with stiffness
+$a=1+2\hbar\lambda$ at fixed $P$ verifies this shift.
+A finite linear term $\hbar\mu\int u$ instead produces $3\mu/k^2$ in the
+ratio and destroys its finite limit. This fixes the need for a separate
+pressure/charge-origin convention. The higher terms $u^3,u_x^2$ contribute
+at $k^5$ and do not change $C$.
+
+\begin{center}\small
+\begin{tabular}{@{}L{5.3cm}cccc@{}}\toprule
+Condition / prescription & $\lambda$ & $s_1$ & $C_{\rm good}$ & $C_{\rm good}-s_1$\\\midrule
+Free good-vacuum normal ordering & $0$ & $-9/(4\pi)$ & $-2/\pi$ & $1/(4\pi)$\\[3pt]
+Classical $K(0)$ or $\chi_U(0)$ & $9/(4\pi)$ & $0$ & $1/(4\pi)$ & $1/(4\pi)$\\[3pt]
+Classical hydrodynamic speed at $U=0$ & $9/(4\pi)$ & $0$ & $1/(4\pi)$ & $1/(4\pi)$\\[3pt]
+Classical $K(U)$ for all backgrounds; full $G(u)$ required & $9/(4\pi)$\footnotemark & $0$ & $1/(4\pi)$ & $1/(4\pi)$\\[3pt]
+Inverse continuation of Toda matching & $3/(2\pi)$ & $-3/(4\pi)$ & $-1/(2\pi)$ & $1/(4\pi)$\\[3pt]
+Copy bad coefficient without continuing density & $-3/(2\pi)$ & $-15/(4\pi)$ & $-7/(2\pi)$ & $1/(4\pi)$\\[3pt]
+Cancel sequential bare-on-shell slope only & $3/(2\pi)$ & $-3/(4\pi)$ & $-1/(2\pi)$ & $1/(4\pi)$\\[3pt]
+Exact spectral slope without infrared identification & unknown & --- & --- & ---\\[3pt]
+Canonical good quantum lattice matching & unknown & --- & --- & ---\\\bottomrule
+\end{tabular}
+\end{center}
+\footnotetext{Quadratic coefficient of $G$, not its complete specification.}
+\C All formula entries are checked in \vac\ and \trc; all $C$ values
+are conditional on the audited trace. The exact spectral row becomes the
+hydrodynamic row only under the stated identification.
+\D Recommendation: use $K(0)=1$ with $e(0)=e'(0)=0$ for the next
+continuum comparison. This condition is reproducible and defined by the
+stable reference vacuum. It is not forced by integrability or Toda and is
+not recorded as the PI's adopted scheme.
+
+\paragraph{Machine-readable handoff.}
+\C \file{scripts/good_renorm_conditions.json} contains exact strings and
+70-digit decimal $\lambda$ values, all table rows, the reference
+subtractions, $F_\lambda$, $C(\lambda)$ and the definition of $s_1$.
+The recommendation is labelled (d), \file{adopted_condition} is null,
+and \file{physical_determinant_completed} is false. The two-body package
+can use $\lambda$ parametrically or quote the recommended conditional value.
+The invariant is restricted to common quadratic bulk subtractions with
+units, kinetic normalization, pressure origin and boundary prescription
+fixed. Invariance under all counterterms or quantum completions is not
+claimed. The full $G$ prescription needs its extra vertices at finite
+amplitude, not just the exported quadratic coefficient.
+
+\section{Continuation test: admissible term, failed acoustic match}
+\paragraph{Consistent continuation \C (\trc).}
+The audited branch uses $k_g=ik_b$, $\alpha=i\beta$, $x_g=-ix_b$,
+$U_g=-U_b$ and $F_b(k)=-iF_g(ik)$.
+The velocities continue by $\cos(i\beta)=\cosh\beta$; the stipulated
+spectral conventions have $\ell_b=-\ell_g(i\beta)$.
+The density rule, not rapidity substitution alone, determines
+\begin{equation}
+ W_b(U)=-W_g(-U),\qquad \lambda_b=-\lambda_g.
+\end{equation}
+Therefore $\lambda_b=-3/(2\pi)$ inversely continues to
+$\lambda_g=+3/(2\pi)$, not the same signed number.
+Continuing the Toda vacuum function gives
+\begin{equation}
+ W_{T\to g}(U)=-\frac{e^{-3U}-1+3U}{6\pi},\qquad
+ \tfrac12W_{T\to g}''(0)=-\frac3{4\pi}.
+\end{equation}
+The independently recomputed unmodified good vacuum has
+$s_{1,g}=-9/(4\pi)$; their difference is $3/(2\pi)$.
+Inverse-Toda matching therefore leaves nonzero thermodynamic sound shift
+$-3/(4\pi)$ and conditional $C=-1/(2\pi)$. It fails the classical good
+acoustic condition by $-3/(4\pi)$ in both columns.
+
+\C This real local finite term has no algebraic prohibition; for
+sufficiently small $\hbar$ its vacuum stiffness remains positive. Thus
+``cannot define any legitimate perturbative good scheme'' is too strong.
+What fails is identifying it with classical-acoustic renormalisation or
+deriving it from a real good-equation lattice.
+\D Physical selection or a stronger no-go needs a quantum completion.
+The coincidence with the sequential-pole subtraction is only an algebraic
+equality, not a proof of an exact-slope or lattice interpretation.
+
+\paragraph{No real good analogue of the bad turning-band mechanism
+\C (\trc).}
+For $q>0$,
+\begin{equation}
+ \omega_g'(q)=\frac{1+2q^2}{\sqrt{1+q^2}},\qquad
+ (\omega_g')^2-1=\frac{q^2(3+4q^2)}{1+q^2}>0.
+\end{equation}
+There is no group-velocity match with a subsonic right-moving soliton;
+negative $q$ has the opposite group velocity. Thus the bad-band mechanism
+does not transfer to the real good spectrum. The controlling audit also
+warns that light-root logarithm cancellation does not prove that an entire
+trace is supported only near a short-wave root. Neither observation
+forbids a finite $u^2$ scheme change in the good theory.
+
+\section{Integrable lattice assessment}
+\paragraph{Reading scope and source facts.}
+\C Both abstract pages were opened. Belov--Chaltikian's HTML full-text
+sections 1--6 were read, especially sections 4--5 \cite{BC}.
+For Hikami \cite{Hikami}, PDF passages were read in section 1,
+section 2.1 (commutators and quasi-periodic condition), and the openings
+of sections 5 and 7. Its full 25-page proof was not read. Its experimental
+HTML failed to load, but the PDF was accessible. Other discretisation
+papers returned by a brief search are not used as evidence here.
+
+\A The sources exhibit a lattice Boussinesq hierarchy and a classical
+continuum flow. Hikami constructs a Baxter operator for the quantum
+chain and uses chiral-field commutators in the continuum discussion.
+These algebraic results do not identify the canonical vacuum elasticity
+needed here. Belov--Chaltikian's displayed time convention gives
+\begin{equation}
+ U_T=-U_{XX}+2W_X,\qquad
+ W_T=W_{XX}-\tfrac23U_{XXX}-\tfrac23UU_X.\label{eq:source}
+\end{equation}
+Hikami reverses both right-hand sides.
+
+\paragraph{A real good-sign PDE dictionary \C (\lat).}
+Eliminating $W$ gives
+\begin{equation}
+ U_{TT}=-\tfrac13U_{XXXX}-\tfrac23(U^2)_{XX}.
+\end{equation}
+The real transformation
+\begin{equation}
+ X=x,\quad T=\sqrt3\,t,\quad U=-\tfrac14+\tfrac32u,
+ \quad \pi=\frac{4\sqrt3}{3}(W-U_X/2)\label{eq:latticedict}
+\end{equation}
+produces \eqref{eq:pde} and $u_t=\pi_x$. Reverse $T$ for Hikami's sign.
+Thus the good fourth-derivative sign is available at the level of the
+printed classical continuum flow. This is a PDE dictionary, not a
+symplectic/action or $\hbar$ dictionary.
+
+\paragraph{Linear lattice diagnostic and a failed shortcut \C (\lat).}
+The base flow printed in both sources is
+\begin{equation}
+ \dot L_n=W_{n-1}-W_n+L_n(L_{n+1}-L_{n-1}),\qquad
+ \dot W_n=W_n(L_{n+2}-L_{n-1}).
+\end{equation}
+Linearization around $(L_0,W_0)$ with $z=e^{iK}$ gives
+\begin{equation}
+ A(z)=\begin{pmatrix}L_0(z-z^{-1})&z^{-1}-1\\
+ W_0(z^2-z^{-1})&0\end{pmatrix},\quad
+ D=-4L_0^2\sin^2K+8W_0(\cos K-\cos2K).
+\end{equation}
+At $(1/3,1/27)$,
+\begin{equation}
+ D=-\frac4{27}(1-\cos K)^2,\qquad
+ r_\pm=\frac{i\sin K}{3}\pm\frac{i(1-\cos K)}{3\sqrt3}.
+\end{equation}
+This base-flow critical background has oscillatory linear modes. That
+alone is not a positive-energy quantum vacuum. Inserting the printed
+leading background expansions $L_0=(1-\Delta^2U/3)/3$,
+$W_0=(1-\Delta^2U)/27$, $K=\Delta q$ gives
+\begin{equation}
+ D=-\frac{\Delta^4}{27}(q^4+4Uq^2)+O(\Delta^6).
+\end{equation}
+Its acoustic $U$ sign disagrees with a naive identification of these
+\emph{base-flow} frequencies with the shifted target in
+\eqref{eq:latticedict}. This refutes that shortcut, not the higher-flow
+construction: Hikami explicitly specifies a higher flow, and
+Belov--Chaltikian takes regularized Hamiltonian combinations before the
+continuum limit.
+
+\paragraph{Missing ingredients for $\lambda$ \D.}
+A matching calculation still needs:
+\begin{enumerate}
+\item A self-adjoint real form and the precise commuting-Hamiltonian
+combination generating the desired higher flow.
+\item Its stable uniform state and physical positive-frequency modes over
+the entire Brillouin zone, as functions of the mean strain.
+\item The symplectic/action conversion to
+$\Omega=\int\dd\pi\wedge\dd\phi$, fixing $\hbar$ and the kinetic inertia.
+\item The complete lattice vacuum energy with fixed mode count, converted
+to reference-length density, and its constant/pressure subtractions.
+\end{enumerate}
+A PDE match and a Baxter operator alone do not give those identifications.
+\C Once a canonical lattice $s_{1,L}$ is supplied, \eqref{eq:s1} fixes
+$\lambda=s_{1,L}+9/(4\pi)$. No such numerical $s_{1,L}$ or $\lambda$ is
+extracted here. \D The classical good-sign result makes this a plausible
+route, not a completed quantum regulator or a no-go theorem.
+
+\section{Checks, error budget and failures recorded}
+\small
+\begin{longtable}{@{}L{4.3cm}L{6.3cm}L{3.5cm}@{}}\toprule
+Claim & Evidence and qualification & Checker\\\midrule\endhead
+\C Vacuum sign, curvature, compliance, counterterms & SymPy identities;
+80-digit subtracted and smooth-regulator quadratures at tolerance $10^{-70}$ & \vac\\[4pt]
+\C Nonuniform on-shell limit & Frequency convolution, symbolic soft
+scaling, split integral down to $q=10^{-12}$; limit tolerance $10^{-21}$ & \vac\\[4pt]
+\C Conditional $F_\lambda$, $C$, invariant & Exact moments, series and
+fixed-$P$ deformation; independent trace quadratures at tolerance $10^{-65}$ & \trc\\[4pt]
+\C Continuation sign and mismatch & Density continuation and vacuum
+curvatures; group-velocity identity & \trc\\[4pt]
+\C Lattice good sign and base-flow limitation & PDE elimination,
+field/time map, lattice linearization and 80-digit eigenvalues & \lat\\[4pt]
+\D Physical determinant, exact spectral slope, lattice matching & Not
+proved; unknown physical identifications have no numerical error bar & Open\\\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Error budget \C.}
+The recommended conditional numbers are exact expressions,
+$\lambda=9/(4\pi)$ and $C=1/(4\pi)=0.07957747154594766788\ldots$,
+not fits. Numerical code uses 80 decimal digits. Vacuum quadrature errors
+are below $3\times10^{-80}$, trace discrepancies below $10^{-80}$
+(asserted at $10^{-65}$). Four-width interpolation at $k=10^{-5}/2^j$
+checks the $-2/\pi$ reference limit to better than $10^{-40}$.
+The sequential-pole finite-$q$ residual is below $3\times10^{-25}$ at
+$q=10^{-12}$, separate from arithmetic accuracy. These are deterministic
+diagnostics, not rigorous rounding bounds. Unknown determinant boundary
+contributions, quantum UV matching and nonuniform infrared or
+finite-$\hbar$ soliton limits are structural qualifications. No
+higher-loop error estimate is supplied.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \C Exploratory direct on-shell quadrature raised
+\file{ZeroDivisionError} at $q=10^{-4}$ from subtracting nearly equal
+squared frequencies. Exact denominator rationalization repaired the
+calculation, with no weakened tolerance or dropped integration region.
+\item \C Identifying the sequential bare-on-shell slope with static
+elasticity fails by $3/(4\pi)$. The discrepancy is retained, not removed
+by relabelling $s_1$.
+\item \C Copying Toda's signed term fails consistent density continuation
+and classical good-acoustic matching. Correct inverse continuation still
+fails the latter; it is not ruled out as an arbitrary finite local term.
+\item \C The base-lattice-flow/background shortcut fails the acoustic
+sign comparison. No vacuum elasticity is inferred from it.
+\item \C Hikami's HTML fetch failed; only the listed PDF passages and
+abstract are claimed as read.
+\item \C The first report-writing command used a redundant
+\file{phase2/} prefix while already in that directory. The file was not
+created and the attempted build could not find it. The temporary
+\file{texput.log} was removed and the path corrected.
+\item \C A PDF-render attempt started before asynchronous builds had
+finished and reported a missing trailer/xref. Both processes were awaited;
+the final two builds were rerun strictly sequentially before rendering.
+\end{enumerate}
+No assertion in the final three scripts was weakened. Each prints
+\texttt{ALL CHECKS PASSED} after its assertions. This certifies only those
+assertions, not unresolved physical identifications. The report is built
+twice with \file{pdflatex} in \file{phase2/}; rendered pages are inspected.
+
+\begin{thebibliography}{9}
+\bibitem{BC} A.~A.~Belov and K.~D.~Chaltikian,
+\emph{Lattice analogues of W-algebras and Classical Integrable Equations},
+\emph{Phys. Lett. B} \textbf{309} (1993) 268--274,
+\href{https://arxiv.org/abs/hep-th/9303166}{arXiv:hep-th/9303166}.
+Abstract and HTML full-text sections 1--6 read; equations used from
+sections 4--5.
+\bibitem{Hikami} K.~Hikami,
+\emph{Baxter Equation for Quantum Discrete Boussinesq Equation},
+\emph{Nucl. Phys. B} \textbf{604} (2001) 580--602,
+\href{https://arxiv.org/abs/nlin/0102021}{arXiv:nlin/0102021}.
+Abstract and specified PDF excerpts read; not the complete text.
+\end{thebibliography}
+\end{document}
