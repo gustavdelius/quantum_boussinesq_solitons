@@ -1,0 +1,642 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\A}{\textbf{(a)}\ }
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\alg}{\file{defect_bootstrap_algebra.py}}
+\newcommand{\tra}{\file{defect_bootstrap_transmission.py}}
+\newcommand{\sew}{\file{defect_bootstrap_sewing.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Does a stable-vacuum quantum defect bootstrap\\remove the good-equation rank-two phase freedom?}
+\author{Quantum Boussinesq solitons project --- PI: Gustav Delius}
+\date{4 November 2026}
+\begin{document}\maketitle
+\begin{abstract}
+\C \textbf{No removal follows from the specified constraints.} Their additional
+rank on the exhibited antisymmetric coefficient is exactly zero. The cited
+kernel is $F_{12}=c(P_1M_2-P_2M_1)$: rank two as a kernel, but only one
+independent antisymmetric coefficient. Both ordered tensor coefficients
+survive defect consistency before antisymmetry; antisymmetry itself leaves
+one. Every nondegenerate real KP triangle has two light chords and one heavy
+chord. Its proposed closed $2\leftrightarrow1$ cycle therefore has an unstable
+bulk external leg, as well as unstable intermediate defect vacua. The
+strictly stable-vacuum, light-particle absorption graph has no nontrivial edge.
+Even allowing the entire triangle formally does not help: $F$ has zero
+cycle sum and an explicit single-valued defect-transmission lift.
+
+\C Two CZ defects compose on exact soliton backgrounds. Generically they
+remain a two-parameter composite. A special reduction to a single oppositely
+oriented CZ transmission factor exists on a KP triangle, but cannot have two
+strictly stable input vacua. The same lift preserves that special reduction.
+\D Existence of the quantum amplitudes, admissible resonance continuation,
+residues, and the physical coefficient $c$ remain open. This is a derivation
+of insufficiency of the proposed algebra, not a family of constructed quantum
+field theories or a computation of the absolute physical phase.
+\end{abstract}
+
+\section{Scope, conventions, and audit precedence}
+Labels are (a) literature proof, (b) literature heuristic, (c) project
+calculation, and (d) unestablished physical identification or assumption.
+All new checks are in the three scripts named above, under
+\file{phase2/scripts/}; their JSON files record precision, errors and runtime.
+No legacy script is run or imported. No git operation or renormalisation
+choice is made.
+
+\C The controlling sources are \file{audit_good_twobody.tex},
+\file{audit_defq.tex}, \file{audit_defb_boundary.tex},
+\file{audit_resonant_channels.tex}, and \file{errata.tex}. Their package
+partners, the master report and README were read. For the classical
+construction, \file{corrigan-zambon/verify_defect_solutions.py} and the
+three-soliton sewing implementation were inspected; the new checker derives
+the variational sewing equations afresh. The confirmed Casimir charges,
+envelope theorem and canonical-charge holonomy do not supply normalized
+quantum absorption vertices. We do not use the refuted counterterm
+uniqueness, zero quantum parameter shift, or selection of $\lambda=0$.
+
+\C The later \file{twobody_toda.tex} and \file{paper/review_draft3.tex}
+correct the four-term Krein source printed in the frame audit. In that
+subtracted frame it is not simply the previously advertised rank-one
+product. Uniqueness of the specified Toda solution uses its corrected
+source \emph{and axis data}. It is neither a consequence of diagonal
+factorisation nor a good-equation input. The review also restricts the
+minor test to a specified finite-rank ansatz. We do not infer that $F$ is
+an exhaustive classification of the continuum ambiguity.
+
+The fixed definitions are
+\[
+ u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\quad u=\phi_x=2(\log\tau)_{xx},
+ \qquad \Omega=\int d\pi\wedge d\phi,
+\]
+\[
+ \mathcal L=\tfrac12\phi_t^2-\tfrac12\phi_x^2+\phi_x^3
+               -\tfrac12\phi_{xx}^2,\qquad \pi=\phi_t.
+\]
+\A The CZ source supplies the classical defect action and one-/two-soliton
+transmission solutions \cite[Secs.~2, 3.4, 5.1--5.2]{CZ}.
+\C The dictionary is $U_{\rm CZ}=-3\phi$, $\mathcal L_{\rm CZ}=9\mathcal L$.
+We use $s=\sigma_{\rm vac}$ for scattering and $\eta s$ for the spectrum;
+$Q=-s/(2\sqrt3)$, $\eta=\pm1$. This corrects the old one-loop note's
+identification $s=\eta\sigma_{\rm vac}$. Below $q$ is phonon wavenumber,
+and $Q$ is a defect root.
+
+\section{The actual freedom and its frame}
+\paragraph{Definitions and checks \C\ (\alg, \tra).}
+For a soliton label $j=(\alpha_j,\epsilon_j)$,
+\begin{gather}
+ k_j=\sin\alpha_j,\quad v_j=\epsilon_j\cos\alpha_j,\quad
+ M_j=2k_j,\quad \Pi_j=-2k_jv_j,\quad P_j=\tfrac23 k_j^3v_j,\quad
+ \ell_j=-\epsilon_j\cos3\alpha_j,\label{data}\\
+ a_j=\tfrac12(v_j/\sqrt3+k_j),\quad
+ b_j=\tfrac12(v_j/\sqrt3-k_j),\qquad
+ a_j^2+a_jb_j+b_j^2=\tfrac14,\label{conic}\\
+ A_{12}=\frac{(a_1-a_2)(b_1-b_2)}{(a_1-b_2)(b_1-a_2)},\qquad
+ \delta_0(1,2)=\tfrac29(\ell_1-\ell_2)\log A_{12}
+                  +\tfrac23M_1M_2(v_1-v_2).\label{bulkclass}
+\end{gather}
+For regular two-body scattering we restrict to $0<\alpha_j<\pi/3$,
+$A_{12}>0$, and unequal velocities. Labels stay on worldlines; reversing the
+complete ordered pair reverses the generator. Coordinates are the
+chamber-reversing Darboux coordinates of \file{good_twobody.tex}.
+Relative to the fixed incoming chamber the audited subtraction is
+\begin{equation}
+ S_{\rm cb}=\tfrac12(\Pi_1M_2+\Pi_2M_1),\qquad
+ \delta_0^{\rm raw}=\delta_0+S_{\rm cb}.\label{frame}
+\end{equation}
+This specifies the frame; a raw fixed-chamber phase is not thereby
+antisymmetric. Below all amplitudes use this same convention and explicit seams.
+
+\C Write the conditional expansion
+\begin{equation}
+ S(1,2)=\exp\{i\delta_0/\hbar+i[B_{12}^{\rm known}(\lambda)
+                      +U_{12}+F_{12}]+O(\hbar)\}.\label{S}
+\end{equation}
+For definiteness the explicitly computable representative is
+\begin{equation}
+ B_{12}^{\rm known}(\lambda)=J_{12}
+             +\sum_j\Delta X'_j p_{1,m}(j)+\lambda K_\lambda,\qquad
+ J_{12}=\frac1{8\pi}\int(\vartheta_1\vartheta'_2-
+                             \vartheta_2\vartheta'_1)\,dq.\label{knownbulk}
+\end{equation}
+The integral uses the half-line phases defined below, and $p_{1,m}$ is
+\eqref{pm}. This is a conditional trace representative, not the completed
+physical determinant. $U_{12}$ includes the uncomputed projected determinant,
+state map, normalization and any other finite couplings. The new checker
+independently integrates both ordered terms in overtaking and head-on
+channels and verifies their endpoint sum. When isolating $F$, these other
+unknown terms are held fixed; no claim of uniqueness of this decomposition
+is made.
+\D Identification with a physical elastic amplitude is an assumption.
+\C The displayed counterexample in the cited package is precisely
+\begin{equation}
+ F_{12}=c(\lambda)(P_1M_2-P_2M_1).\label{F}
+\end{equation}
+Its two \emph{one-body} basis functions are $P$ and $M$. More generally,
+$F_{12}=A P_1M_2+B M_1P_2$ obeys exchange antisymmetry iff $A+B=0$.
+Thus $\wedge^2\operatorname{span}\{P,M\}$ is one-dimensional; there are
+not two independent antisymmetric directions in the cited $F$.
+The mixed $3\times3$ minors vanish identically, whereas a mixed $2\times2$
+minor can be nonzero. Using mixed minors avoids the automatic vanishing
+of an odd-dimensional skew determinant. This does not assert that every
+continuum phase must have rank two.
+
+\paragraph{Counterterm bookkeeping \C\ (\tra, \alg).}
+For $\Delta H=\hbar\lambda\int u^2dx$, the computed contribution
+to $B^{\rm known}$ in this frame is $\lambda K_\lambda$, where
+\begin{align}
+ \gamma_j&=-\frac{3\cos2\alpha_j}{\sin\alpha_j\sin3\alpha_j},\nonumber\\
+ \Delta X'_1&=-\frac{\log A_{12}}{k_1}+\gamma_1M_2,
+ &\Delta X'_2&=\frac{\log A_{12}}{k_2}-\gamma_2M_1,\nonumber\\
+ K_\lambda&=3\delta_0+4\sum_jP_j\Delta X'_j,
+ &\partial_{P_j}\delta_0&=-\Delta X'_j.\label{K}
+\end{align}
+At $(\alpha_1,\alpha_2)=(.3,.6)$,
+\[K_\lambda^{++}=0.05008140486841890958\ldots,\qquad
+K_\lambda^{+-}=-0.22517393868334175848\ldots.\]
+The coefficient $c$ is independent of $\lambda$ as an \emph{unknown in the
+constraint problem}; it is not proved physically scheme independent and
+may be $c(\lambda)$. $K_\lambda$ is not $F$, and the parameter in the older
+counterexample $A_\lambda$ is not this bulk counterterm.
+An $O(\hbar)$ shift of the charge arguments of $F$ changes the exponent only
+at $O(\hbar)$, so its $O(1)$ constraint uses classical charges at any fixed
+finite $\lambda$.
+
+\section{Stable-vacuum transmission: independently available input}
+\paragraph{Classical part \C\ (\tra, \sew).}
+Let $\theta=\operatorname{artanh}v$ if a signed rapidity is desired;
+$k=\operatorname{sech}\theta$. We also denote the amplitude by
+$T_Q(\alpha,\epsilon)$. No relativistic rapidity-difference assumption is made.
+The left-to-right tau multiplier, directional delay, and classical generator are
+\begin{align}
+ z_{Q,\eta}&=\left(\frac{b-Q}{a-Q}\right)^\eta,&
+ z_{t,Q}&=z_{Q,\eta}^{\epsilon},&
+ \Delta x_Q&=-\frac{\log|z_{t,Q}|}{k},\label{z}\\
+ \delta_Q^0&=\tfrac29[\ell-\ell(Q)]\log|z_{t,Q}|
+                  -\tfrac23(\Pi M_Q^{\rm eff}-\Pi_Q^{\rm eff}M),\label{deltaD}\\
+ \ell(Q)&=3\sqrt3(4Q^3-Q),&
+ M_Q^{\rm eff}&=\epsilon\eta Q,&
+ \Pi_Q^{\rm eff}&=\epsilon\eta(6Q^2-1)/\sqrt3,\nonumber\\
+ \partial_P\delta_Q^0&=-\Delta x_Q.\label{deltagrad}
+\end{align}
+The effective coefficients are not intrinsic vacuum charges. Physical elastic
+transmission is restricted to nonsingular $z_{Q,\eta}>0$; stable vacuum does
+not ensure regular transmission at every light label. The real logarithmic
+continuation elsewhere is algebraic only. The tree integration constant is
+held fixed as in this audited generator.
+
+\paragraph{Continuum input and its branch \C\ (\tra).}
+Define phonon roots and the root factor
+\begin{equation}
+ a_q=\frac{\operatorname{sgn}(q)\sqrt{1+q^2}}{2\sqrt3}+\frac{iq}{2},
+ \quad b_q=\overline{a_q},\qquad
+ Z(q;Q)=\frac{b_q-Q}{a_q-Q},\quad z_{\rm ph}=Z(q;Q)^\eta.
+ \label{Z}
+\end{equation}
+The latter has limit $e^{-2\pi i\eta/3}$ at \emph{both} infinities.
+The soliton--phonon factor is $Z(q;b)/Z(q;a)$.
+Use the soliton phase continuous on each open half-line and zero at infinity:
+\begin{align}
+ \vartheta_S(q)=-\sum_{r=1}^3w_r\Big[\operatorname{sgn}(q)
+ \arctan\frac{\sin\varphi_r}{|q|}&\nonumber\\[-1ex]
+ {}+\epsilon\arctan\frac{\sin\varphi_r\cos\varphi_r}
+ {|q|\sqrt{1+q^2}+q^2+\sin^2\varphi_r}\Big],&\label{thetaS}\\
+ (\varphi_1,\varphi_2,\varphi_3)=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha),
+ \quad(w_1,w_2,w_3)=(1,1,-2).&\nonumber
+\end{align}
+Let $\vartheta_Q^0$ be the continuous argument of $Z^\eta$ starting from
+zero separately at $q=0^+$ and $q=0^-$. With ordinary half-line integrals,
+\begin{equation}
+ I_{SQ}^0=\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}
+              \vartheta_S\,\partial_q\vartheta_Q^0\,dq
+       =-\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}
+              \vartheta_Q^0\,\partial_q\vartheta_S\,dq.
+ \label{I}
+\end{equation}
+No delta function is inserted at zero. Integration-by-parts endpoints vanish
+in this branch convention. This is the direct continuum integral, not an
+identification with a different phase reference.
+
+\C At $(\alpha,\epsilon,Q,\eta)=(.35,+1,.5,+1)$,
+\begin{equation}
+ I_{SQ}^0=0.7622851906696779106824093224\ldots .\label{bench}
+\end{equation}
+The boundary audit's infinity-reference integration-by-parts table instead has
+$I_{SQ}^{\infty}=I_{SQ}^0-2\pi/3
+=-1.3321099117235175816260195998\ldots$ at this point.
+Here $\vartheta_S(0^+)=2\pi$, $\vartheta_S(0^-)=0$; the defect reference
+shifts are $-4\pi/3$ and $+2\pi/3$ on the positive and negative half-lines.
+This checked endpoint correction is not an absolute physical discrepancy.
+Changing representative requires compensating the unknown amplitude term.
+
+\paragraph{The honest $O(\hbar^0)$ amplitude \C/\D\ (\tra).}
+For a strictly stable vacuum, $\eta Q>1/(2\sqrt3)$, write
+\begin{equation}
+ \boxed{T_Q(\theta)=\exp\left\{\frac{i}{\hbar}\delta_Q^0
+       +i\left[I_{SQ}^0+\Delta x_Q\,p_1(\theta;\lambda)
+                    +W_Q(\theta;\lambda)\right]+O(\hbar)\right\}.}
+ \label{T}
+\end{equation}
+The Taylor term has a \emph{plus} sign since $P^{\rm phys}=P+\hbar p_1$
+and \eqref{deltagrad}. This is the boundary audit's corrected sign;
+a new fixed-$P$ finite difference verifies it. A momentum representative
+must have the matching label-frame determinant. For example the mode trace is
+\begin{equation}
+ p_{1,m}=-\frac{\epsilon}{2\pi}\sum_rw_r\sin\varphi_r
+                                  \log|\tan(\varphi_r/2)|.\label{pm}
+\end{equation}
+The canonical momentum counterterm contribution is $2\lambda vk$; it is zero
+in the fixed-profile mode momentum. A change $p_1\mapsto p_1+\Delta p_1$
+requires $W_Q\mapsto W_Q-\Delta x_Q\Delta p_1$ for the same amplitude.
+
+\D $W_Q$ is not set to zero. It contains the missing boundary-compatible
+projected determinant, finite boundary terms, root/parameter shifts acting on
+$\delta_Q^0$, the label-frame bulk deformation and phase normalization.
+The Casimir/envelope formulas do not determine it. For this trace convention
+only, $I^0+\Delta x_Qp_{1,m}$ at \eqref{bench} is
+$2.2646110601221966897621495006\ldots$ \C; it has no error bound as an
+approximation to a full physical phase \D. Neither $I^0$ nor $\delta_Q^0$
+is defined using the unknown bulk phase.
+
+\section{The proposed consistency equations}
+\subsection{Two solitons and a stable defect}
+\D Suppose the light elastic sector is scalar and diagonal. Products act on
+ordered incoming worldlines with the rightmost encounter first. Require
+\begin{equation}
+ S(1,2)T_Q(1)T_Q(2)=T_Q(2)T_Q(1)S(1,2).\label{RTT}
+\end{equation}
+\C In the same Darboux/seam convention on both sides, factors commute.
+Its logarithm vanishes for arbitrary $F$ and $W_Q$, so its constraint rank
+is zero. This is scalar algebra, not a field-theory factorisation theorem.
+Changing chamber convention would require explicit intertwiners on both
+sides. The nonlinear and phonon checks below test the classical field input
+independently rather than counting commutativity as a field calculation.
+
+\subsection{Absorption poles, intertwiners, and the closed cycle}
+\D A quantum absorption bootstrap needs a meromorphic continuation, an
+admissible state $D_j$, and a nonzero normalized vertex
+$\Gamma_i:D_i\otimes S_i\to D_j$. In an analytic coordinate $\zeta_i$, a
+conventional pole requirement would have the form
+\begin{equation}
+ T_i(\zeta_i)\sim\frac{i\,\Gamma_i^\dagger\Gamma_i}
+                             {\zeta_i-\zeta_i^*}+\text{regular terms}.
+ \label{pole}
+\end{equation}
+The residue sign, coordinate Jacobian and sheet need spectral normalization;
+\eqref{pole} is an assumption, not a measured residue. No audited input
+supplies them. A classical zero/pole of $z_Q$ is a divergent delay, not a
+simple quantum pole of $T_Q$: the coefficient of its logarithm in
+\eqref{deltaD} vanishes at absorption. The loop expansion need not be uniform
+there. We do not manufacture a residue from that expansion.
+
+\C The independently checked tree identity fixes the required seam.
+For $Q_i\to Q_j$, $S_i=\{Q_i,Q_j\}$ with positive $k_i$,
+\begin{equation}
+ \rho_i=\eta\operatorname{sgn}(Q_i-Q_j),\quad
+ \sigma_{ti}=\epsilon_t\rho_i,\qquad
+ \delta^0_{Q_j}(t)-\delta^0_{Q_i}(t)
+     =\sigma_{ti}[\delta_0(t,i)+M_i\Pi_t].\label{seam}
+\end{equation}
+Both test directions and defect orientations are checked in \tra.
+\D If a vertex exists the scalar intertwining condition is
+\begin{equation}
+ T_{Q_j}(t)\Gamma_i=C_{ti}S(t,i)^{\sigma_{ti}}\Gamma_i T_{Q_i}(t),\qquad
+ C_{ti}=\exp\{i\sigma_{ti}M_i\Pi_t/\hbar+i\chi_{ti}+O(\hbar)\}.
+ \label{intertwine}
+\end{equation}
+$S^{-1}$ means the inverse oriented ordered amplitude. The uncomputed
+$\chi_{ti}$ includes the quantum seam and shifted-kinematics terms.
+Removing it without computing it would not be a fixed-frame bootstrap.
+For emission use the inverse intertwiner, not a second stable absorption state.
+
+\C Conditional on nonzero vertices, the $O(1)$ logarithm gives
+\begin{equation}
+ t_{Q_j}(t)-t_{Q_i}(t)=\sigma_{ti}b(t,i)+\chi_{ti},\qquad
+ b=B^{\rm known}+U+F,\quad t_Q=I^0+\Delta x_Qp_1+W_Q.\label{edgeeq}
+\end{equation}
+The cycle telescopes to the necessary condition
+\begin{equation}
+ \sum_{i=1}^3[\sigma_{ti}b(t,i)+\chi_{ti}]=0\pmod{2\pi}.\label{cycle}
+\end{equation}
+Equivalently a spectator commutes through a nonzero closed fusion vertex.
+For homogeneous infinitesimal changes the branch integer is fixed, so the
+sum is exactly zero. This is a conditional algebraic test even if the
+physical vertices do not exist.
+
+\paragraph{Which states occur \C\ (\alg; controlling instability audit).}
+For $0<\vartheta<\pi/3$, parametrize the ordered KP roots by
+\begin{equation}
+ Q_1=\frac{\cos\vartheta}{2\sqrt3}+\frac{\sin\vartheta}{2},\quad
+ Q_2=\frac{\cos\vartheta}{2\sqrt3}-\frac{\sin\vartheta}{2},\quad
+ Q_3=-\frac{\cos\vartheta}{\sqrt3}.\label{roots}
+\end{equation}
+They obey $Q_1>Q_2>Q_3$ and share $Q^3-Q/4$.
+The walk $1\to2\to3\to1$ has positive-mass chords
+\begin{align}
+ k_1&=\sin\vartheta,&v_1&=\cos\vartheta,\nonumber\\
+ k_2&=\sin(\pi/3-\vartheta),&v_2&=-\cos(\pi/3-\vartheta),\nonumber\\
+ k_3&=\sin(\pi/3+\vartheta)=k_1+k_2,&
+ v_3&=-\cos(\pi/3+\vartheta).\label{chords}
+\end{align}
+Thus $\alpha_1=\vartheta$ and $\alpha_2=\pi/3-\vartheta$ are light, whereas
+\begin{equation}
+ \alpha_3=\min(\pi/3+\vartheta,2\pi/3-\vartheta)>\pi/3.\label{heavy}
+\end{equation}
+At $\vartheta=\pi/6$, $\alpha_3=\pi/2$ is static, still heavy and unstable.
+The instability audit constructs a localized growing mode of this chord;
+its positive rate is $\sqrt3k_1k_2=\sqrt3(1/4-v_3^2)$, with decaying tails
+since $k_3>\sqrt3|v_3|$. These kinematic identities are rechecked here; the
+spectral proof is inherited from that audit. The bar on $\bar S_3$ denotes
+the emitted outer chord, not a light antiparticle with negative mass.
+Relabelling can move the heavy chord to $S_1$ or $S_2$, but cannot remove it.
+
+\C The stable root is $Q_1$ for $\eta=+1$ and $Q_3$ for $\eta=-1$:
+$\eta Q>1/(2\sqrt3)$ is the strictly stable half-line and $12Q^2-1>0$
+makes the common cubic injective there. The middle root lies between the
+thresholds. Direct admissible-root filtering of the audited sewing quadratics
+confirms the count. Marginal endpoints are excluded. For negative orientation
+reverse/relabel the walk to start at the stable vertex. Neither orientation
+has stable intermediate vacua.
+
+\C Deleting the heavy edge leaves the path $Q_1-Q_2-Q_3$: every closed walk
+reduces to backtracks. Deleting unstable vertices as asymptotic states leaves
+one isolated vertex. Absorption preserves the KP cubic and cannot move to
+another triangle within this graph. \D A light-only diagonal transmission
+sector can still be postulated and tested by \eqref{RTT}; a nontrivial
+light-only bound-state bootstrap is not obtained from these edges. Virtual
+unstable vacua and heavy resonances need a separate analytic theory. This
+does not exclude quantum states or composite vertices absent from the inputs.
+
+\subsection{Two defects in series and exceptional reduction}
+\paragraph{Classical composition \A/\C\ (\sew, \alg, \tra).}
+The CZ two-soliton solution has $\tau(E_1,E_2)=1+E_1+E_2+A_{12}E_1E_2$
+and implements a defect by $E_j\mapsto z_jE_j$ \cite[Sec.~5.2]{CZ}.
+Two defects at $x=0,L$ therefore give
+\begin{equation}
+ \tau_L=\tau(E_j),\quad \tau_M=\tau(z_{1j}E_j),\quad
+ \tau_R=\tau(z_{2j}z_{1j}E_j).\label{series}
+\end{equation}
+The middle field is retained. \sew\ varies the local CZ action and checks
+all four sewing equations at both locations, four orientation pairs and three
+times. It also checks the bulk Hirota identity and the linearized
+two-soliton-plus-phonon mode at both defects. Sampled defects are strictly
+stable and transmissions regular. Their scalar tau maps commute. The
+asymptotic phonon transmission is
+\begin{equation}
+ T_{\rm ph}^{\rm series}(q)=\prod_j\frac{Z(q;b_j)}{Z(q;a_j)}
+                   Z(q;Q_1)^{\eta_1}Z(q;Q_2)^{\eta_2}.\label{phseries}
+\end{equation}
+This explicit mode has no reflected asymptotic component. Completeness and
+stability of all localized modes of the two-defect system do not follow.
+
+\C Generically this is not a single CZ defect with an added parameter.
+The high-frequency phase requires $\eta_1=\eta_2=\eta$ and
+$\eta_{\rm eff}=-\eta$ for an elementary reduction. Opposite orientations
+give limit $1$, unlike an elementary factor. For equal orientations,
+cross-multiplication on the conic \eqref{conic} gives
+\begin{equation}
+ z_{Q_1,\eta}z_{Q_2,\eta}=z_{Q_3,-\eta}
+ \quad\Longleftrightarrow\quad Q_3=-Q_1-Q_2,\quad
+ Q_1^2+Q_1Q_2+Q_2^2=\tfrac14.\label{special}
+\end{equation}
+Indeed the difference of the two cubic products divided by $b-a$ reduces to
+\begin{equation}
+ \tfrac14-(Q_1+Q_2+Q_3)(a+b)+Q_1Q_2+Q_1Q_3+Q_2Q_3.\label{poly}
+\end{equation}
+It vanishes for all test solitons exactly under \eqref{special}; the same
+identity holds for phonons. This reduces the classical scattering/tau map,
+not necessarily the local action after eliminating the middle field.
+
+\C Two strictly stable equal-orientation inputs have
+$\eta Q_1=1/(2\sqrt3)+u$ and $\eta Q_2=1/(2\sqrt3)+w$, $u,w>0$. Then
+\begin{equation}
+ Q_1^2+Q_1Q_2+Q_2^2-\tfrac14
+ =u^2+uw+w^2+\tfrac{\sqrt3}{2}(u+w)>0.\label{nostablefusion}
+\end{equation}
+Thus the special reduction is unavailable. The inverse pair at equal root
+and opposite orientations gives the identity map, but both vacua cannot be
+strictly stable. Threshold/repeated-root limits do not yield a generic
+strictly stable fusion law.
+
+\paragraph{At one loop \C/\D\ (\tra, \sew).}
+For separated encounters the proposed scalar factorisation is
+\begin{equation}
+ T_{D_2D_1}(t)=T_{D_2}(t)T_{D_1}(t),\qquad
+ \delta_{D_2D_1}^0=\delta_{D_1}^0+\delta_{D_2}^0,\quad
+ t_{D_2D_1}=t_{D_1}+t_{D_2}.\label{quantseries}
+\end{equation}
+Free propagation between reference planes is factored out. Classical and
+continuum-trace additivity follow from \eqref{series}, logarithmic derivatives
+of \eqref{phseries}, and linearity of \eqref{I}. Physical quantum factorisation
+is still an assumption. A contact limit can have new terms or retained internal
+degrees of freedom, and cannot be declared an elementary CZ parameter without
+an action calculation.
+
+\C Even on the formal special locus the classical generators add with the
+chosen constants. Phase derivatives and the zero-referenced integral $I^0$
+also add, since the three-root product is one and branches start at $0^\pm$.
+Frame constants must be transformed consistently. The next section's homogeneous
+freedom preserves this exceptional reduction too.
+
+\section{Insertion of the freedom and the constraint rank}
+\paragraph{Independent charge primitives \C\ (\alg).}
+Define polynomial vertex functions
+\begin{equation}
+ m(Q)=2Q,\qquad p(Q)=2\sqrt3Q^4-\frac{Q^2}{\sqrt3}-\frac{\sqrt3}{36}.
+ \label{potentials}
+\end{equation}
+Polynomial reduction modulo $a^2+ab+b^2=1/4$ gives
+\begin{equation}
+ M=m(a)-m(b),\qquad P=p(a)-p(b).\label{edgecharges}
+\end{equation}
+This derives primitives from the one-body charges, without a two-body phase
+or quantum defect assumption. On each KP triangle,
+\begin{equation}
+ \sum_i\rho_iM_i=\sum_i\rho_iP_i=0,\qquad
+ \sum_{i=1}^3m(Q_i)=\sum_{i=1}^3p(Q_i)=0.\label{sums}
+\end{equation}
+The constant in $p$ does not affect edge differences. It centers the
+three-vertex sum using $\sum Q_i^2=1/2$ and $\sum Q_i^4=1/8$; this is a
+witness for composition, not a chosen physical counterterm.
+
+\C Inserting $F_{ti}=A P_tM_i+B M_tP_i$ into the cycle gives
+\begin{equation}
+ \sum_i\sigma_{ti}F_{ti}=\epsilon_t\left[
+ A P_t\sum_i\rho_iM_i+B M_t\sum_i\rho_iP_i\right]=0.\label{Fcycle}
+\end{equation}
+Each coefficient cancels separately, without setting $c$ or $\lambda$ to zero.
+
+\paragraph{A global null direction \C\ (\alg, \tra).}
+When comparing two formal solutions, hold the known transmission, quantum
+seam and other nuisance terms fixed. The single-valued change
+\begin{equation}
+ \Delta W_Q(t)=-\epsilon_t\eta[A P_t m(Q)+B M_t p(Q)]\label{lift}
+\end{equation}
+satisfies every homogeneous edge equation:
+\begin{equation}
+ \Delta W_{Q_j}(t)-\Delta W_{Q_i}(t)=\sigma_{ti}F_{ti}.\label{liftedge}
+\end{equation}
+For $A=c,B=-c$ it becomes
+\begin{equation}
+ \boxed{\Delta W_Q(t)=\epsilon_t\eta\,c[M_t p(Q)-P_t m(Q)].}\label{liftc}
+\end{equation}
+It is real and smooth on regular light domains, vanishes as the test soliton
+disappears and changes no leading classical or phonon factor. Its local
+analytic continuation is regular away from existing charge-coordinate branch
+endpoints, so it does not introduce poles itself; unspecified residues can
+be rescaled. It is not a rephasing of the defect vacuum alone, because it
+depends on the incident soliton. \D No claim is made that a local integrable
+quantum boundary operator generates it. The statement is that the given
+algebra and available input do not exclude it.
+
+\C For two defects add their \eqref{lift}; on the special locus,
+\begin{equation}
+ \Delta W_{Q_1,\eta}(t)+\Delta W_{Q_2,\eta}(t)=\Delta W_{Q_3,-\eta}(t).
+ \label{liftfusion}
+\end{equation}
+This preserves exceptional reduction as well as the stable separated product.
+The lift is derived as a null vector \emph{after} specifying the independent
+known part of $T$. It is not used to define that known part, and cannot
+be advertised as a derivation of the physical $S$ from $T$.
+
+\paragraph{Explicit rank computation \C\ (\alg).}
+For a fixed spectator collect $H_i=\Delta W_{Q_i}(t)$ into a column. The
+three edge equations are
+\begin{equation}
+ DH=E\begin{pmatrix}A\\B\end{pmatrix},\quad
+ D=\begin{pmatrix}-1&1&0\\0&-1&1\\1&0&-1\end{pmatrix},\quad
+ E_i=\sigma_{ti}(P_tM_i,M_tP_i).\label{rankeq}
+\end{equation}
+The left null vector $(1,1,1)$ annihilates $E$, so
+\begin{equation}
+ \boxed{\operatorname{rank}[D\mid E]-\operatorname{rank}D=2-2=0.}\label{rank0}
+\end{equation}
+The script checks the exact matrix at the nondegenerate symmetric triangle
+and proves the global lift for arbitrary triangle parameter; no numerical
+singular-value threshold is used. Writing the lift more generally as
+$\epsilon_t\eta[dP_tm(Q)+eM_tp(Q)]$, edge equations reduce to $d=-A$,
+$e=-B$: rank two in four variables, zero remaining rank on $(A,B)$ after
+eliminating $(d,e)$. The separate row $A+B=0$ leaves the single coefficient $c$.
+
+\begin{center}\small
+\begin{tabular}{@{}L{8.5cm}cc@{}}\toprule
+Constraint & New rank on $(A,B)$ & New rank on $c$\\\midrule
+Scalar soliton/defect factorisation & 0 & 0\\
+Strictly stable, light-only absorption graph & 0 & 0\\
+Formal full triangle, transmission freedoms retained & 0 & 0\\
+Closed cycle alone, even with fixed vertex phases & 0 & 0\\
+Separated two-defect consistency & 0 & 0\\
+Exceptional CZ reduction, with \eqref{lift} & 0 & 0\\
+Exchange antisymmetry (already imposed) & 1 & ---\\\bottomrule
+\end{tabular}\end{center}
+
+\D These are homogeneous ranks of necessary conditional equations. We have
+not proved that their inhomogeneous known terms admit a physical solution.
+The confirmed canonical-charge holonomy and absorbed-leg Taylor remainder
+obstruct naive unshifted-edge identifications. $F$ cannot repair a nonzero
+cycle remainder because \eqref{Fcycle} is zero. Shifted quantum kinematics,
+seams and vertex normalization need quantum sewing. Holonomy is neither
+a condition $c=0$ nor a universal fusion no-go. Independently fixing $W_Q$
+and physical residues, together with valid vertices, could make individual
+edge equations informative; this is additional input, absent here. The null
+direction is not evidence for an adjustable physical coupling.
+
+\section{Verification, errors and failures recorded}
+\begin{longtable}{@{}L{5cm}L{3.2cm}L{7cm}@{}}\toprule
+Claim and label & Checker & Coverage\\\midrule\endhead
+\C Kernel rank, coefficient count, charge primitives, cycle rank zero
+& \alg & Exact polynomial reduction, mixed minors, incidence rank,
+global lift and exceptional composition.\\
+\C Light/light/heavy chords and stable roots & \alg & Rational triangle
+identities, analytic inequalities, 80-digit geometry and admissible-root
+filtering. Instability spectral proof inherited from its audit.\\
+\C Generator, delay sign, seam and counterterm response & \tra & Independent
+derivatives, both orientations/directions; fixed-$P$ finite difference.\\
+\C Continuum trace and reference constant & \tra & Two half-line quadrature
+forms and 60/80-digit replication; explicit endpoint correction.\\
+\C Two-defect fields and phonons & \sew & Action-derived sewings: 96 nonlinear
+and 32 linearized equations, both locations; 70 digits; bulk Hirota check.\\
+\D Quantum poles, physical amplitudes, local quantum realization of the lift
+& None claimed & Not established by the successful algebraic checks.\\
+\bottomrule\end{longtable}
+
+\paragraph{Error budget \C.}
+The rank \eqref{rank0} is exact and has no numerical uncertainty. The largest
+sampled charge/chord closure residual is $1.06\times10^{-81}$ at 80 digits
+(assertion $10^{-65}$). The two integral forms differ by
+$1.06\times10^{-81}$; 60/80-digit replication changes \eqref{bench} by
+$2.12\times10^{-62}$ (assertion $10^{-55}$). These are deterministic agreement
+diagnostics, not rigorous quadrature intervals. The boundary-audit table has
+only twenty decimal places, so its comparison uses $6\times10^{-20}$ and
+finds $2.61\times10^{-20}$. The fixed-$P$ central difference uses step
+$10^{-20}$, error $2.37\times10^{-40}$ and assertion $10^{-35}$.
+Nonlinear sewing residual is $6.68\times10^{-70}$, linearized residual
+$3.16\times10^{-71}$, both below $10^{-52}$. No bound on an uncomputed
+physical phase follows from these numbers.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \C The interpretation of ``both directions'' of $F$ fails: its source
+has one antisymmetric coefficient on two one-body basis functions. Both
+ordered coefficients were retained before imposing antisymmetry.
+\item \C The stable/light external three-edge absorption cycle fails its
+admissible-state test: the outer chord is heavy. The exceptional two-CZ
+reduction fails the two-strictly-stable-input test. These are negative results.
+\item \C Inherited failed premises remain failures: selection of $\lambda=0$,
+unique zero quantum parameter shift, the old transmission Taylor sign and
+the uncorrected four-term Krein source. Their audit corrections are retained.
+No residue is inferred from a classical delay pole.
+\item \C Exploratory file discovery encountered protected temporary-directory
+permission diagnostics and missing diagnostics for not-yet-created outputs.
+No scientific check depended on these searches.
+\item \C The first report-assembly command used a repository-relative path
+while already in \file{phase2/}. The source was not created and the PDF build
+failed with a missing-file diagnostic. The corrected path repaired this;
+the failed build's temporary unprefixed log was removed immediately.
+The next build exposed a delimiter spanning an alignment row and a long
+inline number; the delimiter and line layout were corrected. Rendered-page
+inspection then caught a stray delimiter fragment in the phase formula and
+spaces lost by the URL-style command font; both were repaired. The first
+formatting repair repeated the relative-path mistake and made no edit;
+using an absolute source path fixed it.
+\item \C All three initial scientific runs passed, as did the strengthened checks
+of the displayed charge identities and continuum representatives. No assertion, tolerance
+or precision was relaxed. No failed numerical comparison was hidden.
+\end{enumerate}
+
+\paragraph{Conclusion.}
+\C The stated defect constraints impose zero additional rank on $c$.
+The formal cycle is blind to $F$ because its two basis charges are chord
+differences. The single-valued lift preserves formal edges and exceptional
+two-defect reduction. The strictly stable/light sector has fewer bootstrap
+relations. \D Determining $c(\lambda)$ still needs an independently derived
+boundary-compatible quantum determinant/state map or a quantum boundary
+theory with admissible poles and normalized vertices. Nothing here transfers
+a Toda prescription to the good equation or promotes an unstable vacuum
+to an asymptotic state.
+
+\paragraph{Reproducibility and reading scope.}
+Run \texttt{python3 }\file{phase2/scripts/defect_bootstrap_algebra.py} and the analogous
+commands for \file{defect_bootstrap_transmission.py} and
+\file{defect_bootstrap_sewing.py}. Each writes only its own prefixed JSON
+and ends with \texttt{ALL CHECKS PASSED}. Initial measured runtimes were
+3.8, 7.4 and 8.3 seconds. The strengthened transmission run took 26.3 seconds;
+all final scientific checks together take under 40 seconds on this host.
+The final PDF was built by two \file{pdflatex} passes from \file{phase2/};
+all ten rendered pages were inspected.
+The sole external reference's entry, abstract and relevant full-text passages
+in sections 2, 3.4 and 5 were read online; the action is also checked
+against the repository derivations. The entire article was not read.
+No new FK attribution or unverified identifier is used.
+
+\begin{thebibliography}{9}
+\bibitem{CZ} E.~Corrigan and C.~Zambon,
+\emph{Adding integrable defects to the Boussinesq equation},
+\href{https://arxiv.org/html/2306.03772v1}{arXiv:2306.03772v1}.
+Reading scope stated above.
+\end{thebibliography}
+\end{document}
