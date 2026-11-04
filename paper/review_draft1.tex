@@ -1,0 +1,646 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,enumitem}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=blue]{hyperref}
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks\do\_\do\-}
+\emergencystretch=3em
+\newcommand{\A}{\textsf{\textbf{(a)}}}
+\newcommand{\B}{\textsf{\textbf{(b)}}}
+\newcommand{\C}{\textsf{\textbf{(c)}}}
+\newcommand{\D}{\textsf{\textbf{(d)}}}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\ours}{\file{paper/scripts/review_draft1_checks.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Independent review of the first scattering-paper draft}
+\author{Review for PI Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Recommendation: revise before circulation.} \D\
+The core classical phase survives the independent checks \C.
+The nine appendix items do not invalidate the computed classical scattering
+phase, but two have consequences beyond a local typo: the bad cubic sign
+reappears in a normal-ordering energy claim, and the signed defect-root
+dictionary misidentifies the physical defect for negative orientation \C.
+There are \textbf{14 required corrections}, including coordinate and charge
+definitions and qualifications of stability and fusion. The corrected good
+classical energy was not used incorrectly in the inspected one-loop
+calculations \C. Passing algebraic checks does not settle the physical
+one-loop determinant or quantum frame \D.
+
+\paragraph{Scope and provenance.}
+This review reads \file{AGENTS.md}, \file{README.md}, the full draft,
+the five requested source write-ups/map, the four named one-loop/charge
+write-ups, relevant downstream notes, and the cited script implementations.
+Only the three requested deliverables are changed; no git operation is used.
+Labels retain their repository meanings. Review findings, numerical
+counterexamples and source/code observations are \C; recommendations and
+unestablished physical extensions are \D. All new mathematical calculations
+below are checked in \ours; the run groups are named A1--A9 and B.
+Source-script evidence is distinguished from an independent proof.
+
+The original bibliography's reading labels belong to earlier project agents.
+For this review, the Corrigan--Zambon full-text sections 2--5 were read online,
+especially (3.22), (3.37), (3.43)--(3.44), and (5.5).
+The Bogdan--Charkina full text was consulted at the classical energy,
+breather and action formulas; not every page was reread. The
+Charlier--Lenells water-wave abstract/entry was independently verified;
+the large HTML full text could not be retrieved. Other literature claims
+are assessed against the supplied literature map and source write-ups,
+not certified by a fresh full-text literature review. No new reference is
+invented. The precise reading limitations matter to corrections R12--R13.
+
+\section*{A. Triage of all nine appendix items}
+\small
+\begin{longtable}{@{}L{1.4cm}L{3.7cm}L{3.9cm}L{6.0cm}@{}}
+\toprule Item & Correct version \C & Evidence & Downstream effect \C\\\midrule
+\endfirsthead
+\toprule Item & Correct version \C & Evidence & Downstream effect \C\\\midrule
+\endhead
+1. Bad cubic &
+$\mathcal L_b=\frac12\phi_t^2-\frac12\phi_x^2-\phi_x^3+\frac12\phi_{xx}^2$.
+$E_b=\frac2{15}k^3(5+4k^2)$. &
+A1: exact Euler--Lagrange calculation; exact pulse integrals and 65-digit direct quadrature. &
+Classical phase, $M,\Pi,P$ and the computed energy use the correct data.
+However, \file{phase2/oneloop.tex} and the docstring of
+\file{oneloop_soliton_energy.py} give the opposite sign for the normal-ordering
+boundary energy. Their displayed numerical tables use scheme term zero;
+those tables are unaffected. See A.1 below.\\\addlinespace
+2. Good energy &
+$E_g=\frac2{15}k^3(5-4k^2)$; $dE_g=v\,dP$.
+The printed one-loop energy exceeds this by $k^3(5-2k^2)/15$. &
+A2: symbolic integration, direct field-energy quadrature for both directions;
+actual downstream function bodies evaluated independently. &
+None found in the specified one-loop renormalisation, charge or phase
+calculations. \file{audit_charges_action.py:ecl} explicitly uses the correct
+energy. The incorrect displayed energy and the adjacent asserted derivative
+identity must both be corrected. This does not clear the separate physical
+one-loop audits.\\\addlinespace
+3. Defect root &
+At fixed CZ fields and orientation: $s=\sigma_0$, $q=-s/(2\sqrt3)$,
+$\alpha_{CZ}=\eta/\sqrt3$, $\beta_{CZ}=2\eta/\sqrt3$.
+The spectrum may separately use $\eta\sigma_{vac}$. &
+A3: CZ constraints and nonlinear sewing on a one-soliton for both $\eta$ and
+both directions. A signed-root substitution at fixed defect fails. &
+Wrong physical root labels propagate into the text of
+\file{oneloop_defect_phase.tex} and Route E of \file{report.tex}.
+The two \file{oneloop_defect_*} calculation scripts use the unsigned root.
+Their functions and formal chord identities are unaffected; interpretation
+as functions of the same CZ $\sigma$ for $\eta=-1$ is affected.\\\addlinespace
+4. Transmission &
+$z=((v+s-\sqrt3 k)/(v+s+\sqrt3 k))^\eta
+=((p_b-q)/(p_a-q))^\eta$.
+The printed middle expression is $-1/z$. &
+A4: rational identity for both orientations; comparison with actual
+\file{z_defect_mode}; nonlinear sewing. &
+None found in executable transmission, delay, phase or fusion formulas.
+They use the rational/root expression, not the incorrect middle expression.
+It is a real sign and reciprocal error, not a harmless logarithm branch.\\\addlinespace
+5. KdV ratio &
+The \emph{full} derivative ratio is $0.564246498175\ldots$ at ratio $1.7$;
+the cross-only ratio is $-0.435753501825\ldots$. &
+A5: independent high-precision small-amplitude derivative with scale
+$10^{-12}$; asymptotic expression below. &
+The master-report prose is wrong, and the final explanatory print line of
+\file{consistency_checks.py} has a minus-sign typo. Its computed numerical
+ratio and the paper's precise ratio are correct. No phase value changes.\\\addlinespace
+6. Script names &
+\file{smatrix_poles_bootstrap.py}, \file{toda_quantum_corrections.py} are the
+existing names. &
+A6: filesystem inventory; old basenames absent, replacements present under
+\file{phase2/scripts}. &
+Documentation/reproducibility only. The two omitted S-matrix checks exist.
+All explicitly cited script paths in paper Sections 1--6 exist.\\\addlinespace
+7. Root notation &
+Ordered $\mu_1=-p_b$, $\mu_2=-p_a$;
+$\lambda=-\ell/(12\sqrt3)$. Bad roots instead obey
+$\mu^3+\mu/4=i\ell/(12\sqrt3)$. &
+A7 and paper conventions check 4; roots substituted in the two cubics and
+cross-ratio checked in both real forms. &
+None for this notation change. It requires an ordered dictionary, not just
+an unidentified statement ``$\mu=-p$''. Additional bad transcription
+formulas in Phase 2g are noted below; the paper does not copy them.\\\addlinespace
+8. Toda width &
+$\kappa_H=2\kappa_T$, and
+$\kappa_H\sim\sqrt{12}\,k_b$, $\kappa_T\sim\sqrt3\,\beta$ at small amplitude. &
+A8: exact factor two in the exponential and
+$\sinh\beta/\beta\to1$; source lattice formulas and scaling checks. &
+None. These are asymptotic identifications; $k_b=\sinh\beta$ must not be
+replaced by $\beta$ at finite amplitude.\\\addlinespace
+9. Phase number &
+\file{defect_semiclassics.pdf} is Phase 2c. &
+A9: title, README and source inventory. &
+None. Phase 2d in the one-loop defect narrative is a citation typo.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection*{A.1 Energy signs and the downstream trace}
+For $u=k^2\operatorname{sech}^2(kx/2)/2$ and $\pi=-vu$, direct integration gives
+\C\ (A1--A2)
+\[
+ \int u^2dx=\frac23k^3,\qquad \int u^3dx=\frac4{15}k^5,
+ \qquad \int u_x^2dx=\frac2{15}k^5.
+\]
+Inserting these in the two Hamiltonians gives the energy formulas in the
+table. With the wrong bad cubic sign, the energy on the same positive pulse
+would be $2k^3/3$, differing from the correct value by $-8k^5/15$; moreover
+that pulse is not a solution of that wrong equation \C\ (A1).
+The wrong good energy has derivative residual
+\C\ (A2)
+\[
+ \frac{dE_{\rm printed}}{dk}-v\frac{dP}{dk}
+ =k^2\left(1-\frac23k^2\right)\ne0\quad(0<k<1).
+\]
+This form avoids division by $P'$ at the cusp.
+
+The bad Hamiltonian contains $+u^3$. Under the usual Wick replacement
+$u^3\mapsto:u^3:=u^3-3Cu$, its energy shift is
+\C\ (A1)
+\[
+ \Delta E_{\rm Wick}=-3CM
+ =-\frac{3\hbar}{2\pi}M
+ =-\frac{3\hbar}{\pi}\sinh\beta,
+ \qquad C=\frac{\hbar}{2\pi}
+\]
+for the previously selected stable-band vacuum. The positive shift asserted
+in \file{phase2/oneloop.tex}, the paragraph ``Decision (PI)'' and the energy
+table caption, is the sign appropriate to the \emph{good} Hamiltonian.
+The same positive claim occurs at lines 15--16 of
+\file{phase2/scripts/oneloop_soliton_energy.py}. Its runtime code only computes
+$C$ and the zero-scheme integral; it does not add either boundary term.
+\file{oneloop_breather.py} also uses the zero-scheme values.
+Thus this is propagation into a claimed renormalised energy, not evidence
+that the numerical zero-scheme tables or classical phase were computed with
+the wrong Lagrangian \C. No new scheme is selected by this review.
+
+For the good-energy typo, the dependency trace is:
+\begin{itemize}[leftmargin=*]
+\item \file{oneloop_good_phonon_scattering.py} builds modes from the PDE and
+Hirota data, with no classical energy input. \C
+\item \file{oneloop_good_twosoliton_phase.py} computes the continuum integrals,
+\file{Delta_P1_closed}, \file{Delta_E1_ren_closed}, and
+\file{delta_renorm_good}. The last uses derivatives of the classical phase
+and momentum. Independent checks reproduce it in both collision channels.
+\file{oneloop_good_limits_cusp_resonance.py} imports those quantities. \C
+\item \file{charge_and_frame_audit.py} computes
+$L_1=v\Delta P_{mode}-\Delta E_1$ from mode sums and differentiates it.
+The new script evaluates these exact function bodies and verifies their
+agreement with the preceding mode charges. No $E_{\rm printed}$ is used. \C
+\item \file{audit_charges_action.py:ecl} is
+$2\sin^3\alpha(1+4\cos^2\alpha)/15$, the correct classical energy.
+Its finite-dimensional charge argument and the corresponding write-up do
+not inherit the typo. \C
+\end{itemize}
+The remaining charge/frame and determinant limitations in the independent
+audits are separate issues; correcting $E_{\rm printed}$ does not resolve
+them \D.
+
+\subsection*{A.2 The defect convention is settled, not an open choice}
+CZ's full-text equations impose $\beta_{CZ}=2\alpha_{CZ}$ and
+$\beta_{CZ}^2-\alpha_{CZ}^2=1$ in the stated units \A.
+The later pair $\alpha_{CZ}=1/(2\sqrt3)$,
+$\beta_{CZ}=\eta/(2\sqrt3)$ violates both constraints \C\ (A3).
+It is not an alternative parametrisation of that same action.
+The source's $s$ in (5.5) is $\sigma_0$ when $c=1$.
+\href{https://arxiv.org/html/2306.03772v1}{Corrigan--Zambon, full-text sections 3 and 5}.
+
+For example, $\alpha=0.4$, $\epsilon=+1$, $\sigma_0=2.4$, $\eta=-1$
+gives $z=1.50971083399\ldots$. Replacing the root by
+$-\eta\sigma_0/(2\sqrt3)$ gives $z=0.373565030471\ldots$;
+the maximum residual of the four sewing equations at $t=0.27,x=0$ is
+$3.3312537\ldots$, while the correct factor passes below $10^{-52}$ \C\ (A3).
+Thus transmission, delay, absorption-root identification and root-labelled
+phase/charge values change if the later dictionary is applied literally.
+The spectrum legitimately depends on $\eta\sigma_{vac}$, but that combination
+must not replace $\sigma_{vac}$ in the scattering root without a simultaneous
+parity transformation of the bulk data \C.
+
+Both \file{oneloop_defect_scattering_and_stability.py} and
+\file{oneloop_defect_phase_and_fusion.py} retain $s=-2\sqrt3q$ and the
+correct rational/root factor; their executable functions do not use the
+incorrect middle expression. The later master report copies the bad
+dictionary in its Route E prose. The mirrored-triple loop in
+\file{audit_frames_defects.py} uses an extra $\eta$ in its local variable
+\file{sigmas}; it still counts one stable root, since both orientations and
+reflected triples are sampled, but does not establish equality of the two
+physical root dictionaries \C. Its determinant checks use the signed
+spectral parameter legitimately.
+
+Two nearby Phase 2g transcription errors should not be imported when repairing
+the dictionary: its displayed cubic has $\ell/(4\sqrt3)$ in place of
+$\ell/(12\sqrt3)$, and its trigonometric expressions for $p_a,p_b$ do not
+equal their preceding Cartesian expressions. The Cartesian roots used by
+the code and by the paper are correct \C\ (A7/B root substitutions).
+
+\subsection*{A.3 Minor-item precision}
+The independent KdV limit is \C\ (A5)
+\[
+ \frac{\partial_{\beta_1}\delta}{2\beta_1\log A}
+ \longrightarrow 1+\frac{2\beta_2}{\beta_1\log A_{KdV}},
+ \qquad A_{KdV}=\left(\frac{\beta_1-\beta_2}{\beta_1+\beta_2}\right)^2.
+\]
+The extra $4\beta_2$ is the cross-term contribution to the \emph{phase
+derivative}, namely $-\Pi_1'M_2$, not the dimensionally different spatial
+shift itself. The paper mostly repairs the earlier prose, but its small
+amplitude paragraph should use this precise name. Script inventories are
+filesystem observations, not mathematical tests; A6 and A9 test their stated
+existence/title assertions rather than fabricating symbolic checks.
+
+\section*{B. Required corrections to the paper}
+Locations refer to source labels and subsection names, so they remain usable
+if another agent changes line numbers. Each item states a review finding
+\C\ and a recommended fix \D. The list contains exactly 14 items.
+\begin{enumerate}[label=R\arabic*.,leftmargin=*,itemsep=8pt]
+\item \textbf{Proposition \file{prop:EP}, one-soliton coordinate.}
+Equation \file{eq:1sol} defines $x_0$ as the additive exponent, not the
+centre. At $t=0$, $X=-x_0/k$ and the pullback is
+$\Omega=dP\wedge dX=-P_k\,dk\wedge dx_0/k$.
+Replace the printed $\pm P_k\,dk\wedge dx_0$ by this formula, or explicitly
+rename the physical centre $X$. Direct quadrature gives $-0.78$ at $k=0.6$,
+where $P_k=0.468$ (B). The degeneracy at the cusp survives.
+The later phase scripts use physical positions and do not inherit this
+normalisation error.
+
+\item \textbf{Section 2, Gelfand--Dickey charges.}
+The displayed definition $H_n=\int\operatorname{Res}L^{n/3}dx$ is divergent
+on the nonzero Lax background. Already
+$\operatorname{Res}L^{1/3}\to-1/12$ (B).
+Use the vacuum-subtracted residue, as \file{charges.py:H} actually does.
+The quoted finite $H_1,H_2,H_4,H_5$ and their $E,P$ combinations then agree
+with the code; label this definition explicitly before using them.
+
+\item \textbf{Section 2, paragraph after \file{eq:shifts}, and Section 4
+small amplitudes.}
+The KdV expression printed as a position shift is $\log A_{KdV}$.
+For the stated ordering, write
+$\Delta x_1\sim-2k_1^{-1}\log|(k_1-k_2)/(k_1+k_2)|$ and
+$\Delta x_2\sim+2k_2^{-1}\log|(k_1-k_2)/(k_1+k_2)|$.
+Also call $-\Pi_1'M_2\to4\beta_2$ a contribution to the phase derivative,
+as distinguished in A.3. The exact shifts and phase are unaffected.
+
+\item \textbf{Section 4, Toda set-up.}
+Restore the direction sign in $dE/dP_n=s b\sinh\kappa/\kappa$.
+The unsigned expression is false for left-movers (B).
+It is inherited from \file{toda_route.tex}; the executable Toda phase
+functions use the signed velocity, so the head-on scaling test survives.
+
+\item \textbf{Section 5, defect symplectic structure.}
+With the stated canonical one-form and $\Omega=d\Theta$, the contribution
+is $(g_u-f_v)du\wedge dv$, not $(f_v-g_u)du\wedge dv$.
+Change that sign or explain a changed convention. Its restriction to a fixed
+vacuum sector is still zero, so no soliton--defect cross term is introduced.
+Do not infer absence of localized defect energy or momentum from this
+vanishing two-form; the paper already correctly calls $M_D,\Pi_D$ effective
+phase coefficients.
+
+\item \textbf{Abstract, summary, \file{prop:stab}, and the ensuing consequences.}
+Qualify the stability theorem by its evidence: the cited finite root search
+is not a proof of absence of all unstable modes. State the sampled result
+as \C\ and the unsupplied completeness assertion as \D, or provide an
+admissible-root/completeness proof. Separate the marginal case
+$\eta\sigma=-1$ from strict stability. Restrict ``one stable vacuum per
+triple'' to three distinct real roots. For example $s=2$ has vacua
+$2,-1,-1$; $|s|>2$ has only one real vacuum (B).
+The unrestricted statement ``both excited vacua are unstable'' is likewise
+inapplicable when those vacua are nonreal. These qualifications are already
+recognised in \file{audit_frames_defects.tex}.
+
+\item \textbf{Proposition \file{prop:fusion}, absolute constant.}
+Replace ``with no free constant'' by ``for the displayed zero-constant
+representatives''. A shift $\delta_D^{(q)}\mapsto\delta_D^{(q)}+C(q)$ leaves
+every classical delay invariant and adds $C(q')-C(q)$ to the fusion
+identity. The cited script sets those constants to zero; it does not
+determine an absolute physical phase. Preserve the algebraic identity as
+\C. Give the orientation sign explicitly, e.g.
+$\rho=\epsilon_3\eta\operatorname{sgn}(q-q')$ for the ordered chord
+convention used by the scripts, instead of leaving it undetermined.
+
+\item \textbf{``Labels and verification'', verification footnotes and appendix.}
+Replace the assertion that every \C\ formula already has a matching asserted
+test by a precise coverage statement. In particular:
+\file{charges.py} does not check the $x_0$ symplectic formula;
+\file{defect_two_soliton_symplectic.py}, check 5, prints limits and a
+\emph{defect} cusp but does not assert the paper's two-body square-root
+claim; and the Toda two-body reflection amplitude is explicitly ``not
+separately checked'' in the appendix. The present B checks supply a
+Bessel-wave test for that last amplitude. The Hirota exact-arithmetic test
+covers selected rational amplitudes in every direction pattern for
+$N\le4$, not a symbolic proof at all amplitudes; one separate profile
+assertion in that script is disabled by \file{or True}. State the actual
+scope, and do not count printed diagnostics as assertions. The legacy
+\file{phase0/checks/convention_check.py} also lacks the required final
+success marker, although its sign assertions pass.
+
+\item \textbf{Appendix ``Inconsistencies found'', all nine items.}
+Replace unresolved guesses with table A's verdicts and downstream trace.
+In particular disclose the bad normal-ordering sign, the verified CZ
+parameter constraints, and the negative-orientation physical mismatch;
+remove ``could not check'' and ``whether it propagated ... was not checked''.
+Retain the distinction between text errors and unaffected executable
+calculations. Record the minor final-print sign error in
+\file{consistency_checks.py} and qualify the Toda width map as asymptotic.
+
+\item \textbf{Sections 2 and 4, source dictionaries.}
+The paper's own good/bad dictionary and the CZ factor-nine dictionary are
+correct, but the imported BC and CL formulas also need explicit field maps.
+For BC use $\varphi_{BC}=-\phi_{bad}$ and
+$w_{BC}=-u_{bad}$; this leaves the canonical action/energy normalisation
+unchanged. For the CL bad PDE use $u_{CL}=3u_{bad}$; for the BD field
+normalisation used in Phase 1, $u_{BD}=u_{good}/2$.
+Identify the bad roots called $p$ in \file{eq:crossratio} with the preceding
+$\mu_{a,b}$. Otherwise the ``both equations'' cross-ratio uses an undefined
+bad-equation $p$. These are notation/attribution repairs, not changes to
+the verified continuation of $\delta$.
+
+\item \textbf{Section 1, quantum prior work, affine rank.}
+For $a_n^{(1)}$ the underlying finite algebra is
+$\mathfrak{sl}_{n+1}$, not $\mathfrak{sl}_n$.
+Write $U_q(\widehat{\mathfrak{sl}}_{n+1})$, or use the consistent alternative
+notation $a_{N-1}^{(1)}$ with $\mathfrak{sl}_N$.
+The Section 6 $a_2/\mathfrak{sl}_3$ formulas themselves are consistent.
+
+\item \textbf{Section 6, obstructions; Section 1, no-boost inference.}
+The observation that the displayed affine-Toda and Boussinesq constants
+have different mass/dispersion terms does not prove that \emph{no} limit
+of fixed-species affine Toda can produce Boussinesq. No cited script proves
+that universal exclusion. Replace it by the supported statement that no
+such dictionary/limit has been constructed here (\D\ for a conjectured
+obstruction). Likewise absence of a boost is not alone a proof against
+every possible reparametrised difference form. State the checked
+nonseparability in the chosen rapidities, or supply the stronger proof.
+Describe the QISM issue as an obstruction to the ordinary ultralocal
+construction, not to every possible lattice quantisation.
+
+\item \textbf{Literature labels in Sections 1, 2 and 4.}
+Separate the literature's explicit classical action calculation (\A)
+from its semiclassical Bohr--Sommerfeld prescription (\B), and keep the
+project's string identity conditional on that prescription (\C).
+The source expressly assumes large quantum number; it does not prove an
+exact quantum spectrum for every $N$. Specify hypotheses/function spaces
+when paraphrasing the CL existence theorem and the abstract-only
+Bona--Sachs claim. Do not present the literature-search absence result as
+a theorem of nonexistence. Verify the bibliography entries explicitly
+marked ``not machine-verified'' before making the blanket assertion that
+all references are verified. Historical reading-status labels may stay if
+clearly attributed to the earlier agents, as the draft's last paragraph does.
+
+\item \textbf{Summary item 6 and claims-table equation tags.}
+Split the combined ``good \& bad'' summary into what was actually checked:
+the canonical non-ultralocal bracket is displayed for good, the
+interaction-block factorisation is checked in both forms, and the cited
+product-form exclusion script tests bad overtaking. Either supply the
+additional good exclusion check or narrow that tag. The hierarchy-charge
+row should also distinguish the good $H_n$ evaluation from the two-form
+root dictionary. Toda itself is a lattice model; ``bad'' denotes its
+small-amplitude continuum target, not an identity of finite-amplitude
+theories.
+\end{enumerate}
+
+\section*{Displayed-equation and claim-label ledger (Sections 1--6)}
+Every displayed environment in the requested sections is covered below;
+inline formulas with a material defect are included in the corrections.
+``Pass'' means source agreement plus the specified check, not a claim of
+independent proof for every continuum or literature assertion. All audit
+assessments in this ledger are \C.
+
+\small
+\begin{longtable}{@{}L{5.1cm}L{4.9cm}L{5.6cm}@{}}
+\toprule Location / displayed formula & Source and check & Verdict / label scope\\\midrule
+\endfirsthead
+\toprule Location / displayed formula & Source and check & Verdict / label scope\\\midrule
+\endhead
+Section 1 (no displayed equation environments in its body) &
+Literature map; Phase 1 introduction; master-report scope. &
+Prior-work (a)/(b) mostly follows the map; R11--R14 qualify rank,
+inference and equation attribution. Abstract phase agrees with Section 4.\\
+\file{eq:good}, \file{eq:bad}, \file{eq:Lag}, \file{eq:Omega0}, \file{eq:charges} &
+Phase 1 equations/canonical definitions; paper check 1; independent A1--A2. &
+Pass. The correct bad Lagrangian is the paper's improvement over its source.
+Potential EL equation is differentiated once to obtain the field PDE.\\
+\file{eq:1sol}, \file{eq:rapidity}, \file{eq:solcharges}, \file{eq:dP} &
+Phase 1; Hirota/charges scripts; paper checks 2,3,9; independent A2. &
+Pass; interpret $dE/dP$ by continuation at the cusp. Inline symplectic
+coordinate needs R1.\\
+\file{eq:roots}, \file{eq:cubic}; inline bad cubic and $H_n$ &
+Phase 1 charges, Phase 2c transmission and bad ansatz;
+paper check 4; independent B. &
+Root equations pass. The $H_n$ values pass after R2 subtraction.
+The $\mu=-p$ relation reverses ordering.\\
+\file{eq:Nsol} &
+Phase 1/Hirota. Exact rational-amplitude checks through $N=4$. &
+Agrees with source. General $N$ is literature (a), sampled project check (c).
+Do not call a finite rational grid a general proof; R8.\\
+\file{eq:Agood}, \file{eq:Abad}, \file{eq:crossratio} &
+Phase 1 interaction regimes; consistency check 5; independent B. &
+Pass in both forms and orientations, with bad roots named explicitly (R10).
+Exclude coincident solitons and singular denominators when using ordinary
+two-body scattering.\\
+\file{eq:shifts}; inline breather constant &
+Phase 1 peak tracking and breather scan; paper conventions. &
+Exact shifts pass for soliton 1 initially left and $v_1>v_2$.
+Good breather bound is only for the stated Hirota zero-background class.
+The following KdV sentence needs R3.\\
+Dictionary table; unnumbered continuation display &
+Phase 1 Lax script; paper check 5. &
+Pass as an analytic identity of formulas, not a map between real solutions.
+CZ exclusion is only within their nonlinear type-I ansatz.\\
+\file{eq:Omega}, \file{eq:sympid} &
+Master report; symplectic scattering and two-soliton defect scripts. &
+Pass as asymptotic pullbacks, with fixed global potential constant and
+well-separated solitons. Exponentially small terms are explicitly excluded.\\
+\file{eq:darboux}, \file{eq:darbouxshifts} &
+Master report; semiclassical/consistency scripts; independent B. &
+Pass locally off $P'=0$. In--out difference uses the ordering change.
+Normalising the opposite potential endpoint gives the same differences.\\
+\file{eq:delta} &
+Master report; independent high-precision gradients, both equations and
+all four sign combinations. &
+Pass as a classical generating function in the specified frame.
+An exact quantum S-matrix is not established by this identity.\\
+Inline properties of \file{prop:props} &
+Paper checks 6--7 and existing defect script check 5. &
+Antisymmetry and regular-branch crossing pass. Resonance finiteness follows
+from the vanishing spectral difference; cusp citation does not assert its
+two-body local expansion (R8). Logarithm sheet and regular region matter.\\
+\file{eq:Ibr}, \file{eq:string} &
+BC action formula; consistency check 4; paper check 8. &
+Classical action identity passes. Quantisation is semiclassical and
+conditional (R13); exact pole positions remain (d).\\
+Toda unnumbered $M,\Pi,E$ display; inline $P_n,A_T$ &
+\file{toda_route.tex}, lattice-soliton and label scripts. &
+Pass; derivative velocity needs R4 sign. Vacuum energy and pressure-work
+subtractions are already stated in the paper.\\
+Toda inline $R,\Theta$ and classical limit &
+Route D and quantum BA; independent Bessel/Schrodinger test B. &
+Reflection amplitude passes with incoming $e^{-iqx/\hbar}$ and
+$\Delta p=2q$. Choose an unwrapped logarithm for the classical limit.
+The BA method remains labelled (b).\\
+\file{prop:todaBA}, \file{eq:deltaT}, unnumbered scaling ratio &
+Classical BA, dressed-phase, frame, label and scaling scripts. &
+Matches the source and numerical checks. Mixed-derivative primes refer
+to the respective $\kappa_j$; not arbitrary physical-momentum derivatives.
+Numerical agreement is not a complete analytic convergence proof.\\
+\file{eq:zCZ}, \file{eq:zroot} &
+CZ (5.5), Phase 2c transmission; independent A3/A4 sewing. &
+Pass with $s=\sigma_0$. Require finite positive $z$ for ordinary transmission;
+the endpoints are absorption limits.\\
+Inline $\Omega_D$ and \file{eq:dD} &
+Phase 2c transmission checks 4 and 6; exact one-form calculation. &
+Phase and gradient pass. R5 corrects the unrestricted two-form sign;
+its vacuum restriction remains zero. $s$-dependent constants are unfixed.\\
+\file{prop:2sD}; vacuum root/absorption identities &
+Phase 2c one- and two-soliton scripts. &
+Pass for the regular sampled configurations; algebraic factorisation is
+consistent with the preserved $A_{12}$. Excited-state interpretation needs
+the real-vacuum restrictions in R6.\\
+\file{eq:fusion} &
+\file{defect_smatrix_good_continuation.py}, check 4. &
+Pass for zero-constant representatives; R7. The script determines the
+relative orientation sign at sampled triangles, not a quantum bootstrap.\\
+Section 6 unnumbered Poisson brackets &
+\file{routes_BC_checks.py}; independent smeared bracket B. &
+Pass. $\{r,r\}=0$ follows by integration by parts for decaying test functions.
+The nonzero derivative-delta bracket establishes non-ultralocality.\\
+\file{eq:fact}; unnumbered $G(y)$; unnumbered good factorisation &
+Route B/C checks and interaction regimes; independent B for Toda/$G$ blocks. &
+Pass. The good expression is the trigonometric continuation with its own
+$S,D$. No all-limits affine-Toda exclusion follows (R12).\\
+Section 6 product-form exclusion (inline mixed derivative) &
+\file{smatrix_rejected_forms.py}. &
+The nonzero mixed derivative excludes $f(D)+g(S)$ in the tested bad
+rapidities. Narrow the summary tag or add the good check (R14).\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Label audit beyond the displays.}
+The explicit project formulas in Sections 2--6 are correctly classified
+as (c), subject to the corrections and test coverage just stated.
+The mutual-statistics interpretation, universality, cusp uniformisation,
+bound-state poles, resonance interpretation and exact S-matrix ideas are
+appropriately (d). The Toda/GHD and affine-Toda quantum proposals are
+appropriately (b). The missing-spin statement is algebraic and needs no
+unread textbook as its sole warrant. The opening assertion that the quantum
+Boussinesq theory ``is'' the $W_3$ charges should be read as describing that
+literature construction, not uniqueness of all possible quantisations.
+The broad stability, fusion-constant and affine-limit claims are the main
+places where the paper goes beyond its evidence. The first two already
+appear overstrong in older sources; copying them is not an independent
+justification \C.
+
+\paragraph{Phase 2i exclusion.}
+The draft contains no Phase 2i Wiener--Hopf factors, edge coefficients,
+two-loop formula, corrected kernel or new physical synthesis in Sections
+1--6, and no such result is imported into the remainder of the draft \C.
+Its Section 8 placeholder names \file{toda_wh_and_kp_synthesis.pdf} solely
+as work awaiting audit. The quantum placeholders otherwise trace to the
+earlier audits already cited in the master report. This is a status mention,
+not use of Phase 2i results. It can be removed if the PI intends a complete
+ban on even mentioning the filename; this review imports none of its claims.
+
+\section*{Optional improvements}
+\begin{itemize}[leftmargin=*]
+\item Separate field, velocity and Toda sign notation: $u_b,V,\epsilon_T$
+avoid the repeated use of $v$ and $s$. \D
+\item Give a short analytic derivation of the phase-gradient identity and
+of the real-root count. The numerical evidence is strong, but an explicit
+proof is more useful to a reader than a long collection of precisions. \D
+\item Define scattering order once ($v_1>v_2$) and distinguish
+$\delta(1,2)$ as an antisymmetric label function from the phase assigned
+to a specific physical incoming ordering. \D
+\item Add a compact branch/endpoint convention for logarithms, the cusp,
+coincident solitons and breather boundary limits. For bad solitons say
+$E$ increases with $|P|$, rather than saying $E(P)$ is monotone without
+specifying a direction branch. \D
+\item Keep the quantum placeholders short. In particular, the identification
+of a retained linear phonon band with the full nonlinear CL invariant
+subspace is not independently proved by a finite phase integral; retain
+the heuristic qualification from \file{oneloop.tex}. \D
+\end{itemize}
+
+\section*{Checks, reproducibility and failures recorded}
+\paragraph{Independent checks.}
+Run \file{python3 -B paper/scripts/review_draft1_checks.py}.
+The script writes no files, uses exact SymPy and 65-digit mpmath, asserts
+the new identities and explicit counterexamples, inventories citations,
+and ends with \file{ALL CHECKS PASSED}. Actual source function definitions
+are loaded via the Python AST without executing their top-level code or
+rewriting their result files. This makes the downstream comparison
+independent of saved JSON outputs. The optional \file{--run-sources} reruns
+the read-only scripts cited before Section 7, omitting the figure writer.
+
+\paragraph{Original check requested by the PI.}
+\file{paper/scripts/paper_conventions_check.py} was run unchanged and printed
+\file{ALL CHECKS PASSED}. Its checks establish the paper's energy and
+convention fixes, not the downstream dependency claims or every assertion
+in Sections 1--6.
+
+\paragraph{Source-script coverage.}
+The cited source scripts were read, and the read-only verification scripts
+for Sections 1--6 were rerun with bytecode writes disabled. The figure
+generator was inspected but not rerun, because it would overwrite an
+existing figure. Numerical root-search completeness and references not
+freshly read are not certified by these runs. The full Phase 2 one-loop and
+audit suites were not indiscriminately rerun: several write existing result
+files, contrary to the task constraint. The relevant actual functions were
+instead checked as described above. All 24 source-script processes exited
+successfully; 23 printed \file{ALL CHECKS PASSED}. The legacy
+\file{phase0/checks/convention_check.py} asserted its two symbolic residuals
+and printed the correct signs, but lacks the required success marker.
+Together with the separately run paper script, this covers the 25
+verification scripts among the 26 cited paths (the remaining path is the
+figure generator). The independent review script also printed
+\file{ALL CHECKS PASSED}. \C
+
+\paragraph{Failures recorded (including repaired review checks).}
+\begin{enumerate}[leftmargin=*]
+\item The report's bad cubic sign fails the target Euler--Lagrange equation
+and positive-soliton energy. The associated positive Wick shift is also
+wrong for the corrected bad Hamiltonian. These are retained as explicit
+counterexamples, not repaired in the source files. \C
+\item The printed good energy fails direct quadrature and the velocity
+identity. The signed-root substitution at $\eta=-1$ fails nonlinear sewing;
+the middle transmission expression fails equality to $z$. The independent
+checks assert these nonzero residuals. \C
+\item The paper's phase-coordinate symplectic coefficient and unsigned
+left-moving Toda velocity fail direct checks. The unqualified strict
+stable-root count fails at a repeated-root threshold; the unsubtracted
+first hierarchy charge has a nonzero background density. \C
+\item In the first review-script run, the marginal-root test reused a
+SymPy symbol declared positive; the solver therefore excluded the desired
+root $-1$. A new real symbol fixes that test without changing its expected
+root or tolerance. \C
+\item An exploratory repository search used an invalid regular expression;
+it was replaced by narrower/fixed-string searches. One guessed script
+basename did not exist; the actual script inventory was then used.
+An initial full-text URL requested a nonexistent CZ version; version 1
+was retrieved successfully. BC HTML and one PDF screenshot retrieval
+failed; its PDF text was available. The large CL HTML and the attempted
+Bona--Sachs DOI fetch were unavailable. These access failures limit fresh
+literature verification as stated above. \C
+\item Source verification contains limitations that must remain visible:
+the disabled \file{or True} assertion in the Hirota script, printed-only
+limit/cusp diagnostics, and the numerical stability search. No source
+assertion or tolerance was weakened by this review. \C
+\item The first PDF build failed because \file{xurl.sty} is unavailable;
+the document was changed to use the installed URL package's line-breaking
+hooks. A patch attempt with a stale context line was rejected without
+modifying files and was reapplied with the correct context. The legacy
+Phase 0 script's missing success marker is a reporting failure, not a
+failed mathematical residual. \C
+\end{enumerate}
+
+\paragraph{Verified external entries used in this review.}
+Corrigan and Zambon, \emph{Adding integrable defects to the Boussinesq equation},
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}; full-text relevant
+sections read. Bogdan and Charkina, \emph{Quasiclassical quantization of the
+Boussinesq breather emerging from the kink localized mode},
+\href{https://arxiv.org/abs/2502.14695}{arXiv:2502.14695}; full-text relevant
+formula passages consulted. Charlier and Lenells, \emph{On Boussinesq's
+equation for water waves},
+\href{https://arxiv.org/abs/2204.02365}{arXiv:2204.02365}; abstract/entry
+verified in this review, not a fresh full-text reading.
+\end{document}
