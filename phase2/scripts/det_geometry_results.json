@@ -1,0 +1,26 @@
+{
+  "precision": 55,
+  "checks": [
+    {
+      "v": "0.8",
+      "Wronskian_error": "2.039157646249538914596966909142671111156613830646552046e-56",
+      "width_norm_slope": "1.777777777777777777777777777777777777777777777777777778"
+    },
+    {
+      "v": "-0.7",
+      "Wronskian_error": "1.210749852460663730541949102303460972249239461946390277e-56",
+      "width_norm_slope": "0.9607843137254901960784313725490196078431372549019607844"
+    },
+    {
+      "v": "0.3",
+      "Wronskian_error": "1.628819310055123660363790420491231175469509344740397466e-60",
+      "width_norm_slope": "0.0989010989010989010989010989010989010989010989010989011"
+    }
+  ],
+  "runtime_seconds": 43.54774689298938,
+  "scope": "Finite collective measure and domain checks only; no functional determinant.",
+  "failures_recorded": [
+    "The three soliton/shift tangents have rank two, so their inverse-W projector does not exist.",
+    "Shift and velocity tangents have linearly divergent configuration-space norms."
+  ]
+}

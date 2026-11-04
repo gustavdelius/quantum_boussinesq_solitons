@@ -1,0 +1,624 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=2em
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+\newcommand{\La}{\textbf{(a)}}
+\newcommand{\G}{\texttt{det\_geometry.py}}
+\newcommand{\Scheck}{\texttt{det\_spectrum.py}}
+\newcommand{\Ccheck}{\texttt{det\_charges.py}}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\R}{\mathbb R}
+\title{The projected one-loop Boussinesq determinant:\\
+potential endpoints, collective measure, and a conditional dispersion invariant}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc\ We construct the fourth-order potential fluctuation operator, determine
+its bounded static zero modes in a specified decaying-derivative class, and
+calculate the collective symplectic form including the shift charge. Translation,
+velocity and shift alone give an odd-dimensional, rank-two form. An explicit
+auxiliary momentum direction completes it and gives a checked finite measure
+and projector. This is an instantaneous phase-space construction, not a
+functional determinant. The shift and width tangents have divergent
+configuration-space kinetic norms; the enlarged phase-space construction does
+not remove that temporal-domain problem.
+
+\Lc\ Conditional on the inherited continuum trace prescription, both published
+charge pairs give the same correction at fixed momentum:
+$E_1|_P=\Delta E_{\rm mode}-v\Delta P_{\rm mode}=-L_1$.
+Its small-amplitude coefficient is $E_1|_P/|P_{\rm cl}|\to-2/\pi$.
+\Ld\ Neither this note nor the inherited trace establishes that this is the
+absolutely normalized projected determinant. The obstruction is specified as
+a missing common boundary/constraint evolution problem, followed by spectral
+completeness and the phase of its time-boundary determinant. Thus the outcome
+is the checked partial-result alternative in the task, not a claim of a
+completed one-soliton dispersion or two-soliton S-matrix.
+\end{abstract}
+
+\section{Scope, evidence and conventions}
+Labels mean literature theorem (a), literature heuristic (b), project
+derivation (c), and guess or unestablished identification (d).
+Each section names its checking script; all scripts are new, independent of
+imports from earlier project calculations, and live in \texttt{phase2/scripts/}.
+Every displayed derived formula below is covered by those scripts, using
+exact SymPy identities or 55--65-digit mpmath tests. Numerical residual tests
+are evidence at the listed points, not proofs of completeness.
+
+The input is the good equation and the specified normal ordering. No new
+regularization or physical endpoint prescription is selected. The symmetric
+cutoff below is only a diagnostic of the already published conditional
+equal-mode-count expression. The auxiliary finite-dimensional completion is
+also a diagnostic, not a selection of quantum boundary degrees of freedom.
+No Phase~2i formula or data is used. No existing file is changed.
+
+\Lc\ (\G) It is useful to keep the shift coordinate explicitly:
+\begin{align}
+ \xi&=x-X-vt,\qquad k=\sqrt{1-v^2}=\sin\alpha,\quad v=\epsilon\cos\alpha,
+ \quad 0<\alpha<\pi/2,\\
+ \Phi(\xi;v,C)&=C+k\tanh(k\xi/2),\qquad
+ u_0=\Phi'=\frac{k^2}{2}\operatorname{sech}^2(k\xi/2),\quad \pi_0=-vu_0,
+ \label{eq:profile}\\
+ M&=2k,\qquad \Pi=\int\pi_0\dd x=-2vk,\qquad
+ P=-\int\pi_0u_0\dd x=\frac23vk^3,\\
+ E_0&=\frac23k^3-\frac8{15}k^5,\qquad
+ L_0=vP-E_0=-\frac2{15}k^5,\qquad \frac{\dd L_0}{\dd v}=P.
+\end{align}
+This is a coordinate dictionary, not a change of normalization: the old
+left-endpoint coordinate is $C_L=C-k$, so $\Phi=C_L+k(1+\tanh(k\xi/2))$.
+Keeping $C$ free avoids silently identifying a physical shift symmetry with
+a gauge choice. The fixed symplectic convention remains
+$\Omega=\int\dd\pi\wedge\dd\phi$.
+
+\section{Operator and spatial boundary problem}
+\paragraph{Quadratic operator. \Lc\ (\G, \Scheck).}
+For $\phi=\Phi+\eta$ the lab-frame field equation and quadratic action give
+\begin{align}
+ \phi_{tt}-\phi_{xx}+\phi_{xxxx}+3(\phi_x^2)_x&=0,\\
+ S_2&=\frac12\int\dd t\dd\xi\,
+ \{(\eta_t-v\eta_\xi)^2-(1-6u_0)\eta_\xi^2-\eta_{\xi\xi}^2\},\\
+ \mathcal D_v&=(\partial_t-v\partial_\xi)^2+\mathcal L,
+ \qquad \mathcal L=\partial_\xi^4-\partial_\xi^2
+                  +6\partial_\xi(u_0\partial_\xi),\\
+ \mathcal K_v&=\mathcal L+v^2\partial_\xi^2
+        =-\partial_\xi\mathcal H_v\partial_\xi,
+ \qquad \mathcal H_v=-\partial_\xi^2+k^2-6u_0,\label{eq:K}\\
+ \mathcal D_v(e^{-i\nu t}f)&=e^{-i\nu t}
+       (\mathcal K_v+2iv\nu\partial_\xi-\nu^2)f.
+\end{align}
+The Hessian in $S_2=-\frac12\int\eta\mathcal D_v\eta$ has the corresponding
+overall minus sign after integration by parts. In particular the mixed
+co-moving derivative has the plus sign displayed above.
+The potential operator is not the $u$-fluctuation operator.
+
+\paragraph{Boundary form and admissible variations. \Lc\ (\G).}
+Writing $A=-u+3u^2+u_{xx}$, the spatial boundary term of the first variation
+of the original action is
+\begin{equation}
+ \delta S\big|_{\rm space}=\int\dd t\,[A\delta\phi-u_x\delta\phi_x]_{-\infty}^{+\infty}.
+ \label{eq:variation}
+\end{equation}
+For the classical pulse these coefficients tend to zero. Thus finite,
+time-independent endpoint variations are not excluded by the classical
+spatial variational principle alone. The Green identity is
+\begin{align}
+ f\mathcal K_vg-g\mathcal K_vf&=\partial_\xi B_v(f,g),\\
+ B_v(f,g)&=fg'''-f'g''+f''g'-f'''g
+       +(6u_0+v^2-1)(fg'-gf').\label{eq:green}
+\end{align}
+Bounded $f,g$ with decaying derivatives have zero flux. Clamped fluctuations
+$f=f'=0$ at both ends of a finite interval also make it vanish; this is a
+mathematical example of a domain, not the selected physical regulator.
+Neither zero boundary flux nor formal symmetry alone defines a determinant.
+
+\Lc\ (\G) Two different linear spaces must be distinguished. For a fixed
+potential-endpoint sector one may use localized smooth initial data
+$(\eta,\rho)$ with $\eta(\pm\infty)=0$. For the following finite pairings an
+enlarged test space is
+\begin{equation}
+ \eta=c+m\tanh(k\xi/2)+s(\xi),\qquad
+ \rho=r(\xi),\qquad s,r\in\mathcal S(\R).
+ \label{eq:testspace}
+\end{equation}
+All pairings converge on this space; it includes the bounded collective tails.
+This is not a claim that it is the Hilbert space of the Gaussian integral.
+For smooth finite-energy histories with uniform endpoint limits and
+$\pi(\pm\infty)=0$, local conservation gives
+\begin{equation}
+ \dot M=[\pi]_{-\infty}^{+\infty}=0,\qquad
+ \dot\Pi=[u-3u^2-u_{xx}]_{-\infty}^{+\infty}=0.\label{eq:charges}
+\end{equation}
+The assumptions on limits matter: arbitrary $L^2$ functions need not have
+pointwise limits. These statements concern the smooth decaying class here.
+
+\paragraph{The temporal obstruction made quantitative. \Lc\ (\G).}
+In the centred coordinates of \eqref{eq:profile},
+\begin{equation}
+ \Phi_v=-\frac vk\left[\tanh(k\xi/2)
+                  +\frac{k\xi}{2}\operatorname{sech}^2(k\xi/2)\right],
+ \quad (\Phi_v)_\pm=\mp\frac vk.
+\end{equation}
+Consequently, in a symmetric box $[-R,R]$,
+\begin{align}
+ \|1\|^2&=2R,\qquad
+ \|\Phi_v\|^2=2R\frac{v^2}{k^2}+O(1),\\
+ \frac12\int_{-R}^R\dot\Phi^2\dd\xi
+  &=R\left(\dot C^2+\frac{v^2}{k^2}\dot v^2\right)+O(1)
+  \quad\hbox{for a time-modulated profile.}\label{eq:norm}
+\end{align}
+The bounded remainder includes translation and other localized terms.
+At fixed nonzero $v$, these independent collective paths do not have a finite
+configuration-space kinetic term as $R\to\infty$. A finite-action history
+can still have changing coordinates if the complementary field has exactly
+compensating endpoint tails. Such a compensation couples the collective and
+field constraints; it cannot be omitted when using the instantaneous measure.
+This does not forbid comparing stationary solitons in different endpoint
+sectors, nor prove that no quantum soliton theory can be defined.
+
+\section{Zero, collective and nonzero modes}
+\paragraph{Static kernel and generalized mode. \Lc\ (\Scheck).}
+In the bounded, decaying-derivative class just described,
+\begin{equation}
+ \mathcal K_v1=0,\qquad \mathcal K_vu_0=0,\qquad
+ \mathcal K_v\Phi_v=-2vu_0',\qquad
+ \eta_v(\xi,t)=\Phi_v(\xi)-t u_0(\xi),\quad
+ \mathcal D_v\eta_v=0.\label{eq:jacobi}
+\end{equation}
+Translation is $-u_0$, shift is $1$, and the last field is the velocity
+Jacobi solution at fixed lab coordinates. Width variation is not a symmetry
+zero mode of $\mathcal K_v$ for $v\ne0$. Its time-secular term is essential.
+The formal shift partner $\eta=t$ also solves the equation, but has uniform
+$\delta\pi=1$ and hence infinite kinetic energy on the line; it is excluded
+from the finite-energy class. It cannot supply the missing finite shift-charge
+direction in the collective measure.
+
+\Lc\ (\G, \Scheck) This static kernel is exhaustive in the stated class:
+integrating $\mathcal K_vf=0$ gives $\mathcal H_vf'=0$, since derivatives
+decay and hence the integration constant is zero. Direct substitution gives
+$\mathcal H_vu_0'=0$. Any other solution with decaying derivative has constant
+Schr\"odinger Wronskian with $u_0'$, which is zero at infinity, and is therefore
+proportional to it by uniqueness of the second-order ODE. Integration gives
+$f=c_0+c_1u_0$. In the $L^2$ potential domain only translation remains;
+in a fixed-endpoint domain the shift and $\eta_v$ are excluded.
+This argument does not enumerate nonzero-frequency internal modes or establish
+completeness of the frequency-dependent pencil.
+
+\paragraph{Continuum checks and a heavy-branch correction. \Lc\ (\Scheck).}
+For real $q\ne0$, $\omega=|q|\sqrt{1+q^2}$ and $\nu=\omega-vq$.
+The vacuum pencil is
+\begin{equation}
+ q^4+k^2q^2-2v\nu q-\nu^2=0,\qquad
+ \partial_q^2(\hbox{left side})=12q^2+2k^2>0.
+\end{equation}
+It has two real roots, one of each sign, and a non-real conjugate pair for
+real nonzero $\nu$. A convenient exact continuum solution is
+\begin{align}
+ f_q(\xi)&=\partial_\xi\left[
+ e^{iq\xi}\frac{1+A e^{k\xi}}{1+e^{k\xi}}\right],\\
+ A&=\frac{(p_a-q_a)(p_b-q_b)}{(p_a-q_b)(p_b-q_a)},\qquad
+ p_{a,b}=\frac{v/\sqrt3\pm k}{2},\quad
+ q_{a,b}=\frac{\operatorname{sgn}(q)\sqrt{1+q^2}}{2\sqrt3}\pm\frac{iq}{2}.
+\end{align}
+The checked pencil residual is below $9\times10^{-61}$ over the tested
+Jacobi, continuum and discrete modes. The same ratio gives $|A|=1$;
+the asymptotic amplitudes of $f_q$ are $iq$ and $iqA$.
+
+\Lc\ (\Scheck) On the heavy branch $\pi/3<\alpha<\pi/2$ define
+\begin{align}
+ K_-&=\sin(\alpha-\pi/3),\quad K_+=\sin(\alpha+\pi/3),\quad K_-+K_+=k,\\
+ \gamma&=\sqrt3(k^2-3/4),\qquad
+ f_\pm^{\rm sp}(\xi)=\partial_\xi\frac{e^{K_\pm\xi}}{1+e^{k\xi}}.
+\end{align}
+The two localized solutions are
+\begin{equation}
+ e^{\epsilon\gamma t}f_-^{\rm sp}(\xi),\qquad
+ e^{-\epsilon\gamma t}f_+^{\rm sp}(\xi).\label{eq:heavy}
+\end{equation}
+The same spatial profile cannot be used for both rates when $v\ne0$.
+The shorthand in \texttt{oneloop\_phase.tex} does that; its opposite-rate
+potential-field residual at $\alpha=1.2$, $\xi=0.37$ is
+$0.00733252608902685$ in this normalization, for either orientation.
+Using the complementary $K$ fixes the residual without a tolerance change.
+For the light branch the displayed $K_-$ mode is not localized.
+\Ld\ A real, stable-particle dispersion on the heavy branch is not supplied
+by an oscillatory Gaussian trace in the presence of these growing modes.
+The conditional real-energy benchmark below is restricted to
+$0<\alpha<\pi/3$; this is a limitation of that benchmark, not an unannounced
+change of equation. The cusp requires separate treatment.
+
+\section{Collective symplectic split and what its Jacobian means}
+\paragraph{Three tangents are insufficient. \Lc\ (\G).}
+At $t=0$ order the exact soliton-family tangents as $(v,X,C)$. Integration gives
+\begin{equation}
+ W_3=\begin{pmatrix}0&P_v&\Pi_v\\-P_v&0&0\\-\Pi_v&0&0\end{pmatrix},\qquad
+ P_v=\frac23k(1-4v^2),\quad \Pi_v=\frac{2(2v^2-1)}k.
+ \label{eq:W3}
+\end{equation}
+It has rank two and null vector
+$\Pi_v\partial_X-P_v\partial_C$. This degeneracy of the restricted
+solution family is not evidence that the shift is a gauge redundancy of the
+full field theory. The shift pairs with its charge $\Pi$, which is already
+tied to $v$ on that family. Inverting a three-mode Wronskian is impossible.
+
+\paragraph{An explicit completion and finite measure. \Lc\ (\G).}
+To expose the missing direction without choosing a physical boundary theory,
+introduce at one time an auxiliary variable $r$ by
+\begin{equation}
+ \pi=-vu_0+r w,\qquad
+ w=\frac3k u_0-\frac{15}{2k^3}u_0^2,\qquad
+ \int w\dd\xi=1,\quad \int wu_0\dd\xi=0.
+\end{equation}
+These follow from $\int u_0^n\dd\xi=2k,2k^3/3,4k^5/15$ for $n=1,2,3$.
+The vector $Z_r=(0,w)$ is localized, changes $\Pi$ independently, and does
+not change $P$ to first order. It is not a stationary soliton tangent and is
+not to be removed as another solution zero mode. At $r=0$, parity gives
+$\int w\Phi_v=0$. In the order $(v,X,C,r)$ the completed matrix and density are
+\begin{equation}
+ W=\begin{pmatrix}
+ 0&P_v&\Pi_v&0\\-P_v&0&0&0\\-\Pi_v&0&0&-1\\0&0&1&0
+ \end{pmatrix},\qquad
+ \det W=P_v^2,\qquad
+ \dd\mu_{\rm coll}=|P_v|\dd v\dd X\dd C\dd r.
+ \label{eq:W4}
+\end{equation}
+This density is local at $r=0$ and omits universal phase-space normalization
+constants; it is not an absolute state normalization. The quadrature checks
+at $v=0.8,-0.7,0.3$ have maximal error below $2.1\times10^{-56}$.
+The completion fails at $P_v=0$, namely $|v|=1/2$; it does not resolve the cusp.
+
+\paragraph{Projector, constraints and Jacobian. \Lc\ (\G).}
+For the completed tangent map $Z$ and $P_v\ne0$, define
+\begin{align}
+ b_A&=\Omega(Z_A,\eta),\qquad
+ \mathcal P\eta=Z_A(W^{-1})^{AB}b_B,\qquad \mathcal Q=1-\mathcal P,\\
+ \mathcal P^2&=\mathcal P,\qquad \Omega(Z_A,\mathcal Q\eta)=0,\\
+ \Omega\big|_{\rm tangent}&=\tfrac12W_{AB}\dd z^A\wedge\dd z^B+\Omega_\perp.
+\end{align}
+The last line denotes the block decomposition of the two-form.
+For any finite symplectic realization, the associated
+change of Liouville measure has Jacobian $\sqrt{\det W}=|P_v|$ times the
+transverse measure. The exact finite constraint identity is
+\begin{equation}
+ 1=|\det W|\int\dd^4c\,
+       \delta^{(4)}\!\left(\Omega(Z,\eta-Zc)\right).\label{eq:FP}
+\end{equation}
+Thus the constraint determinant is $|\det W|$, whereas the collective
+symplectic density is $\sqrt{\det W}$; these must not be multiplied as if
+they were two independent Jacobians. The script checks a six-dimensional
+canonical embedding, the projector, the cross block, and the full change of
+variables determinant exactly. Equations \eqref{eq:W4}--\eqref{eq:FP} apply
+to the tangent Gaussian geometry, not to an unconstructed infinite product.
+
+\paragraph{The remaining determinant problem. \Lc/\Ld.}
+\Lc\ (\G) The projector preserves the enlarged test space
+\eqref{eq:testspace}; in general it does not preserve zero endpoint
+variations. It can create both constant and opposite-sign tails. Moreover
+$Z_r$ is an auxiliary initial-data direction, so using it through time requires
+an evolved constraint basis, or explicit $\dot{\mathcal Q}$ terms. An
+instantaneous block diagonalization of $\Omega$ is not a block
+diagonalization of the quadratic action. Already for a finite symmetric block
+matrix the determinant is
+\begin{equation}
+ \det\begin{pmatrix}A&B\\B^T&C\end{pmatrix}
+ =\det C\,\det(A-BC^{-1}B^T),\qquad C\text{ invertible}.\label{eq:schur}
+\end{equation}
+The script checks the scalar nontrivial case; the general identity follows
+by triangular elimination. The Schur term is lost if the mixed constraints
+or the time-dependent basis are silently dropped.
+
+\Lc\ (\G) Static or Jacobi solutions also need not be finite-time determinant
+zero modes. With temporal Dirichlet endpoints, the elementary second
+difference matrix has determinant $N+1$, despite its continuum equation
+having solutions $1,t$. An analogous decision about temporal endpoints is
+necessary before placing a prime on the Boussinesq determinant.
+
+\Ld\ The precise failed step is therefore promotion of
+$|P_v|\dd v\dd X\dd C\dd r$ to a factorized Gaussian path measure in which
+$v(t),C(t)$ and a fixed-endpoint radiation field vary independently. Equation
+\eqref{eq:norm} excludes that promotion on the infinite-line kinetic domain.
+Allowing compensating radiation tails, reducing at specified endpoint/shift
+charges, or adding boundary variables are different possible constructions;
+none is selected here. One must specify which construction defines the
+quantum amplitude, propagate its constraints, then evaluate the resulting
+Schur complement and time-endpoint determinant. This note supplies neither
+that determinant nor the nonzero-frequency completeness theorem. No inference
+of zero relative Maslov phase is made from the finite measure.
+
+\section{Specified normal ordering and the conditional trace}
+\paragraph{Counterterm. \Lc\ (\Ccheck).}
+With vacuum frequency $\omega(q)=|q|\sqrt{1+q^2}$, the symmetric-cutoff vacuum
+contraction and the prescribed Wick polynomial are
+\begin{equation}
+ C_\Lambda=\langle\phi_x^2\rangle_{0,\Lambda}
+ =\frac{\hbar}{2}\int_{-\Lambda}^{\Lambda}\frac{\dd q}{2\pi}
+                       \frac{q^2}{\omega(q)}
+ =\frac{\hbar}{2\pi}(\sqrt{1+\Lambda^2}-1),\quad
+ :\!\phi_x^3\!:\,=\phi_x^3-3C_\Lambda\phi_x.
+\end{equation}
+Consequently $\delta L_{\rm ct}=-3C_\Lambda M$ and
+$\delta E_{\rm ct}=+3C_\Lambda M$ on a fixed background.
+The script verifies the Gaussian moment identity and the elementary integral.
+This is the specified vacuum normal ordering, with no additional finite
+multiple of $M$ chosen. It leaves the bulk classical equation unchanged but
+contributes $-3C_\Lambda\delta M$ to the spatial endpoint variation.
+\Ld\ Whether that term cancels the corresponding determinant endpoint
+variation is a question for the renormalized boundary problem; the bare
+counterterm alone is neither proof of an anomaly nor a Ward identity.
+
+\paragraph{Conditional benchmark. \Lc\ (\Ccheck).}
+For $0<\alpha<\pi/3$ put $\varphi_r=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$,
+$c_r=(1,1,-2)$. The inherited continuum phase has derivative
+\begin{equation}
+ \theta'(q)=\sum_r\frac{c_r\sin\varphi_r}{q^2+\sin^2\varphi_r}
+ \left(1+\frac{\epsilon\operatorname{sgn}(q)\cos\varphi_r}{\sqrt{1+q^2}}\right).
+\end{equation}
+On the branches $\theta(\pm\infty)=0$, let $e,p$ denote coefficients of
+$\hbar$, not full charge shifts. If the equal-mode-count continuum trace is
+the relevant trace, it gives
+\begin{align}
+ B_\Lambda&=\frac{\Lambda\sqrt{1+\Lambda^2}}{4\pi}
+                      [\theta(\Lambda)-\theta(-\Lambda)],\\
+ e&=\lim_{\Lambda\to\infty}\left\{
+ \frac1{4\pi}\int_{-\Lambda}^{\Lambda}\omega\theta'\dd q-B_\Lambda
+             +\frac{3k}{\pi}(\sqrt{1+\Lambda^2}-1)\right\},\\
+ p&=\frac1{4\pi}\int_\R q\theta'\dd q,\qquad
+ \frac{B_\Lambda}{\Lambda}\longrightarrow\frac{3k}{2\pi},\\
+ e(\alpha)&=\frac1{4\pi}\sum_r c_r
+       [2\sin\varphi_r-\sin(2\varphi_r)\log|\tan(\varphi_r/2)|],\\
+ p(\alpha,\epsilon)&=-\frac\epsilon{2\pi}\sum_r c_r\sin\varphi_r
+                                         \log|\tan(\varphi_r/2)|,\label{eq:mode}\\
+ L_1(v)&=vp-e.
+\end{align}
+The derivative of the implemented phase is checked independently, its trace
+antiderivative is checked by finite-cutoff quadrature, and the renormalized
+limit at $\Lambda=10^{22}$ agrees to below $1.8\times10^{-23}$. This residual
+includes the finite-cutoff error and is not claimed to be a 65-digit continuum
+limit. Omitting $B_\Lambda$ leaves a linear divergence after the same
+normal-ordering subtraction; it is not a harmless finite normalization.
+
+\paragraph{Verdict on Phase 2h. \Lc/\Ld\ (\Ccheck).}
+The conditional derivative is indeed
+\begin{equation}
+ p_{\rm can}=\frac{\dd L_1}{\dd v}
+ =-\frac{\epsilon\sqrt3\cos\alpha}{\pi}
+ \log\left|\frac{\tan((\alpha+2\pi/3)/2)}{\tan((\alpha-2\pi/3)/2)}\right|,
+ \qquad e_{\rm can}=vp_{\rm can}-L_1.\label{eq:canonical}
+\end{equation}
+This is a checked conditional formula \Lc. Its identification with a
+renormalized physical momentum, and identification of $L_1$ with the projected
+determinant, remain \Ld. Differentiating across $M(v)$ changes endpoint sector;
+an on-shell charge argument requires the quantum boundary variation to be
+controlled. The finite Jacobian calculation does not supply that argument.
+
+\section{What can nevertheless be said at fixed physical momentum}
+\paragraph{An invariant conditional answer. \Lc\ (\Ccheck).}
+For any smooth classical branch with $P_0'\ne0$ and $E_0'=vP_0'$, eliminating
+the parameter in $E=E_0+\hbar e$, $P=P_0+\hbar p$ gives
+\begin{equation}
+ E(P)=E_0(P)+\hbar[e-vp]_{\alpha=\alpha_0(P)}+O(\hbar^2).
+\end{equation}
+A tangent relabeling changes $(e,p)$ by $(v\,\delta p,\delta p)$ and leaves
+this coefficient invariant. Applying it to \eqref{eq:mode} and
+\eqref{eq:canonical} gives
+\begin{equation}
+ \boxed{\quad E_1\big|_P=e-vp=e_{\rm can}-vp_{\rm can}=-L_1.\quad}
+ \label{eq:invariant}
+\end{equation}
+Thus a one-body energy measurement at fixed momentum cannot discriminate
+these two proposed charge pairs at this order. It can test their common
+conditional invariant. A charge or scattering-frame measurement can still
+distinguish their interpretations. This algebra does not assume that either
+pair has already been proved physical.
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$\alpha$ & $p$ ($\epsilon=+1$) & $p_{\rm can}$ ($\epsilon=+1$) & $E_1|_P=-L_1$\\
+\midrule
+0.15 & $-0.157387066429$ & $-0.190035364892$ & $-0.001424902441$\\
+0.50 & $-0.309798364829$ & $-0.603389892154$ & $-0.050091498992$\\
+0.85 & $-0.311827472659$ & $-0.962723079255$ & $-0.223358039969$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\Lc\ (\Ccheck) These are conditional coefficients of $\hbar$;
+$E_1|_P$ is orientation independent. They are not additional determinant data.
+
+\paragraph{Concrete Fermi-edge target, with qualifications. \Lc/\Ld.}
+\Lc\ (\Ccheck) Analytic differentiation and a small-amplitude numerical
+remainder check give
+\begin{equation}
+ L_1=\frac1{2\pi}\left[3\sin\alpha+
+ \sum_{r=1}^2\sin\varphi_r(\cos\varphi_r-\cos\alpha)
+                         \log|\tan(\varphi_r/2)|\right].
+\end{equation}
+The light-root logarithm cancels identically; this expression is analytic
+at zero and has $L_1(0)=0$. Its derivatives give
+\begin{align}
+ p_{\rm can}&=-\frac{4\epsilon}{\pi}\alpha
+       +\frac{8\epsilon}{9\pi}\alpha^3
+       -\frac{8\epsilon}{45\pi}\alpha^5+O(\alpha^7),\\
+ E_1|_P&=-\frac4{3\pi}\alpha^3+\frac{14}{45\pi}\alpha^5+O(\alpha^7),\\
+ \lim_{\alpha\to0^+}\frac{E_1|_P}{|P_0|}&=-\frac2\pi
+       =-0.63661977236758134308\ldots .\label{eq:target}
+\end{align}
+This is a sequential limit of the one-loop coefficient. A perturbative
+comparison using the canonical momentum requires $\hbar/\alpha^2\ll1$;
+using the mode label requires additionally the logarithm implicit in $p$ to
+remain small relative to the classical momentum shift. \Ld\ Toda data could
+test \eqref{eq:target} only after fixing the common physical momentum,
+energy, $\hbar$ and good/bad continuation dictionary. This note does not
+claim that dictionary, or a finite-$\hbar$ uniform edge limit. It does not
+import any claimed Phase~2i coefficient.
+
+\section{Two-soliton normalization: what is and is not fixed}
+\paragraph{Continuum constant. \Lc\ (\Ccheck).}
+For regular light solitons define the ordinary half-line integrals
+\begin{equation}
+ I_{12}=\frac1{4\pi}\int_{\R\setminus\{0\}}\theta_1\theta_2'\dd q,
+ \qquad J_{12}=\tfrac12(I_{12}-I_{21}).
+\end{equation}
+The branch endpoints and integration by parts give
+\begin{equation}
+ \theta(0^\pm)=\pi(\pm1+\epsilon),\quad
+ I_{12}+I_{21}=-\frac\pi2(\epsilon_1+\epsilon_2),\quad
+ J_{12}-I_{12}=\frac\pi4(\epsilon_1+\epsilon_2).\label{eq:exchange}
+\end{equation}
+Independent quadratures at $(\alpha_1,\alpha_2)=(0.3,0.6)$ verify all four
+orientations to better than $10^{-54}$. In particular $J_{++}=0.392706352268363$
+and $J_{+-}=0.408542241291364$. These are continuum integrals, not an
+absolutely normalized two-body quantum phase.
+
+\paragraph{Conditional fixed-momentum expression. \Lc/\Ld.}
+\Lc\ (\Ccheck, Taylor algebra) If a normalized determinant calculation
+established $I_{12}$ as its label-frame one-loop phase up to a constant,
+then changing from labels to physical momenta would give
+\begin{equation}
+ \delta_{1,P}=I_{12}+c_{12}
+       -\sum_{j=1}^2p_j\frac{\partial\delta_0}{\partial P_{0j}},
+ \qquad S=\exp\{i\delta_0/\hbar+i\delta_{1,P}+O(\hbar)\}.
+ \label{eq:two}
+\end{equation}
+The $p_j$ must belong to that same determinant and state convention.
+One cannot insert either charge pair by preference while retaining an
+unconverted label-frame phase. \Ld\ Here the label-frame determinant
+identification itself is not proved; thus the unknown is not yet known to
+be only $c_{12}$. A boundary Schur contribution could change its derivatives.
+\eqref{eq:two} isolates the constant only conditional on the FK-type gradient
+being applicable to the completed boundary problem.
+
+\paragraph{FK provenance and the role of $Z$.}
+\La\ as recorded, unverified in this session: the repository's
+\texttt{audit\_determinant\_foundations.tex} reports that FK \S5.4 explicitly
+leaves a factor $Z$ to supplementary requirements and that its argument is
+for a Klein--Gordon fluctuation problem. That audit records reading relevant
+full-text passages, not the whole work. Neither FK full text nor its abstract
+was read for this note; no new DOI, arXiv identifier or external theorem is
+asserted. We use precisely the recorded limitation, not an unverified
+extension of FK to Boussinesq.
+
+\paragraph{Do unitarity, crossing and one-soliton limits fix it?}
+\Lc\ (\Ccheck, elementary phase algebra) If label exchange has already been
+identified with the inverse physical collision, scalar unitarity of
+$Z_{12}e^{iI_{12}}$ requires
+\begin{equation}
+ Z_{12}Z_{21}=\exp\{i\pi(\epsilon_1+\epsilon_2)/2\}.
+\end{equation}
+Replacing $I$ by $J$ is one algebraic solution, leaving a factor
+$e^{ic_{12}}$ with $c_{21}=-c_{12}$ modulo $2\pi$. It is not a determinant
+calculation or a choice made here. In the same-direction sectors the right
+side is $-1$; it is $+1$ head-on. Incoming/outgoing state conventions are
+needed before applying this label test as physical unitarity.
+
+\Lc\ (\Ccheck) As a precise limitation of bootstrap constraints alone,
+consider a formal charge-reversal crossing map $(P,M)\mapsto(-P,-M)$.
+The family
+\begin{equation}
+ F_{12}=\lambda(P_1M_2-P_2M_1),\qquad \lambda\in\R,
+ \qquad S\mapsto e^{iF_{12}}S
+\end{equation}
+is antisymmetric, changes sign under crossing of either leg, and vanishes
+when either leg has $P=M=0$. It therefore preserves unitarity, that inverse
+crossing relation and the corresponding soft limits, while changing the
+phase in the interior. This is an algebraic counterexample for the stated
+map, not a derived Boussinesq crossing axiom. It would be excluded by a
+fully established FK gradient; it is \emph{not} an extra constant consistent
+with a fixed gradient.
+
+\Ld\ There is no specified quantum Boussinesq crossing continuation or
+normalized soft reference state in the supplied determinant construction.
+If the gradient were established on a connected chamber and a normalized
+one-soliton/soft limit were proved to approach a known phase there, that
+reference would fix its remaining constant modulo $2\pi$. The limits and
+continuation have not been established here, so these requirements presently
+do not determine $Z$. Equal finite collective volumes, or two identical
+asymptotic frequencies, do not replace the missing time-evolution phase.
+
+\clearpage
+\section{Check inventory, failures recorded, and the next required input}
+\begin{longtable}{p{0.44\linewidth}p{0.12\linewidth}p{0.34\linewidth}}
+\toprule Result & Label & Check/scope\\\midrule
+Potential operator, boundary form, conserved charges, divergent tail norms
+ & (c) & \G; exact algebra and 55-digit integrals\\
+Bounded static kernel, velocity Jacobi field, continuum and heavy modes
+ & (c) & \Scheck; exact identities, 60-digit residuals; no continuum completeness claim\\
+Rank-two three-mode form, auxiliary completion, constraint and measure factors
+ & (c) & \G; exact canonical embedding and independent field quadrature\\
+Vacuum normal ordering and inherited regulated trace
+ & (c) & \Ccheck; Wick algebra, 65-digit quadrature and cutoff asymptotics\\
+Common fixed-$P$ coefficient and $-2/\pi$ target
+ & (c), given trace & \Ccheck; derivative, Taylor and numerical remainder checks\\
+Raw/antisymmetric phase constants and bootstrap limitation
+ & (c) & \Ccheck; four orientations and symbolic charge algebra\\
+Physical $L_1$, physical canonical charge, absolute $E(P)$ and $S$
+ & (d) & No compatible full constrained determinant constructed\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The three-tangent inverse-Wronskian construction fails because its
+matrix is singular. This is a mathematical finding, not a numerical accident.
+\item Treating shift and velocity/width as independent finite-norm
+configuration collective paths fails by the linear box divergence
+\eqref{eq:norm}. The auxiliary completion fixes the finite rank defect only.
+\item The inherited heavy-mode shorthand assigns both growth rates to the
+same spatial profile. The explicit residual quoted after \eqref{eq:heavy}
+fails; the complementary profiles pass. No tolerance was weakened.
+\item Dropping the equal-mode-count endpoint fails UV cancellation with the
+specified vacuum counterterm. The endpoint was retained, not absorbed into
+an adjustable subtraction.
+\item During script development, SymPy structural equality of two equivalent
+forms of the quartic second derivative failed. Testing their expanded
+difference repaired the assertion; the formula and tolerance were unchanged.
+\item During review of the script, a comment had the wrong sign in
+$\pi_t=\mp\partial_x A$. It was corrected to $\pi_t=-\partial_x A$ and the
+explicit symbolic conservation identity was added before the final run.
+\item The first PDF build exposed an overfull heading and a missing row break
+in the charge display. The heading, display and summary-table widths were
+corrected; visual inspection also caught an orphaned table rule, repaired
+by starting the check inventory on a new page before the final double build.
+A subsequent text patch initially missed its context and was reapplied to
+the actual paragraph; this did not change any calculation.
+\end{enumerate}
+The three scripts finish with \texttt{ALL CHECKS PASSED} for the above
+checks only. JSON files with the matching \texttt{det\_...\_results.json}
+names cache the residuals, conditional numbers, precision, scope and runtimes;
+they are rewritten by a fresh run, not used to skip verification.
+Latest measured runtimes on this host are 43.55 seconds (geometry),
+1.91 seconds (spectrum), and 69.38 seconds (charges). Earlier runs were
+approximately 22, 1.2 and 43 seconds respectively; wall times vary with
+concurrent host load. The JSON files record the latest successful runs.
+
+\paragraph{Precise remaining work and PI input. \Ld}
+First specify which endpoint and shift-charge sectors define the quantum
+one-soliton propagator, and whether comparisons across $M$ are boundary-state
+comparisons or a constrained reduction with compensating fields. That is the
+preference-dependent physical choice this note deliberately leaves to the PI.
+Then construct a single finite spatial/temporal problem for field, constraints,
+vacuum subtraction and normalized external states; retain its mixed blocks;
+prove spectral completeness or compute its projected resolvent; and fix the
+Gaussian square-root branch by evolution from a reference. This would test
+whether the result is the conditional $L_1$, whether its velocity derivative
+is the physical momentum, and only then whether the two-body remainder is
+just FK's $Z$. The explicit heavy-branch instability and the cusp must also
+be handled if those parameters are to represent external particles.
+These are the exact missing steps, not a claimed no-go theorem.
+
+\paragraph{Source record.}
+Read locally: \texttt{AGENTS.md}, \texttt{README.md}, the ranked steps in
+\texttt{report.tex}, and the relevant portions of
+\texttt{oneloop\_phase.tex}, \texttt{oneloop.tex},
+\texttt{audit\_determinant\_foundations.tex},
+\texttt{audit\_projected\_measure.tex},
+\texttt{audit\_charges\_action.tex}, and \texttt{charge\_frame\_master.tex},
+together with the relevant phonon and charge scripts. No external paper
+was read in this session. The only inherited literature statement used is
+the explicitly qualified FK scope/constant statement above; its full-text
+verification remains on the PI's source-access list. All new mathematical
+claims are internal derivations, and no new bibliographic entry is invented.
+\end{document}

@@ -1,0 +1,47 @@
+{
+  "precision": 60,
+  "points": [
+    {
+      "alpha": "0.3",
+      "epsilon": 1
+    },
+    {
+      "alpha": "0.3",
+      "epsilon": -1
+    },
+    {
+      "alpha": "0.8",
+      "epsilon": 1
+    },
+    {
+      "alpha": "0.8",
+      "epsilon": -1
+    },
+    {
+      "alpha": "1.2",
+      "epsilon": 1
+    },
+    {
+      "alpha": "1.2",
+      "epsilon": -1
+    }
+  ],
+  "max_PDE_residual": "8.80067260480620114383422485406022407920855608315593092179649e-61",
+  "failures_recorded": [
+    {
+      "alpha": "1.2",
+      "epsilon": 1,
+      "same_profile_opposite_rate_residual": "0.00733252608902684591052563782082469787883147921580161712443113"
+    },
+    {
+      "alpha": "1.2",
+      "epsilon": -1,
+      "same_profile_opposite_rate_residual": "0.00733252608902684591052563782082469787883147921580161712443113"
+    }
+  ],
+  "implementation_failures": [
+    "Initial SymPy structural equality test for quartic second derivative failed; checking the expanded difference fixes the test without changing the identity or a tolerance."
+  ],
+  "scope": "No claim of spectral completeness or absolute determinant normalization.",
+  "runtime_seconds": 1.9104968720057514
+}
