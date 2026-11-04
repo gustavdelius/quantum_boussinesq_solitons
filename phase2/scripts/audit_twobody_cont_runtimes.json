@@ -1,0 +1,23 @@
+[
+  {
+    "script": "twobody_cont_phase",
+    "seconds": 39.16619074900518,
+    "returncode": 0,
+    "stdout": "ALL CHECKS PASSED\n",
+    "stderr": ""
+  },
+  {
+    "script": "twobody_cont_det_antisym",
+    "seconds": 5.928203870978905,
+    "returncode": 0,
+    "stdout": "ALL CHECKS PASSED\n",
+    "stderr": ""
+  },
+  {
+    "script": "twobody_cont_grid",
+    "seconds": 1.1478846030076966,
+    "returncode": 0,
+    "stdout": "ALL CHECKS PASSED\n",
+    "stderr": ""
+  }
+]

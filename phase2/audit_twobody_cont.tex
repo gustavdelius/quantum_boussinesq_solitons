@@ -1,0 +1,679 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak twobody\_\allowbreak cont.py}}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of the continuum two-body package:\\
+conditional rectangle agreement, phase mismatch and V1}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc The leading rectangle is indeed
+$-(15\sqrt2-20)/\pi=-0.386174647502482\ldots$.
+Its construction, however, imports the Toda endpoint-product identity:
+it tests a one-body coefficient inside a specified Toda frame, rather than
+deriving that frame from the continuum determinant. The printed subleading
+rectangle, profile sign, stability band, one classical series coefficient,
+general tadpole expansions and numerical tables contain errors, despite all
+three package scripts printing their success marker. Independent quadrature,
+inverse Laplace transforms and unconstrained refits support the conditional
+Toda numbers. The continuum canonical candidate differs from the Toda
+directional antisymmetric coefficient by a nonconstant function of the ratio;
+the equality of their rational terms does not repair this discrepancy.
+\Ld V1 is not a completed validation. The physical comparison remains
+conditional on a common quantum endpoint and momentum dictionary, and on
+a defined bad-equation determinant. No scheme for the PI's good equation
+is selected by this audit.
+\end{abstract}
+
+\section{Scope, methods and verdict table}
+Labels retain their repository meanings: (a) literature proof, (b) literature
+heuristic, (c) project derivation or numerical evidence, and (d) unestablished
+interpretation. ``Confirmed'' below concerns the precise algebra or numerical
+test named, not an exact physical S-matrix. Numerical evidence is not a uniform
+limit theorem. The verdict table covers all twelve rows of the package's
+claim summary, with additional rows for conventions, its untested assertions,
+the proposed rational-term identification and V1.
+
+\Lc Read inputs include \file{AGENTS.md}, \file{README.md},
+\file{twobody_cont.tex} and its PDF, all three package scripts and saved JSON,
+the format and relevant conclusions of \file{audit_phase2i.tex},
+\file{twobody_toda.tex} and its grids, \file{audit_frame_dictionary.tex},
+\file{audit_onebody_scheme.tex}, the relevant determinant/measure audits,
+\file{oneloop_phase.tex}, \file{onebody_dispersion_test.tex},
+\file{errata.tex}, and the re-ranked next steps in \file{report.tex}.
+Only internal sources are cited; no external full text or abstract was newly
+read, and no inherited arXiv/DOI is represented as newly verified.
+
+\Lc All new checks are in \file{scripts/}\scr. The checker imports no package
+or earlier audit module. It uses the unfactored Hirota polynomial, profile
+differentiation, an integral representation of the continued energy, direct
+phonon quadrature, and independent symbolic division. Algebraic/integral checks
+use 70-digit arithmetic, with 110 digits for small-amplitude cancellation.
+The independent Toda calculation uses de Hoog inversion and nested
+Clenshaw--Curtis integration, replacing the package's Talbot/Gauss calculation.
+It is a fresh solution of the stated half-line model, not a new finite-sea
+simulation. Saved finite-sea data are independently refitted, with their
+original float64 precision retained. Refutations are encoded as assertions
+that a discrepancy exists. The input hashes are checked at the end.
+No existing repository file or git state was changed; all new paths begin
+with \file{audit_twobody_cont}.
+
+\Lc A concurrently supplied \file{audit_twobody_toda.tex} was also inspected.
+Its verdict confirming the displayed directional closed form and qualifying
+its physical interpretation is consistent with the present independent checks.
+Its numerical table, however, prints $2.1670489477$ at $r=0.5$ for a formula
+whose direct value is $1.530527813279$; that decimal is not used here.
+Its wording identifying this hyperbolic validation with the good equation is
+not adopted: the fixed project good/bad convention takes precedence.
+The corrected four-term reference source is retained; the older frame-audit
+source error is not an input to any calculation here.
+
+\begin{longtable}{@{}L{.7cm}L{5.7cm}L{2.3cm}L{6.1cm}@{}}
+\toprule ID & Claim & Verdict & Evidence / limitation\\\midrule\endhead
+0 & Printed good/bad and Toda conventions & Refuted (c) & Profile, $L_0$, sound speed and stable-band signs fail direct checks.\\
+1 & Exact bad Hirota factor, positivity, action gradients & Confirmed (c) & Unfactored polynomial, positive hyperbolic factors, four signed sectors.\\
+2 & Classical small-amplitude expansions & Qualified (c) & Action and head-on terms survive; printed overtaking $\varepsilon^4$ coefficient fails.\\
+3 & Bad determinant integrals and claimed $c_{2,\rm det}$ verification & Refuted (c) & No such integral or nine-root test is in the scripts; real-frequency whole-line claim is false. Formal continuation not specified.\\
+4 & Matched energy, canonical slope and Jacobian & Qualified (c) & Conditional trace algebra survives; bare momentum $\beta^5$ misprint; Jacobians are different coordinates.\\
+5 & Canonical and mode frame-shift formulas & Confirmed (c), conditional & Direct differentiation and small-amplitude limits; physical momentum selection remains (d).\\
+6 & Sound scaling, virial identity and small shift & Confirmed (c) & Counterterm variation only; interpreting it as a complete third prescription is qualified (d).\\
+7 & Kinetic norm and finite constant & Confirmed (c) & Direct finite-box integral and independent Fourier moment; asymptotic, not exact at finite $R$.\\
+8 & Projector tails and claimed commutator implication & Qualified (c)/(d) & Boundary issue survives; Poisson brackets alone do not prove that commutator.\\
+9 & Tadpole sensitivity and higher local counterterms & Qualified (c) & Leading power counting survives; printed general series omit tadpole terms.\\
+10 & KdV inversion and exchange antisymmetry & Confirmed (c), conditional & Direct arctangent quadrature and exchanged signed classical shifts. Not raw-phase antisymmetry.\\
+11 & Rectangle prediction and Toda agreement & Qualified (c) & Leading limit confirmed; printed $1/Y$ term refuted; endpoint structure borrowed from Toda.\\
+12 & Unsettled determinant, constants and Wronskian selection & Qualified (d) & Functional problem open; finite-dimensional Wronskian already factorises in earlier audit.\\
+13 & Grids, printed tables and claimed precision & Refuted (c) as stated & Saved algebraic components reproduce; tables disagree, most JSON values are float64, determinant components absent.\\
+14 & All scripts pass and verify every (c) claim & Qualified (c) & All pass; claimed coverage is false.\\
+15 & Rational Darboux term identifies Toda dressing & Qualified (c)/(d) & Algebraic equality confirmed; same physical object not established; remainder is not $I$ or $J$.\\
+16 & V1 completed continuum--Toda validation & Refuted as completion (c)/(d) & Explicit grid discrepancies; physical equivalence remains inconclusive.\\
+\bottomrule
+\end{longtable}
+
+\section{Conventions and classical checks (0--2)}
+\paragraph{The positive profile is required (c; \scr, \texttt{symbolic}).}
+Twice integrating the decaying travelling-wave equation gives
+\[
+ k^2u-u_{xx}-3u^2=0,\qquad v^2=1+k^2.
+\]
+The positive $u_+=k^2\operatorname{sech}^2(k\xi/2)/2$ solves it exactly.
+The printed negative profile gives residual $-6u_+^2$, and cannot equal
+$2(\log(1+e^{k\xi}))_{xx}$. The consistent potential has
+$\phi=C+k\tanh(k\xi/2)$; its $\Pi=\int\phi_t=-2vk$ agrees with the printed
+charge. The printed negative potential would instead reverse this charge.
+Furthermore
+\[
+ vP_0-E_0=+\frac{2}{15}\sinh^5\beta,\qquad
+ \frac{d(vP_0-E_0)}{dv}=P_0.
+\]
+The note prints the opposite sign, although its phase script checks the
+positive sign. Squaring the potential tangent conceals the profile-sign
+error in the kinetic norm.
+
+\Lc Linearisation of the bad PDE yields $\omega^2=q^2(1-q^2)$.
+The stable vacuum band is $0<|q|<1$, not $|q|>1$; the instability is at
+short wavelengths. At infinity a localized soliton has this same laboratory
+dispersion. Its velocity does not replace the vacuum band edge by
+$\sqrt{1+\sinh^2\beta}$. Direct continuation of the Hirota coefficient at
+$(\beta,q)=(0.7,1.3)$ has modulus different from one (approximately $1.839$),
+so there is no real whole-line scattering phase of the asserted type.
+Keeping $t=\sqrt{1+q^2}$ is not the bad real-frequency dispersion.
+These errors contradict the controlling one-body scheme audit.
+
+\Lc With $b=e^{-a/2}$ the Toda elastic constant is $b^2$, hence the physical
+sound speed is $ab$, not the printed $a\sqrt b$.
+Differentiating the stated lattice charges gives
+$dE_T/dP_T=ab\sinh\kappa/\kappa\to ab$.
+The action/Planck map $h=3b\hbar_B$ and $y=\beta^2/\hbar_B$ consistently
+identify dimensionless phases at leading continuum order. They are not an
+exact finite-amplitude equivalence: substituting $\kappa=\sqrt3\beta$ in
+the lattice momentum yields
+\[
+ \frac{aP_T}{6\sqrt3b}-P_{0,B}=-\frac7{15}\beta^5+O(\beta^7).
+\]
+Thus ``identically'' must be restricted to the continuum action normalization.
+
+\Lc No defect scattering or spectral calculation enters this package's
+actual formulas. The errata dictionary remains $s=\sigma_{\rm vac}$ for
+scattering and $\eta\sigma_{\rm vac}$ for the spectrum. The CZ field/action
+dictionary is inherited as $u_{\rm CZ}=-3\phi$, $L_{\rm CZ}=9L$; it is not
+used to choose a new convention. There is no defect-$s$ test here to certify.
+
+\paragraph{Exact classical core confirmed (c; \texttt{continuum\_checks}).}
+Using $P_-(K,W)=W^2-K^2-K^4$ directly, rather than the package's reduced
+implementation, reproduces its factored coefficient and all four signed
+action-gradient identities. Positivity follows explicitly by putting
+$p=\beta_1+\beta_2$, $m=\beta_1-\beta_2$:
+\begin{align*}
+ A_{\rm ov}&=\frac{\sinh^2(m/2)}{\sinh^2(p/2)}
+             \frac{1+2\cosh p}{1+2\cosh m},\\
+ A_{\rm ho}&=\frac{\cosh^2(p/2)}{\cosh^2(m/2)}
+             \frac{2\cosh m-1}{2\cosh p-1}.
+\end{align*}
+Both are positive off the equal-amplitude overtaking diagonal.
+The oriented algebraic phase uses the package's label convention; calling
+its extension to every ordering a physical collision phase needs that
+orientation convention to be retained.
+
+\Lc Formal division of the unfactored polynomial gives the correction
+\begin{equation}
+ \frac{A_{\rm ov}(\varepsilon,r\varepsilon)}{A_0(r)}
+ =1+r\varepsilon^2+
+ \left[\frac{r^2}{2}-\frac{13r(1+r^2)}{60}\right]\varepsilon^4
+ +O(\varepsilon^6).
+ \label{eq:Acorrect}
+\end{equation}
+At $r=1/2$ the coefficient is $-1/96$, rather than $+1/8$.
+The script only checks the $\varepsilon^2$ term. The action expansions through
+$\varepsilon^4$, head-on coefficient through $\varepsilon^4$, and canonical
+$H,D$ expansions through $\varepsilon^2$ are independently confirmed;
+the error in \eqref{eq:Acorrect} first affects the overtaking action at the
+next order.
+
+\section{Phonon integrals and one-body inputs (3--4)}
+\paragraph{Verified function versus uncomputed determinant (c).}
+The scale-free function is independently obtained from a direct phase
+integral, not from evaluation of the dilogarithm against itself:
+\begin{equation}
+ I(a)=-\frac4\pi\int_0^{\pi/2}
+        \arctan\!\left(\frac{a}{\tan t}\right)dt
+ =\frac4\pi\int_0^a\frac{\log x}{1-x^2}\,dx.
+ \label{eq:IK}
+\end{equation}
+Its dilogarithmic expression and $I(a)+I(1/a)=-\pi$ follow by differentiating
+and fixing the $a\downarrow0$ constant; both are independently checked.
+The symmetric endpoint offset is retained: $J=I+\pi/2$ in the $++$ chamber.
+The old refuted claim of raw-phase antisymmetry is not used.
+
+\Lc There is also an ordering issue. In the real good-contour integral
+$I_{12}=\int\theta_1\theta'_2/(4\pi)$, the small positive-$q$ phases are
+$\theta_j=4\arctan(k_j/q)$ and the negative-$q$ leading phases vanish.
+Equation~\eqref{eq:IK} therefore has $a=k_1/k_2$, whereas this package sets
+$r=\beta_2/\beta_1$. A direct quadrature of the full good phonon expression
+at $(\alpha_1,\alpha_2)=(10^{-5},5\cdot10^{-6})$ gives
+$-2.000671508529$, approaching $I(2)=-2.000671508540$, not
+$I(1/2)=-1.140921145050$. The continued small-root ratio also remains
+$\sinh\beta_1/\sinh\beta_2$. A reversal or redefinition of the directional
+integral must therefore be specified before identifying the package's $I(r)$
+with that source. This test does not select a contour for the unstable bad
+theory. The grid comparisons below grant the package its own $I(r)$ definition,
+so this additional issue cannot manufacture the reported mismatch.
+
+\Lc Inspection of all three complete scripts finds no computation of the
+bad finite-amplitude $I_{12}$, no two-dimensional phonon quadrature, and no
+nine-term dilogarithm test of the claimed
+$c_{2,\rm det}^{\rm ov}$ or $c_{2,\rm det}^{\rm ho}=-8r/\pi$.
+The phase script verifies $I(r)$ against a one-dimensional integral for
+$\chi_2$ and the classical/frame expansions. Its output even records a
+different, logarithmic head-on expression, without evaluating it.
+The grid script inserts $-8r/\pi$ as data. Thus the asserted 60-digit
+verification and the associated error budget are refuted; a particular
+continued finite-amplitude determinant coefficient remains unestablished (d).
+An $O(\hbar_B)$ counterterm does not change the leading quadratic operator
+in loop counting (c), but this observation supplies neither its boundary
+domain nor the missing integral.
+
+\paragraph{One-body algebra survives conditionally (c; \texttt{symbolic},
+\texttt{continuum\_checks}).}
+Integrating $dF_{\rm ac}/dk=2\sqrt3 k\arctan(2k/\sqrt3)/\pi$ from $k=0$
+and differentiating with respect to velocity independently reproduces
+$F_{\rm matched}$, $C=1/(2\pi)$, $p_{\rm can,matched}$, and the displayed
+canonical momentum Jacobian. In the bare momentum series the correct
+$\beta^5$ coefficient is $-8\epsilon/(45\pi)$, not the printed
+$-4\epsilon/(15\pi)$; the code uses the correct value.
+These are properties of the continued trace, not a construction of a physical
+bad-equation determinant. No Toda two-body number sets the energy's integration
+constant: $F_{\rm ac}(0)=0$ and the vacuum-fixed counterterm are the inputs.
+
+\Lc Direct quadrature of the actual stable-band transmission, retaining the
+specified branch and its normal-ordering term, confirms
+\[
+ F_{\rm band}=F_{\rm ac}-\frac{\sqrt3}{2}(\sinh^2\beta+3/4).
+\]
+Thus its threshold constant is correct, but the package's explanation as
+integration over $|q|>\sqrt{1+\sinh^2\beta}$ is false. The checks use the
+real band $q=\sin t$, $|t|<\pi/2$. No new physical regularisation is selected.
+
+\section{Frame choices, local terms and the projected measure (5--10,12)}
+\paragraph{Three expressions, not three proved equivalent implementations (c)/(d).}
+Direct charge differentiation verifies
+$\gamma=(d\Pi/d\beta)/(dP_0/d\beta)$ and $p_{
+\rm can}=-\epsilon F'/\sinh\beta$. Hence $F=2C\beta^3/3+O(\beta^5)$ gives
+$p_{\rm can}=-2\epsilon C\beta+O(\beta^3)$ and
+\[
+ H_{\rm ov}\to0,\quad D_{\rm ov}\to-4C(r^{-1}-r),\qquad
+ H_{\rm ho}\to0,\quad D_{\rm ho}\to4C(r^{-1}+r).
+\]
+The stated mode coefficients are checked by continuing the elementary
+one-body root integral
+$\sum_j c_j\sin\phi_j\operatorname{atanh}(\cos\phi_j)/(2\pi)$,
+explicitly as a formal continuation, and reproduce its logarithmic slope and
+constant. Substitution in the geometric shifts verifies its nonzero
+$H_{\rm ov}$ and logarithmically divergent $D$.
+
+\Lc Direct rescaling of the saddle gives $(S,P,E,v)\mapsto
+(c_s^3S,c_s^4P,c_s^5E,c_sv)$ and
+$5E_0-4vP_0=2\sinh^3\beta/3$.
+Differentiating $c_s^3\delta_0(P_1/c_s^4,P_2/c_s^4)$ gives the printed
+sound counterterm insertion, which vanishes as $\varepsilon^2$.
+This is the \emph{change due to the counterterm}; it does not compute or erase
+the pre-existing bare one-loop Darboux shift. Consequently the inference
+``sound insertion tends to zero, therefore the full answer is phonon-only''
+does not follow. A proposed Wronskian cancellation would be another input (d).
+Likewise, $e-vp=F$ is invariant under $(e,p)\mapsto(e+v\delta p,p+\delta p)$;
+it cannot choose the momentum entering a two-body phase.
+\Ld Canonical momentum is natural for a completed collective action, but
+that action's boundary-compatible reduction is not supplied here and is not
+forced by the vacuum match.
+
+\paragraph{Kinetic norm confirmed; projector inference qualified (c)/(d).}
+For the printed tangent's square, direct finite-box integration and
+$-\partial_q^2[\frac43\Gamma(2+iq/2)\Gamma(2-iq/2)]_{q=0}$ independently give
+\[
+ \int_{\mathbb R}z^2\operatorname{sech}^4z\,dz=\frac{\pi^2-6}{9}.
+\]
+This verifies the positive finite part
+$v^2(\pi^2-6)\dot v^2/(9k^3)$ alongside the linear divergence.
+The claimed ``exact finite-$R$'' formula actually has an explicit exponential
+remainder and is asymptotic. The finite pairing $dP_0/dv$ concerns a velocity
+tangent, not a unit canonical-$P$ tangent; tangent normalization matters.
+For coordinate tangents and the stipulated $\Omega=\int d\pi\wedge d\phi$,
+direct integration gives $\Omega(\partial_X,\partial_v)=-dP_0/dv$;
+reversing their order gives the positive sign. The package's
+$\Omega(\xi_X,\xi_P)=+dP_0/dv$ therefore also requires explicit tangent
+normalization and orientation, which its scalar derivative check does not test.
+
+\Lc The existence of potential tails and the need to control the operator
+domain are consistent with the earlier audits. The assertion that nonzero
+canonical Poisson brackets imply $[\partial_t-v\partial_\xi,\mathcal P]\ne0$
+is not a valid implication. A constant symplectic projector can commute with
+a block-preserving evolution while its projected canonical pair has nonzero
+bracket; the checker supplies this elementary matrix counterexample.
+No explicit bad field projector or Schur determinant is constructed by the
+package's script, which merely writes their descriptions into JSON.
+\Ld The actual functional boundary problem remains open.
+
+\Lc The package also overlooks a controlling result of
+\file{audit_projected_measure.tex}. Independently recomputing
+\[
+ W=\begin{pmatrix}C&D\\-D&0\end{pmatrix},\qquad
+ D=\operatorname{diag}(d_1,d_2),\quad C=\begin{pmatrix}0&c\\-c&0\end{pmatrix}
+\]
+gives $\det W=(d_1d_2)^2$ for every tail pairing $c$.
+There is no tail-dependent finite-dimensional symplectic Jacobian available
+to cancel $D_{12}$. An additional functional determinant is still possible
+(d), but it cannot be inferred from that already-factorised Wronskian.
+
+\paragraph{Counterterm statement: correct power counting, incorrect general series (c).}
+Writing $t=c_{\rm tad}$, the actual series are
+\begin{align}
+ \frac{F}{|P_0|}
+ &=\frac{3t}{\beta^2}+\frac2\pi+\lambda-\frac52t
+ +\left(\frac{53t}{40}+\frac32c_5-\frac\lambda2-
+ \frac{23}{15\pi}\right)\beta^2+O(\beta^4),\\
+ \frac{p_{\rm can}}\epsilon
+ &=-\frac{2t}{\beta}
+ +\left(-\frac{2t}{3}-\frac4\pi-2\lambda\right)\beta
+ +\left(\frac{2t}{45}-5c_5-\frac{4\lambda}{3}-\frac8{9\pi}\right)
+ \beta^3+O(\beta^5).
+ \label{eq:tadpole}
+\end{align}
+The printed equations omit the regular tadpole terms and partially specialize
+$\lambda$ without stating the corresponding restriction in both equations.
+The scripts check selected coefficients, setting $t=0$ before testing the
+regular ratio. They never assert the displayed general formulas.
+
+\Lc With $t=0$ and an analytic \emph{one-body restriction}
+$\Delta F=c_5\sinh^5\beta+O(\beta^7)$,
+$\Delta(F/|P_0|)=O(\beta^2)$ and
+$\Delta p=-5\epsilon c_5\beta^3+O(\beta^5)$.
+Since both geometric shifts are at most $O(\varepsilon^{-1})$ at fixed
+$0<r<1$, their induced $H,D$ corrections are $O(\varepsilon^2)$.
+This confirms exactly the requested invariance of $C$ and these $O(1)$
+frame shifts. It does not prove absence of every independent two-body local
+insertion, nor uniformity as $r\to0,1$, nor exclusion of nonanalytic or
+nonlocal boundary terms. The tadpole cancels between separated charge sectors
+by mass additivity; its vacuum coefficient is an inherited condition, not
+independently fixed by this package.
+
+\Lc Exchange antisymmetry of $H,D$ and the sound insertion follows by swapping
+both amplitudes and orientation signs; it is also checked directly at finite
+amplitude. The raw phonon integral has the nonzero symmetric endpoint offset.
+All such algebraic antisymmetries retain the definition of the oriented phase.
+
+\section{The rectangle: what agrees, what was imported (11)}
+\paragraph{Independent four-corner expansion (c; \texttt{rectangle}).}
+Let $f(y)=\sqrt y/u'(y)$. Conditional on the \emph{Toda} endpoint-product
+reduction, the rectangle is
+\begin{equation}
+ \mathcal D_0(Y)=8[f(2Y)-f(Y)][f(Y/2)-f(Y/4)]
+ -8[\sqrt{2Y}-\sqrt Y][\sqrt{Y/2}-\sqrt{Y/4}].
+ \label{eq:rect}
+\end{equation}
+Additive one-body terms cancel. Independently expanding all four corners,
+with $f(y)=\sqrt y+C/\sqrt y+B/y^{3/2}+\cdots$, gives
+\begin{equation}
+ \mathcal D_0(Y)=-2C(15\sqrt2-20)
+ +\frac{8C^2(\sqrt2-1)^2+(102-85\sqrt2)B}{Y}+\cdots.
+ \label{eq:rectcorrect}
+\end{equation}
+The leading limit is confirmed, including the earlier frame audit's exact
+number and the bare value four times as large. The printed subleading claim
+is false: even $u'=1-C/y$ generates $B=C^2$ on inversion. The stated weaker
+remainder $O(y^{-3/2})$ in $u'$ also permits an $O(Y^{-1/2})$ rectangle term,
+larger than the asserted $1/Y$ correction. For the corrected Toda expansion
+$u'=1-C/y-d_0/y^2+\cdots$, $d_0=1/48-C^2$, so $B=1/48$ and the $1/Y$
+coefficient is $-0.344568583099\ldots$, not the package's positive
+$8C^2(\sqrt2-1)^2$. Its script inserts $f=\sqrt y+C/\sqrt y$ and treats
+that truncation as if it determined the next order.
+
+\Lc The leading value differs from the quoted finite-$Y$ estimate
+$-0.395751991872\pm0.021668942196$ at $Y=32$ by $0.009577344370$.
+That arithmetic agreement is genuine; the uncertainty is an edge-fit spread,
+not a confidence interval and not a bound on the finite-$Y$ bias.
+The independent inverse-transform rectangle at finite $Y$ is tabulated below.
+
+\paragraph{Circularity and identification (c)/(d).}
+The energy coefficient was not fitted to a Toda two-body target. Its sole
+lattice matching input is vacuum elasticity. However, the rectangle formula
+itself, the endpoint identity and the finite-$Y$ Jacobians used in the
+package comparison come from Toda; the code explicitly reads
+\file{frame_analysis.json}. The package supplies no continuum two-soliton
+determinant or endpoint operator calculation yielding \eqref{eq:rect}.
+Consequently the result is a useful conditional one-body consistency check
+inside a borrowed two-body frame, not an independently established common
+continuum--Toda dictionary.
+
+\Lc In Toda the inverse-rapidity Jacobian coefficient is
+$A=2(s_1-C)$; it happens to equal $C=1/(2\pi)$ in the matched units.
+A common sound-line shift changes $s_1$ and $C$ together and leaves $A$
+unchanged. The continuum quantity $dP_{\rm phys}/dP_0$ is not, just from its
+name, $du/dy$ for the Bethe rapidity. \Ld Equating them requires the missing
+operator/coordinate map. Agreement of their first coefficients is evidence
+for such a map, not its construction.
+
+\section{Testing the rational-term lead and V1 (15--16)}
+\paragraph{A shared function is not yet a shared observable (c).}
+Grant the continuum package its ordered $r$ convention. Set
+\[
+ L_r=\frac2\pi\log r\log\frac{1-r}{1+r},\qquad
+ D(r)=\frac2\pi(r-r^{-1}).
+\]
+Its canonical candidate and the conditional Toda result obey
+\begin{align}
+ C_{\rm ov}(r)&=J(r)+D(r)
+ =\frac\pi2-\frac4\pi\chi_2(r)-L_r+D(r),\\
+ \vartheta_N(r)&=\pi-\frac4\pi\chi_2(r)+D(r),\\
+ C_{\rm ov}(r)-\vartheta_N(r)&=-\frac\pi2-L_r.
+ \label{eq:gap}
+\end{align}
+Independent arctangent and regular-convolution integrals establish these
+relations without feeding either target into a fit. In particular the rational
+terms are identically equal, including sign, on the stated ordered chamber.
+But $D$ is the continuum fixed-parameter to fixed-canonical-momentum
+conversion; Toda's term arises when its \emph{directional} residual is
+antisymmetrised with its endpoint/Jacobian product. They have not been shown
+to be the same physical mechanism or frame transformation.
+
+\Lc The proposed remainder $\pi-4\chi_2(r)/\pi$ is not the continuum raw
+integral $I$ or antisymmetric integral $J$. It equals $I+H_{\rm mode}+\pi$,
+or $J+H_{\rm mode}+\pi/2$, as functions on this chamber. Combining that
+mode-only Hirota correction with $D_{\rm can}$ would splice two different
+momentum prescriptions: the same $p_{\rm mode}$ also generates a divergent
+Darboux term. A constant Maslov shift alone cannot remove $L_r$.
+\Ld Thus the chi-function resemblance is a useful lead, but it does not
+identify the remainder as the physical dressing contribution still to be
+supplied by the continuum.
+
+\Lc Reference terms are substantial. The Toda grid defines
+$R_{12}=[\Phi(p_1,p_2)-\Phi(p_1,e_2)-\delta_T-C_{12}]/h$ and
+$\vartheta_N=(R_{12}-R_{21})/2$. It does not define a Gamma-relative scalar
+phase. Its endpoint-antisymmetric representative instead contains, relative
+to the classical phase, $2\sqrt{\pi Y}(1-r)$ in overtaking and
+$-2\sqrt{\pi Y}(1+r)+\pi+D_{\rm ho}$ in head-on, before lower corrections.
+Those different references cannot be silently discarded. In the directional
+head-on comparison Toda tends to zero, while the continuum canonical
+candidate tends to $D_{\rm ho}=2(r+r^{-1})/\pi$.
+
+\paragraph{Grid comparison and uncertainties (c).}
+The following tables list every common finite-sea point (15 overtaking and
+15 head-on), plus all 17 common half-line points and the common ratio limits.
+The continuum column is its claimed $O(1)$ canonical function. At finite
+$Y$ the Toda column includes inverse-$Y$ corrections; these are shown as
+bias toward its separately tested limit, not reclassified as numerical error.
+Differences are diagnostic differences between the stated representatives.
+They are \emph{not} measurements of a physical theory discrepancy until a
+common dictionary exists.
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rrrrrr@{}}
+\caption{(c) Common ratio limits. Toda directional head-on limit is zero.}\\
+\toprule $r$ & $D_{\rm ov}$ & $C_{\rm ov}$ & $\vartheta_N(\infty)$ & $C_{\rm ov}-\vartheta_N$ & $C_{\rm ho}$\\\midrule\endhead
+0.25 & -2.387324146 & -1.587924848 & 0.433696751 & -2.021621599 & 2.705634033\\
+0.40 & -1.336901522 & -0.779277114 & 1.285772454 & -2.065049569 & 1.846197340\\
+0.50 & -0.954929659 & -0.525054477 & 1.530527813 & -2.055582290 & 1.591549431\\
+0.60 & -0.679061091 & -0.358489335 & 1.663132265 & -2.021621599 & 1.443004817\\
+0.75 & -0.371361534 & -0.189054656 & 1.738123625 & -1.927178281 & 1.326291192\\
+0.90 & -0.134397507 & -0.067364254 & 1.700929103 & -1.768293357 & 1.280313098\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rrrrrr@{}}
+\caption{(c) Rectangle comparison; the last column uses Equation~\eqref{eq:rectcorrect} with $B=1/48$.}\\
+\toprule $Y$ & Saved Toda & Edge spread & Fresh half-line & Leading limit & Corrected $1/Y$\\\midrule\endhead
+4 & -0.504362278 & $3.65\times10^{-4}$ & -0.504364735 & -0.386174648 & -0.472316793\\
+8 & -0.434982726 & $1.32\times10^{-3}$ & -0.435003014 & -0.386174648 & -0.429245720\\
+16 & -0.408705387 & $5.20\times10^{-3}$ & -0.408875684 & -0.386174648 & -0.407710184\\
+32 & -0.395751992 & $2.17\times10^{-2}$ & -0.397213133 & -0.386174648 & -0.396942416\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rrcrrrrr@{}}
+\caption{(c) All 30 common finite-sea points. Difference is continuum minus Toda. Error columns retain the package's separate diagnostics, not physical error bounds.}\\
+\toprule $Y$ & $r$ & Ch. & Continuum & Toda anti & Difference & $\Delta_h^{\rm pkg}$ & $\Delta_{\rm mesh}^{\rm pkg}$\\\midrule\endhead
+4 & 0.40 & ov & -0.779277 & 0.760177 & -1.539454 & $1.81\times10^{-9}$ & $1.04\times10^{-8}$\\
+4 & 0.40 & ho & 1.846197 & -0.000000 & 1.846197 & $5.75\times10^{-8}$ & $7.51\times10^{-9}$\\
+4 & 0.50 & ov & -0.525054 & 1.236044 & -1.761099 & $1.78\times10^{-8}$ & $1.03\times10^{-8}$\\
+4 & 0.50 & ho & 1.591549 & -0.000000 & 1.591549 & $9.40\times10^{-8}$ & $7.52\times10^{-9}$\\
+4 & 0.60 & ov & -0.358489 & 1.474666 & -1.833156 & $2.77\times10^{-8}$ & $1.02\times10^{-8}$\\
+4 & 0.60 & ho & 1.443005 & -0.000000 & 1.443005 & $1.35\times10^{-7}$ & $7.51\times10^{-9}$\\
+8 & 0.40 & ov & -0.779277 & 1.045501 & -1.824778 & $2.13\times10^{-8}$ & $1.27\times10^{-8}$\\
+8 & 0.40 & ho & 1.846197 & -0.000000 & 1.846197 & $3.57\times10^{-7}$ & $7.61\times10^{-9}$\\
+8 & 0.50 & ov & -0.525054 & 1.402228 & -1.927282 & $1.32\times10^{-7}$ & $1.27\times10^{-8}$\\
+8 & 0.50 & ho & 1.591549 & -0.000000 & 1.591549 & $6.48\times10^{-7}$ & $7.59\times10^{-9}$\\
+8 & 0.60 & ov & -0.358489 & 1.576517 & -1.935006 & $2.21\times10^{-7}$ & $1.26\times10^{-8}$\\
+8 & 0.60 & ho & 1.443005 & -0.000000 & 1.443005 & $9.77\times10^{-7}$ & $7.69\times10^{-9}$\\
+16 & 0.40 & ov & -0.779277 & 1.178451 & -1.957728 & $2.73\times10^{-7}$ & $1.64\times10^{-8}$\\
+16 & 0.40 & ho & 1.846197 & -0.000000 & 1.846197 & $2.37\times10^{-6}$ & $7.95\times10^{-9}$\\
+16 & 0.50 & ov & -0.525054 & 1.469720 & -1.994774 & $9.83\times10^{-7}$ & $1.70\times10^{-8}$\\
+16 & 0.50 & ho & 1.591549 & -0.000000 & 1.591549 & $4.64\times10^{-6}$ & $7.96\times10^{-9}$\\
+16 & 0.60 & ov & -0.358489 & 1.621161 & -1.979650 & $1.71\times10^{-6}$ & $1.74\times10^{-8}$\\
+16 & 0.60 & ho & 1.443005 & -0.000000 & 1.443005 & $7.11\times10^{-6}$ & $8.09\times10^{-9}$\\
+32 & 0.40 & ov & -0.779277 & 1.234183 & -2.013460 & $3.53\times10^{-6}$ & $2.38\times10^{-8}$\\
+32 & 0.40 & ho & 1.846197 & -0.000001 & 1.846198 & $2.47\times10^{-5}$ & $8.92\times10^{-9}$\\
+32 & 0.50 & ov & -0.525054 & 1.500789 & -2.025844 & $7.24\times10^{-6}$ & $2.57\times10^{-8}$\\
+32 & 0.50 & ho & 1.591549 & -0.000001 & 1.591551 & $4.21\times10^{-5}$ & $9.20\times10^{-9}$\\
+32 & 0.60 & ov & -0.358489 & 1.642444 & -2.000933 & $1.30\times10^{-5}$ & $2.67\times10^{-8}$\\
+32 & 0.60 & ho & 1.443005 & -0.000003 & 1.443007 & $6.93\times10^{-5}$ & $9.55\times10^{-9}$\\
+64 & 0.40 & ov & -0.779277 & 1.260419 & -2.039696 & $4.27\times10^{-5}$ & $3.84\times10^{-8}$\\
+64 & 0.40 & ho & 1.846197 & -0.000014 & 1.846211 & $2.51\times10^{-4}$ & $1.27\times10^{-8}$\\
+64 & 0.50 & ov & -0.525054 & 1.515810 & -2.040864 & $7.09\times10^{-5}$ & $4.25\times10^{-8}$\\
+64 & 0.50 & ho & 1.591549 & -0.000026 & 1.591576 & $4.09\times10^{-4}$ & $1.40\times10^{-8}$\\
+64 & 0.60 & ov & -0.358489 & 1.652855 & -2.011345 & $1.10\times10^{-4}$ & $4.47\times10^{-8}$\\
+64 & 0.60 & ho & 1.443005 & -0.000047 & 1.443052 & $6.43\times10^{-4}$ & $1.55\times10^{-8}$\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rrrrrrr@{}}
+\caption{(c) All 17 common half-line points, freshly computed with de Hoog and Clenshaw--Curtis.}\\
+\toprule $Y$ & $r$ & Fresh Toda anti & Continuum minus fresh & Quad. change & Saved difference & Nodes\\\midrule\endhead
+4 & 0.40 & 0.760176674 & -1.539453788 & $4.45\times10^{-25}$ & $5.08\times10^{-28}$ & 48\\
+4 & 0.50 & 1.236044159 & -1.761098636 & $3.15\times10^{-20}$ & $3.35\times10^{-28}$ & 48\\
+4 & 0.60 & 1.474666481 & -1.833155815 & $2.52\times10^{-17}$ & $2.46\times10^{-28}$ & 48\\
+8 & 0.40 & 1.045500707 & -1.824777821 & $3.30\times10^{-18}$ & $1.54\times10^{-28}$ & 48\\
+8 & 0.50 & 1.402227994 & -1.927282471 & $8.62\times10^{-15}$ & $2.54\times10^{-25}$ & 48\\
+8 & 0.60 & 1.576516765 & -1.935006100 & $4.49\times10^{-13}$ & $5.93\times10^{-21}$ & 48\\
+16 & 0.40 & 1.178451129 & -1.957728243 & $1.14\times10^{-13}$ & $9.98\times10^{-23}$ & 48\\
+16 & 0.50 & 1.469719535 & -1.994774011 & $4.17\times10^{-11}$ & $1.89\times10^{-18}$ & 48\\
+16 & 0.60 & 1.621161074 & -1.979650409 & $1.34\times10^{-9}$ & $4.57\times10^{-16}$ & 48\\
+32 & 0.25 & 0.234074062 & -1.821998909 & $3.87\times10^{-15}$ & $1.06\times10^{-25}$ & 48\\
+32 & 0.40 & 1.234182737 & -2.013459851 & $1.10\times10^{-10}$ & $1.56\times10^{-16}$ & 48\\
+32 & 0.50 & 1.500789132 & -2.025843609 & $8.20\times10^{-9}$ & $1.26\times10^{-14}$ & 48\\
+32 & 0.60 & 1.642443888 & -2.000933223 & $7.13\times10^{-8}$ & $9.62\times10^{-13}$ & 48\\
+32 & 0.75 & 1.720935993 & -1.909990649 & $1.91\times10^{-10}$ & $1.75\times10^{-16}$ & 96\\
+64 & 0.40 & 1.260419907 & -2.039697021 & $1.40\times10^{-8}$ & $1.04\times10^{-12}$ & 48\\
+64 & 0.50 & 1.515812100 & -2.040866577 & $8.66\times10^{-11}$ & $1.52\times10^{-17}$ & 96\\
+64 & 0.60 & 1.652858825 & -2.011348159 & $1.59\times10^{-9}$ & $1.14\times10^{-15}$ & 96\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rrrrr@{}}
+\caption{(c) Independent free-intercept large-$Y$ fits on the last 5, 6 and 4 saved scales respectively.}\\
+\toprule $r$ & Quadratic / 5 & Cubic / 6 & Linear / 4 & Range\\\midrule\endhead
+0.4 & 1.2857717780 & 1.2857725529 & 1.2857936321 & $2.19\times10^{-5}$\\
+0.5 & 1.5305276696 & 1.5305278252 & 1.5305354709 & $7.80\times10^{-6}$\\
+0.6 & 1.6631322202 & 1.6631322668 & 1.6631358590 & $3.64\times10^{-6}$\\
+\bottomrule\end{longtable}\endgroup
+
+
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{@{}rcrrrrr@{}}
+\caption{(c) New finite-$h$ extrapolation choices at $Y=64$; all 30 refits are retained in JSON.}\\
+\toprule $r$ & Ch. & Package centre & Audit quad5 & Audit cubic7 & Audit change & Package $h$ error\\\midrule\endhead
+0.40 & ov & 1.260418654 & 1.260451023 & 1.260398839 & $5.22\times10^{-5}$ & $4.27\times10^{-5}$\\
+0.40 & ho & -0.000013983 & -0.000172863 & -0.000129988 & $4.29\times10^{-5}$ & $2.51\times10^{-4}$\\
+0.50 & ov & 1.515809862 & 1.515717703 & 1.515776964 & $5.93\times10^{-5}$ & $7.09\times10^{-5}$\\
+0.50 & ho & -0.000026355 & -0.000381922 & -0.000215025 & $1.67\times10^{-4}$ & $4.09\times10^{-4}$\\
+0.60 & ov & 1.652855357 & 1.652684921 & 1.652804441 & $1.20\times10^{-4}$ & $1.10\times10^{-4}$\\
+0.60 & ho & -0.000046788 & -0.000578010 & -0.000343261 & $2.35\times10^{-4}$ & $6.43\times10^{-4}$\\
+\bottomrule\end{longtable}\endgroup
+
+\Lc The fresh half-line run used 35-digit arithmetic; degree-32 versus degree-48 inverse transforms at three control points changed by at most $2.03\times10^{-27}$. The maximum final quadrature-refinement difference was $7.13\times10^{-8}$, while the maximum discrepancy from the saved half-line antisymmetric phase was $1.04\times10^{-12}$. These are sensitivity diagnostics for this model, not a rigorous global bound. The complete fresh audit run took $270.2792$ seconds. Printed-table checks found 39 finite-amplitude and 48 ratio-table cells outside rounding error.
+
+
+\Lc Errors are kept separate: finite-sea $h$ extrapolation, finite-sea mesh,
+half-line quadrature/inversion, and large-$Y$ fit spread. The independent
+refits have free intercepts. The continuum formulas do not acquire a physical
+error bar merely by being evaluated to many digits. In particular neither
+the uncomputed determinant coefficient nor a missing quantum frame is an
+$O(\varepsilon^2)$ numerical uncertainty. All ratio-dependent discrepancies
+in \eqref{eq:gap} survive $Y\to\infty$; their size is far larger than the
+tested numerical sensitivity.
+
+\Ld V1 is therefore \textbf{not validated}. The rectangle leading coefficient
+passes a conditional consistency test. The two supplied canonical and
+directional phase representatives fail direct equality, even after a constant
+offset. Physical continuum--Toda equivalence remains inconclusive because
+these are not independently shown to be the same observable. This conclusion
+does not refute the good-equation programme or choose its renormalisation.
+
+\section{Coverage, numerical tables and failures recorded (13--14)}
+\paragraph{Script execution (c).}
+The original three scripts were executed unchanged except that their single
+\file{Path.write_text} JSON output was intercepted in memory and restricted to
+the expected output path. No mathematical code, tolerance or input was altered.
+The measured wall times were respectively $39.1662$, $5.9282$, and $1.1479$
+seconds for \file{twobody_cont_phase.py},
+\file{twobody_cont_det_antisym.py}, and \file{twobody_cont_grid.py}.
+Each exited zero and printed \texttt{ALL CHECKS PASSED}. Their success does not
+verify missing determinant integrals, projector assertions, printed tables,
+or the imported physical dictionary. No old phase-script bulk run was made.
+
+\Lc The saved grid's tested classical and canonical components are reproduced
+by independent computation to their serialized precision. The printed
+finite-amplitude table does not reproduce them: at $(0.1,0.05)$ its
+overtaking classical phase is $-0.016501$, whereas independent computation
+and JSON give $-0.0165462571730301$; its $H$ is $0.006635$ versus
+$0.00668860438656757$. At $r=0.9$ the correct canonical limiting sum is
+$-0.0673642536744$, not the printed $-0.074166$.
+The checker enumerates all table discrepancies exceeding half a last printed
+digit. Most JSON fields are converted to Python floats, and selected string
+fields retain 35 significant digits, not 55-digit output accuracy.
+At $r=0.1$ the serialized $I$ already differs from independent quadrature
+by about $10^{-17}$, disproving a blanket $10^{-50}$ output-uncertainty claim.
+Finite-amplitude determinant components are not tabulated at all.
+The sentence $D_{\rm ov}(1/2)=-3/(2\pi)\simeq-0.954930$ also has a factor-two
+error: the displayed decimal is $-3/\pi$.
+
+\clearpage
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \Lc Refuted package checks/claims: negative bad profile and $L_0$;
+reversed stable/unstable bands; Toda sound speed; printed $A_{\rm ov}$
+$\varepsilon^4$ coefficient; bare canonical $\beta^5$ coefficient;
+incomplete general tadpole series; claimed finite-amplitude determinant
+verification; subleading rectangle; numerical tables and blanket output
+precision; and completion of V1. These discrepancies are retained as positive
+refutation assertions or explicit coverage findings, not hidden by passing
+the original scripts.
+\item \Lc A first audit run failed the unchanged absolute $10^{-55}$
+action-gradient check at $\varepsilon=10^{-6}$ because cancellation in the
+unfactored Hirota polynomial exhausted 70 digits. That check now uses 110
+digits; the tolerance and unfactored method are unchanged.
+\item \Lc Two intermediate audit algebra targets failed: differentiating the
+specified lattice charges gives $ab\sinh\kappa/\kappa$, not the initially
+typed $ab\cosh\kappa$; the rectangle's coefficient of $B/Y$ is
+$102-85\sqrt2$, not the initially typed $144-111\sqrt2$.
+Both were corrected from the independent symbolic derivatives/four-corner
+sum, with exact-zero assertions retained.
+\item An exploratory inverse-Laplace call requested the Cohen algorithm,
+which this installed mpmath version does not implement. It raised
+\texttt{ValueError}; de Hoog inversion is used throughout the audit instead.
+No failed numerical result was accepted.
+\item \Lc The first independent edge run failed its unchanged
+$2\cdot10^{-7}$ quadrature-refinement threshold at $(Y,r)=(64,0.5)$:
+the 24/48-node difference was $5.0990\cdot10^{-7}$.
+The rule is now refined to 96 nodes when needed, with the original threshold
+and the separate $2\cdot10^{-8}$ comparison check unchanged. Both the
+initial and final refinement differences are recorded.
+\item The PDF skill's artifact-marker helper is absent from this workspace
+(\texttt{MODULE\_NOT\_FOUND}). The requested local LaTeX/PDF workflow proceeds
+with the installed compiler and visual inspection; no existing artifact is
+modified.
+Two late documentation patches initially missed their target context; neither
+changed a file, and the intended paragraph was subsequently inserted correctly.
+A search containing unescaped regex braces also failed and was rerun as a
+literal search; it had no numerical effect.
+The first build with generated tables failed because Python interpreted
+LaTeX backslashes as control characters in two headings. The headings were
+repaired without changing any numerical cell.
+An overbroad post-build log guard then matched the installed package's harmless
+description ``Rerun checks for auxiliary files'', preventing the PDF copy and
+therefore the next render. The guard now checks actual rerun-warning strings;
+both LaTeX compilations themselves had succeeded.
+\item \Lc The package's own recorded development failures were read. Its
+passing checks do not establish that the printed subsequent fixes were all
+propagated: the bare momentum, higher Hirota coefficient, determinant
+coverage and tables provide explicit counterexamples. No original tolerance
+was loosened by this audit.
+\end{enumerate}
+
+\paragraph{Reproduction and limitations.}
+Run:
+\begin{verbatim}
+python3 phase2/scripts/audit_twobody_cont.py
+\end{verbatim}
+The final line is \texttt{ALL CHECKS PASSED}. The independent JSON records
+input hashes, individual edge runtimes, tables, fits and full-run time.
+The final coverage rerun took $53.0790$ seconds with
+\file{--reuse-edge}, retaining the freshly computed $270.2792$-second run's
+edge results after checking the same input hashes; no package cache supplies
+the independent edge calculation.
+Compile this new source with \file{pdflatex} twice. The final PDF was rendered
+and inspected. \Ld A physical bad-equation contour/domain and the good
+equation's scheme remain PI-level research choices, outside the authorized
+audit; no preference-dependent choice has been made here.
+\end{document}
