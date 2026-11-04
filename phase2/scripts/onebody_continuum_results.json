@@ -1,0 +1,82 @@
+{
+  "precision": 65,
+  "rows": [
+    {
+      "beta": "0.01",
+      "epsilon": 1,
+      "formal": "0.00000042442308471598692889326198844074762603693579767660277104251343739",
+      "stable_band": "-0.64960523384241254919154457623964204630118931726692350907833069137",
+      "quadrature_error": "1.1869459682199748434341552836952446442776207292024931207849724989e-66",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.01",
+      "epsilon": -1,
+      "formal": "0.00000042442308471598692889326198844074762603693579767660277104251343739",
+      "stable_band": "-0.64960523384241254919154457623964204630118931726692350907833069137",
+      "quadrature_error": "1.1869459682199748434341552836952446442776207292024931207849724989e-66",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.05",
+      "epsilon": 1,
+      "formal": "0.000053082607249147033075805646268350548645254389631177725557293056684",
+      "stable_band": "-0.6516328385616460885998601973952269120021592233121245913136962476",
+      "quadrature_error": "0.0",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.05",
+      "epsilon": -1,
+      "formal": "0.000053082607249147033075805646268350548645254389631177725557293056684",
+      "stable_band": "-0.6516328385616460885998601973952269120021592233121245913136962476",
+      "quadrature_error": "0.0",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.2",
+      "epsilon": 1,
+      "formal": "0.0034272026618930295624396557284712866954841245114066562993957396607",
+      "stable_band": "-0.6811972169550159448918046789164630791587149818585856031645293131",
+      "quadrature_error": "1.1869459682199748434341552836952446442776207292024931207849724989e-66",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.2",
+      "epsilon": -1,
+      "formal": "0.0034272026618930295624396557284712866954841245114066562993957396607",
+      "stable_band": "-0.6811972169550159448918046789164630791587149818585856031645293131",
+      "quadrature_error": "1.1869459682199748434341552836952446442776207292024931207849724989e-66",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.7",
+      "epsilon": 1,
+      "formal": "0.16348169689970680813455231196423629862440958137243044055124508819",
+      "stable_band": "-0.98439101004211483568192826061423286803156597987968175574044788133",
+      "quadrature_error": "2.3738919364399496868683105673904892885552414584049862415699449977e-66",
+      "endpoint_phase_sum": "0.0"
+    },
+    {
+      "beta": "0.7",
+      "epsilon": -1,
+      "formal": "0.16348169689970680813455231196423629862440958137243044055124508819",
+      "stable_band": "-0.98439101004211483568192826061423286803156597987968175574044788133",
+      "quadrature_error": "2.3738919364399496868683105673904892885552414584049862415699449977e-66",
+      "endpoint_phase_sum": "0.0"
+    }
+  ],
+  "max_quadrature_error": "2.3738919364399496868683105673904892885552414584049862415699449977e-66",
+  "bad_formal_ratio": "0.63661977236758134307553505349005744813783858296182579499066937624",
+  "good_ratio": "-0.63661977236758134307553505349005744813783858296182579499066937624",
+  "unstable_transmission_modulus": "1.8388478863037180252620813623503170645627896917966079027615000538",
+  "stable_band_series": "-3*sqrt(3)/8 - sqrt(3)*beta**2/2 + 4*beta**3/(3*pi) - sqrt(3)*beta**4/6 + 14*beta**5/(45*pi) + O(beta**6)",
+  "formal_series": "4*beta**3/(3*pi) + 14*beta**5/(45*pi) + O(beta**7)",
+  "runtime_seconds": 15.172896689007757,
+  "failures_recorded": [
+    "Scratch derivation initially inverted the Hirota ratio; corrected to -F(difference)/F(sum), then checked against the potential fluctuation pencil.",
+    "Inherited bad-equation note used +3k/pi for the normal-ordering energy; bad Hamiltonian Wick ordering gives -3k/pi.",
+    "A symbolic endpoint identity initially failed structural equality because factor returned unevaluated 0*sqrt(3); exact simplify reduced it to zero, without changing the formula or any tolerance.",
+    "The full bad-equation real-frequency trace does not exist for |q|>1; continuation and stable-band reduction require extra assumptions."
+  ]
+}

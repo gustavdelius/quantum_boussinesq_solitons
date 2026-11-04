@@ -1,0 +1,543 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\CC}{\texttt{onebody\_\allowbreak continuum.py}}
+\newcommand{\TT}{\texttt{onebody\_\allowbreak toda.py}}
+\title{A one-body Toda--Boussinesq dispersion test:\\
+the bad-equation continuation, its resonance, and a numerical mismatch}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc\ With the inherited classical units and exact dressed momentum, the
+saved Toda data give a fitted small-amplitude one-loop coefficient
+$F_T/|P_B|=0.15912\pm0.00334$. The uncertainty is a deliberately broad
+fit-sensitivity envelope, not a rigorous error bound. Direct group-velocity
+data give $0.15906\pm0.00997$. The good-equation benchmark is $-2/\pi$.
+A dimensionally consistent \emph{formal continuation} gives instead
+$+2/\pi=0.63661977$ for the bad equation: a discrepancy
+$0.47750\pm0.00334$, approximately a factor of four.
+
+\Lc\ The real stable-band trace of the bad equation is different again:
+it adds $-\frac{\sqrt3}{2}(\sinh^2\beta+\frac34)$ to the formally continued
+answer. Its normal-ordering energy has sign $-3\sinh\beta/\pi$, correcting
+the opposite sign in the older bad-equation note. A differential combination
+removes constant energy, momentum-origin and mass-counterterm ambiguities
+and retains the same cubic coefficient $+2/\pi$.
+
+\Ld\ There is no bad-equation real-frequency trace over the full continuum
+with just the good-equation assumptions. Neither continuation nor deletion
+of unstable modes follows from those assumptions. Thus the results disfavor
+the specified conditional targets within the tested numerical extrapolations;
+they do not refute a completed quantum continuum theory or distinguish the
+mode and canonical charge pairs. The physical charge identification remains
+inconclusive because the determinant/domain and quantum continuum matching
+are not established, and the required interchange of limits is unproved.
+\end{abstract}
+
+\section{What is being tested, and what is conditional}
+Labels are (a) literature proof, (b) literature heuristic, (c) project
+derivation/check, and (d) unestablished identification. All new mathematical
+formulas below are checked by \CC\ or \TT, as indicated by section.
+Exact algebra and numerical evidence are distinguished. The scripts use
+SymPy and 65-digit mpmath; high precision in the data analysis does not
+increase the precision of the inherited double-precision sea solves.
+
+The inputs read are the complete internal notes
+\texttt{det\_\allowbreak projected\_\allowbreak oneloop.tex},
+\texttt{frame\_\allowbreak dictionary.tex},
+\texttt{toda\_route.tex}, and \texttt{oneloop.tex}, together with the
+relevant checking implementations and saved \texttt{frame\_*.json} data.
+No external full text or abstract was read for this note; no external
+reference, DOI, arXiv identifier, or literature theorem is asserted.
+In particular the old note's identification of a stable-band quantum domain
+with an inverse-scattering reduction is not adopted as a theorem.
+
+\paragraph{Loop order and fixed momentum. \Lc\ (\CC, \TT).}
+We write
+\begin{equation}
+ E(P)=E_0(P)+\hbar F(P)+O(\hbar^2),\qquad
+ F=e-vp=-L_1,\qquad E_0'=vP_0'. \label{eq:invariant}
+\end{equation}
+Thus $F$ is the order-$\hbar^0$ contribution to $E/\hbar$, and the
+order-$\hbar$ contribution to energy. A tangent relabeling
+$(e,p)\mapsto(e+v\delta p,p+\delta p)$ leaves $F$ invariant.
+For the canonical pair $p_{\rm can}=\partial_v L_1$,
+$e_{\rm can}=vp_{\rm can}-L_1$, the same $F$ follows.
+Consequently a one-body fixed-momentum experiment cannot decide which of
+these two pairs represents the renormalized charges.
+
+\paragraph{Exact qualifications inherited from the det package.}
+The good benchmark uses its specified vacuum Wick ordering, no added finite
+multiple of $M$, and an equal-mode-count trace \emph{including} the cutoff
+endpoint. Dropping that endpoint leaves an uncanceled linear divergence.
+\Ld\ The identification of this trace with the absolutely normalized
+projected determinant is not proved. The instantaneous symplectic projector
+does not preserve fixed potential endpoints; shift and width tangents have
+divergent kinetic norms. A common boundary/constraint evolution problem,
+its Schur complement, nonzero-frequency completeness, and time-endpoint
+determinant phase remain missing. Differentiating the on-shell $L_1$ changes
+the endpoint sector and does not prove the canonical charge identification.
+The good real-energy benchmark is restricted to the light branch
+$0<\alpha<\pi/3$. Nothing in this note resolves these issues.
+
+\paragraph{No new physical prescription is selected.}
+The older \texttt{oneloop.tex} records a PI choice of stable-band reduction
+and an additional momentum-endpoint prescription. The present request asks
+for the same method as the newer good-equation package. These are distinct
+inputs. Below we evaluate both the formal continuation and a fully stated
+stable-band diagnostic; neither is silently selected as the physical bad
+determinant. An additional prescription would require the PI's choice.
+
+\section{Bad versus good: the dictionary and the sign}
+\paragraph{Classical dictionary. \Lc\ (\CC).}
+For the bad equation the stipulated symplectic normalization gives
+\begin{align}
+ \mathcal L_b&=\tfrac12\phi_t^2-\tfrac12\phi_x^2-\phi_x^3
+                         +\tfrac12\phi_{xx}^2, &
+ u_0&=\tfrac{k^2}{2}\operatorname{sech}^2(k\xi/2),\\
+ k&=\sinh\beta, &v&=\epsilon\cosh\beta,\qquad
+ \ell_b=\epsilon\cosh3\beta,\\
+ M&=2k, &\Pi&=-2vk,\qquad P_0=\tfrac23vk^3,\\
+ E_0&=\tfrac23k^3+\tfrac8{15}k^5, &L_0&=vP_0-E_0=\tfrac2{15}k^5.
+ \label{eq:badclass}
+\end{align}
+The good values are $k_g=\sin\alpha$, $v_g=\epsilon\cos\alpha$,
+$\ell_g=-\epsilon\cos3\alpha$, $E_{g,0}=2k_g^3/3-8k_g^5/15$.
+Formally $\alpha=i\beta$ gives $k_g=ik$, $v_g=v$, and
+$\ell_g=-\ell_b$. The sign of the spectral parameter is part of the
+dictionary; it cannot be omitted.
+
+\paragraph{Why substituting $\alpha=i\beta$ alone is insufficient.
+\Lc\ (\CC).}
+Introduce the algebraic family
+\begin{equation}
+ \mathcal L_\sigma=\tfrac12\phi_t^2-\tfrac12\phi_x^2
+             +\sigma\phi_x^3-\tfrac\sigma2\phi_{xx}^2,
+ \qquad \sigma=c^2.
+\end{equation}
+For positive $c$, put $(x,t)_\sigma=c(x,t)_g$ and
+$\phi_\sigma=\phi_g/c$. Direct substitution gives
+\begin{equation}
+ S_\sigma=c^{-2}S_g,\qquad \hbar_g=c^2\hbar_\sigma,
+ \qquad (E_0,P_0)_\sigma=c^{-3}(E_0,P_0)_g,
+ \qquad F_\sigma=c^{-1}F_g. \label{eq:scale}
+\end{equation}
+Continue these algebraic relations to $c=i$, using branches continuous
+from the light good soliton. In particular $\hbar_g=-\hbar_b$ and
+$u_g=-u_b$ in this \emph{formal} calculation. This is not a real negative
+Planck constant or a unitary equivalence of quantum theories.
+\Ld\ Continuing the renormalized trace without extra contour contributions
+is an additional assumption, not a consequence of the classical dictionary.
+
+\paragraph{The formal continued target.}
+\Lc\ Conditional on that assumption (\CC).
+The analytic good fixed-$P$ expression on its light branch is
+\begin{equation}
+ F_g=\frac{\sqrt3}{\pi}\left(\frac34-k_g^2\right)
+        \operatorname{artanh}\frac{2k_g}{\sqrt3}
+           -\frac{3k_g}{2\pi}.
+\end{equation}
+With \eqref{eq:scale} its bad analogue is
+\begin{equation}
+ \boxed{F_{\rm ac}(\beta)=-iF_g(i\beta)
+   =\frac{\sqrt3}{\pi}\left(k^2+\frac34\right)
+          \arctan\frac{2k}{\sqrt3}-\frac{3k}{2\pi}.} \label{eq:Fac}
+\end{equation}
+It obeys $L_{1,\rm ac}=-F_{\rm ac}$ and
+\begin{align}
+ p_{\rm can,ac}&=-\frac{2\epsilon\sqrt3}{\pi}\cosh\beta
+                      \arctan\frac{2\sinh\beta}{\sqrt3},\\
+ F_{\rm ac}&=\frac4{3\pi}\beta^3+\frac{14}{45\pi}\beta^5+O(\beta^7),
+ &\frac{F_{\rm ac}}{|P_0|}&\longrightarrow+\frac2\pi. \label{eq:aclimit}
+\end{align}
+The good answer instead has
+$F_g=-4\alpha^3/(3\pi)+14\alpha^5/(45\pi)+O(\alpha^7)$ and ratio
+$-2/\pi$. Thus even this specific continuation does \emph{not} give the
+same small-amplitude coefficient. Forgetting the action/Planck scaling
+would reverse the continued sign. Shared long-wave classical behavior
+does not by itself identify a trace integrating all wavelengths.
+
+\section{The real bad-equation trace and its extra resonance}
+All calculations in this section are \Lc\ (\CC); interpreting their trace
+as a projected quantum energy remains \Ld.
+
+\paragraph{The full-line obstruction.}
+Linear vacuum modes have $\omega^2=q^2-q^4$. For $|q|>1$ there is no real
+positive-frequency oscillator vacuum of the good-package kind.
+For example the continued Hirota transmission has modulus
+$1.8388478863$ at $\beta=0.7,q=1.3,\epsilon=+1$.
+A real scattering phase over the entire line is therefore unavailable.
+There is no unique bad analogue \emph{with only} the same conditional
+ingredients as the good package.
+
+\paragraph{Explicit stable-band diagnostic.}
+Restrict to $|q|<1$ with $\omega=|q|\sqrt{1-q^2}$.
+The Hirota polynomial and transmission are
+\begin{align}
+ \mathcal H(K,W)&=W^2-K^2-K^4,\\
+ A(q)&=-\frac{\mathcal H(k-iq,kv-i\omega)}
+                    {\mathcal H(k+iq,kv+i\omega)}
+       =\frac{Z+iX}{Z-iX},\\
+ X&=3kq,\qquad
+ Z=v\,\operatorname{sgn}(q)\sqrt{1-q^2}-1-2k^2+2q^2.
+ \label{eq:A}
+\end{align}
+The potential mode $f=\partial_\xi[e^{iq\xi}(1+Ae^{k\xi})/(1+e^{k\xi})]$
+satisfies the bad potential pencil
+\begin{equation}
+ [-\partial_\xi^4+(v^2-1)\partial_\xi^2
+       -6\partial_\xi(u_0\partial_\xi)
+       +2iv\nu\partial_\xi-\nu^2]f=0,
+ \qquad \nu=\omega-vq.
+\end{equation}
+The script independently checks this residual, $|A|=1$ in the stable band,
+and the differentiated phase.
+
+Let $q=\sin t$, $-\pi/2<t<\pi/2$, and choose the continuous logarithm on
+each half-band with $\theta(0^\pm)=0$ at fixed $\beta>0$. Then
+\begin{equation}
+ \theta_t=\frac{2(ZX_t-XZ_t)}{Z^2+X^2}.
+\end{equation}
+Retaining the equal-mode-count endpoint in the co-moving trace would give
+\begin{equation}
+ F_{\rm band}=\frac1{4\pi}\int_{-1}^{1}(\omega-vq)\theta'(q)\,\dd q
+       -\frac{[(\omega-vq)\theta]_{-1}^{1}}{4\pi}
+       -\frac{3k}{\pi}. \label{eq:bandtrace}
+\end{equation}
+For the stated continuous branches $\theta(1)+\theta(-1)=0$ and the
+displayed endpoint vanishes. This is an explicitly checked branch diagnostic,
+not a derivation of finite-box endpoint quantization. Changing half-band
+branches can change that endpoint and the momentum origin.
+
+\paragraph{Normal-ordering sign.}
+Here $\langle\phi_x^2\rangle/\hbar=1/(2\pi)$ on the stable band, but
+the bad Hamiltonian contains $+u^3$, whereas the good one contains $-u^3$.
+Hence $:u^3:=u^3-3\langle u^2\rangle u$ gives
+\begin{equation}
+ F_{\rm ct,b}=-\frac{3M}{2\pi}=-\frac{3k}{\pi}.
+\end{equation}
+The older bad note's $+3k/\pi$ is the good Hamiltonian's sign.
+Using that old sign would add $6k/\pi$ to \eqref{eq:bandtrace}; it is a
+mass-counterterm difference, not the stipulated bad vacuum Wick ordering.
+
+\paragraph{Evaluation, including the short-wave term.}
+Adding the two half-bands and setting $z=\cos t$ reduces the integral
+before its counterterm to
+\begin{align}
+ I&=\frac{3k}{2\pi}\int_0^1 R_k(z)\,\dd z,\\
+ R_k(z)&=\frac{2(-4k^2+8z^4-10z^2-1)}
+ {16k^4+16k^2z^2+8k^2+16z^4-8z^2+1}.
+\end{align}
+An antiderivative vanishing at zero is
+\begin{equation}
+ z-\frac{\sqrt3(4k^2+3)}{12k}
+ \left[\arctan\frac{z}{\sqrt3k}
+ +\arctan\frac{\sqrt3z(4z^2+8k^2-1)}{3k(4k^2+1)}\right].
+\end{equation}
+At $z=1$ the sum of angles equals
+$\pi-2\arctan(2k/\sqrt3)$; both sides lie in $(0,\pi)$ and have the
+same tangent. Thus
+\begin{equation}
+ \boxed{F_{\rm band}=F_{\rm ac}
+           -\frac{\sqrt3}{2}\left(k^2+\frac34\right).} \label{eq:bandclosed}
+\end{equation}
+The independent 65-digit quadratures at
+$\beta=0.01,0.05,0.2,0.7$, for both orientations, agree with this expression
+within $2.4\times10^{-66}$; exact symbolic differentiation checks the
+antiderivative. This is a trace identity, not a completeness theorem.
+
+The small-amplitude expansion is
+\begin{equation}
+ F_{\rm band}=-\frac{3\sqrt3}{8}-\frac{\sqrt3}{2}\beta^2
+     +\frac4{3\pi}\beta^3-\frac{\sqrt3}{6}\beta^4
+     +\frac{14}{45\pi}\beta^5+O(\beta^6).
+ \label{eq:bandexp}
+\end{equation}
+In particular $F_{\rm band}(0.01)=-0.6496052338424$ and there is no finite
+$F_{\rm band}/|P_0|$ limit. The constant
+$-3\sqrt3/8=-0.6495190528$ is consistent with the short-wave phase winding:
+at $q_*=-\sqrt3/2$ for a right mover,
+$\omega(q_*)=\sqrt3/4$, $\omega'(q_*)=1$, and
+$-\frac12(\omega(q_*)-q_*)=-3\sqrt3/8$.
+The algebraic term in \eqref{eq:bandclosed} makes precise why continuing a
+closed good trace and integrating the real bad stable band are different
+operations. It cannot be omitted as if analytic continuation automatically
+preserved the physical mode contour.
+
+\section{Toda extraction at fixed dressed momentum}
+This section is \Lc\ (\TT), numerical where fitted. It uses no two-body
+phase and no Phase 2i Wiener--Hopf formula.
+
+\paragraph{Units and the exact one-body identities.}
+The inherited dictionary, with $h=\hbar_T$, is
+\begin{equation}
+ \kappa=\sqrt3\beta,\quad h=3b\hbar_B,\quad b=e^{-a/2},\quad
+ P_B=\frac{a\overline P}{6\sqrt3 b},\quad
+ E_B=\frac{\overline E}{6\sqrt3 b^2}. \label{eq:units}
+\end{equation}
+It is a leading classical continuum map. In the saved data $a=1$.
+The Fredholm identities are inherited checked inputs from
+\texttt{frame\_identities.py}; \TT\ checks their unit and chain-rule
+consequences and reanalyzes their saved measurements.
+The frame package supplies $D=P'(p)$, $V=E'(p)$ and
+the edge-subtracted $(\overline P,\overline E)$, with zero at $p=q$.
+Its exact momentum inversion is
+\begin{align}
+ \overline P(q+hu(y))&=P_{T,0}(\kappa)
+     =\frac{4b}{a}(\kappa\cosh\kappa-\sinh\kappa),
+ &\kappa^2&=yh/b,\\
+ E_{T,0}(\kappa)&=2b^2(\sinh\kappa\cosh\kappa-\kappa),
+ &\frac{\dd u}{\dd y}&=\frac{2\sinh\kappa}{aD},\\
+ \frac{\dd\overline E}{\dd\overline P}&=\frac VD,
+ &\frac{\dd E_{T,0}}{\dd P_{T,0}}&=ab\frac{\sinh\kappa}{\kappa}.
+\end{align}
+The finite-amplitude classical Toda dispersion is subtracted \emph{before}
+any continuum extrapolation. The dictionary reproduces the leading cubic
+momentum and energy and the fifth-order excess energy above sound;
+it is not an exact finite-$\beta$ identification.
+
+Define, exactly as reconstructed from the stored data,
+\begin{align}
+ C_{E,h}(y)&=\frac{3}{a}\frac{\overline E-E_{T,0}}{hP_{T,0}},\\
+ C_{v,h}(y)&=\frac3a\frac{V/D-ab\sinh\kappa/\kappa}{h}.
+ \label{eq:coeff}
+\end{align}
+Then $E_B-E_{B,0}=\hbar_B P_B C_{E,h}$ and the quantum velocity correction
+in the fixed inherited units is $\hbar_B C_{v,h}$.
+The factor $3/a$ follows from \emph{all three} scales of energy, momentum
+and Planck's constant. It is not $1$, $3b$, or $1/(3b)$.
+For a smooth edge limit, the chain rule also gives
+$C_v=C_E+(2y/3)C_E'$.
+
+\begin{center}\small
+\begin{tabular}{rrrrr}
+\toprule
+$y$ & $C_E(y)$ & edge spread & $C_v(y)$ & edge spread\\\midrule
+4 & 0.160932810 & $2.15\,10^{-6}$ & 0.159681133 & $5.68\,10^{-6}$\\
+8 & 0.160019933 & $7.36\,10^{-6}$ & 0.159427446 & $2.03\,10^{-5}$\\
+16 & 0.159580964 & $2.63\,10^{-5}$ & 0.159289044 & $7.33\,10^{-5}$\\
+32 & 0.159360609 & $9.50\,10^{-5}$ & 0.159193402 & $2.59\,10^{-4}$\\
+64 & 0.159216903 & $3.35\,10^{-4}$ & 0.158986499 & $9.68\,10^{-4}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+These are new independent fits of the saved finite-sea measurements, not
+new sea solves. The script checks the input SHA-256 against the frame
+analysis and reproduces its energy extrapolations to $10^{-12}$.
+
+\paragraph{Error budget and large-$y$ extraction.}
+The raw $h$ values are $.08,.04,.02,.01,.005$, with the frame package's
+two refined meshes at $.01,.005$. Central edge values use a quadratic in
+the last three $h$ values. The spread compares the last-two linear,
+last-four cubic, and last-four $(1,h,h^2,h\log h)$ fits. Measured mesh
+differences are multiplied by the largest edge-fit weight norm, $15$.
+We then fit $y\ge4,8,16$ through $64$, with each of four models:
+\begin{equation}
+ C+A/y,\qquad C+A/y+B/y^2,\qquad
+ C+A/\sqrt y+B/y,\qquad C+A/y+B\log(y)/y.
+\end{equation}
+All coefficients are free; $1/(2\pi)$ is never supplied to a fit.
+The central model is $C+A/y$ on $4\le y\le64$.
+For each fit, edge and mesh diagnostics are propagated with absolute
+intercept weights. The final envelope is the maximum over all twelve fits
+of the displacement from the central intercept plus that fit's propagated
+edge and mesh diagnostics.
+
+\begin{center}\small
+\begin{tabular}{lrr}
+\toprule Diagnostic & Energy coefficient & Velocity coefficient\\\midrule
+Central intercept & 0.159119876 & 0.159062733\\
+Central propagated edge spread & 0.000184053 & 0.000525545\\
+Central propagated mesh difference & $3.15\,10^{-9}$ & $4.71\,10^{-9}$\\
+Largest intercept model/window displacement & 0.000208568 & 0.001051254\\
+Full combined envelope & 0.003339590 & 0.009973693\\
+\bottomrule
+\end{tabular}
+\end{center}
+The wider envelope retains the poorly conditioned three-point
+$(1,y^{-1/2},y^{-1})$ extrapolation; it is not discarded to sharpen the result.
+The fitted coefficient is consistent with $1/(2\pi)=0.1591549431$,
+but an exact identification with that number is \Ld.
+
+\paragraph{Order of limits: the unbounded systematic.}
+At fixed $y$, $\hbar_B/\beta^2=1/y$, so a finite-$y$ table is a quantum
+crossover, not a one-loop coefficient. The desired semiclassical coefficient
+takes $h\to0$ at fixed nonzero momentum and then $\beta\to0$.
+The data instead permit $h\to0$ at fixed $y$ and a subsequent fitted
+$y\to\infty$. A simultaneous limit must keep $hy/b\to0$.
+\Ld\ Exchanging these operations requires uniform asymptotic control that
+the finite data do not supply. No numerical bound for this systematic,
+or for untested large-$y$ behaviors, is included in the displayed envelope.
+It would be incorrect to interpret the discrepancy as a many-sigma proof.
+
+\Lc\ As a separate check of fixed, unscaled momentum, the saved data give
+the Toda-unit $F_T=0.007775546,0.020319171,0.030098075$ at
+$\overline P=0.15,0.4,0.6$, respectively. These finite-amplitude values
+reproduce the frame package, but are not sufficiently close to zero to
+prove the small-amplitude coefficient by themselves.
+
+\section{Comparison and convention tests}
+\paragraph{Numerical comparison. \Lc\ (\CC, \TT).}
+Within the fixed units and the tested fit families,
+\begin{align}
+ C_{\rm ac}&=+2/\pi=0.6366197724,\\
+ C_T&=0.1591198755\pm0.0033395904,\\
+ C_{\rm ac}-C_T&=0.4774998968\pm0.0033395904.
+\end{align}
+The nominal ratio is $4.00088$. Reusing the good coefficient without a
+dictionary would instead give a difference $-0.7957396479$; it does not
+repair the comparison. In the specified stable-band trace the ratio
+$F/|P|$ does not have a finite limit at all, by \eqref{eq:bandexp}.
+
+\paragraph{Which constants matter? \Lc\ (\CC).}
+A vacuum-energy subtraction or a chemical-potential offset per edge
+particle is independent of its momentum and drops out of
+$\overline E=E(p)-E(q)$. It cannot supply a term proportional to $|P|$.
+An order-$\hbar$ change of energy and momentum origins, and a finite mass
+counterterm, act on the coefficient on a right-moving branch as
+\begin{equation}
+ F(\beta)\longmapsto F(\beta)+A-B\cosh\beta+2C\sinh\beta.
+ \label{eq:origins}
+\end{equation}
+Thus $\dd F/\dd P$ removes $A$, but does \emph{not} by itself remove a
+momentum-origin change $B$. Our quoted velocity comparison fixes that origin
+to the same Fermi edge as the energy. Replacing $P(q)$ by $0$ only in the
+momentum label would be an inconsistent reference change.
+
+A stronger origin- and mass-counterterm-independent diagnostic is
+\begin{equation}
+ \mathcal I[F]=\lim_{\beta\to0^+}
+ \frac{(\partial_\beta^3-\partial_\beta)F}
+      {(\partial_\beta^3-\partial_\beta)P_0}.
+ \label{eq:I}
+\end{equation}
+The differential operator annihilates $1$, $\cosh\beta$ and
+$\sinh\beta$ exactly, while its denominator tends to $4$.
+Consequently
+\begin{equation}
+ \mathcal I[F_{\rm ac}]=\mathcal I[F_{\rm band}]=2/\pi.
+\end{equation}
+For a differentiable asymptotic dispersion $F_T=C_TP_0+o(\beta^3)$ with
+the corresponding differentiated remainder small, $\mathcal I[F_T]=C_T$.
+\Ld\ That differentiable expansion is a conditional interpretation of the
+Toda fits, not a measurement of a third derivative at zero.
+The independent finite-$y$ velocities provide a less derivative-sensitive
+check in the fixed edge convention.
+
+\Lc\ The stable-band resonance difference is
+$-\frac{\sqrt3}{2}(v^2-\frac14)$. Its second $v$ derivative is
+$-\sqrt3$, so it is not an affine energy/momentum-origin shift.
+Constants can remove its zeroth-order limit, and a momentum-origin change
+can cancel its leading $\beta^2$ piece, but \eqref{eq:I} still retains
+$+2/\pi$. Hence none of the changes in \eqref{eq:origins} can change the
+cubic discrepancy. Arbitrary chemical potentials coupled to other
+nonlinear soliton charges would change the Hamiltonian being compared;
+they are additional matching data, not merely the edge energy zero.
+
+\paragraph{Quantum sound speed and time normalization. \Lc/\Ld\ (\TT).}
+The saved Toda sound-speed shift in Boussinesq units is
+\begin{equation}
+ s_{1,T}=0.2387324171,
+ \qquad \text{edge spread }1.69\times10^{-8},\quad
+ \text{propagated mesh }5.33\times10^{-10}.
+\end{equation}
+Subtracting the quantum sound line consistently on the Toda side gives
+\begin{equation}
+ C_T-s_{1,T}=-0.0796125416\pm0.00333961,
+\end{equation}
+not $\pm2/\pi$. A change of time normalization or of the background
+Hamiltonian can add a term $\gamma |P|$ and therefore alter the leading
+coefficient. It would require a relative shift of $0.47750$ to reconcile
+these particular targets, and is not a vacuum-energy constant or momentum
+origin. The frame package explicitly keeps the inherited classical time
+scale; no such rescaling is made here. \Ld\ The good det package does not
+compute the renormalized continuum vacuum sound speed or its bad quantum
+matching. A comparison after matching both sound speeds is therefore not
+completed by subtracting Toda's sound shift alone.
+
+\section{What this establishes, checks, and failures recorded}
+\paragraph{Verdict.}
+\Lc\ This is evidence against identifying either the formally continued
+trace or the explicitly evaluated stable-band trace with the Toda one-body
+dispersion in the inherited quantum units and tested asymptotic fit class.
+It is a one-body mismatch and cannot be blamed on the undetermined
+antisymmetric two-body phase frame. It also shows that the proposed
+unchanged $-2/\pi$ target is not a valid bad-equation target.
+
+\Ld\ It is \emph{not} a refutation of the good-equation conditional
+charge invariant, nor an unconditional refutation of bad-Boussinesq
+quantization. The full bad trace requires an extra prescription; the
+projected determinant and quantum charge/background matching remain open;
+and finite-$y$ extrapolations do not prove the required iterated limit.
+The physical comparison is therefore \textbf{inconclusive}, with a large,
+explicit conditional numerical discrepancy. Neither success nor failure
+of this one-body test could select $p_{\rm mode}$ over
+$p_{\rm can}=\partial_v L_1$: their common invariant is exactly the tested
+quantity. A successful test would support only that common invariant.
+
+\begin{center}\small
+\begin{tabular}{p{.47\linewidth}cp{.33\linewidth}}
+\toprule Claim & Label & Check/status\\\midrule
+Action, Planck and good/bad dictionaries & (c) & \CC; symbolic scaling\\
+Formal bad $F_{\rm ac}$ and $+2/\pi$ & (c)/(d) & \CC; continuation assumption\\
+Stable-band trace and tadpole sign & (c) & \CC; exact primitive and quadrature\\
+Complete physical bad determinant & (d) & unstable band/domain unresolved\\
+Toda fixed-dressed-$P$ coefficients and velocity & (c) & \TT; stored data reanalysis\\
+Large-$y$ coefficient $0.15912\pm0.00334$ & (c) & numerical, model-dependent envelope\\
+Origin/mass-counterterm invariant & (c) & \CC; exact annihilator\\
+Physical charge identification and limit exchange & (d) & not established\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item A scratch derivation initially inverted the Hirota transmission ratio,
+giving the wrong sign of the stable-band trace. It was corrected to
+$-\mathcal H(\mathrm{difference})/\mathcal H(\mathrm{sum})$ before the
+final checker. The corrected expression was then checked against the
+potential fluctuation equation and a symbolic antiderivative; no tolerance
+was relaxed.
+\item The inherited bad-equation note's positive normal-ordering energy
+fails the bad Hamiltonian sign check. The corrected sign is negative;
+the difference is explicitly $6k/\pi$, not hidden in an energy constant.
+\item A full real-frequency bad trace using only the good det assumptions
+cannot be constructed: $|q|>1$ has unstable frequencies. The extra
+continuation/reduction assumption is retained as an obstruction, not
+replaced by an unannounced regulator.
+\item The hoped-for equal small-amplitude coefficients fail for the
+specified conditional targets. Both the sign change under formal
+continuation and the stable-band resonance are retained.
+\item The Toda fits do not establish a uniform semiclassical limit or an
+exact $1/(2\pi)$ coefficient. Their envelopes are not rigorous confidence
+intervals; the unmatched-limit systematic has no assigned numerical bound.
+\item The historical scripts were not rerun: some write existing data, and
+this task authorizes new \texttt{onebody\_*} files only. No existing result
+is newly certified. Both new checkers pass their stated tests; no final
+assertion tolerance was weakened.
+\item The first LaTeX layout had two overlong text lines. Break opportunities
+and a shorter paragraph heading fixed them before the final rendering.
+\item An added symbolic endpoint check initially failed structural equality:
+SymPy's factorization returned an unevaluated $0\sqrt3$. Exact simplification
+reduced it to zero. Neither the identity nor a tolerance was changed.
+\end{enumerate}
+
+\paragraph{Reproduction and artifacts.}
+Run from \texttt{phase2/scripts/}:
+\begin{verbatim}
+PYTHONDONTWRITEBYTECODE=1 python3 onebody_continuum.py
+PYTHONDONTWRITEBYTECODE=1 python3 onebody_toda.py
+\end{verbatim}
+Each writes only its own \texttt{onebody\_*\_results.json} and ends with
+\texttt{ALL CHECKS PASSED}. Runtime is seconds to tens of seconds on the
+task machine. Input hashes and fit details are saved in the Toda output.
+Build this document with \texttt{pdflatex} twice from \texttt{phase2/}.
+No existing file, README status line, or git state is changed.
+\end{document}
