@@ -1,0 +1,257 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,hyperref}
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+\emergencystretch=2em
+\title{Independent audit of the Boussinesq fluctuation determinant foundations}
+\author{Project audit}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Scope and result.}
+This note audits the logical passage from the exact phonon solutions and their
+phase integrals to a physical one-loop two-soliton or soliton--defect amplitude.
+The good-equation and potential-field conventions of the repository are retained.
+No regularisation, asymptotic state convention or exchange phase is selected.
+The nonconstant continuum integral has substantial positive evidence. Its
+identification with the full determinant, including zero-mode measure and an
+absolute phase, remains incomplete \Ld. The label \Ld\ here denotes an
+unestablished physical conclusion, not a counterexample to the continuum
+integral. All new numerical and symbolic identities below are checked by
+\texttt{scripts/audit\_\allowbreak determinant\_\allowbreak foundations.py}, at 65-digit working precision;
+raw results are saved in \texttt{scripts/audit\_determinant\_results.json}.
+
+\section{What the cited determinant argument supplies}
+
+Faddeev--Korepin (FK) \cite{FK} derives the relevant one-loop determinant ratio
+for relativistic scalar fields, with the Klein--Gordon fluctuation operator.
+In \S5.4, printed p.~62, the constant factor $Z$ is explicitly left to
+supplementary requirements, with crossing symmetry as an example. Equation
+(4.28), printed p.~66, still contains $Z$. This is a statement of the source's
+scope \textbf{(a)}, not a Boussinesq theorem. The source's Appendix~6 derives its
+spectral density from a second-order Schr\"odinger equation, and Appendix~5,
+p.~81, uses localization of discrete modes to separate their Wronskians.
+
+The Boussinesq operator has fourth-order spatial derivatives and derivative
+coupling to the background. A canonical second-order time derivative ensures
+the form of the temporal symplectic product; it does not alone establish
+completeness, the resolvent, the infrared domain, or the source's entire
+spectral-density derivation. Thus ``apply verbatim'' in
+\texttt{oneloop\_phase.tex} is too strong. The three-soliton tau linearisation
+provides an exact continuum family with diagonal transmission. Conditional on
+its completeness in the relevant scattering space, this supports a vanishing
+continuum mixing kernel. It does not itself construct the complete projected
+resolvent with collective-coordinate directions removed \Ld.
+
+\paragraph{A co-moving sign correction.}
+The displayed co-moving ODE in Phase~2e has a typographical sign error.
+Direct symbolic differentiation gives \Lc
+\[
+ \partial_t^2\{e^{-i\widetilde\omega t}f(x-vt)\}
+ =e^{-i\widetilde\omega t}
+ (-\widetilde\omega^2f+2iv\widetilde\omega f'+v^2f'').
+\]
+Its first-derivative term therefore has a plus sign. The subsequent quartic
+in that report uses the correct sign; the lab-frame PDE checks are unaffected.
+
+\paragraph{Positive control: the potential-field density.}
+A direct calculation does support the one-soliton density step \Lc. Write
+$k=\sin\alpha$, $v=\epsilon\cos\alpha$, $\omega=|q|\sqrt{1+q^2}$,
+$h=(1+\tanh(k\xi/2))/2$, $A=e^{i\theta(q)}$ and
+\[
+ g(\xi)=1+(A-1)\left(h+\frac{h'}{iq}\right),\qquad
+ \psi(x,t)=\omega^{-1/2}g(x-vt)e^{iqx-i\omega t}.
+\]
+This is the potential-field tau mode, normalized to temporal plane-wave
+Wronskian density $-2i$. Direct spatial quadrature gives
+\begin{equation}\label{eq:density}
+ \frac1\omega\int_{\mathbb R}\!
+ \left[-2i\omega(|g|^2-1)-v(\bar g g'-g\bar g')\right]d\xi
+ =-2i\,\theta'(q). \tag{c}
+\end{equation}
+Four checks include both soliton orientations and both phonon directions.
+This checks the normalization that is implicit in the quoted $-4\pi i$
+continuum Wronskian. It is not a check of the full time-dependent determinant.
+
+\section{Endpoint constants and exchange}
+For the phase continuous on each half-line and zero at both infinities,
+the light-branch endpoints are \Lc
+\begin{equation}
+ \theta(0^\pm;\alpha,\epsilon)=\pi(\pm1+\epsilon),
+ \qquad 0<\alpha<\pi/3. \tag{c}
+\end{equation}
+Define the ordinary half-line integrals (without a delta function at zero)
+\[
+ I_{12}=\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}\theta_1\theta'_2\,dq,
+ \qquad J_{12}=\frac{I_{12}-I_{21}}2.
+\]
+Their integration-by-parts identity, for all four direction combinations, is
+\begin{align}
+ I_{12}+I_{21}&=-\frac\pi2(\epsilon_1+\epsilon_2),\tag{c}\\
+ J_{12}-I_{12}&=\frac\pi4(\epsilon_1+\epsilon_2),\tag{c}\\
+ I(\alpha,\epsilon;\alpha,\epsilon)&=-\epsilon\frac\pi2.\tag{c}
+\end{align}
+The \texttt{oneloop\_phase.tex} same-direction expression $-\pi$ is correct for
+$++$ and has the wrong sign for $--$. In particular, the later claims that raw
+$I$ is antisymmetric and vanishes on the diagonal are false. The displayed
+identities are checked by direct quadrature of a phase reconstructed from the
+KP transmission ratio, independently of the closed dilogarithm formula.
+
+The endpoint constants are independent of the amplitudes inside each regular
+chamber. Consequently the FK gradient cannot distinguish $I$ from $J$ or fix a
+further chamber constant. Phase~2e itself acknowledges the $Z$ ambiguity and
+records the PI's decision to display both functions. A later preference for
+one function because it closes a KP identity is a normalization criterion,
+not a calculation of that determinant constant. In particular, a phase
+integral evaluated after both particle labels are swapped is not automatically
+the inverse physical collision: the ordering of incoming trajectories, the
+phase of the asymptotic state basis, and any exchange convention must also be
+specified. Neither the raw exchange failure nor algebraic closure alone
+settles physical unitarity \Ld.
+
+For the defect integral, setting the defect phase to zero at $q=0^\pm$ makes
+the integration-by-parts term vanish. That is a precise statement about a
+chosen branch. The absence of a translation mode does not select a logarithm
+branch: $z_{\rm ph}(0)=1$ fixes it only modulo $2\pi$. No new defect branch is
+chosen in this audit. A physical fusion rule additionally requires normalized
+intermediate defect states and fusion amplitudes; continuum chord identities
+alone do not determine those data \Ld.
+
+\section{Collective coordinates and the Maslov assertion}
+At $t=0$, choose the repository potential gauge
+\[
+ \phi(x;\alpha,X)=k\{1+\tanh[k(x-X)/2]\},\qquad \pi=-v\phi_x.
+\]
+The single-soliton symplectic pairing verifies the canonical momentum \Lc:
+\begin{equation}
+ \Omega(\partial_\alpha,\partial_X)
+ =\int(\pi_\alpha\phi_X-\pi_X\phi_\alpha)dx
+ =\frac{dP}{d\alpha},\qquad
+ P=\frac23\epsilon\sin^3\alpha\cos\alpha.\tag{c}
+\end{equation}
+However the amplitude variation is not a spatially localized potential mode:
+\begin{equation}
+ \phi_\alpha(-\infty)=0,\qquad
+ \phi_\alpha(+\infty)=2\cos\alpha.\tag{c}
+\end{equation}
+The variation is a generalized collective-coordinate direction, including a
+secular component at nonzero time, rather than a second ordinary oscillatory
+bound state. Statements about localized $\delta u$ cannot be transferred to
+the potential-field determinant without tracking this tail.
+
+For two widely separated asymptotic profiles, soliton~1 on the left and
+soliton~2 on the right, retaining these tails gives \Lc
+\begin{equation}\label{eq:mixed}
+ \Omega(\partial_{\alpha_1},\partial_{\alpha_2})
+ \longrightarrow -M'_1\Pi'_2,\qquad
+ M=2\sin\alpha,\quad \Pi=-2\epsilon\sin\alpha\cos\alpha.\tag{c}
+\end{equation}
+The check evaluates the spatial integral at separations 200 and 400.
+This is an asymptotic-profile calculation, not a substitute for the exact
+collision modes. It establishes that separation alone does not make the
+mixed block vanish. Darboux coordinates may remove these cross terms, but
+the corresponding zero-mode basis, normalization and measure must actually
+be supplied. Conservation of a Wronskian establishes time independence;
+it does not by itself establish equality to a product of one-body factors.
+
+\paragraph{What the large-time Hessian does show.}
+The checked derivative is \Lc
+\begin{equation}
+ \frac{dv}{dP}=-\frac{3}{2\sin3\alpha}<0,
+ \qquad 0<\alpha<\pi/3.\tag{c}
+\end{equation}
+For fixed parameters away from degeneracies and resonance lines, a real
+symmetric finite correction to $T\,\mathrm{diag}(dv_j/dP_j)$ cannot change its
+negative signature at sufficiently large $T$. A matrix control in the script
+keeps the off-diagonal terms; the diagonal entries quoted as ``eigenvalues''
+in Phase~2e are not generally eigenvalues. The valid signature observation
+concerns the endpoint stationary-phase wave-packet factor. It is not a
+calculation of spectral flow of the field fluctuation operator or of the
+branch of its square root. It therefore does not establish a full relative
+Maslov index or determine $Z$ \Ld. The cited Phase~2e script contains no
+Wronskian, measure, Hessian or Maslov test despite being cited for that claim.
+
+A triangular coordinate shift with unit finite-dimensional Jacobian and a
+classical function of commuting momenta do rule out a particular elementary
+ordering problem. They are not an evaluation of the projected functional
+measure or its global phase. Thus the claimed absence of every additional
+one-loop topological/measure contribution is unproved \Ld.
+
+\section{Localized defect modes and the physical domain}
+Phase~2g asserts that localized defect modes cancel because the defect has
+identical endpoint frequencies before and after a soliton crosses. Neither
+of its cited scripts evolves the localized modes through the collision.
+Endpoint frequencies alone do not prove cancellation. As a logical control,
+an oscillator with frequency $\omega$ before and after a finite interval of
+length $T$ and frequency $W$ inside has the exact negative-frequency
+coefficient \Lc
+\begin{equation}
+ \beta=i\frac{W^2-\omega^2}{2\omega W}\sin(WT).\tag{c}
+\end{equation}
+At $(\omega,W,T)=(1,2,1)$ it is nonzero. The script derives this coefficient
+from the exact transfer matrix and verifies the symplectic normalization.
+This counterexample refutes the general implication used in the text;
+it does \emph{not} assert that this mixing occurs in the integrable defect.
+That would require its actual localized scattering matrix. In the strictly
+stable regime with no localized defect modes this particular obstruction
+is absent; at thresholds and unstable vacua it cannot be dismissed by the
+same endpoint argument \Ld.
+
+The most defensible domain of a putative elastic two-soliton interpretation
+is the light branch with a nonsingular real two-soliton background, distinct
+velocities, and parameters away from cusp/resonance thresholds. Continuum
+integrals can remain finite beyond this domain without defining asymptotic
+stable scattering states. The tau construction supplies candidate discrete
+modes and the continuum phase winding, but a complete spectral theorem for
+the fourth-order operator pencil (with its zero-frequency threshold and
+potential-field domain) is not demonstrated by the existing finite samples.
+A ``Levinson-type count'' should remain distinguished from such a theorem
+\Ld. The defect stability formula itself is audited separately.
+
+\section{Claims and checks}
+\begin{longtable}{p{0.47\linewidth}p{0.08\linewidth}p{0.36\linewidth}}
+\toprule Claim & Label & Evidence\\\midrule
+Normalized potential-mode density identity & (c) & Four 65-digit spatial quadratures\\
+Orientation-dependent endpoint and exchange constants & (c) & Four channel quadratures, diagonal checks\\
+Single and mixed asymptotic symplectic pairings & (c) & Direct field integrals and symbolic momentum derivative\\
+Endpoint Hessian signature at large time & (c), limited & Full matrix control; no field spectral-flow claim\\
+Equal localized frequencies need not imply cancellation & (c) & Exact oscillator transfer matrix\\
+Full Boussinesq determinant and collective measure & (d) & Missing complete projected resolvent and normalization\\
+Absolute one-loop phase, exchange/fusion constants & (d) & FK source retains $Z$; no independent anchor\\
+\bottomrule
+\end{longtable}
+
+\section{Failures recorded}
+\begin{enumerate}
+\item The co-moving ODE has the wrong first-derivative sign; its subsequent
+quartic and lab-frame PDE checks have the correct sign.
+\item Prior orientation-independent same-direction boundary formula fails for
+$--$: its exchange sum is $+\pi$.
+\item Prior raw antisymmetry and zero diagonal claims fail; the diagonal is
+$-\epsilon\pi/2$.
+\item Localization-only cancellation of amplitude-mode Wronskians fails for
+the potential-field variations: their mixed asymptotic pairing is nonzero.
+This does not disprove cancellation after a correctly constructed Darboux
+measure; that calculation is missing.
+\item Equal asymptotic localized frequencies do not imply determinant
+cancellation, as the exact pulse control demonstrates.
+\item The first Hessian illustration incorrectly required an eigenvalue to
+differ from a diagonal entry by more than 1; this arbitrary bound failed. It
+was replaced by the exact symbolic characteristic-polynomial identity at each
+diagonal entry, which equals minus the square of the off-diagonal entry and
+is therefore nonzero in the test. No tolerance was weakened. The checks do not evaluate a functional determinant or prove
+completeness and are not reported as doing so.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{FK} L.~D.~Faddeev and V.~E.~Korepin,
+\emph{Quantum theory of solitons}, Physics Reports \textbf{42} (1978), 1--87,
+\href{https://doi.org/10.1016/0370-1573(78)90058-3}{DOI:10.1016/0370-1573(78)90058-3}.
+The publisher's entry and DOI were verified. Relevant full-text passages in
+\S5.4 and Appendices~3--6 were inspected from the local PDF
+\texttt{Faddeev and Korepin - 1978 - Quantum theory of solitons.pdf};
+this audit does not claim to have read the entire article.
+\end{thebibliography}
+\end{document}

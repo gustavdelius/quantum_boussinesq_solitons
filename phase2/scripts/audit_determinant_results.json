@@ -1,0 +1,96 @@
+{
+  "precision": 65,
+  "prior_claim_failures": [
+    "The Phase 2e same-direction boundary -pi omits orientation; it is +pi for --. Raw I is not exchange-antisymmetric, and has diagonal -epsilon*pi/2.",
+    "The potential alpha-variation has a nonzero constant tail. Asymptotically separated alpha modes have a nonzero cross symplectic pairing; block cancellation cannot be justified by localization alone.",
+    "Equal asymptotic localized frequencies do not imply determinant cancellation: the exact frequency-pulse control has nonzero Bogoliubov beta. This is a counterexample to the logical implication, not a computation of defect beta.",
+    "The displayed co-moving ODE has the wrong sign on its first derivative: +2 i v omega d_xi follows from e^(-i omega t) f(x-vt). The subsequent quartic uses the correct sign."
+  ],
+  "implementation_failures": [
+    "Initial Hessian illustration imposed an unjustified >1 bound on eigenvalue minus diagonal entry and failed. Replaced by an exact symbolic characteristic-polynomial test, not a weaker numerical tolerance."
+  ],
+  "phase_endpoints": [
+    {
+      "e1": 1,
+      "e2": 1,
+      "I": "-1.10381243524248019271323684268",
+      "I_plus_reverse": "-3.14159265358979323846264338328",
+      "J_minus_I": "1.57079632679489661923132169164"
+    },
+    {
+      "e1": 1,
+      "e2": -1,
+      "I": "0.491334397043621591198457780317",
+      "I_plus_reverse": "0.0",
+      "J_minus_I": "0.0"
+    },
+    {
+      "e1": -1,
+      "e2": 1,
+      "I": "-0.491334397043621591198457780317",
+      "I_plus_reverse": "0.0",
+      "J_minus_I": "0.0"
+    },
+    {
+      "e1": -1,
+      "e2": -1,
+      "I": "1.10381243524248019271323684268",
+      "I_plus_reverse": "3.14159265358979323846264338328",
+      "J_minus_I": "-1.57079632679489661923132169164"
+    }
+  ],
+  "potential_mode_density": [
+    {
+      "alpha": ".4",
+      "epsilon": 1,
+      "q": ".6",
+      "error": "2.65875896881274364929250783548e-64"
+    },
+    {
+      "alpha": ".8",
+      "epsilon": -1,
+      "q": "-.9",
+      "error": "3.03858167864313559919143752626e-64"
+    },
+    {
+      "alpha": ".35",
+      "epsilon": 1,
+      "q": "-1.2",
+      "error": "9.07123456212115774094553175564e-64"
+    },
+    {
+      "alpha": ".6",
+      "epsilon": -1,
+      "q": ".8",
+      "error": "9.73889166924489359037724410272e-64"
+    }
+  ],
+  "field_pairings": {
+    "single": "0.24196874388281804904217348153",
+    "mixed_limit": "0.626200422350105324168524601825",
+    "mixed_checks": [
+      {
+        "separation": 200,
+        "pairing": "0.626200422350105324168524601825",
+        "error": "-9.7470056883111850530491834902e-32"
+      },
+      {
+        "separation": 400,
+        "pairing": "0.626200422350105324168524601825",
+        "error": "-3.08605951737193459292880373761e-65"
+      }
+    ],
+    "alpha_mode_right_tail": "1.8421219880057701655970534641"
+  },
+  "limited_hessian_control": [
+    "-190.07883273938841132175063669",
+    "-174.18222480800177842163223702"
+  ],
+  "equal_frequency_pulse_counterexample": {
+    "omega": 1,
+    "Omega": 2,
+    "duration": 1,
+    "beta_imag": 0.6819730701192612
+  },
+  "comoving_derivative_sign": "+2 i v omega d_xi"
+}

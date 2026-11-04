@@ -1,0 +1,8 @@
+PASS: quadratic action; weighted sine/cosine sums (printed zero cosine claim fails).
+PASS: alpha 0.15 Pcan-Pmode= -0.032648298463 conditional absorption shift= 0.753417205691
+PASS: alpha 0.5 Pcan-Pmode= -0.293591527324 conditional absorption shift= 0.92087968185
+PASS: alpha 0.85 Pcan-Pmode= -0.650895606596 conditional absorption shift= 2.33030395807
+PASS: stationary-saddle chain rule, including first-order profile correction.
+PASS: nonlinear defect potential, nonzero localized quadratic momentum, defect UV slope= 0.413496671566
+Failures recorded: published profile, zero weighted cosine sum, sign of -dL1/dalpha, and linear defect-potential assertions fail; no implementation assertion failed in this script.
+ALL CHECKS PASSED

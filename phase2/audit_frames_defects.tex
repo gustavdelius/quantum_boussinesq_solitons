@@ -1,0 +1,201 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\Lc}{\textsf{\textbf{(c)}}\ }
+\newcommand{\Ld}{\textsf{\textbf{(d)}}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak frames\_\allowbreak defects.py}}
+\emergencystretch=2em
+\title{Independent audit: defect spectrum, fusion assumptions,\\and the Toda frame}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The proposed Toda expansion can proceed independently, but the quantum
+identification still needs work. \Ld\ An exact symbolic calculation finds a
+factor of sixteen missing from the displayed defect sewing determinant.
+Its zeros are unaffected, but the stated growing-mode formula also misses a
+change of admissible branch. \Lc\ The earlier warning that a KP triangle
+passes through unstable defect vacua remains relevant to the claimed quantum
+fusion selection rule. The edge-reference subtraction, being independent of
+the second soliton, cannot by itself remove the linear ratio dependence
+attributed to it in Phase~2h. \Lc
+\end{abstract}
+
+\section{Scope and reproducibility}
+This note supplements \texttt{independent\_phase2h\_audit.tex} and the separate
+charge and determinant audits. Labels (a)--(d) retain their repository meaning;
+(c) denotes a project derivation or check and (d) an interpretation or research
+judgment. No external literature claim is introduced here. We retain the
+good-equation and Corrigan--Zambon dictionaries in \texttt{AGENTS.md}; the
+sewing matrix below uses the existing CZ field normalisation. The audit does
+not choose a regularisation or quantum phase convention.
+
+All displayed new mathematical results are checked in
+\texttt{phase2/scripts/}\scr, with exact SymPy identities and 70-digit mpmath
+calculations. Its JSON companion records numerical results and SHA-256 hashes
+of the audited inputs. The previously existing
+\texttt{oneloop\_defect\_scattering\_and\_stability.py} also completes with
+\texttt{ALL CHECKS PASSED}; its tests do not expose the issues below.
+
+\section{The defect determinant: check away from its zeros}
+\paragraph{Corrected normalisation \Lc.}
+Let $s=\eta\sigma$, and let $\omega=i g$ with $g>0$ be a purely growing
+frequency. The decaying half-line spatial exponents satisfy
+\[
+ \kappa_1^2+\kappa_2^2=1,\qquad
+ \kappa_1\kappa_2=g,\qquad
+ S=\kappa_1+\kappa_2=\sqrt{1+2g},\qquad
+ d=\kappa_1-\kappa_2,\quad d^2=2-S^2.
+\]
+For the actual $4\times4$ linearised sewing matrix implemented in Phase~2g,
+at $\eta=+1$, the exact factorisation is
+\begin{equation}\label{eq:det}
+ \frac{\det M}{(\kappa_1-\kappa_2)^2}
+ =-\frac{2}{3}S^2(S^2-1)P_-(S;s)P_+(S;s),
+\end{equation}
+where the reported polynomials themselves are correct:
+\[
+ P_\mp(S;s)=S^2-\frac{\sqrt3\mp1}{2}sS
+                   +\frac{s^2-2\mp\sqrt3}{2}.
+\]
+The coefficient in Phase~2g, Eq.~(\texttt{det\_factorisation}), is
+$-1/24$, sixteen times too small. The script proves \eqref{eq:det}
+symbolically by replacing each half-line pair of columns by its sum and
+its difference divided by $d$, expanding the determinant, and imposing
+$d^2=2-S^2$. It also compares an independently evaluated determinant to
+the existing matrix at six nonzero samples:
+$s=-1.5,0.5,1.9$, $g=0.2,0.7$.
+The ratio of actual to displayed determinant is sixteen in every case.
+
+This constant does not change the eigenvalue zeros, and it is not by itself
+a computed error in the physical one-loop determinant. \Ld\ The existing
+factorisation test evaluates the two sides at a characteristic root, where
+both vanish. It therefore does not test the prefactor. \Lc
+
+\paragraph{Admissible roots \Lc.}
+For $-2<s<2$, retain only real roots with $S>1$ from
+\begin{align*}
+ S_{-,\pm}&=\frac{(\sqrt3-1)s\pm(\sqrt3+1)\sqrt{4-s^2}}4,\\
+ S_{+,\pm}&=\frac{(\sqrt3+1)s\pm(\sqrt3-1)\sqrt{4-s^2}}4,
+ \qquad g=\frac{S^2-1}{2}.
+\end{align*}
+Squaring an inadmissible root loses the decaying-sheet condition. The
+two positive growth rates at $s=1.9$ are approximately
+\[
+ g=0.200256\ldots,\qquad 0.496894\ldots;
+\]
+the JSON gives all digits. The smaller mode comes from $S_{+,-}>1$;
+$S_{-,+}<1$ has ceased to describe a growing mode. The displayed
+frequency pair in Phase~2g instead includes the negative of that smaller
+rate. Direct substitution of both admissible rates into the sewing
+determinant gives zero to the 70-digit calculation's tolerance.
+
+At $s=2$ one has
+\[
+ P_+(S;2)=\left(S-\frac{\sqrt3+1}{2}\right)^2,
+ \qquad g=\frac{\sqrt3}{4}.
+\]
+Thus the admissible roots coalesce at the same positive growth rate.
+The displayed frequency pair gives opposite signs there, contradicting
+the coalescence stated immediately afterwards. The existing script tests
+$s=1.5$ and then uses a separate expression at $s=2.5$; it skips the
+intervening branch change. These are explicit counterexamples to that
+formula as a complete spectrum, not a replacement completeness proof.
+
+\section{Fusion: an algebraic identity does not supply missing states}
+\paragraph{Stable-vertex check \Lc.}
+The KP triple may be parametrised as
+\[
+ q_j=\frac{1}{\sqrt3}\cos\left(\vartheta+\frac{2\pi j}{3}\right),
+ \qquad \sigma_j=-2\sqrt3 q_j,\qquad j=0,1,2.
+\]
+The script verifies the pair relation
+$q_i^2+q_iq_j+q_j^2=1/4$ and counts admissible growing modes on
+198 oriented, nondegenerate sampled triples. Each has exactly one vertex
+with no growing mode, agreeing with the previously established condition
+$\eta\sigma<-1$. This is a sample check, not a new proof of spectral
+completeness at thresholds.
+
+\texttt{defect\_semiclassics.tex}, its stability section, explicitly
+downgraded the proposed exact quantum triangle bootstrap because its two
+excited defect vacua are unstable. Phase~2g proves a continuum phase
+coboundary identity and then calls it a decisive quantum selection rule;
+that step does not restore stable intermediate states. \Ld\ Nor does a
+continuum identity determine the contribution of any missing discrete modes
+or the normalisation of the quantum defect transitions. An analytic
+continuation involving resonances might still obey useful identities, but
+that needs its own derivation. We retain the algebraic fusion result and
+do not treat it alone as a physical exclusion of a Gamma factor or a
+selection of an exchange-phase constant. \Ld
+
+\section{The edge subtraction and the quantum frame}
+\paragraph{What the code subtracts \Lc.}
+In \texttt{toda\_edge\_twoterm.py}, the phase numerator is
+\[
+ \Phi(p_1,p_2)-\Phi(p_1,e_2)
+ -(-2\kappa_1)\left(\frac{P_{n2}}a-\Pi_2\right).
+\]
+The frame term uses the classical quantities
+$P_{n2}=4b(\kappa_2\cosh\kappa_2-\sinh\kappa_2)$ and
+$\Pi_2=2b\sinh\kappa_2$ in the right-moving sector. With
+$\kappa_j=\sqrt{y_j\hbar_T/b}$, the script verifies
+\[
+ \lim_{\hbar_T\to0}
+ \frac{(-2\kappa_1)(P_{n2}/a-\Pi_2)}{\hbar_T}
+ =4\sqrt{y_1y_2}.
+\]
+This establishes the implemented classical subtraction. It does not
+establish that the same transformation has no quantum correction.
+\texttt{toda\_edge.tex} explicitly retains that caveat, as does
+\texttt{matching\_toda.py}. A complete comparison to continuum quantum
+scattering still needs a common quantum definition of the frame and of
+the physical charge labels. \Ld
+
+\paragraph{An edge value cannot subtract a slope \Lc.}
+Phase~2h attributes the $+4r/\pi$ term in its candidate limiting residual
+to subtracting the edge reference $-\Phi(p_1,e_2)/\hbar_T$, saying that
+this removes the linear small-$r$ slope. At fixed $y_1=Y$ the ground
+state, $p_1$, and $e_2$ are independent of $y_2=r^2Y$. Therefore this
+subtraction is a function $C(Y)$ alone, and exactly
+\[
+ \partial_r\{F(Y,r)-C(Y)\}=\partial_r F(Y,r).
+\]
+Equivalently, differences between any two ratios are unchanged. It cannot
+alone add the nonconstant function $4r/\pi$. This invalidates that
+explanation of the term, without disproving the candidate final residual:
+the term might instead come from the dressed phase, charge conversion,
+or another part of a derivation not yet supplied. \Ld\ The earlier audit
+already records that the script defines the purported loop asymptotic
+by subtracting the classical contribution from the proposed target.
+
+\section{Checks, failures recorded, and verdict}
+\begin{center}\small
+\begin{tabular}{p{.57\textwidth}p{.34\textwidth}}\toprule
+Claim or scope & Verification\\\midrule
+Corrected sewing determinant, away from zeros (c) & Exact polynomial identity;
+six 70-digit samples\\
+Growing-mode counterexample and coalescence (c) & Root filtering, direct
+determinants, exact double root\\
+One stable vertex on sampled triples (c) & 198 oriented nondegenerate triples\\
+Classical frame limit; edge subtraction preserves slope (c) & Exact SymPy identities\\
+Physical quantum frame and fusion selection (d) & Still require derivation\\\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The displayed factorisation fails away from its roots by a factor
+of sixteen. The stated frequency pair fails the admissible growing-branch
+test at $s=1.9$ and the stated coalescence at $s=2$.
+\item An exploratory call to mpmath's LU determinant raised a
+\texttt{TypeError} at an exactly singular matrix. The independent checker
+uses the exact 24-term determinant definition, retaining the same matrix
+and tolerance; no eigenvalue condition is dropped.
+\item A direct symbolic determinant computation was interrupted after
+stalling. Symmetric and antisymmetric column combinations reduce its size
+and prove the same off-shell identity exactly.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,269 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+\newcommand{\La}{\textbf{(a)}}
+\newcommand{\scr}{\texttt{audit\_\allowbreak charges\_\allowbreak action.py}}
+\emergencystretch=2em
+\title{Independent audit of one-loop charges and static defect absorption}
+\author{Project audit for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+The proposed collective-coordinate momentum is an exact derivative of the
+proposed one-loop Lagrangian; a regulated Gaussian mode sum supports that
+Lagrangian conditionally. \Lc\ Staticity does not justify changing which
+bulk soliton charge enters absorption. The defect's nonlinear boundary
+potential and localized charge operators require a renormalization argument
+beyond the bulk tadpole, which vanishes on its constant vacua. \Ld\ A shift
+of the absorption locus reconciles both charge pairs algebraically \Lc,
+but no quantum sewing calculation establishes it physically \Ld.
+Existing good-equation conventions and bulk subtraction are retained;
+no new renormalization prescription is chosen.
+\end{abstract}
+
+\section{Scope, labels, and evidence}
+Labels are \La\ literature results, \textbf{(b)} literature heuristics,
+\Lc\ project derivations, and \Ld\ unestablished physical identifications or
+possibilities. Every displayed new \Lc\ identity is checked independently in
+\texttt{phase2/scripts/audit\_charges\_action.py}, using SymPy and 65-digit
+mpmath. The script imports no existing project charge formulas.
+
+The main audited passages are \texttt{charge\_frame\_master.tex}, lines
+284--316 (co-moving action), 325--363 (derivative), and 367--398 (static-defect
+interpretation); also \texttt{oneloop\_\allowbreak defect\_\allowbreak phase.tex}, lines 605--650
+(renormalization and absorption). The previous independent Phase 2h audit was
+consulted as a lead; the checks here were implemented separately.
+
+\section{What the co-moving mode sum does establish}
+Write the potential fluctuation in $\xi=x-vt$ as $\varphi$, and let
+$u_0=\partial_\xi\phi_0$. Taylor expansion of the fixed project action gives
+\Lc\ (\scr)
+\begin{equation}
+ \mathcal L_2=\tfrac12(\varphi_t-v\varphi_\xi)^2
+ -\tfrac12(1-6u_0)\varphi_\xi^2-\tfrac12\varphi_{\xi\xi}^2.
+ \label{eq:quadratic}
+\end{equation}
+Thus asymptotic continuum modes have co-moving frequency
+$\Omega(q)=|q|\sqrt{1+q^2}-vq$. This follows by substitution of a plane wave
+into the vacuum quadratic action, and is positive for $q\ne0$, $|v|<1$.
+The determinant interpretation still requires a complete, correctly normalized
+mode basis, the collective-coordinate projection, and the specified boundary
+conditions. This audit does not supply those parts. \Ld
+
+There is nevertheless a useful conditional derivation beyond checking a
+Legendre identity. If equal-mode-count Gaussian quantization is valid, its
+continuum contribution uses the derivative form of the spectral trace,
+including its cutoff endpoint. For $\theta(q)=\sum_r c_r\Theta(q;\phi_r)$
+on the existing soliton branches, \Lc\ (\scr):
+\begin{align}
+ E_{\rm dens}(\Lambda)&=\frac1{4\pi}\int_{-\Lambda}^{\Lambda}
+          |q|\sqrt{1+q^2}\,\theta'(q)\,dq,\\
+ B(\Lambda)&=\frac{\Lambda\sqrt{1+\Lambda^2}}{4\pi}
+                   [\theta(\Lambda)-\theta(-\Lambda)],\\
+ E_{\rm mode}(\Lambda)&=E_{\rm dens}(\Lambda)-B(\Lambda),\\
+ \Delta E_{\rm ren}&=\lim_{\Lambda\to\infty}
+ \left[E_{\rm mode}(\Lambda)+\frac{3k}{\pi}
+                   (\sqrt{1+\Lambda^2}-1)\right].
+ \label{eq:regulated}
+\end{align}
+The final line reproduces the existing closed energy formula; it does not
+change its finite part. The endpoint satisfies
+$B(\Lambda)/\Lambda\to3k/(2\pi)$, so it cannot be omitted before applying
+the existing counterterm. The momentum endpoint
+$[q\theta(q)]_{-\Lambda}^{\Lambda}/(4\pi)$ tends to zero. Consequently
+the same conditional prescription gives
+\begin{equation}
+ L_1(v)=v\Delta P_{\rm mode}-\Delta E_{\rm ren}.
+ \label{eq:conditionalL}
+\end{equation}
+This is \Lc\ as a consequence of the stated spectral assumptions, rather
+than a completed physical determinant derivation. The original
+\texttt{charge\_and\_frame\_audit.py:96--99} defines this combination;
+its quadrature at lines 220--245 checks that definition and the already
+subtracted energy integrand.
+
+The equal-mode-count endpoint is also explicitly discussed by Faddeev and
+Korepin in Appendix 6, equations A.6.11--A.6.14. \La\ Only the relevant
+full-text passages, rather than the whole paper, were read for this audit.
+
+\section{When differentiation gives the physical momentum}
+For an on-shell effective action with valid boundary variation,
+differentiation with respect to velocity computes the canonical charge. The
+first-order correction includes the classical charge evaluated on the
+corrected profile. It need not equal a fixed-background expectation alone.
+The finite-dimensional version makes this precise: let
+$L=L_0(v,y)+\hbar L_1(v,y)$, $L_{0,y}(v,y_0)=0$, and
+$y=y_0+\hbar y_1$. Assuming a nondegenerate Hessian after zero-mode projection,
+\Lc\ (\scr)
+\begin{equation}
+ y_0'=-\frac{L_{0,yv}}{L_{0,yy}},\qquad
+ y_1=-\frac{L_{1,y}}{L_{0,yy}},\qquad
+ P_1=L_{1,v}+L_{0,vy}y_1
+     =\frac{d}{dv}L_1(v,y_0(v)).
+ \label{eq:saddle}
+\end{equation}
+The field-theory application requires the corresponding functional inverse
+and boundary terms. In particular, changing the Boussinesq velocity also
+changes the asymptotic potential jump. The finite-dimensional identity does
+not check those boundary conditions. The physical identification of the
+published $\Delta P_{\rm can}$ is therefore conditional, although its
+derivative formula is correct. \Ld
+
+Taking \eqref{eq:conditionalL} as input yields, independently at 65 digits,
+\Lc\ (\scr)
+\begin{align}
+ \Delta P_{\rm can}&=\frac{dL_1}{dv}
+ =-\frac{\sqrt3\cos\alpha}{\pi}
+   \log\left|\frac{\tan((\alpha+2\pi/3)/2)}
+                    {\tan((\alpha-2\pi/3)/2)}\right|,\quad (\epsilon=+1),\\
+ \Delta E_{\rm can}&=v\Delta P_{\rm can}-L_1,\qquad
+ \frac{d\Delta E_{\rm can}}{d\alpha}
+       =v\frac{d\Delta P_{\rm can}}{d\alpha}.
+\end{align}
+These equations prove internal consistency, not a charge Ward identity for
+the renormalized field theory. Also, the printed intermediate equation
+for $-dL_1/d\alpha$ in the master note has the wrong overall sign:
+\Lc\ (\scr)
+\begin{equation}
+ \frac{dL_1}{d\alpha}=\frac1{2\pi}\sum_r c_r
+ [\cos(2\phi_r)-\cos(\alpha+\phi_r)]
+ \log|\tan(\phi_r/2)|.
+\end{equation}
+The light-root cancellation survives this correction.
+
+\section{A static defect still has a localized momentum operator}
+Corrigan--Zambon give the conserved modified momentum, including localized
+field terms, in equations 3.11 and 3.49--3.51. It is not the ordinary
+translation Noether momentum of a translation-invariant system: a fixed
+defect breaks that symmetry. Their $H$ contains a fifth-degree potential
+in the field jump (3.42--3.43), and their $h$ is fourth-degree (3.46).
+\La\ Relevant full-text sections 2--3 and 5.1 were read online, not the
+whole article. The dictionary is $U_{\rm CZ}=-3\phi_L$,
+$V_{\rm CZ}=-3\phi_R$, and $\mathcal L_{\rm CZ}=9\mathcal L$;
+$c=\lambda=\kappa=1$.
+
+For direct independent verification, write $A=\eta/\sqrt3$, $B=2A$,
+and denote a constant vacuum by $\sigma$. Expanding the boundary charges
+about that vacuum in project-normalized potential fluctuations
+$a,b$ gives \Lc\ (\scr, displayed for $\eta=+1$, with the same algebra
+for the other sign)
+\begin{align}
+ P_{\mathcal D,2}
+ &=-\frac A2(a_x^2+b_x^2)-B a_xb_x
+       -\frac A4(1-\sigma^2)(a-b)^2,\label{eq:P2}\\
+ H_2&=\sigma\left[\frac B2(a_x^2+b_x^2)+A a_xb_x\right]
+   +\frac{1-\sigma^2}{2}(a-b)(a_x+b_x)\nonumber\\
+   &\quad-\frac{B\sigma(1-\sigma^2)}8(a-b)^2,
+   \qquad E_{\mathcal D,2}=-H_2.
+\end{align}
+They are generally nonzero although the defect has no translational
+collective coordinate. A complete spectral trace of the conserved charge
+might already include these terms through its mode normalization. This audit
+does not assert it cannot. What is absent from the published check is a
+derivation equating that trace to $\int q\theta_D'(q)\,dq/(4\pi)$.
+Staticity alone cannot supply that derivation. \Ld
+
+\section{The defect subtraction requires a boundary derivation}
+For the existing two-root kernel, put $\cos\gamma=\sigma/2$,
+$\psi_\pm=\pm2\pi/3-\gamma$ and weights $(-\eta,+\eta)$.
+Then \Lc\ (\scr)
+\begin{equation}
+ S_D:=\sum c_D\sin\psi=-\eta\sqrt3\cos\gamma
+          =-\frac{\eta\sqrt3\sigma}{2},\qquad
+ -\frac{\omega'(q)[\theta_D(q)-\theta_D(-q)]}{4\pi}
+                 \longrightarrow\frac{S_D}{\pi}\quad(q\to+\infty).
+\end{equation}
+For example $\eta=+1$, $\sigma=-1.5$ gives slope
+$0.413496671566\ldots$. This is a nonzero continuum divergence even on
+a linearly stable vacuum.
+
+The existing bulk normal-ordering counterterm is proportional to the sum of
+$\int\phi_x\,dx$ over the two open half-lines. Each integrand vanishes
+on a constant defect vacuum. Hence that bulk term cannot by itself cancel
+the displayed divergence. Interpreting the jump as a distribution at the
+defect would introduce a boundary prescription which must be derived and
+specified. The statement in \texttt{oneloop\_defect\_phase.tex:611--613}
+that the potential is linear is contradicted by its fifth-degree term.
+Thus the finite defect energy formula is an algebraically coherent subtraction,
+but its physical renormalization argument remains unestablished. \Ld
+No replacement prescription is adopted here.
+
+\section{A conditional absorption-locus shift}
+Suppose both that the canonical soliton charges are physical and that the
+quoted defect vacuum shifts are physical, while retaining their algebraic
+mode-charge jump identity. Conservation would then require more than the
+published assertion that static absorption uses a different bulk momentum.
+There is a simple kinematic possibility: the absorption soliton could have
+$\alpha_{\rm abs}=\alpha_0+\hbar a_1+O(\hbar^2)$.
+Because \Lc\ (\scr)
+\begin{equation}
+ \Delta E_{\rm can}-\Delta E_{\rm ren}
+       =v(\Delta P_{\rm can}-\Delta P_{\rm mode}),\qquad
+ E_{\rm cl}'=vP_{\rm cl}',
+\end{equation}
+the choice
+\begin{equation}
+ a_1=\frac{\Delta P_{\rm mode}-\Delta P_{\rm can}}{P_{\rm cl}'}
+ \label{eq:shift}
+\end{equation}
+makes both first-order canonical soliton charges equal the mode-charge
+increments, whenever $P_{\rm cl}'\ne0$. This is a conditional algebraic
+observation \Lc, not a derived quantum absorption condition \Ld.
+At $\alpha_0=0.15,0.5,0.85$ the coefficients are respectively
+$0.753417205691$, $0.920879681850$, and $2.33030395807$.
+Quantum shifts of defect parameters or additional localized charge terms
+are also not excluded. Selecting among these requires a renormalized
+quantum sewing or charge calculation, not a choice made in this audit.
+
+\section{Checks, limitations, and failures recorded}
+\begin{center}\small
+\begin{tabular}{p{.53\linewidth}p{.36\linewidth}}
+\toprule
+Claim checked & Verification\\\midrule
+Co-moving quadratic action & Exact SymPy Taylor coefficient\\
+Existing bulk energy with cutoff endpoint & 65-digit closed integration;
+cutoff $10^{20}$, residual below $10^{-19}$\\
+Legendre formulas and absorption-shift identities & Derivatives checked to
+$10^{-59}$ or better at three regular light solitons\\
+Stationary profile correction & Exact symbolic chain-rule identity\\
+Localized quadratic defect charges & Independent symbolic expansion\\
+Defect UV slope & Exact trigonometry and 65-digit large-$q$ check\\\bottomrule
+\end{tabular}
+\end{center}
+Failures recorded, including statements checked and found false:
+\begin{enumerate}
+\item The master note's profile at line 250 is
+$-k^2\operatorname{sech}^2(k\xi/2)$, whereas the fixed convention gives
+$+k^2\operatorname{sech}^2(k\xi/2)/2$. The displayed profile fails the
+travelling-wave equation already at its centre (checked symbolically).
+\item The weighted cosine sum stated to vanish at line 257 is actually
+$\sum c_r\cos\phi_r=-3\cos\alpha$. The final charge derivative can still be
+correct because cancellations occur within the energy derivative.
+\item The sign of the printed $-dL_1/d\alpha$ weight formula fails;
+the same weight equals $+dL_1/d\alpha$. The closed canonical momentum passes.
+\item The defect potential is not linear. Its fifth-degree term and its
+localized quadratic momentum contradict the reasons given for discarding
+boundary effects.
+\item No implementation assertion failed during development of this audit
+script; no tolerance was weakened. A direct DOI webpage lookup for
+Faddeev--Korepin was inaccessible; the DOI was subsequently verified against
+the publisher's indexed entry.
+\end{enumerate}
+The full determinant, projected measure, quantum boundary counterterms,
+and quantum charge Ward identities were not computed. The successful script
+therefore ends with \texttt{ALL CHECKS PASSED} only for its stated algebraic
+and conditional checks, not for the unresolved physical identifications.
+
+\begin{thebibliography}{9}
+\bibitem{CZ} E.~Corrigan and C.~Zambon, \emph{Adding integrable defects to the
+Boussinesq equation}, \href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}.
+Relevant full-text sections 2--3 and 5.1 read online for this audit.
+\bibitem{FK} L.~D.~Faddeev and V.~E.~Korepin, \emph{Quantum theory of solitons},
+Physics Reports \textbf{42} (1978), 1--87,
+\href{https://doi.org/10.1016/0370-1573(78)90058-3}{doi:10.1016/0370-1573(78)90058-3}.
+DOI verified against the publisher's indexed entry; reading scope stated above.
+\end{thebibliography}
+\end{document}
