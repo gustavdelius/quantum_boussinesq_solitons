@@ -53,6 +53,6 @@ When you use a source with different conventions, write down the explicit dictio
 ## Git
 
 - Work on `main` unless told otherwise. Pull before you start, since several agents may share the repository.
-- Commit only files you created or changed, and push when the task says so.
+- Commit only files you created or changed. Commit and push to `main` at the end of each phase or finished piece of work, without waiting to be asked; pull first.
 - Never commit `phase0/literature_map.html` or anything in `literature/`.
 - Never rewrite history, stash other people's changes, or switch branches in a shared checkout.
