@@ -1,0 +1,607 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_smx.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of the S-matrix candidates package}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc The classical dictionary, conditional Gamma algebra, selected breather poles,
+and a directional phase derivative survive independent checks. Several printed
+claims do not: Darboux signs, a resonance line, the breather positivity threshold,
+the continued antisymmetric continuum integral, and the small-amplitude frame
+formulas. The four original scripts nevertheless all print
+\texttt{ALL CHECKS PASSED}. The quantum-dilogarithm exclusion is too broad;
+a narrower finite root-ratio exclusion has a repairable proof.
+\Ld Neither quantum ring holonomy nor a unique physical one-loop phase follows
+from the available consistency identities. The frame dictionary's antisymmetric
+two-body freedom remains an independent input to the proposed interface.
+\end{abstract}
+
+\section{Scope, labels, and independent implementation}
+Labels mean (a) literature proof, (b) literature heuristic, (c) project
+derivation or explicitly numerical evidence, and (d) guess or unresolved
+physical interpretation. Verdicts apply to the specified statement, not to
+an entire research programme. All mathematical formulas advanced as (c) here
+are checked in \texttt{scripts/}\scr; section names below identify its functions.
+Numerical checks support the displayed algebra and counterexamples; finite
+sampling is not represented as a global proof.
+
+\Lc Inputs read were \texttt{AGENTS.md}, the status in \texttt{README.md},
+\texttt{audit\_phase2i.tex} as the format and dependency audit,
+\texttt{smx\_candidates.tex}, text extracted from its 18-page PDF, all four
+\texttt{smx\_*} scripts, \texttt{frame\_dictionary.tex}, and the relevant
+breather and integral definitions in \texttt{phase1/review.tex},
+\texttt{oneloop\_phase.tex}, and the earlier audit checker.
+No external paper or abstract was read for this audit and no new external
+reference is cited. In particular, attribution to Bogdan--Charkina below means
+comparison with the action formula recorded in the local project texts,
+not an independent verification of their paper or an exact quantum spectrum.
+The review itself identifies its good-equation no-Hirota-breather argument
+as a project result (c), not an established literature theorem (a).
+
+\Lc The independent checker imports no project code. It reconstructs the
+interaction from KP chords, checks it separately against the Hirota polynomial,
+differentiates the classical action, and integrates the elementary phonon
+phase on both open half-lines. SymPy and 60-digit mpmath are used. Exact-identity
+checks use absolute tolerance $10^{-48}$; finite-step asymptotic checks use
+explicit looser tolerances appropriate to their step sizes. Original scripts
+run only in separate subprocesses for the requested execution audit, with
+bytecode writing disabled; none supplies an independent-computation target.
+The checker hashes the candidate TeX, PDF, and scripts before and after running.
+Only the requested new files are delivered. No git operation, existing-file
+edit, physical convention choice, or unrelated full-suite run was performed.
+
+\clearpage
+\section{Verdict table}
+\small
+\begin{longtable}{@{}L{5.0cm}L{2.1cm}L{8.0cm}@{}}
+\toprule Claim & Verdict & Independent evidence / limit\\\midrule\endhead
+Good/bad charge dictionary, KP ratio, log derivative & Confirmed (c) & \scr: \texttt{classical}; both equations and four directions.\\
+Gamma shifts, Stirling terms, displayed CDD asymptotics; coupling reparametrisation & Confirmed (c) & \texttt{families}; conditional algebra on consistent branches, not physical selection.\\
+Rational mixed derivative of classical phase & Confirmed (c) & Exact rational uniformisation and symbolic differentiation.\\
+Universal mixed-argument quantum-dilogarithm exclusion & Refuted (c) & Arbitrary-argument counterexample and unproved cancellation premise; a generic single algebraic block obstruction survives.\\
+Nine KP-ratio dilogs with constant coefficients & Qualified & Exclusion confirmed (c) by corrected residue argument; printed residue and proof are wrong. The 0.0368 fit is evidence only.\\
+All mirror products excluded by unitarity alone & Qualified & Smooth nonconstant $G$ excluded; constant $G$ and exchange-unitary $F$ allowed. Both separated sides must be constant.\\
+Bad Gamma poles, no $N=0$ pole & Confirmed (c) & Full-candidate residue and threshold tests on the stated breather window. Exact physical spectrum remains (d).\\
+Good $A<1/4$, singular two-phase zero-background breathers & Confirmed (c) & Independent Hirota evaluation and tau positivity.\\
+Good sign boundary, regularity threshold, numerical pole examples & Refuted (c) & Boundary is $a=\pi/3$; positivity requires $A>1$; corrected pole numbers below.\\
+Good Gamma poles are spurious physical states & Qualified & Candidate poles exist (c); physical-sheet/state identification is an imposed assumption (d).\\
+All three resonance lines and smoothness & Refuted (c) & $|D|=\pi/3$ is not a resonance; actual limits are finite but generally not differentiably smooth.\\
+Darboux chamber form and seam endpoint difference & Confirmed (c) & Wedge algebra for $N=2,3,4$, all chambers; endpoint difference follows from coordinates.\\
+Printed Darboux wall signs and total Bethe derivative & Refuted (c) & Opposite signs; omitted self-winding derivative.\\
+Directional ring derivative, sum, composite charge identities & Confirmed (c) & \texttt{classical,poles}; conditional on the defined twist and proposed equations.\\
+Quantum ring twist / exact field-theoretic quantisation & Qualified & Generating-function consistency is not a derivation of quantum holonomy (d).\\
+Single overtaking residual, crossing-locked head-on channel & Qualified & Local analytic phase parametrisation only; additional zero-free, branch, and expansion assumptions needed.\\
+One-body frame inputs uniquely fix residual & Refuted (c) & Frame dictionary's explicit antisymmetric two-body counterexample survives.\\
+Raw continuum $I$ crossing & Confirmed (c) & Direct phonon quadrature; applies to the earlier definitions, not the malformed printed formula.\\
+$J$ crossing sum $+\pi/2$ and cusp/Stirling cancellation & Refuted (c) & Actual antisymmetrised integral has crossing sum zero; checker inserts the offset.\\
+Printed small-amplitude interface & Refuted (c) & Wrong tails, mode coefficient, head-on expansion, and $J\to0$; corrected formulas below.\\
+Phase 2i independence; scripts terminate successfully & Confirmed (c) & Source inspection, import inspection, and subprocess execution.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Classical algebra and the family exclusions}
+\paragraph{Dictionary and Gamma algebra (\texttt{classical,families}).}
+\Lc With the stipulated charges and the independently reconstructed $A$,
+\begin{align}
+ P'_1&=\frac{2k_1}{9}\ell'_1,\\
+ \frac29(\ell_1-\ell_2)\partial_1\log A
+ &=-\frac13\Pi'_1M_2-\frac23M'_1\Pi_2,\\
+ \partial_1\delta&=\frac{P'_1}{k_1}\log A-\Pi'_1M_2.
+ \label{eq:derivative}
+\end{align}
+These hold in both equations and all tested directions. Charge-energy
+differentiation also gives $dE/dP=v$. The KP root cubics and crossing of both
+the dynamical and topological action pieces are confirmed independently.
+
+\Lc The shifted Gamma quotient has offset
+$\tau(s-\tfrac12)\pi\operatorname{sgn}\eta$ and next term
+$-\tau(s^2-s+\tfrac16)/\eta$, with $\tau=+1$ for overtaking and $-1$ for
+$+-$ head-on. The displayed rational/hyperbolic CDD examples have the stated
+constant-step limits for fixed parameters. This is not a theorem about
+\emph{every conceivable} function of $\eta$, particularly if its parameters
+scale with $\hbar$. Global versus dynamical-only coupling reparametrisation
+shifts the one-loop phase by $-c_1\delta$ versus $-c_1\delta_{\rm dyn}$.
+\Ld These are reparametrisation identities, not a renormalisation prescription.
+The family table's dynamical-only entry should retain this distinction.
+
+\paragraph{The weight argument: a valid calculation with an invalid universal conclusion.}
+\Lc Put $L=\log R$. Direct differentiation gives
+\begin{equation}
+ \partial_{12}\operatorname{Li}_2(R)
+ =\frac{R}{1-R}L_1L_2-\log(1-R)L_{12}.
+ \label{eq:dilog}
+\end{equation}
+Meanwhile $\partial_{12}[(\ell_1-\ell_2)\log A]$ has no undifferentiated
+logarithm. In exponential rapidities it is rational, as is the derivative
+of the topological term. For a generic single \emph{algebraic} nonseparable
+argument such as $A$, the surviving logarithm obstructs a match. For
+$R=f_1(\beta_1)/f_2(\beta_2)$ it does not: $L_{12}=0$.
+This derivative diagnostic does not by itself exclude such separable arguments.
+
+\Lc The text says ``any twice-differentiable argument'', and then extends
+the single-block argument to arbitrary linear combinations without proving
+independence of their logarithms. Neither extension follows. For a concrete
+arbitrary-argument/product counterexample, locally for real $x,y$,
+\begin{equation}
+ \operatorname{Li}_2(-e^{xy})+\operatorname{Li}_2(-e^{-xy})
+ =-\frac{\pi^2}{6}-\frac{x^2y^2}{2},\qquad
+ \partial_{xy}(\text{left side})=-2xy.
+\end{equation}
+Both arguments have nonzero mixed logarithmic derivative, but their sum has
+rational mixed derivative. This does not construct a Boussinesq S-matrix;
+it refutes the proposed universal exclusion mechanism. Restricted rational
+argument sets require their own functional-independence or singularity proof.
+
+\paragraph{The finite KP-ratio basis has a repaired exclusion.}
+\Lc Let $d=\alpha_1-\alpha_2$, $\alpha_2=\alpha$, and
+$\varphi_r=\alpha+2\pi r/3$. The correct diagonal residues are
+\begin{equation}
+ \partial_{12}\operatorname{Li}_2(R_{rr})
+ =\frac{1}{d\sin\varphi_r}+O(1),\qquad
+ \partial_{12}\delta_{\rm dyn}^{\rm good}
+ =-\frac{4\sin3\alpha}{3d}+O(1).
+ \label{eq:residue}
+\end{equation}
+The bad classical residue is $-4\sinh3\beta/(3d)$.
+The printed $-1/(2\sin\varphi_r)$ is wrong in sign and factor, and the
+printed classical residues have the wrong sign. Moreover $1/\sin\varphi_r$
+is unbounded at a zero of its denominator; the stated boundedness argument
+is false.
+
+\Lc Nevertheless a constant-coefficient sum of the three cosecants cannot
+equal $-4\sin3\alpha/3$ on an open interval. By meromorphic continuation,
+inspect $\alpha=-2\pi r/3$ modulo $\pi$: exactly one of the three cosecants
+has a pole there, whereas the target is analytic. Its coefficient must vanish.
+Doing this for each $r$ forces all three coefficients to vanish. Off-diagonal
+root pairs and $\partial_{12}T$ have no generic diagonal $1/d$ pole and cannot
+repair it. Thus the specific nine-ratio basis, with constant coefficients
+and the allowed topological column, is excluded. This does not exclude
+arbitrary ratios, variable prefactors, or general quantum-dilogarithm products.
+\Lc Running the original fit reproduces 0.0368; its 40 float64 sample points
+are evidence for that finite basis, not a proof. Our exclusion instead uses
+the independently verified pole residues and the analytic argument above.
+
+\paragraph{Mirror products: both separated sides must be constant.}
+\Lc On a connected open rapidity domain, with nonzero differentiable factors,
+\begin{equation}
+ F(D)F(-D)G(S)^2=1
+ \quad\Longrightarrow\quad F(D)F(-D)=C,\quad G(S)^2=C^{-1}.
+\end{equation}
+Thus $G$ is constant on each connected smooth branch. Independence of $S,D$
+is valid locally even on the wedge of positive rapidities. The user's
+suggested intermediate equation is exactly the right argument; it is
+\emph{possible} when both sides are constant. For example $G=1$ and
+$F(D)=e^{iD^3}$ satisfy exchange unitarity. Unitarity excludes a nontrivial
+smooth mirror factor, not every mirror product. Without continuity one could
+choose sign-changing $G(S)\in\{+1,-1\}$; regularity is an assumption.
+A factor of a larger amplitude need not itself obey exchange unitarity
+unless its complement does. The separate semiclassical nonseparability
+obstruction remains valid for the proposed $F(D)G(S)e^{iT/\hbar}$ ansatz.
+
+\paragraph{Exponential family: qualified, not generally entire.}
+\Ld Calling an exponential pole-free requires a finite holomorphic exponent.
+Here $\delta$ contains logarithms of $A$, and the correction is unrestricted;
+neither entire dependence on $\eta$ nor global pole freedom has been proved.
+\Lc Already $\exp(i[i\log z])=1/z$ locally illustrates why ``exponential''
+alone does not rule out poles. \Ld Absence of classical breathers does not
+establish absence of all quantum bound states; conversely a semiclassical
+breather action alone does not establish an exact quantum pole requirement.
+The physical family-V selection is therefore conditional.
+
+\section{Breathers, poles, and resonance claims (\texttt{poles})}
+\paragraph{Bad equation: confirmed candidate poles, qualified physical interpretation.}
+\Lc For $\beta_{1,2}=a\mp ib$, $a>0$, $\pi/3<b<\pi/2$,
+\begin{equation}
+ A=\frac{1+3\coth^2a}{1-3\cot^2b}>1,\qquad
+ i\eta=\frac{4\sinh3a\sin3b}{9\hbar}=-\frac{I_{\rm br}}{\hbar}.
+\end{equation}
+The relative momentum has positive imaginary part. Independent explicit
+inversion of this action locates levels $N=1,2,3$ at $a=0.6,0.9$ and
+$\hbar=0.1$. Multiplying the \emph{full candidate} by displacement from the
+pole gives a finite nonzero residue, consistent across displacements
+$10^{-15},10^{-19}$. Half-shifted Gamma poles move by a half-integer as
+claimed. At fixed $a$ only levels within the action range of the specified
+window are realised. No pole occurs at $N=0$: the full candidate divided
+by its topological factor tends to one. This threshold limit can contain
+$t\log t$ terms and need not be analytic. The original checker's comment
+that $\Gamma(i\eta)/\Gamma(-i\eta)$ has a zero-level pole is also wrong:
+its removable limit is $-1$.
+\Ld Matching these candidate poles to the recorded Bohr--Sommerfeld action
+is not an exact quantum-spectrum theorem. The inequality $A>1$ itself also
+holds at $b=\pi/2$; excluding that endpoint for localisation is a separate
+condition, not the printed algebraic equivalence.
+
+\paragraph{Good equation: correct bound, incorrect sign partition and positivity test.}
+\Lc Direct Hirota evaluation confirms
+\begin{equation}
+ A=\frac{1-3\cot^2a}{1+3\coth^2b}<\frac14.
+\end{equation}
+Its sign changes at $a=\pi/3$, not $\pi/6$: it is negative below
+$\pi/3$ and positive above. Excluding $a=\pi/6$ has no stated basis.
+Writing $X=e^R>0$, the real tau function is
+\begin{equation}
+ \tau=1+2X\cos I+AX^2.
+\end{equation}
+Its minimum over $I$ is $1-2X+AX^2$, which stays positive for all $X>0$
+iff $A>1$. For example $A=1/2>1/4$, $X=2$, $I=\pi$ gives $\tau=-1$.
+This is exactly the threshold in the Phase 1 review. Therefore the
+zero-background two-phase Hirota class is singular, but the printed
+positivity argument and attribution are wrong. \Ld A statement about every
+possible good-equation breather, including other backgrounds, exceeds this
+result and the review's explicitly limited scope.
+
+\Lc The two momentum/spectral formulas in the pole proposition are correct:
+\begin{equation}
+ \operatorname{Im}(P_1-P_2)=\frac{\sinh2b}{3}
+ (\cos4a\cosh2b-\cos2a),\qquad
+ i\eta=\frac{4\sin3a\sinh3b}{9\hbar}.
+\end{equation}
+The stated inequality on $b$ gives examples with positive imaginary relative
+momentum and $i\eta=-N$. At $N=1$, $\hbar=0.05$ the actual numbers are
+\begin{center}
+\begin{tabular}{rrrr}\toprule
+$a$ & $b$ & $\operatorname{Im}(P_1-P_2)$ & $A$\\\midrule
+0.4 & -0.040137301855 & 0.019447334601 & -0.008461762797\\
+0.65 & -0.040269708896 & 0.030293216242 & -0.002261837165\\\bottomrule
+\end{tabular}
+\end{center}
+Both $A$ values are negative, contrary to the printed second example.
+The complete candidate has nonzero simple residues at these points on a
+locally chosen logarithm branch. \Ld They are unwanted poles under the
+package's spectrum criterion; calling this the physical quantum sheet uses
+that criterion rather than deriving it from a quantum spectral problem.
+For small $a<\pi/8$ not every negative $b$ satisfies the sheet inequality.
+
+\paragraph{Resonance locus and regularity: refuted as printed.}
+\Lc In the real square the genuine lines stated in the package are
+$\alpha_1+\alpha_2=\pi/3$ (head-on) and
+$\alpha_1+\alpha_2=2\pi/3$ (overtaking). The proposed
+$|\alpha_1-\alpha_2|=\pi/3$ overtaking line is false: the overtaking
+denominator vanishes at $|D|=2\pi/3$, outside this square.
+At $\alpha_1=0.2$, $\alpha_2=0.2+\pi/3$ one finds
+$A=0.355465479849$ and $\ell_1-\ell_2=-1.65067122982$, not infinity and zero.
+The two genuine lines do give the finite limit $S\to e^{iT/\hbar}$.
+However, approaching transversely by $t$ produces a nonzero $t\log t$
+term; the logarithmically growing difference quotient is checked at
+$t=10^{-10},10^{-20}$. ``Smoothly'' must be replaced by ``continuously,
+with no pole in this limit'', not differentiably smooth.
+
+\section{Ring geometry: established algebra and missing quantum input}
+\paragraph{Darboux signs (\texttt{classical}).}
+\Lc Starting from the stated chamber coordinate
+$X'_j=X_j+\gamma_j\sum_{l\text{ left of }j}M_l$,
+a particle moving from left to right gains the term $\gamma_jM_l$.
+Consequently the consistent wall shifts are
+\begin{equation}
+ \Delta X'_j=\Delta x_{jl}+\gamma_jM_l,
+ \qquad \Delta X'_l=\Delta x_{lj}-\gamma_lM_j.
+ \label{eq:correctwall}
+\end{equation}
+They agree with $-\partial\delta/\partial P$ in
+\eqref{eq:derivative}. The printed wall equation, introductory definition,
+and frame split have the opposite signs. In contrast the residual-interface
+\emph{script} uses the corrected signs, explaining why it passes.
+The wedge identity $dP_j\wedge d(\gamma_jM_l)=d\Pi_j\wedge dM_l$
+is correct since $d\gamma_j$ is proportional to $dP_j$. The change of ordering
+and the Hirota shifts preserve the stated chamber two-form.
+
+\paragraph{What the seam formula proves.}
+\Lc With the package's explicit order of subtraction, the endpoint difference is
+\begin{equation}
+ X'_j(\Lambda^-)-X'_j(0^+)=\Lambda+\gamma_j\sum_{l\ne j}M_l.
+\end{equation}
+It is the negative of the instantaneous coordinate reset from $\Lambda^-$
+to $0^+$. Calling both the seam jump obscures this sign. At fixed other charges,
+the function $P_j\Lambda+\Pi_j\sum_{l\ne j}M_l$ has this derivative with
+respect to $P_j$. It is obtained by integrating the endpoint difference
+\emph{against $dP_j$}, not by the text's $P_j\,d(\Delta X'_j)$.
+These two differential expressions are not equal.
+
+\Ld To turn that generating-function observation into a quantum Bethe twist
+requires a specified identification of the winding potential, its zero-mode
+state and canonical one-form, and transition phases for all coordinates.
+The package gives no wavefunction transport calculation establishing those
+choices. In its own two-form the variable $c$ couples to $\Pi_{\rm tot}$,
+not just $\Pi_j$. Extracting a self term $\Pi_jM_j$ from a seam change of $c$
+requires keeping the simultaneous changes of the other coordinates.
+Moreover the abstract says $c$ drops whereas the body says it increases.
+We do not select a global boundary condition to fill this gap. The proposed
+Aharonov--Bohm interpretation and exact quantum Bethe quantisation remain
+heuristic (d); asymptotic line-soliton coordinates are not an exact finite-ring
+field construction.
+
+\paragraph{Directional derivative, sum rule, fusion: conditional confirmation.}
+\Lc Define the proposed phase $\Phi(j\mid l)=\delta(j,l)+\Pi_jM_l$.
+Then direct differentiation gives
+\begin{equation}
+ -\partial_{P_j}\Phi(j\mid l)
+ =\Delta x_{jl}+\gamma_jM_l-\gamma_jM_l
+ =-\frac{\log A_{jl}}{k_j}.
+\end{equation}
+Thus the final identity is right despite the intermediate sign errors.
+It holds locally away from $P'_j=0$ and singular $A$. For the \emph{full}
+classical Bethe left side there is, however, an omitted derivative:
+\begin{equation}
+ \partial_{P_j}\mathcal B_j
+ =\Lambda-\sum_{l\ne j}\Delta x_{jl}
+   +\partial_{P_j}(\Pi_jM_j).
+\end{equation}
+At parameter $0.23$, direction $+$, that last term is
+$-17.3832401711$ (bad) and $-17.3822877701$ (good), not zero.
+
+\Lc Pairwise exchange antisymmetry gives
+$\Phi(j\mid l)+\Phi(l\mid j)=\Pi_jM_l+\Pi_lM_j$.
+Summing the \emph{assumed} equations therefore gives
+\begin{equation}
+ P_{\rm tot}\Lambda+\Pi_{\rm tot}M_{\rm tot}
+ =2\pi\hbar\sum_j n_j.
+\end{equation}
+For a quantum amplitude the unwrapped phases cancel modulo $2\pi$;
+integer branch changes are absorbed in the $n_j$. This is an exact algebraic
+consequence of the proposed Bethe equations, not an independent field-theory
+derivation of those equations. The checker verifies the sum for $N=2,3,4$.
+
+\Lc For the bad conjugate pair the sums
+$M_{\rm br}=4\sinh a\cos b$ and
+$\Pi_{\rm br}=-2\sinh2a\cos2b$ are real, and the fused third-particle
+phase differentiates to $-\log(A_{31}A_{32})/k_3$ on conjugate logarithm
+branches. This establishes charge additivity and a continued classical
+shift. \Ld It does not prove a quantum bootstrap, normalised bound-state
+residue, or bound-state ring Hilbert space.
+
+\section{Residual phase and the frame dictionary (\texttt{interfaces})}
+\Lc Locally on a real regular channel, two nonzero unitary amplitudes with a
+common leading phase differ by $e^{i\Theta}$, with a real phase modulo
+$2\pi$. Exchange imposes antisymmetry with the species labels exchanged.
+If both amplitudes obey the stipulated crossing relation on compatible
+analytic branches, then
+\begin{equation}
+ \Theta_{\rm ho}(\beta_1,\beta_2)
+ =-\Theta_{\rm ov}(\beta_1,\beta_2+i\pi)\pmod{2\pi}.
+\end{equation}
+Thus a \emph{specified analytic} overtaking phase determines its crossed
+channel. An arbitrary real antisymmetric function need not admit that
+continuation or produce a real head-on phase. This is a functional freedom,
+not one free real number.
+
+\Ld Constraints (i)--(v) do not prove a globally zero-free ratio, a
+single-valued holomorphic logarithm, or an integer-power loop expansion.
+Zeros and monodromy are not eliminated merely by listing poles.
+\Lc A nonzero entire multiplier with an antisymmetric phase proportional to
+$\hbar^{-1/2}$ still has vanishing contribution to
+$\hbar\arg S$ in the classical limit, while violating the asserted
+$\Theta=\vartheta+O(\hbar)$ expansion. For example take the additional phase
+$\hbar^{-1/2}\sinh(\beta_1-\beta_2)$ in both channels; it is real and
+antisymmetric, and crossing reverses the hyperbolic sine. The claim needs an additional perturbative
+expansion assumption. The quoted strip in $\operatorname{Im}(-i\eta)$
+is not justified as a physical analyticity domain by these tests.
+
+\paragraph{Relation to the frame dictionary.}
+\Lc The frame dictionary exhibits
+\begin{equation}
+ A_\lambda(y_1,y_2)=\lambda\frac{y_1y_2(y_1-y_2)}{(y_1+y_2)^3},\qquad
+ A_\lambda(Y,r^2Y)=\lambda\frac{r^2(1-r^2)}{(1+r^2)^3}.
+\end{equation}
+Our symbolic check independently verifies antisymmetry, edge vanishing,
+nonzero mixed derivative, and the nonzero scale-invariant limit. Adding
+$hA_\lambda$ to its action representative preserves one-body dispersion,
+its classical limit, and symmetric reciprocity, but changes the phase by
+$A_\lambda$. It therefore supplies precisely the same \emph{kind of}
+antisymmetric two-body obstruction that can contribute to
+$\vartheta_{\rm ov}$. It is not a one-body reparametrisation.
+
+\Ld They are not already identified as the same function: the frame term is
+one possible contribution to the total residual relative to Gamma, and its
+finite-sea variables still need a physical continuum map. A global
+crossing-real, pole-compatible extension of the displayed frame example
+is not established by the frame dictionary. Nevertheless its existence
+refutes the package's assertion that one-body $\Delta P$, a coupling shift,
+and an intrinsic determinant uniquely determine the residual: a genuinely
+two-body quantum frame input remains missing. The corrected interface would
+need that contribution in addition to the one-body chain-rule terms. Neither
+crossing nor the summed ring equation computes it.
+
+\section{Direct one-loop quadrature: crossing and the cusp}
+\paragraph{Definitions actually integrated (\texttt{quadrature}).}
+\Lc The earlier note defines
+\begin{equation}
+ I_{12}=\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}\theta_1\theta'_2\,dq,
+ \qquad J_{12}=\frac{I_{12}-I_{21}}2,
+\end{equation}
+with its three-root elementary phase and weights $(1,1,-2)$.
+We integrate that phase and its independently differentiated derivative,
+splitting at zero and at each Lorentzian width. These are two choices
+sharing a local gradient up to endpoint constants, not two contributions
+to add. The new note's $\Delta\theta_{\rm cont}=I+J$ is not the earlier
+one-loop prescription. Its displayed dilogarithm expression instead uses
+$(1,1,-1)$ and a different kernel; its arctangent expression for $J$ is
+also different. The original checker does not implement either printed
+expression. Direct evaluation asserts discrepancies for both.
+
+\Lc Under $\alpha\mapsto\alpha+\pi$, the elementary principal phases obey
+$\theta(q;\alpha+\pi,+)=-\theta(q;\alpha,-)$, including their derivatives
+on the open half-lines. Consequently
+\begin{equation}
+ I^{\rm same}_{12}(\alpha_1,\alpha_2+\pi)
+ =-I^{\rm head}_{12}(\alpha_1,\alpha_2),\qquad
+ J^{\rm same}_{12}(\alpha_1,\alpha_2+\pi)
+ =-J^{\rm head}_{12}(\alpha_1,\alpha_2).
+ \label{eq:truecross}
+\end{equation}
+The first requested identity is confirmed for the correct raw integral;
+the second requested sum equals zero, not $\pi/2$. Numerical values are
+\begin{center}\small
+\begin{tabular}{rrrrr}\toprule
+$(\alpha_1,\alpha_2)$ & $I^{\rm same}$ & $J^{\rm same}$ & $I^{\rm head}=J^{\rm head}$ & $J_{\rm cross}+J^{\rm head}$\\\midrule
+$(0.2,0.55)$ & -0.995401817939 & 0.575394508856 & 0.296322943261 & $<10^{-48}$\\
+$(0.35,0.6)$ & -1.266182766546 & 0.304613560249 & 0.444252224180 & $<10^{-48}$\\\bottomrule
+\end{tabular}
+\end{center}
+The printed arctangent $J$ differs by $0.415303503064$ and
+$0.343007339335$, respectively.
+
+\paragraph{Why the original check passes.}
+\Lc The original \texttt{smx\_residual\_ambiguity\_interface.py} explicitly
+sets \texttt{J\_cont = pi/2 + I12\_same(a1,a2+pi)}. It does not call its
+own antisymmetric \texttt{J12\_same} there and does not integrate a crossed
+phase. The target offset is built into this definition. Carrying the
+light-square relation $J=I+\pi/2$ into another orientation is a possible
+\emph{chosen continuation convention}, not a verification of the original
+antisymmetric integral. Nor are the real absolute-value and sign formulas
+holomorphic expressions that can be continued without specifying branches.
+
+\Lc Direct resolved quadrature at $\alpha_1=0.2$ and
+$\alpha_2=\pi/3\pm10^{-7}$ finds the raw same-direction $I$ and $J$
+continuous; the $J$ upper-minus-lower difference is about
+$3.50\,10^{-7}$. No constant $+\pi/2$ jump of this raw $J$ occurs there.
+Different root-sum extensions past the stability cusp may carry different
+constants and must not be substituted silently for this integral.
+The proof also uses the false identity
+$\arctan x-\arctan(1/x)=\frac\pi2\operatorname{sgn}x$; it is the
+\emph{sum}, for real nonzero $x$, that has this value. At $x=2$ the
+printed difference is $0.643501108793$, not $\pi/2$.
+The claimed $\cos3\alpha>0$ on the whole $(0,\pi/3)$ interval is false;
+it changes sign at $\pi/6$.
+
+\Lc Even if the stipulated continuation offset $C=\pi/2$ were adopted,
+crossing $-c_M\pi/2+c_{\rm loop}\Delta_{\rm same}$ with
+$\Delta_{\rm cross}+\Delta_{\rm head}=C$ would give
+$(c_M-c_{\rm loop})\pi/2+c_{\rm loop}\Delta_{\rm head}$,
+not $(c_M-\tfrac12c_{\rm loop})\pi/2+c_{\rm loop}\Delta_{\rm head}$.
+For a regular good head-on pair with $\alpha_1+\alpha_2<\pi/3$,
+$\eta_{\rm ho}<0$ and the Stirling offset is $+\pi/2$; the corollary's
+parenthetical $\eta_{\rm ho}>0$ has the wrong sign.
+\Ld An absolute determinant phase or Maslov cancellation cannot be inferred
+from the imposed offset. The claimed physical cancellation is unestablished.
+
+\section{Small-amplitude interface: the checker and text disagree}
+\paragraph{Corrected chain-rule terms (\texttt{interfaces}).}
+\Lc Use the shifts in \eqref{eq:correctwall} and put
+$\alpha_1=\lambda r$, $\alpha_2=\lambda$, $0<r<1$,
+$\Delta P(\alpha,+)=c_{\ln}\alpha\log\alpha+c_{\rm lin}\alpha+
+O(\alpha^3\log\alpha)$. With $\mathcal C=c_{\ln}\log\lambda+c_{\rm lin}$,
+\begin{align}
+ H_{\rm ov}&\longrightarrow
+ -2c_{\ln}\log r\log\frac{1-r}{1+r},\\
+ D_{\rm ov}&=-2(r^{-1}-r)\mathcal C
+             -2c_{\ln}\frac{\log r}{r}+o(1),\\
+ (H+D)_{\rm ho}&=-2(r^{-1}+r)\mathcal C
+             -2c_{\ln}\frac{\log r}{r}+o(1).
+ \label{eq:small}
+\end{align}
+Here $H$ uses the physical Hirota shifts and $D$ the Darboux additions.
+Our action derivatives and finite-$\lambda$ tests reproduce these formulas
+at $\lambda=10^{-12}$. They agree with the \emph{original script}, not its
+write-up. In particular the overtaking tail is generally logarithmically
+divergent, not a finite scale-invariant constant.
+
+\Lc The independently evaluated mode-charge formula gives
+\begin{equation}
+ c_{\ln}=\frac1\pi,\qquad
+ c_{\rm lin}=\frac{-\log2-1+\tfrac14\log3}{\pi},
+\end{equation}
+not the text's $c_{\ln}=-2/\pi$. Also
+$A_{\rm ho}(\lambda r,\lambda)=1+3r\lambda^2+O(\lambda^4)$,
+not the printed $1-\tfrac32\lambda^2(1-r^2)$.
+For the raw same-direction continuum integral,
+\begin{equation}
+ I_{\rm KdV}(r)=-\frac4\pi\chi_2(r)
+ -\frac2\pi\log r\log\frac{1-r}{1+r},\qquad
+ J_{\rm KdV}(r)=\frac\pi2+I_{\rm KdV}(r).
+\end{equation}
+An independent elementary quadrature of the kernel verifies these expressions;
+at fixed $r\ne1$, $J$ is generally nonzero, contrary to the printed
+$O(\lambda^2)$ assertion. With the actual mode coefficient, the logarithmic
+product cancels in $I_{\rm KdV}-H_{\rm ov}$, not in the sum.
+\Ld These remain conditional frame conversions and continuum integrals;
+none replaces a projected determinant or the missing two-body frame map.
+
+\section{Dependency, circularity, and execution audit}
+\paragraph{Phase 2i dependency check.}
+\Lc The package explicitly excludes Phase 2i, and its four scripts import
+no Phase 2i implementation. No Wiener--Hopf coefficient, endpoint product,
+or all-loop master identification from that phase is used. Thus its refuted
+claims are not an upstream dependency here. The present quadrature is
+consistent with the orientation bookkeeping confirmed in
+\texttt{audit\_phase2i.tex}; we do not use the refuted universal kernel
+criterion, printed Darboux defect coefficient, or proposed physical phase
+selection. This also leaves intact that audit's warnings about physical
+normalisation and the common quantum frame.
+
+\paragraph{What the original scripts establish and omit.}
+\Lc All four named scripts return exit code zero and end with
+\texttt{ALL CHECKS PASSED}. This was checked both directly and by the new
+checker's subprocess tests. Their shared dictionary is an implementation
+dependency, not by itself circular. The following limitations matter:
+\begin{itemize}
+\item The $J$ crossing offset is inserted in \texttt{J\_cont}; no independent
+crossed $J$ or cusp-to-Stirling phase transport is calculated.
+\item The mirror check differentiates the factorised ansatz and is a valid
+conditional algebra test; it cannot show that constant-$G$ products fail
+unitarity. The numerical dilog fit is not its advertised global proof.
+\item The pole checker does not test the false sign boundary or positivity
+threshold, the printed $\hbar=0.05$ examples, or the claimed $|D|=\pi/3$
+resonance. Its actual numerical pole examples use $\hbar=0.1$.
+\item The ring checker assumes the seam twist in \texttt{Phi\_ring}, and
+then tests its consequences. This is useful consistency testing, but does
+not independently derive the twist or quantise winding. Its chamber loop
+uses $N=4$ only and its sum loop $N=3$ only, despite broader docstring wording.
+\item The residual-interface script uses corrected Darboux signs and
+corrected small-amplitude expressions; passing them does not validate the
+contradictory formulas in the PDF. It does not prove the residual logarithm
+exists globally, or that the interface is unique.
+\end{itemize}
+\Ld No inference about authors' intentions or editing history follows from
+these mismatches. Successful scripts cannot substitute for checking that
+they implement the printed claims.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \Lc Target-claim discrepancies explicitly asserted by the independent
+checker: reversed Darboux signs; incorrect dilog residues and blanket
+exclusion; false good-breather sign and positivity boundaries; incorrect pole
+examples; false overtaking resonance and smoothness; omitted Bethe self
+term; printed continuum $I,J$ mismatch; imposed $J$ crossing constant;
+false arctangent identity and constant conversion; incorrect small-amplitude
+tails, head-on expansion, and $J$ limit. Qualified physical claims are
+identified separately rather than asserted false by numerical tests.
+\item \Lc The first independent cusp assertion expected an upper-minus-lower
+raw same-direction $J$ jump of $-\pi/2$. It failed: resolved direct quadrature
+gave $3.50034825911617\,10^{-7}$ at separation $2\,10^{-7}$. Inspection of
+the elementary phases and their endpoint product showed the raw same-direction
+integral is continuous here. The final test asserts continuity at the same
+finite-step tolerance; no tolerance was enlarged to hide this failure.
+This correction strengthens the distinction between raw quadrature and a
+chosen continuation of a closed-form kernel.
+\item \Lc A later independent run failed a symbolic assertion because only
+the first half of an identically zero expression was expanded before testing
+structural equality with zero. Expanding the entire difference fixed the
+checker; the identity, numerical tolerances, and physical conclusion were
+unchanged. The quadratures preceding this assertion had all passed.
+\end{enumerate}
+
+\paragraph{Reproducibility and deliverables.}
+\Lc Run \texttt{python3 phase2/scripts/audit\_smx.py}. Its final line is
+\texttt{ALL CHECKS PASSED}; refuted statements are encoded as assertions
+that their discrepancies exist. The original scripts' successful execution
+is separately labelled as a smoke test. The report is compiled by two
+\texttt{pdflatex} runs in \texttt{phase2/}, with rendered pages inspected.
+The deliverables are \texttt{audit\_smx.tex}, \texttt{audit\_smx.pdf}, and
+\texttt{scripts/audit\_smx.py}. No existing status line or research text was
+changed, as required by this task.
+
+\Ld The package is useful as a catalogue of conditional candidates and
+classical consistency checks. Its corrected algebra does not yet select
+an exact S-matrix, fix the two-body quantum frame, or establish the claimed
+quantum ring and absolute one-loop phase interpretation.
+\end{document}
