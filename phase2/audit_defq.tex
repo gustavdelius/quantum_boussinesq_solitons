@@ -1,0 +1,469 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\La}{\textbf{(a)}\ }
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak defq.py}}
+\newcommand{\file}[1]{\texttt{\detokenize{#1}}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of defect charges and fusion:\\conventions, boundary traces and the scope of the obstructions}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc The classical charges, continuum momentum trace, linear UV divergence and
+KP growing-mode counts survive independent checks. The scattering parameter
+is $s=\sigma_{\rm vac}$; the spectral parameter is legitimately
+$c=\eta\sigma_{\rm vac}$. These are different quantities. A concrete extra
+$\eta$ in the classical script turns its purported absorption test into
+ordinary transmission. The printed energy-trace sign, negative-wavenumber
+asymptotic transmission, threshold growth rate and pole argument against
+root shifts are incorrect. Independent quadratures reproduce the numerical
+canonical-charge holonomies and absorbed-momentum remainders.
+\Ld Those examples and a conditional telescoping argument do not establish
+a universal physical quantum-fusion no-go theorem.
+\end{abstract}
+
+\section{Scope, method and verdicts}
+Labels retain the repository meanings: (a) established in literature,
+(b) literature heuristic, (c) project derivation or computational evidence,
+(d) unestablished physical identification or research judgment.
+\Lc This audit reads the package source/PDF and three scripts, the relevant
+parts of \file{paper/review_draft1.tex}, the charges/action and frames/defects
+audits, \file{audit_phase2i.tex}, and the CZ repository notes. All independent
+checks are in \file{phase2/scripts/audit_defq.py}. No package checker is
+imported or used to supply numerical data to this checker. The original
+three scripts were separately run to test their exit status and success messages.
+
+\Lc The independent methods are action variation with a free vacuum
+constant, integration of the momentum-flux one-form, polynomial reduction
+on a KP edge, logistic-coordinate spatial quadrature, fresh linear sewing
+solves, direct determinants away from their zeros, and rational kernel
+quadrature followed by numerical differentiation. SymPy checks are exact;
+mpmath uses 70 decimal digits, normally with absolute tolerance $10^{-55}$.
+Finite-cutoff tests retain their stated asymptotic error.
+
+\begin{longtable}{@{}L{5.1cm}L{2.3cm}L{7.9cm}@{}}
+\toprule Claim & Verdict & Independent evidence and limitation\\\midrule\endhead
+Scattering root and growth parameter & Qualified (c) & Correct distinction in most formulas; extra $\eta$ corrupts the absorption input.\\
+Four classical charges and sewing fluxes & Confirmed (c) & Action variation, integrated flux one-form, both orientations; bulk equations and sewing required.\\
+KP-edge charge factorisation & Confirmed (c) & Exact polynomial quotient and both orientations.\\
+Package's numerical absorption test & Refuted (c) & Transmission factor $1.58257569495584$, not zero. Independent genuine absorption tests pass.\\
+Corrected determinant and branch switch & Confirmed (c) & Full action-derived matrices for both orientations.\\
+Growing counts; no stable--stable edge & Confirmed (c) & $(0,1,2)$ generically, $(0,1,1)$ at switch; printed threshold growth value refuted.\\
+Quadratic momentum trace & Confirmed (c) & Fresh sewing modes, polarization and integral. Complete physical identification qualified (d).\\
+Printed energy trace and asymptotic $z$ & Refuted (c) & Energy trace has a plus sign; signed-wavenumber limits coincide.\\
+Linear Casimir divergence; boundary term & Confirmed (c) & Independent cutoff quadrature and UV slope; finite scheme not selected.\\
+Only parameter shifts allowed as counterterms & Qualified & Restricted potential test passes (c); exhaustive quantum classification absent (d).\\
+Canonical-charge holonomy no-go & Qualified & Examples reproduced (c); universal nonvanishing unproved. Telescoping valid at fixed edge data.\\
+Absorbed-soliton momentum remainder & Qualified & Identity and nonzero examples confirmed (c); physical frame conditional (d).\\
+Pole proof excluding root shifts & Refuted (c) & Alleged simple poles have zero residue on the soliton root locus.\\
+Complete physical one-loop factorisation & Qualified (d) & Continuum identities do not construct the quantum boundary theory.\\
+Every original checker prints success & Confirmed (c) & All three exit zero and print \file{ALL CHECKS PASSED}, despite the discrepancies.\\\bottomrule
+\end{longtable}
+
+\section{Two parameters, and one actual convention error}
+\La The source defines $\sigma_0=sc$ in its dimensional notation; with bulk
+wave speed one, its scattering parameter is $s=\sigma_0$ \cite[Sec.~5.1]{CZ}.
+\Lc To prevent collision with that notation, write
+\begin{equation}
+ s=\sigma_{\rm vac},\qquad q_D=-\frac{s}{2\sqrt3},\qquad
+ c=\eta\sigma_{\rm vac},\qquad \eta=\pm1.
+ \label{eq:dictionary}
+\end{equation}
+Here $c$ denotes only the spectral combination, not the dimensional wave
+speed. Fresh action-derived sewing solves give continuum transmission
+\begin{equation}
+ z(q;s,\eta)=\left(
+ \frac{\operatorname{sgn}(q)\sqrt{1+q^2}+s-i\sqrt3q}
+ {\operatorname{sgn}(q)\sqrt{1+q^2}+s+i\sqrt3q}\right)^\eta.
+ \label{eq:phonon}
+\end{equation}
+\Lc The checker solves one sewing equation for $z$, checks all four residuals,
+and only then compares with \eqref{eq:phonon}. The decaying-mode determinant
+instead depends on $c=\eta s$.
+
+\Lc The package's classical symbolic action uses bare $s=\sigma_0$ correctly.
+Its determinant test is at $\eta=+1$, where the two parameters coincide.
+Its fusion checker correctly uses $s=-2\sqrt3q_D$ in dipole charges and
+$c=-2\sqrt3\eta q_D$ in growing-mode counts. Replacing $c$ by $s$ in the
+spectrum would therefore introduce an error. The exception is the classical
+checker's absorption input:
+\begin{quote}\small
+\file{s_abs = -2 * r3 * q1 * eta_abs}
+\end{quote}
+\Lc The receiving function uses \file{qD = -s_val / (2 * r3)}, treating
+\file{s_val} as the bare parameter. Its actual inputs give
+\begin{equation}
+ q_1=\frac{\sqrt3}{4},\quad
+ q_2=\frac{-q_1+\sqrt{1-3q_1^2}}2,\quad \eta=-1,
+ \qquad s_{\rm passed}=+1.5,\quad s_{\rm required}=-1.5.
+\end{equation}
+The resulting $z=1.58257569495584001$ is regular transmission. The reported
+conservation error is real, but does not verify absorption: the original
+script never asserts $z=0$. Our checker tests genuine $z=0$ solutions for
+both orientations and their four conserved charges.
+
+\Lc A second diagnostic reproduces the review's example:
+$\alpha=0.4$, $\epsilon=1$, $\sigma_0=2.4$, $\eta=-1$ gives
+$z=1.5097108339861$. Inserting $\eta\sigma_0$ in the scattering root instead
+gives $0.37356503047145$; the maximum sewing residual is
+$1.1104178917082$ in project potential units (three times this in CZ field
+units). The correct solution passes the $10^{-55}$ test.
+
+\Lc The correctly implemented charges, growth rates, triangle counts and
+algebraic obstructions need no orientation correction. The numerical
+absorption example does. A literal substitution of
+$-\eta\sigma_0/(2\sqrt3)$ for the root at fixed fields changes transmission
+and root-labelled charge assignments. It is not a harmless renaming.
+
+\section{Classical charges rederived from the action}
+\La The starting action and sewing variation are CZ's type-I construction
+\cite[Secs.~2--3]{CZ}. \Lc Put $a=\varphi_L$, $b=\varphi_R$, $x=a_x$,
+$y=b_x$, and $A=\eta/\sqrt3$. The explicit dictionary is
+$U=-3a$, $V=-3b$, $\mathcal L_{CZ}=9\mathcal L$, $D=D_{CZ}/9$.
+The independently integrated functions satisfy
+\begin{align}
+ \sigma&=s-(a-b)/A,&
+ \rho(\sigma)&=\rho_0+\frac{\sigma-\sigma^3/3}{2A},\\
+ \tau'(\sigma)&=-\sigma\rho(\sigma),&
+ h'(\sigma)&=-\rho(\sigma),\qquad \tau(s)=h(s)=0.
+\end{align}
+The vacuum constraint is $\rho_0=-(s-s^3/3)/(2A)$. The gauge
+$f=g=-\sigma^2/(4A)$ satisfies $f_V-g_U=\sigma$; the factor-two discrepancy
+in the source's example gauge is avoided by enforcing that constraint.
+\Lc Conversion of the action gives
+\begin{align}
+ D&=a_tF+b_tG-E_D,\\
+ F&=A(x+2y)+\frac{\sigma^2}{12A},&
+ G&=A(2x+y)+\frac{\sigma^2}{12A},\\
+ E_D&=-A\sigma(x^2+xy+y^2)+\frac{\rho}{3}(x+y)-\frac{\tau}{9},\\
+ P_D&=-\frac A2(x^2+4xy+y^2)+\frac h9,\\
+ \Pi_D&=F+G=3A(x+y)+\frac{\sigma^2}{6A},&
+ M_D&=b-a=A(\sigma-s).
+ \label{eq:charges}
+\end{align}
+\Lc The checker first recovers $P_D$ by integrating the one-form required
+by momentum flux, then compares with \eqref{eq:charges}. This checks that
+CZ's intermediate $-U_xF_{CZ}-V_xG_{CZ}$ terms must not be subtracted again.
+Variation gives
+\begin{align}
+ a_{xx}&=D_x,&a_{xxx}&=x-3x^2-D_a+\dot F,\\
+ b_{xx}&=-D_y,&b_{xxx}&=y-3y^2+D_b-\dot G,
+\end{align}
+where $D_x,D_y$ are partial derivatives with respect to boundary jet variables.
+\Lc The bulk flux primitives used in the independent check are
+\begin{align}
+ B_E&=\varphi_t(\varphi_x-3\varphi_x^2-\varphi_{xxx})+\varphi_{xt}\varphi_{xx},\\
+ B_P&=-\tfrac12\varphi_t^2-\tfrac12\varphi_x^2+2\varphi_x^3
+            +\varphi_x\varphi_{xxx}-\tfrac12\varphi_{xx}^2,\\
+ B_\Pi&=\varphi_x-3\varphi_x^2-\varphi_{xxx},\qquad B_M=\varphi_t.
+\end{align}
+\Lc Symbolically, $B_Q(L)-B_Q(R)+\dot Q_D=0$ for all four charges after
+sewing substitution, for arbitrary remaining jets and both orientations.
+``Off-shell'' means no special soliton solution was imposed on the boundary
+jets. Conservation of bulk integrals still uses the bulk equation; it is
+not an identity for unrestricted off-shell bulk fields. Fixed asymptotic
+potentials are required for the mass statement.
+
+\Lc For an edge $p\to q$, reduction modulo $p^2+pq+q^2-1/4$ gives the
+four charge jumps with signed $k=p-q$ and $v=\sqrt3(p+q)$. Restoring positive
+$k=|p-q|$ yields exactly
+\begin{equation}
+ \Delta(E_D,P_D,\Pi_D,M_D)
+ =\eta\operatorname{sgn}(p-q)(E,P,\Pi,M)_{\{p,q\}}.
+\end{equation}
+\Lc The time-dependent check uses $h=(1+e^{-k(x-vt)})^{-1}$,
+$\varphi=2kh$, integrating bulk densities in $h$ separately on the two
+half-lines. All four totals agree at $t=-3,0.27,4$ to $10^{-55}$,
+for transmission and actual absorption at both orientations.
+
+\section{Quadratic traces: the resolved question and its limits}
+\Lc Taylor expansion of the action gives the package's quadratic operators,
+including $-\sigma_0(a-b)/2$ in $F_1,G_1$. The checker contracts them with
+fresh complex sewing amplitudes by quarter-cycle polarization, using the
+vacuum covariance $\langle a^2\rangle_q=1/(4\pi\omega)$ and
+$\omega=|q|\sqrt{1+q^2}$. For $q>0$,
+\begin{align}
+ \langle P_{D,2}\rangle_q+\langle P_{D,2}\rangle_{-q}
+ &=\frac{q}{4\pi}\{\theta'(q)-\theta'(-q)\}\\
+ &=\frac{\sqrt3\eta q\{2(\sigma_0^2-2)q^2+\sigma_0^2-1\}}
+ {\pi\sqrt{1+q^2}\{16q^4+4(\sigma_0^2+2)q^2+(\sigma_0^2-1)^2\}}.
+ \label{eq:ptrace}
+\end{align}
+\Lc The maximum residual over five vacuum parameters, three positive
+wavenumbers and both orientations is $1.05\,10^{-71}$. Independent integration
+of this rational trace agrees with dipole momentum from compact-interval
+kernel quadrature to $10^{-55}$ at two stable oriented vacua.
+
+\Lc This resolves the earlier missing \emph{continuum quadratic operator}
+calculation. The charges/action audit asked for this calculation explicitly.
+Here an action-derived operator is compared with independently solved scattering data. It is not a formula
+compared with itself. \Ld The complete physical identification still needs
+a boundary domain, canonical mode completeness, discrete/threshold sectors,
+a renormalised vacuum and quantum Ward identities. Infinite-volume plane-wave
+bulk subtraction alone does not settle finite-volume normalisation.
+On unstable vacua these are formal continuum traces, not constructed
+quantum ground-state expectations.
+
+\paragraph{Printed discrepancies.}
+\Lc Let $K=a_tF_1+b_tG_1$. Direct contraction gives
+\begin{equation}
+ \langle E_{D,2}+J_{\rm bulk,2}\rangle_q=\langle K\rangle_q,
+ \qquad \langle K\rangle_q+\langle K\rangle_{-q}
+ =\frac{\omega}{4\pi}\{\theta'(q)+\theta'(-q)\}.
+\end{equation}
+\Lc For these plane waves $\langle J_{\rm bulk,2}\rangle=0$.
+The minus sign in the package's boxed energy identity is false. Its code
+asserts \file{2 * symp_bdry_sym - dth_even_E == 0}, where the former term
+is $\langle K\rangle_{\rm sym}$, but prints the opposite sign as a pass.
+The audit asserts the nonzero discrepancy with that printed identity.
+
+\Lc Also, \eqref{eq:phonon} gives
+\begin{equation}
+ z(+\infty)=z(-\infty)=e^{-2\pi i\eta/3},
+\end{equation}
+not $e^{-2\pi i\eta\operatorname{sgn}(q)/3}$. This does not change phase
+derivatives, but matters to the cutoff endpoint gauge. Finally, the printed
+real mode of amplitude $1/\sqrt{\pi\omega}$ has ordinary time average
+$1/(2\pi\omega)$, not $1/(4\pi\omega)$. The latter is the standard vacuum
+contraction actually used by the formulas; the text must specify an extra
+half weight or use amplitude $1/\sqrt{2\pi\omega}$. Our checker fixes the
+covariance explicitly.
+
+\section{Spectrum and obstruction (i)}
+\Lc Fresh differentiation of the nonlinear action and substitution of
+$e^{gt\pm\kappa x}$ gives, in the package's row ordering,
+\begin{align}
+ \frac{\det M}{(\kappa_1-\kappa_2)^2}
+ &=-\frac23 S^2(S^2-1)P_-(S;c)P_+(S;c),\\
+ P_\mp(S;c)&=S^2-\frac{\sqrt3\mp1}{2}cS+\frac{c^2-2\mp\sqrt3}{2},\\
+ c&=\eta\sigma_0,\qquad S=\kappa_1+\kappa_2,\qquad g=(S^2-1)/2.
+\end{align}
+\Lc The checker solves the bulk quartic for decaying exponents and compares
+the unreduced determinant at sixteen points away from its zeros. Each
+candidate admissible rate is also checked in the full matrix. This confirms
+\file{audit_frames_defects.tex} and \file{audit_phase2i.tex}, including the
+extension to $\eta=-1$.
+
+\Lc Selecting $S>1$ gives zero growing modes for $c<-1$, one for
+$-1<c<1$, two for $1<c<2$ except at $c=\sqrt3$, where one is marginal.
+The switch from $P_-$ to the second $P_+$ root is correct, but
+\begin{equation}
+ g_{\rm remaining}(\sqrt3)=\frac{\sqrt3}{4}
+ =0.4330127018922193\ldots\ne\frac{2\sqrt3-1}{8}.
+\end{equation}
+\Lc The last expression is the incorrect printed value, not a change to the
+count. For $\eta=-1$, $\sigma_0=-1.9$, the actual rates are
+$0.2002565225612746$ and $0.4968939274851985$; using bare $s=-1.9$
+instead of correct $c=+1.9$ would wrongly predict zero.
+
+\Lc Three distinct real KP roots give one spectral parameter in each of
+$(-2,-1)$, $(-1,1)$ and $(1,2)$, as follows from their common cubic's extrema.
+Thus the sorted counts are $(0,1,2)$ generically and $(0,1,1)$ at the branch
+switch. The independent checker covers 99 nondegenerate angles and both
+orientations, in addition to the determinant tests. No edge connects two
+vertices without a growing mode. Marginal points and repeated-root triples
+need separate treatment; these checks are not a proof of nonlinear stability
+or full spectral completeness. \Ld The usual restriction to stable
+asymptotic defect states does not rule out a separately constructed resonance
+continuation.
+
+\section{UV divergence and boundary counterterms}
+\Lc Set the phase of \eqref{eq:phonon} to zero at each infinity and put
+$T=\sqrt{1+\Lambda^2}$, $S_D=-\eta\sqrt3\sigma_0/2$. Independent phase
+differentiation and quadrature confirm
+\begin{align}
+ E_{\rm dens}&=\frac{S_D}{2\pi}(T-1)+\Delta E_D^{\rm ren}
+                                  -\frac{S_D}{2\pi}+O(\Lambda^{-1}),\\
+ B_D&=-\frac{S_D}{2\pi}T+O(\Lambda^{-1}),\\
+ E_{\rm mode}=E_{\rm dens}-B_D
+ &=\frac{S_D}{\pi}(T-1)+\Delta E_D^{\rm ren}+O(\Lambda^{-1}).
+\end{align}
+\Lc The independent cutoffs are $10^3,10^5$; the finite term is checked by a
+separate compact-interval kernel quadrature. The limiting density slope is
+also checked at $q=10^{20}$. At either stable vacuum
+$(\eta,\sigma_0)=(1,-1.5)$ or $(-1,1.5)$ the limiting density and mode slopes
+are $0.206748335783\ldots$ and $0.413496671566\ldots$.
+The original renormalisation script's header claims a different slope and
+polynomial boundary-operator divergences; those stale comments contradict
+its actual calculations.
+
+\Lc The open-half-line bulk tadpole vanishes on constant vacua and cannot
+cancel this divergence. The proposed boundary term decomposes as
+\begin{equation}
+ -\frac{S_D}{\pi}(T-1)
+ =\frac{\eta\sqrt3 s}{2\pi}(T-1)+\frac3{2\pi}(T-1)M_D.
+\end{equation}
+\Lc This confirms the boundary-jump completion of the total derivative,
+up to a vacuum-independent reference term. It establishes a boundary
+subtraction requirement in this prescription without selecting a finite part.
+
+\Lc Perturbing the action by a potential with unchanged derivative couplings
+changes momentum flux by $-(x-y)\delta\tau'$ in the corresponding units.
+Independent jets cannot match $(a_t-b_t)\delta h'$ unless both derivatives
+vanish. The checker derives this change from perturbed sewing equations.
+\Ld This restricted result is not an exhaustive classification of quantum
+boundary operators, derivative counterterms or anomalous conservation laws.
+Parameter shifts within the CZ family are available; their claimed necessity
+for every integrable quantum renormalisation is not proved. A fully
+established physical one-loop transmission theory does not follow.
+
+\section{Obstruction (ii): holonomy and the no-go theorem's scope}
+\Lc The independent charge calculation integrates rational phase kernels,
+not the package's logarithmic charge functions. With
+$\alpha=\arccos|v|$, $\epsilon=\operatorname{sgn}v$,
+$\phi_j=\alpha+(2\pi/3,-2\pi/3,0)_j$, $w_j=(1,1,-2)_j$, it uses
+\begin{align}
+ I_j&=\int_0^1\frac{dz}{1-\cos^2\phi_j\,z^2},\\
+ E_m&=\frac1{2\pi}\sum_j w_j\sin\phi_j(1+\cos^2\phi_j I_j),&
+ P_m&=\frac\epsilon{2\pi}\sum_j w_j\sin\phi_j\cos\phi_j I_j.
+\end{align}
+\Lc Analogous dipole quadratures use
+$\psi_\pm=\pm2\pi/3-\arccos(\sigma_0/2)$, weights $(-\eta,+\eta)$.
+They reproduce edge differences and zero mode-charge holonomy to $10^{-55}$.
+Canonical charges are obtained independently by differentiation:
+\begin{equation}
+ L(v)=vP_m(v)-E_m(v),\qquad P_c=L'(v),\qquad E_c=vP_c-L.
+\end{equation}
+\Lc The three published examples agree:
+\begin{center}
+\begin{tabular}{rrr}\toprule
+Seed root & $\sum\rho_iE_c$ & $\sum\rho_iP_c$\\\midrule
+$-0.20$ & $0.3175373286355155$ & $0.1655848943300202$\\
+$0.10$ & $0.4898832009097553$ & $-0.1111527059147391$\\
+$0.45$ & $-0.5020709673515473$ & $0.0996575496842790$\\\bottomrule
+\end{tabular}
+\end{center}
+\Lc Two additional triangles also have nonzero vectors. Reversing $\eta$
+reverses each directed holonomy. The symmetric nondegenerate triple
+$\{0,1/2,-1/2\}$ has holonomy $(0.5445577069714241,0)$: individual component
+inequalities need care even when the vector obstruction persists.
+
+\Lc The original script tests only three seeds for canonical nonvanishing.
+Its 594-edge scan concerns stability, not holonomy. No analytic proof of
+nonvanishing for every generic triangle is provided. Our additional samples
+are also not such a proof. Examples are confirmed; the universal premise is
+qualified.
+
+\Lc The counterterm argument is rigorous \emph{conditionally}: for any
+single-valued vertex function $C$,
+\begin{equation}
+ [C(q_2)-C(q_1)]+[C(q_3)-C(q_2)]+[C(q_1)-C(q_3)]=0.
+\end{equation}
+\Lc At a triangle with demonstrated nonzero fixed canonical edge vector,
+no vertex counterterm balances all three edges. This also holds for divergent
+counterterms at a common finite regulator. It does not cover changes to
+absorption roots, rapidities, the charge dictionary or the state space.
+The package retains a kinematic escape: since
+$E_c-E_m=v(P_c-P_m)$ and $E_{\rm cl}'=vP_{\rm cl}'$,
+$\delta v=(P_m-P_c)/(dP_{\rm cl}/dv)$ matches both first-order charges
+when its denominator is nonzero. The audit verifies these derivatives.
+\Ld Quantum sewing must still derive such a shift and identify the physical
+charges. ``Regardless of boundary counterterms'' is justified only while
+keeping the fixed-edge, single-valued-state assumptions.
+
+\section{Obstruction (iii) and the failed pole argument}
+\Lc Independent Hirota-polynomial and root-ratio evaluations confirm
+summation by parts. Write $L_i=\log|z_t(3;q_i,\eta)|$,
+$w_i=\Delta P(S_i)/k_i$. Then
+\begin{equation}
+ \sum_i\rho_{{\rm tree},i}\Delta X_i\Delta P(S_i)
+ =\sum_i w_i(L_{i+1}-L_i)=\sum_i(w_{i-1}-w_i)L_i.
+\end{equation}
+\Lc At the package's test point the remainders are
+$-0.7742169719045726$ (mode momentum) and
+$-1.737010868355514$ (canonical momentum). The checker tests both
+orientations and both test-soliton directions, as well as vanishing of the
+test-soliton shift sum. The absorbed momentum term is a real algebraic issue
+in that comparison. \Ld Its unavoidable physical interpretation still
+requires the charge/frame dictionary; nonconstant weights do not prove
+nonzero values for every possible test soliton.
+
+\Lc The subsequent pole argument excluding root shifts fails. Its proposed
+simple pole is proportional to $(\ell_3-\ell(q))/(p_{3,a/b}-q)$, but
+$\ell(p)=3\sqrt3(4p^3-p)$ and $\ell_3=\ell(p)$ at either soliton root.
+Exactly,
+\begin{equation}
+ \frac{\ell(p)-\ell(q)}{p-q}
+ =3\sqrt3\{4(p^2+pq+q^2)-1\}.
+\end{equation}
+\Lc This is a polynomial with zero pole residue. Differentiating the
+root-dependent coefficient of the phase still gives logarithms, so the
+asserted contrast with the logarithmic remainder is false. The checker
+asserts this cancellation and hence the discrepancy.
+\Ld This refutes the stated proof; it does not prove that consistent
+root shifts exist. That functional cancellation and quantum sewing problem
+remain unsolved here.
+
+\section{Circularity, execution and failures recorded}
+\Lc The original nonlinear flux identities, determinant comparison away
+from zeros, and momentum-trace comparison are meaningful tests of distinct
+expressions. The latter inserts a known transmission factor and proves its
+symbolic identity only at $\eta=+1$; our fresh action-derived modes close
+that gap. The absorbed-momentum comparison uses distinct Hirota and root
+expressions. Neither is a literal self-comparison. Conversely, holonomy
+uses assumed charge functions, not a field effective-action or Ward-identity
+calculation; it cannot independently establish their physical meaning.
+
+\Lc Important unsupported passes are the energy trace printed with the
+opposite sign from its assertion, absorption without a zero-transmission
+assertion, an untested pole argument, and physical factorisation without a
+quantum-sewing computation. Stale comments contradict final calculations.
+All three original scripts nevertheless exit zero and print
+\file{ALL CHECKS PASSED}.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \Lc Refuted package statements: purported numerical absorption,
+energy-trace sign, negative-$q$ asymptotic transmission, threshold growth
+value, and the simple-pole exclusion of root shifts. The real-mode amplitude
+also needs an explicit half-weight convention. Audit assertions encode the
+discrepancies, not the false equalities.
+\item \Lc The first independent UV run failed its mode-slope assertion
+because it used the printed sign-dependent transmission limit as phase
+reference. Fresh sewing modes have the same constant at both infinities.
+Correcting that reference removed the spurious cutoff contribution without
+changing the target slope or tolerance.
+\item \Lc A symbolic boundary-counterterm check failed because $\eta^2=1$
+was substituted before expansion exposed the square. Expanding first fixed
+the reduction without changing the identity or tolerance.
+\item \Lc An initial search used an invalid regular expression; a literal
+search fixed it. The first report-assembly command used a repository-relative
+path while already inside \file{phase2/}, so no file was written; the corrected
+path fixed assembly. These were tool/path errors, not mathematical evidence.
+The first PDF build also exposed an overfull table and an overfull filename
+line; column sizing and prose wrapping were corrected. One render attempt
+started before the PDF writer had finished and reported an incomplete cross-reference
+table; waiting for build completion and rerendering fixed it. No other independent
+mathematical assertion failed during development.
+\end{enumerate}
+
+\Lc The final independent checker prints \file{ALL CHECKS PASSED} after
+its exact identities, high-precision checks and refutation assertions.
+Only the three requested \file{audit_defq} deliverables are retained in the
+repository. No existing file or git state was changed. The full repository
+suite was not rerun during this targeted audit with concurrent agents.
+The PDF was built by two \file{pdflatex} passes from \file{phase2/} and
+rendered for visual inspection.
+
+\paragraph{Reading scope and references.}
+\La The source below supplies the CZ action, variational sewing and
+scattering-parameter definition. Relevant full-text sections 2, 3 and 5.1
+were read online for this audit, not just the abstract; the entire article
+was not read. \Lc New formulas and corrections above have independent
+script checks. No new FK attribution is made: the equal-mode cutoff is
+audited as the package's prescription, without claiming an independent
+reading of that literature.
+
+\begin{thebibliography}{9}
+\bibitem{CZ} E.~Corrigan and C.~Zambon,
+\emph{Adding integrable defects to the Boussinesq equation},
+\href{https://arxiv.org/html/2306.03772v1}{arXiv:2306.03772v1}.
+Relevant full-text reading scope specified above.
+\end{thebibliography}
+\end{document}
