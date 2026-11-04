@@ -1,0 +1,713 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\La}{\textbf{(a)}\ }
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak defb\_\allowbreak boundary.py}}
+\newcommand{\file}[1]{\texttt{\detokenize{#1}}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of the defect boundary package:\\exact traces, universal holonomies, and an unjustified bulk-scheme selection}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc The bulk-counterterm triangle shift is correct. Its interpretation as a
+physical selection of $\lambda_g=0$ is refuted: fixed classical absorption
+rapidities are an additional assumption, and a consistent displacement of the
+kinematics cancels the counterterm contribution. Moreover $\lambda_g=0$ does
+not give zero vacuum sound shift in the controlling good-equation calculation.
+The printed fixed-momentum transmission sign also contradicts its own
+classical phase. The elementary boundary Casimir formulas, corrected energy-trace sign,
+stationary-root envelope theorem and stable-root counting survive independent
+computation. The purported quantum uniqueness of the finite boundary
+counterterms does not follow from a classical scattering-length calculation.
+A new exact logarithm identity proves the canonical energy holonomy is nonzero
+on every nondegenerate real KP triangle; independent interval arithmetic
+certifies the stated momentum zero. The absorbed-momentum proof needs a
+paired-branch-point correction, and its extension to every positive
+$\lambda_g$ is false. \Ld A physical renormalised quantum defect theory,
+quantum absorption locus and fusion amplitude remain unconstructed.
+\end{abstract}
+
+\section{Scope, independence and verdict table}
+Labels mean (a) established in the literature, (b) literature heuristic,
+(c) project derivation/computational evidence, and (d) unestablished physical
+interpretation or research judgment. ``Confirmed'' always refers to the
+specified mathematical statement and domain. A conditional continuum trace
+is not a constructed quantum ground-state charge. \Ld
+
+\Lc This audit reads \file{AGENTS.md}, \file{README.md}, the template
+\file{audit_phase2i.tex}, the boundary package source and PDF, both package
+scripts, \file{audit_defq.tex}, relevant errata N07 and earlier qualifications,
+\file{good_renorm.tex}, its audit, and the PI's re-ranked programme in
+\file{report.tex}. The new checker imports no repository module, reads no
+numerical cache and reuses no package computational routine. It derives
+sewing and quadratic operators from the local action in project variables;
+uses physical-$x$ absorption quadrature, Hessian polarization, KP cross-ratio
+phase derivatives, the map $q=y/(1-y)$, independent Gauss--Legendre meshes,
+and a rational half-angle interval partition. Symbolic checks use SymPy;
+numerical calculations normally use 80 decimal digits and tolerance
+$10^{-60}$; interval operations use 45 digits with interval-valued constants.
+Explicit cutoff and printed-table tolerances are stated separately.
+
+\Lc Only the three requested audit-prefixed repository files are created.
+No existing file, README, cache or git state is changed. The instruction not
+to change git state overrides the repository's routine pull/commit workflow.
+The two original scripts are executed separately, with only their final JSON
+writes redirected to audit-prefixed files in \file{/tmp/}; no mathematical
+statement or assertion is changed. The full old script suite is not run.
+
+\begin{longtable}{@{}L{6.0cm}L{2.0cm}L{7.3cm}@{}}
+\toprule Claim in the package & Verdict & Independent evidence and limitation\\\midrule\endhead
+A1. Good/CZ dictionary; scattering $s$, spectrum $\eta s$ & Confirmed (c) & Action conversion, four sewing residuals and decaying-mode determinant; \scr\ §§1--3.\\
+A2. Four classical charges and ``off-shell'' conservation & Qualified & Exact flux identities (c), conditional on the bulk equations and sewing, not unrestricted off-shell conservation.\\
+A3. Genuine absorption and all six defq corrections & Confirmed (c) & Physical-$x$ quadrature, Hessian traces, covariance, asymptotic limits, polynomial roots and quotient.\\
+A4. Exact $\Delta P_D^{\rm Cas}$, $\mathcal E_D^{\rm sub}$, $\Delta E_D^{\rm ren}$ & Confirmed (c) & Independent quadrature and partial fractions, including both orientations and $|s|>2$. Physical vacuum interpretation remains conditional.\\
+A5. Linear UV term and ``unique'' subtraction & Qualified & Divergent coefficient and equal-mode endpoint confirmed (c); no unique finite scheme or exhaustive boundary-operator classification.\\
+A6. Stationary-root envelope and vacuum-charge shifts & Confirmed (c) & Leibniz differentiation with independently varied endpoints and parameters.\\
+A7. Conditions (i)--(iii) physically fix four zero counterterms & Refuted (c) & Reference-vacuum constraint couples $\delta\rho_0$ to $\delta s$; uncomputed loop slope controls $\delta s$. A zero-shift convention can be defined.\\
+A8. Bulk $u^2$ charge shifts and triangle cube sum & Confirmed (c) & Profile moment, exact stiffness-dependent soliton charges and cubic factorisation.\\
+A9. Defect integrability selects $\lambda_g=0$; ``zero sound shift'' & Refuted (c) & Shifted-locus cancellation; physical-momentum conservation differs from fixed classical edges; $s_1(0)=-9/(4\pi)$.\\
+A10. One-loop transmission formula and numerical table & Refuted sign (c) & Table reproduced, but fixed-momentum sign contradicts the displayed classical phase. Physical determinant remains (d).\\
+A11. At most one stable KP root; closed-cycle process & Qualified & Root count and injectivity confirmed (c); closed walks are necessary within that graph, not proof of a physical fusion channel.\\
+A12. Elementary $L_1$, canonical charges, triangle formulas, symmetry and endpoint values & Confirmed (c) & Independent KP trace, differentiation, rational log identities and midpoint/endpoint checks.\\
+A13. All-triangle $\eta\mathcal C_E<0$ and unique zero of $\mathcal C_P$ & Confirmed (c) & New exact energy proof and independent interval certificate for momentum. Package proof coverage is qualified.\\
+A14. $\lambda_g$ invariance of $\mathcal C_P$ and shift of $\mathcal C_E$ & Confirmed (c) & Telescoping momentum and cubic energy identities; exceptional midpoint $\lambda_*$ explicitly checked.\\
+A15. Absorbed weights and non-identical vanishing of $\mathcal R_{\rm abs}$ at $\lambda_g=0$ & Qualified & Signs confirmed by a stronger analytic bound (c); disjoint-branch premise false, repaired by paired coefficients. Not pointwise nonvanishing or physical no-go.\\
+A16. Same strict weight signs for every $\lambda_g\ge0$ & Refuted (c) & At $\vartheta=\pi/6$, $\lambda_g=2$ reverses the signs.\\
+A17. Pole-free ``smooth'' derivative and vertex telescoping & Qualified & Effective-phase derivative and telescoping confirmed (c); logarithmic singularities remain, and effective coefficients are not intrinsic defect charges.\\
+A18. Complete quantum boundary theory / exhaustive quantum counterterms & Qualified (d) & The package itself leaves non-CZ operators and quantum resonances open; its abstract claims more than the calculation establishes.\\\bottomrule
+\end{longtable}
+
+\section{Highest priority: what the bulk counterterm does and does not select}
+\paragraph{The shift formula is right (A8; \scr\ §1).}
+\Lc For the project soliton $u=k^2\operatorname{sech}^2(kx/2)/2$,
+substituting $y=\tanh(kx/2)$ gives
+\begin{equation}
+ \int_{\mathbb R}u^2\,dx=\frac23k^3.
+\end{equation}
+For $d_i=q_i-q_{i+1}$, $\rho_i=\eta\operatorname{sgn}d_i$,
+$k_i=|d_i|$, and $d_1+d_2+d_3=0$, factorisation gives
+\begin{equation}
+ \sum_i\rho_i\delta E_{m,i}
+ =\frac{2\lambda_g}{3}\eta\sum_i d_i^3
+ =2\lambda_g\eta\,d_1d_2d_3.
+ \label{eq:cubeshift}
+\end{equation}
+It is nonzero for a nondegenerate triangle and $\lambda_g\ne0$.
+There is no sign or factor error in this particular package formula.
+
+\Lc A direct independent route to the canonical variations is to introduce
+bulk stiffness $a=1+2\hbar\lambda_g$, keeping the normalization of inertia
+and $u^3$ fixed. The exact classical soliton has $k^2=a-v^2$ and
+\begin{equation}
+ P_a=\frac23v(a-v^2)^{3/2},\qquad
+ E_a=\frac2{15}(a-v^2)^{3/2}(a+4v^2).
+ \label{eq:stiffness}
+\end{equation}
+Differentiating at $a=1$ gives the package's canonical shifts
+\begin{equation}
+ \delta P_c=2\lambda_gvk,\qquad
+ \delta E_c=\frac23\lambda_g k(3-2k^2),\qquad
+ \delta E_c-v\delta P_c=\frac23\lambda_g k^3.
+ \label{eq:countercharges}
+\end{equation}
+The last expression is the energy shift at fixed physical momentum. It
+survives changing between the mode and canonical charge descriptions.
+Thus merely changing charge coordinates does \emph{not} remove the
+counterterm's physical fixed-momentum dispersion change.
+
+\paragraph{Why scheme selection does not follow (A9).}
+\Lc Conservation concerns the physical momenta of an actual allowed
+process. It does not require an unchanged set of three classical
+absorption rapidities to remain an allowed quantum process. Even at
+$\lambda_g=0$, the canonical triangle has nonzero energy holonomy below.
+The two charge pairs obey $E_c-E_m=v(P_c-P_m)$, so shifting the classical
+label to keep the same physical momentum changes the energy by the
+corresponding classical derivative. A mode-edge identity cannot be
+promoted to a Ward identity for physical fusion while discarding these
+terms. \Ld Quantum sewing is needed to specify the allowed momenta.
+
+\Lc There is a concrete kinematic counterexample to the inference from
+\eqref{eq:cubeshift}. Scale an entire classical triangle as
+$q_i(a)=\sqrt a\,q_i$, $k_i(a)=\sqrt a\,k_i$,
+$v_i(a)=\sqrt a\,v_i$. Its charges scale as
+$P_i(a)=a^2P_i(1)$, $E_i(a)=a^{5/2}E_i(1)$; their classical directed
+sums stay zero. At first order the additional velocity shifts are
+$\delta v_i=\lambda_gv_i$, and exact differentiation verifies
+\begin{equation}
+ \delta P_{c,i}+P_{0,i}'(v_i)\lambda_gv_i=4\lambda_gP_{0,i},\qquad
+ \delta E_{c,i}+E_{0,i}'(v_i)\lambda_gv_i=5\lambda_gE_{0,i}.
+ \label{eq:scaledclosure}
+\end{equation}
+Consequently the $\lambda_g$ contribution to the cycle cancels when its
+kinematics are varied consistently. This checks the counterterm sector;
+it does not erase the pre-existing one-loop canonical holonomy.
+\Ld It is not a derivation of the actual quantum absorption shift or a
+quantum-integrability proof for a particular boundary completion.
+
+\Lc More generally, if a putative cycle has first-order remainders
+$(B_E,B_P)$, two edge momentum displacements $x_1,x_2$ solve
+\begin{equation}
+ v_1x_1+v_2x_2=-B_E,\quad x_1+x_2=-B_P,
+ \qquad
+ x_1=\frac{-B_E+v_2B_P}{v_1-v_2},\quad
+ x_2=\frac{B_E-v_1B_P}{v_1-v_2}.
+\end{equation}
+The first two triangle edges have distinct velocities and nonzero
+classical momentum derivatives away from the degenerate endpoints.
+Thus conservation alone cannot exclude a shifted locus.
+\Ld Whether such shifts satisfy all quantum sewing and spectral conditions
+is an additional, unsolved question.
+
+\Lc Conversely, any single-valued boundary vacuum charge correction
+$B(q)$ satisfies $\sum_i[B(q_{i+1})-B(q_i)]=0$. This holds outside the
+CZ parameter family as well. Such a term cannot cancel the nonzero
+fixed-edge sum \eqref{eq:cubeshift}. The same is true of a single-valued
+shift of a vertex phase. \Ld More general boundary operators might change
+the absorption locus, transmission, or admissible states; no computation
+here proves or excludes that possibility. ``Outside CZ'' is therefore not
+by itself a loophole in telescoping, nor is telescoping an exhaustive
+quantum no-go theorem.
+
+\paragraph{The good/bad and acoustic dictionaries (A1, A9).}
+\Lc The retained good equation is
+$u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$, with
+$u=\varphi_x$ and $\Omega=\int d\pi\wedge d\varphi$.
+The action substitution $U_{CZ}=-3\varphi$ gives $L_{CZ}=9L$ and
+$D=D_{CZ}/9$. Scattering uses $s=\sigma_{\rm vac}=-2\sqrt3q_D$;
+the decaying-mode spectrum uses $c=\eta s$. The package now implements
+this distinction correctly, including absorption at both orientations.
+
+\Lc The independently differentiated vacuum function
+\begin{equation}
+ W_g(U)=-\frac{(1-6U)^{3/2}-1+9U}{6\pi}
+\end{equation}
+gives $s_1=\lambda_g-9/(4\pi)$. Therefore the package's repeated name
+``zero-sound-shift scheme $\lambda_g=0$'' is false. The conditional acoustic
+choice in \file{good_renorm.tex} is $\lambda_g=9/(4\pi)$; this audit does
+not adopt a scheme on the PI's behalf. The package's alternative description
+of that value as ``Toda-matched'' is also inconsistent with the controlling
+dictionary: $W_b(U)=-W_g(-U)$ implies $\lambda_b=-\lambda_g$, so
+$\lambda_b=-3/(2\pi)$ continues to $\lambda_g=3/(2\pi)$.
+The fixed spectral conventions further give $k_g=ik_b$,
+$v_g(i\beta)=\epsilon\cosh\beta$ and
+$\ell_b=-\ell_g(i\beta)$, not equality of the signed spectral parameters.
+\Ld The conditional acoustic prescription remains a separate physically
+motivated renormalisation choice; the defect calculation does not overturn it.
+
+\section{Local charges, absorption and exact continuum traces}
+\paragraph{Classical checks and the six corrections (A2--A3; \scr\ §§2--3).}
+\Lc With $A=\eta/\sqrt3$, $\sigma=s+(b-a)/A$ and
+$\rho(z)=\rho_0+(z-z^3/3)/(2A)$, our independent action uses
+\begin{align}
+ F&=A(a_x+2b_x)+\frac{\sigma^2}{12A},&
+ G&=A(2a_x+b_x)+\frac{\sigma^2}{12A},\\
+ E_D&=-A\sigma(a_x^2+a_xb_x+b_x^2)
+           +\tfrac13\rho(\sigma)(a_x+b_x)-\tfrac19\tau(\sigma),\\
+ P_D&=-\tfrac A2(a_x^2+4a_xb_x+b_x^2)+\tfrac19h(\sigma),&
+ \Pi_D&=F+G,\quad M_D=b-a.
+\end{align}
+Here $\tau'=-z\rho$ and $h'=-\rho$. Variation of $D=a_tF+b_tG-E_D$
+and the bulk action reproduces four sewing equations. Symbolic substitution
+in the four independently differentiated flux balances gives zero for
+arbitrary remaining jets, both orientations, and arbitrary integration
+constants. This is conservation on the sewing/bulk equations, not conservation
+for arbitrary off-shell fields.
+
+\Lc Physical-$x$ integration, at $t=-2,0.7,3$, gives a maximum
+absorption-charge discrepancy $7.91\times10^{-82}$. The input obeys
+$s=\eta\sqrt3k-v$ and has $z_t=0$. The previous wrong input still gives
+$\sqrt{21}-3$, not absorption. Hessians of the full charges, contracted with
+complex modes obtained from the linear sewing equations, confirm
+\begin{equation}
+ \langle E_{D,2}\rangle_q+\langle E_{D,2}\rangle_{-q}
+ =\langle K\rangle_q+\langle K\rangle_{-q}
+ =\frac{\omega}{4\pi}\{\theta_D'(q)+\theta_D'(-q)\}.
+ \label{eq:plus}
+\end{equation}
+The plus sign is correct. Plane-wave integration-by-parts boundary terms
+vanish. The covariance is $1/(4\pi\omega)$; time averaging a real cosine
+of amplitude $1/\sqrt{\pi\omega}$ instead gives twice this value.
+Both signed-wavenumber transmission limits are $e^{-2\pi i\eta/3}$.
+Fresh exponential-mode sewing determinants reproduce the corrected
+$-2S^2(S^2-1)P_-P_+/3$ factor after matching row order. Direct roots at
+$c=\sqrt3$ give one positive rate $\sqrt3/4$ and a marginal rate zero.
+Finally $(\ell(p)-\ell(q))/(p-q)$ is the polynomial
+$3\sqrt3[4(p^2+pq+q^2)-1]$, with no simple pole.
+
+\paragraph{Elementary charges rederived (A4; \scr\ §4).}
+\Lc Put $D_\pm=4u^2\pm2su+s^2-3$, $u=\sqrt{1+q^2}$.
+The Hessian contractions first reproduce the spectral densities pointwise.
+Their rational forms then admit the independent partial fractions
+\begin{align}
+ \frac{2[(s^2-2)u^2+(3-s^2)/2]}{D_+D_-}
+ &=\frac{-su-1}{2D_+}+\frac{su-1}{2D_-},\\
+ \frac{-4u^2+(s^2-3)^2}{4D_+D_-}
+ &=\frac{(s^2-2)u/(4s)+(s^2-3)/8}{D_+}
+  +\frac{(2-s^2)u/(4s)+(s^2-3)/8}{D_-}.
+\end{align}
+The second decomposition uses $s\ne0$; its original integral is regular
+at $s=0$. Completing the squares
+$D_\pm=4(u\pm s/4)^2+3(s^2-4)/4$ gives logarithms below $|s|=2$
+and arctangents above it, with the continuous repeated-root limit at $|s|=2$.
+Define
+\begin{equation}
+ L(s)=\log\left|\frac{s+1}{s-1}\right|,\qquad
+ B(s)=\begin{cases}
+ -\sqrt{4-s^2}\log\left|\dfrac{\sqrt3+\sqrt{4-s^2}}{\sqrt3-\sqrt{4-s^2}}\right|,&|s|<2,\\
+ 0,&|s|=2,\\
+ 2\sqrt{s^2-4}\arctan\!\dfrac{\sqrt{s^2-4}}{\sqrt3},&|s|>2.
+ \end{cases}
+\end{equation}
+The resulting package formulas are confirmed:
+\begin{align}
+ \Delta P_D^{\rm Cas}&=\frac{\eta}{8\pi}\,[\sqrt3sL(s)+B(s)],\\
+ \Delta E_D^{\rm ren}&=\frac{\eta}{16\pi}
+ [-4\sqrt3s+\sqrt3(2-s^2)L(s)+sB(s)],\\
+ \mathcal E_D^{\rm sub}&=\Delta E_D^{\rm ren}+\frac{\sqrt3\eta s}{4\pi}.
+ \label{eq:closed}
+\end{align}
+The displayed formulas exclude $s=\pm1$. On unstable vacua they are formal
+continuum traces, not constructed ground-state expectations. \Ld
+
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$s$ & $\eta$ & $\Delta P_D^{\rm Cas}$ & $\Delta E_D^{\rm ren}$\\\midrule
+$-1.2$ & $1$ & $-0.00720648262722269233$ & $0.24243415056776965958$\\
+$-1.5$ & $1$ & $0.06055750652521987455$ & $0.29997546003179577445$\\
+$-2$ & $1$ & $0.15142417490204896669$ & $0.35137653516192050810$\\
+$-2.5$ & $1$ & $0.23117575764210336842$ & $0.36217135204446018208$\\
+$1.7$ & $-1$ & $-0.09894765410120971040$ & $0.32603918892805694405$\\
+$2.6$ & $-1$ & $-0.24638175981914822630$ & $0.35997176172617868413$\\\bottomrule
+\end{tabular}
+\end{center}
+\Lc The independent $q=y/(1-y)$ quadratures agree with the elementary
+expressions to $7.97\times10^{-82}$ over nine tests, including $s=0,0.5$
+and both orientations. This is numerical agreement at working precision,
+not an $82$-digit rigorous error bound.
+
+\paragraph{UV subtraction and error accounting (A5).}
+\Lc Set $C=\sqrt3\eta s/(4\pi)$ and $T=\sqrt{1+\Lambda^2}$.
+The local subtraction is $Cq/\sqrt{1+q^2}$. Equal-mode counting also retains
+\begin{equation}
+ B_\Lambda=\frac{\Lambda T}{4\pi}
+ [\theta_D^{\rm asympt}(\Lambda)-\theta_D^{\rm asympt}(-\Lambda)].
+\end{equation}
+Since $B_\Lambda=C\Lambda+O(\Lambda^{-1})$, the renormalised equal-mode
+limit is $\mathcal E_D^{\rm sub}-C$, as in \eqref{eq:closed}, whereas
+$E_D^{\rm mode}=-2C(T-1)+\Delta E_D^{\rm ren}+O(\Lambda^{-1})$.
+Our checker evaluates this endpoint directly from the continuous rational
+transmission phase at two cutoffs; the observed remainder decreases as
+$1/\Lambda$. The coefficient of the linear divergent vacuum term is fixed.
+Its $M_D$ part completes the open-half-line tadpole into the topological
+charge, as the package states. \Ld This does not uniquely determine the
+finite subtraction, the off-vacuum boundary action, or all quantum operators.
+
+\Lc Mesh, arithmetic and cutoff errors are separated as follows. For the
+most demanding mesh test $s=-1.2$, three panels in $y$ with $16,32,64$
+Gauss--Legendre nodes per panel give maximum charge discrepancies
+$1.04\times10^{-17}$, $1.44\times10^{-35}$,
+$1.21\times10^{-64}$ respectively. Changing adaptive arithmetic from 80 to
+60 digits changes the momentum by $2.10\times10^{-64}$. These are independent
+sensitivity diagnostics; no extrapolation or fit is used for boundary
+charges, so there is no fit-spread contribution. The original package uses
+one precision and one compact quadrature, reporting agreement with another
+closed representation rather than a total error budget. Its impressive
+roundoff-level discrepancies are credible as cross-checks, but not physical
+uncertainties or certified quadrature bounds.
+
+\section{The envelope theorem survives; quantum uniqueness does not}
+\paragraph{Independent variation (A6; \scr\ §1).}
+\Lc At a root $\rho(\sigma_i)=0$, endpoint variations of
+$\tau=\tau_0-\int_s^{\sigma_i}z\rho(z)\,dz$ and
+$h=h_0-\int_s^{\sigma_i}\rho(z)\,dz$ vanish at first order when
+$\rho(s)=0$. The remaining variations are precisely
+\begin{align}
+ \delta E_{D,i}&=-\delta\tau_0/9+
+       \tfrac23\delta\rho_0(q_i^2-q_D^2),\\
+ \delta P_{D,i}&=\delta h_0/9+
+       \tfrac{2\sqrt3}{9}\delta\rho_0(q_i-q_D),\qquad
+ \delta q_i=\frac{\eta\delta\rho_0}{3(1-12q_i^2)}.
+\end{align}
+The root-shift formula assumes a simple root; cusp roots need a different
+expansion. These are valid variations of the classical CZ family. They
+are not a calculation of the one-loop effective boundary potential.
+
+\paragraph{The missing coupling and the missing loop calculation (A7).}
+\Lc Preserving the reference vacuum at $\sigma=s+\hbar\delta s$ actually
+requires
+\begin{equation}
+ 0=\delta\rho_0+\frac{\sqrt3\eta}{2}(1-s^2)\delta s,
+ \label{eq:constraint}
+\end{equation}
+not $\delta\rho_0=0$ independently of $\delta s$. The latter follows only
+if $s$ has already been held fixed. The envelope theorem removes the
+\emph{direct endpoint} contribution of $\delta s$; it does not remove the
+$\delta\rho_0$ contribution induced by \eqref{eq:constraint}.
+
+\Lc The classical positive-momentum slope really is
+$a_0(s)=-2\sqrt3\eta/(s+1)$, away from its cusp, and
+$a_0'(s)=2\sqrt3\eta/(s+1)^2\ne0$. Hence it is an invertible coordinate
+on each admissible stable half-line. But write the physical slope as
+$a_{\rm phys}=a_0(s)+\hbar[a_{\rm loop}(s)+a_0'(s)\delta s]+\cdots$.
+Matching it to $a_0(s_{\rm ren})$ fixes, in this convention,
+\begin{equation}
+ \delta s=-\frac{a_{\rm loop}(s)}{a_0'(s)}.
+\end{equation}
+Nothing in the package computes $a_{\rm loop}$ or proves it vanishes.
+Its script differentiates the \emph{classical} transmission factor at zero
+momentum and then prints a quantum-uniqueness conclusion. Nor does
+$z_{\rm ph}(0^+)=1$ for this classical family prove a quantum topological
+non-renormalisation theorem. Boundary tadpoles and quantum stationarity
+could likewise enter the physical version of \eqref{eq:constraint}.
+
+\Ld A scattering length is a natural observable with which to define a
+renormalised defect parameter. Calling the resulting parameter $s$ is a
+reasonable renormalisation convention; it is not evidence that its bare-to-
+renormalised shift is zero. Conditions (i)--(iii) can be made to define a
+zero-shift classical parametrisation and chosen additive charge origins.
+They do not derive unique physical zero counterterms without the missing
+loop amplitude and boundary effective action. Equating this prescription
+to a renormalised absorption root is another unproved identification.
+
+\section{Transmission and the stable-vacuum graph}
+\paragraph{What the transmission calculation tests (A10; \scr\ §8).}
+\Lc Our soliton phase derivative comes directly from the KP cross ratio
+with real roots $(v/\sqrt3\pm k)/2$ and phonon roots
+$\operatorname{sgn}(q)\sqrt{1+q^2}/(2\sqrt3)\pm iq/2$.
+The defect phase is a continuous argument of its rational transmission,
+referenced to the same constant at both infinities. This avoids the
+package's elementary dipole-phase decomposition. At $\alpha=0.35$ it gives
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$q_D$ & $I_{SD}$ & $I_{SD}-\Delta x_D\Delta P_m$ & $I_{SD}-\Delta x_D\Delta P_c$\\\midrule
+$0.50$ & $-1.33210991172351758$ & $-2.83443578117603636$ & $-3.78971817125468003$\\
+$0.52$ & $-1.36337559539974186$ & $-2.67213057224522436$ & $-3.50432723991219632$\\\bottomrule
+\end{tabular}
+\end{center}
+\Lc The table is confirmed as an evaluation of the printed formula, but
+that formula has a convention inconsistency. Independent symbolic
+ differentiation of the package's displayed effective classical phase gives
+\begin{equation}
+ \boxed{\partial_P\delta_{D,\rm cl}=-\Delta x_D,\qquad
+ -\Delta P\,\partial_P\delta_{D,\rm cl}=+\Delta x_D\Delta P.}
+ \label{eq:phasesign}
+\end{equation}
+The original classical note \file{defect_semiclassics.tex} explicitly uses
+this minus relation, whereas the inherited one-loop note switches it.
+At $\alpha=0.4$, $q_D=0.51$, the discrepancy with the asserted positive
+relation is $0.6373325868$ in magnitude for $\epsilon=-1$ and
+$2.7141893147$ for $\epsilon=+1$; both defect orientations are checked
+at 80 digits. An exact polynomial reduction on $k^2+v^2=1$ confirms the
+negative relation universally away from singularities.
+
+\Lc Thus a fixed-momentum Taylor expansion of the displayed classical
+phase contributes $+\Delta x_D\Delta P$, not the table's negative term.
+Keeping the displayed $I_{SD}$ convention for this algebraic comparison,
+the counterterm contribution to that Taylor term is
+$+2\lambda_gvk\Delta x_D$ for canonical momentum, and zero for
+fixed-profile mode momentum. Reversing the entire classical phase convention
+would also reverse the later vertex derivative; both printed signs cannot
+be retained simultaneously. \Ld A complete physical phase requires a
+consistent determinant convention, the boundary-compatible domain and the
+quantum boundary conditions. The table neither supplies these nor proves a
+physical scheme invariance. This sign refutation does not select a new
+physical phase normalization on the PI's behalf.
+
+\paragraph{Stability and cycles (A11; \scr\ §3).}
+\Lc For fixed $\eta$, the relevant stable half-line is
+$\eta q\ge1/(2\sqrt3)$. With $q=\eta[1/(2\sqrt3)+t]$,
+$12q^2-1=4\sqrt3t+12t^2>0$ for $t>0$. The cubic is strictly injective
+there, including the endpoint by continuity. Thus at most one of its
+three roots is stable for that orientation. Fresh sewing determinants
+and direct quadratic-root filtering reproduce the growing counts and the
+$c=\sqrt3$ switch. Marginality is distinguished from strict stability.
+
+\Lc Within a fixed three-vertex absorption graph, any walk whose initial
+and final defect vacua are stable must return to the same vertex. The
+boundary charge then cancels. This is a necessary bookkeeping condition,
+and the three-edge cycle is one example; it does not exclude backtracking
+or repeated closed walks. \Ld It does not construct the composite
+$D(q_{\rm st})+S_1+S_2\leftrightarrow D(q_{\rm st})+\bar S_3$, establish
+its amplitude, or show that the intermediate resonances and all bulk
+external solitons are admissible quantum states. ``Stable vacuum'' also
+has not been shown to mean a global quantum ground state. The source's
+closed-cycle conclusion is therefore qualified, not a physical process
+proved by monotonicity.
+
+\section{All-triangle holonomy: a stronger independent proof}
+\paragraph{Canonical charges from an independent trace (A12; \scr\ §§5--6).}
+\Lc Integrating the KP cross-ratio phase derivative gives the mode charges.
+The energy density subtraction and cutoff endpoint are retained explicitly.
+At $k=0.23,0.61,0.94$, $v\Delta P_m-\Delta E_m$ agrees with
+\begin{equation}
+ L_1(k)=\frac{3k}{2\pi}-\frac{\sqrt3}{8\pi}(3-4k^2)
+       \log\left|\frac{2k+\sqrt3}{2k-\sqrt3}\right|.
+\end{equation}
+Differentiation with $k=\sqrt{1-v^2}$ then yields the package's
+$\Delta P_c=\partial_vL_1$ and $\Delta E_c=v\partial_vL_1-L_1$.
+After independently subtracting the leading analytic tails, the
+$\Lambda=10^{12}$ trace discrepancies are at most $2.76\times10^{-38}$;
+for $k=0.61$ the $10^8/10^{12}$ cutoff spread is
+$2.76\times10^{-26}$. The tolerance is $10^{-32}$ at the finer cutoff,
+not the $10^{-60}$ used for convergent no-cutoff integrals. No fitted
+coefficient is fed back into these charges. Their physical determinant
+identification retains the earlier audits' qualifications. \Ld
+
+\paragraph{An exact logarithm factorisation (A13).}
+\Lc Set $t=\tan(\vartheta/2)$, $0<\vartheta<\pi/3$, and
+$k_1=\sin\vartheta$, $k_2=\sin(\pi/3-\vartheta)$,
+$k_3=\sin(\pi/3+\vartheta)=k_1+k_2$. Write $L_i$ for the three positive
+logarithms in the package's holonomy formulas. Rational simplification gives
+\begin{equation}
+ e^{L_1}=\frac{(t+1/\sqrt3)(t+\sqrt3)}{(t-\sqrt3)(t-1/\sqrt3)},\qquad
+ e^{L_2}=\frac{\sqrt3-t}{t(1+\sqrt3t)},\qquad
+ \boxed{e^{L_3}=e^{L_1}e^{L_2},\quad L_3=L_1+L_2.}
+ \label{eq:logs}
+\end{equation}
+All arguments are positive on the stated domain, so no $2\pi i$ ambiguity
+enters this real-log identity. It reduces the canonical energy holonomy to
+\begin{equation}
+ \boxed{\quad
+ \eta\mathcal C_E=-\frac{\sqrt3}{2\pi}
+ [(k_3^2-k_1^2)L_1+(k_3^2-k_2^2)L_2]<0.
+ \quad} \label{eq:strictenergy}
+\end{equation}
+Both differences are strictly positive since $k_1,k_2>0$ and
+$k_3=k_1+k_2$. This is an all-triangle symbolic proof, not a sample or an
+endpoint extrapolation. It alone proves the nonzero vector at $\lambda_g=0$.
+
+\Lc The momentum expression reduces to
+\begin{equation}
+ \eta\mathcal C_P=\frac{\sqrt3}{\pi}
+ [\sqrt3k_1L_2-(v_1-v_3)L_1]. \label{eq:CP}
+\end{equation}
+The exact rational reflection
+$t\mapsto(1/\sqrt3-t)/(1+t/\sqrt3)$ exchanges $k_1,k_2$, negates the
+appropriate velocities and proves $\mathcal C_E$ even and $\mathcal C_P$
+odd about $\pi/6$. At the midpoint,
+\begin{equation}
+ \eta\mathcal C_E=-\frac{3\sqrt3}{4\pi}\log(2+\sqrt3),\quad
+ \mathcal C_P=0,\quad
+ \eta\mathcal C_P'=\frac{3\sqrt3\log(2+\sqrt3)-9}{\pi}.
+\end{equation}
+The static third edge there requires the continuous $v=0$, $k=1$
+extension of the introductory open rapidity domain; the formulas are
+regular at that point.
+
+\Lc To certify the absence of another momentum zero, our checker uses
+\eqref{eq:CP} in $t$, not the package's uniform $\vartheta$ partition.
+On $0<t\le10^{-4}$, the mean-value bound for $L_1/t$, computed from the
+exact derivative of its rational argument, gives
+$\eta\mathcal C_P/t>14.8187$.
+On $[2-\sqrt3-0.0005,2-\sqrt3]$, interval differentiation gives
+$d(\eta\mathcal C_P)/dt<-1.2512$.
+The remaining compact interval is covered by 47 adaptive dyadic cells;
+every lower bound is positive, the smallest exceeding
+$6.89\times10^{-5}$. Exact reflection covers the other half. Hence the
+unique zero is $\vartheta=\pi/6$. This is a computer-assisted interval
+proof with analytic endpoint control, not a wholly symbolic proof.
+
+\Lc The package does more than sample: its interior interval tests are
+real enclosures. But its tiny-endpoint section inserts, rather than derives
+in executable code, the interval \file{["2.309", "2.310"]} for a divided
+logarithm and several coefficient bounds. Its asymptotic checks are numerical
+at three tiny points. These omissions warrant qualification of its proof
+coverage; they do not refute the signs, which the independent certificate
+and \eqref{eq:strictenergy} now establish. The reported endpoint expansions
+and midpoint values are also independently confirmed.
+
+\paragraph{Counterterm dependence (A14).}
+\Lc Telescoping gives $\sum_i\rho_iv_ik_i=0$ and therefore
+\begin{equation}
+ \mathcal C_P^{\lambda_g}=\mathcal C_P,\qquad
+ \mathcal C_E^{\lambda_g}=\mathcal C_E+\eta\lambda_g\sin3\vartheta.
+\end{equation}
+These are correct. At $\vartheta=\pi/6$, the exceptional value
+$\lambda_*={3\sqrt3}\log(2+\sqrt3)/(4\pi)$ cancels the entire canonical
+vector. It differs from both $0$ and $9/(4\pi)$, as the package notes.
+The zero-scheme all-triangle theorem should not be extended to arbitrary
+$\lambda_g$ without this exception.
+
+\section{Absorbed momentum and the derivative's remaining singularity}
+\paragraph{Weights: a stronger bound and a false extension (A15--A16).}
+\Lc For $0<\alpha<\pi/3$, put $k=\sin\alpha$, $c=\cos\alpha$ and
+$L=\log[(\sqrt3+2k)/(\sqrt3-2k)]$. Independent reduction gives
+\begin{equation}
+ w_m=\frac{\Delta P_m(\alpha,+1)}{k}
+ =-\frac{\sqrt3c}{4\pi k}L
+  +\frac1{4\pi}\log\frac{2c+1}{2c-1}
+  +\frac1\pi\log\tan\frac\alpha2.
+\end{equation}
+Its derivative simplifies exactly to
+\begin{equation}
+ w_m'(\alpha)=\frac{\sqrt3 L}{4\pi\sin^2\alpha}>0,\qquad
+ \lim_{\alpha\uparrow\pi/3}w_m(\alpha)=-\frac{3\log3}{4\pi}.
+\end{equation}
+This proves a stronger bound than the printed $-\log3/(2\pi)$.
+The canonical weight is manifestly negative for positive velocity;
+orientation reversal negates both momenta. Thus $w_1<0<w_2$ on every
+triangle in the zero-counterterm scheme is confirmed analytically.
+
+\Lc The package's upper-half interval function is not exactly $w_m$:
+its final term has $k\log\tan(\alpha/2)/(2\pi)$ instead of
+$k\log\tan(\alpha/2)/\pi$ before division by $k$. Its computed quantity
+exceeds the true weight by $-\log\tan(\alpha/2)/(2\pi)>0$.
+Therefore its negative upper bound can still imply negativity of the true
+weight, but the claimed equality is false. Its 500 cells omit both open
+endpoint strips, and its printed exact bound is not the same as its
+asserted $-0.17$ bound. The new monotonicity proof resolves these gaps.
+
+\Lc The extension to every $\lambda_g\ge0$ is refuted. Canonical weights
+change by $2\lambda_gv_i$. At the symmetric triangle and $\lambda_g=2$,
+\begin{equation}
+ w_1^{\lambda_g}=2.20649946030080639>0,\qquad
+ w_2^{\lambda_g}=-w_1^{\lambda_g}<0.
+\end{equation}
+At an intermediate positive value the two weights coincide. The package's
+sentence that the added term is negative only if $\lambda_g<0$ also ignores
+the negative velocity of the second edge. Its script contains no assertion
+testing this extension. The mode weight, defined at fixed profile, is
+unchanged by this particular bulk counterterm; that does not rescue the
+claimed statement for both charge choices.
+
+\paragraph{Branch points occur in pairs (A15).}
+\Lc The claim that the logarithm associated with $q_2$ has branch points
+disjoint from $q_1,q_3$ is false on the test-soliton root locus. If
+$p_a=q_i$, the condition $p_a^2+p_ap_b+p_b^2=1/4$ forces $p_b$ to be
+one of the other two triangle roots. Two vertex logarithms then become
+singular simultaneously, with opposite logarithmic coefficients.
+For $a_i=w_{i-1}-w_i$, their coefficients are $a_i-a_j$, not a lone $a_i$.
+
+\Lc This repairs rather than destroys the functional obstruction:
+all three paired coefficients vanish only if $a_1=a_2=a_3$; since
+$\sum_i a_i=0$, this requires $w_1=w_2=w_3$, impossible when
+$w_1<0<w_2$. At least one permitted signed test-soliton branch therefore
+has a nonzero logarithmic coefficient on every nondegenerate triangle.
+If the third edge is static at the midpoint, the other two already have
+nonzero coefficients. Thus the remainder is not identically zero as a
+function on the signed test-soliton domain at $\lambda_g=0$.
+\Ld This is not a statement that its value is nonzero at every test
+soliton, nor that a physical quantum fusion amplitude must fail. No such
+pointwise or physical conclusion follows from non-identical vanishing.
+
+\paragraph{Pole-free is not smooth (A17; \scr\ §7).}
+\Lc Differentiating the effective classical phase does give
+\begin{equation}
+ \partial_q\delta_{D,\rm cl}
+ =-\frac{2\sqrt3}{3}(12q^2-1)\epsilon\log|z_t|
+       +4\epsilon\eta k(v+2\sqrt3q).
+\end{equation}
+The polynomial quotient cancels the simple poles. However the logarithm
+still diverges at a generic absorption root, where $12q^2-1\ne0$.
+The package's description as an ``exact smooth identity'' is therefore
+false at those roots. It is a correct identity away from them with
+logarithmic boundary behaviour.
+
+\Lc The phase's $M_D=\epsilon\eta q$ and
+$\Pi_D=\epsilon\eta(6q^2-1)/\sqrt3$ are the \emph{effective coefficients}
+of \file{defect_semiclassics.tex}. They must not be confused with the
+intrinsic vacuum charges from the local action,
+$M_D^{\rm vac}=2\eta(q_D-q)$ and $\Pi_D^{\rm vac}=2\sqrt3\eta q^2$.
+Our derivative check explicitly uses the effective phase definition.
+The package's symbol reuse obscures that distinction. Its telescoping
+identity for any single-valued vertex-phase shift is nevertheless exact.
+\Ld It does not constrain all changes of quantum edge kinematics.
+
+\section{Coverage, circularity, runtimes and failures recorded}
+\paragraph{Which (c) statements do the original scripts actually check?}
+\Lc The classical flux/absorption assertions, trace sign, envelope
+polynomials, closed-form quadratures and interior interval inequalities are
+substantive tests. The holonomy vertex-sum comparison substitutes the same
+canonical charge formulas on both sides; it checks assembly and conventions,
+not an independent derivation of their quantum physical meaning. Our KP
+trace and canonical differentiation supply an independent route.
+The bulk cube identity is tested, but the subsequent physical-selection
+sentence is a printed inference. The slope calculation is classical;
+no loop correction or quantum uniqueness system is solved. The transmission
+section prints \file{[PASS]} after evaluating numbers without a comparison
+assertion. The interval code never tests the positive-$\lambda_g$ extension,
+the disjoint-branch-point premise, smoothness at absorption, or compatibility
+of the fixed-momentum sign with its own classical phase.
+
+\Lc The package does repair the six concrete defq errors. It does not
+repair the earlier conditional identification of a physical charge pair,
+the incomplete determinant/domain problem, or the absence of a quantum
+sewing computation. These are controlling qualifications in the earlier
+audits and errata, not conclusions superseded by another passing script.
+No evidence from this snapshot establishes hidden historical tolerance
+changes. The package records prior development failures honestly, but its
+historical wrong-input comparison now uses $10^{-45}$ whereas its narrative
+mentions an earlier $10^{-55}$ test. The new independent test uses
+$10^{-60}$ and passes; the weaker current package threshold is disclosed
+rather than used as evidence of fraud or a numerical failure.
+
+\paragraph{Runtime and reproducibility.}
+\Lc The initial isolated runs of the unchanged originals both exit zero
+and print \file{ALL CHECKS PASSED}: renormalisation 27.91 seconds and
+holonomy 9.59 seconds, run concurrently. The final independent checker has no cache and completes in
+78.62 seconds. A separate expanded run including sequential original-script
+checks measured 23.32 seconds for renormalisation and 8.26 seconds for
+holonomy. The final checker reports its own runtime and reruns the originals
+only with \file{--package-runs}. All independent assertions, including assertions that refuted
+claims have a nonzero discrepancy, precede its final line
+\file{ALL CHECKS PASSED}. No passing marker is manufactured after an error.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \Lc Package refutations: physical selection of $\lambda_g=0$;
+its zero-sound-shift and Toda-matching names; independent $\delta\rho_0=0$
+from condition (i); quantum zero parameter shift inferred from a classical
+slope; positive-$\lambda_g$ weight-sign extension; disjoint branch points;
+smoothness at absorption; and the fixed-momentum transmission sign relative
+to the displayed classical phase. The upper-half interval formula also has a
+missing factor of two. These discrepancies are retained and, where
+algebraic, asserted in the independent script.
+\item \Lc Package proof/coverage gaps: uncomputed quantum slope and
+boundary effective action, endpoint interval constants supplied rather than
+derived, absent endpoint coverage in the mode-weight scan, numerical table
+prints without assertions, and effective versus intrinsic defect-charge
+notation. The independent exact logarithm and weight-monotonicity proofs
+repair the mathematical sign results without proving their physical
+interpretations.
+\item \Lc The first independent run failed the determinant-prefactor
+comparison by a sign ($+0.00174579217008414839$ versus its negative).
+The audit ordered rows $(a_{xx},b_{xx},a_{xxx},b_{xxx})$, whereas the
+quoted determinant uses the two left rows followed by the two right rows.
+Swapping rows two and three to match that convention removed the discrepancy.
+The target prefactor, polynomial and tolerance were unchanged. This was an
+audit row-order error, not a refutation of the package determinant.
+\item \Lc A late independent phase-derivative assertion against the
+package's positive-delay relation failed by $0.63733258678449138541$.
+The displayed classical phase instead obeys the negative-delay relation,
+confirmed both symbolically and for all four direction/orientation choices.
+The final checker asserts this nonzero discrepancy and the consistent
+negative relation at the original $10^{-60}$ tolerance. No tolerance was
+loosened and the failed equality is recorded as a package refutation.
+\item \Lc Two exploratory repository searches named a nonexistent old
+script/glob and returned a missing-path diagnostic. The relevant definitions
+were read from the actual TeX sources. No numerical claim depended on those
+failed searches. The first PDF build also failed because the default font setup requested
+an unavailable bitmap font and its font cache was read-only. Selecting
+the installed Latin Modern outline fonts fixed the build without altering
+mathematics. The successful high-precision run retained all mathematical
+assertions; none was disabled or weakened to obtain a pass.
+\end{enumerate}
+
+\paragraph{References and reading scope.}
+\La Classical source: Corrigan--Zambon,
+\emph{Adding integrable defects to the Boussinesq equation},
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}.
+The entry, abstract and full-text section 2 were read online; the entire
+article was not read. The package's title differs from the verified entry.
+No new Faddeev--Korepin reading or attribution is claimed.
+\Lc New results are checked as project statements. The PDF was compiled
+with two \file{pdflatex} passes and all pages rendered and inspected.
+\end{document}
