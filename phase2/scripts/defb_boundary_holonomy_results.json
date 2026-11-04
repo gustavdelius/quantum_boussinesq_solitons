@@ -1,0 +1,20 @@
+{
+  "script": "phase2/scripts/defb_boundary_holonomy.py",
+  "dps": 70,
+  "checks": {
+    "closed_form_can_charges_max_err": "5.07118e-70",
+    "universal_holonomy_formula_max_err": "5.45605e-70",
+    "symmetric_triple_CE_exact": "-3*sqrt(3)/(4*pi)*ln(2+sqrt(3))*eta",
+    "symmetric_triple_CE_val": "-0.5445577069714240983808714",
+    "symmetric_triple_CP_exact": "0",
+    "symmetric_triple_dCP_dtheta_exact": "(3*sqrt(3)*ln(2+sqrt(3)) - 9)/pi * eta",
+    "symmetric_triple_dCP_dtheta_val": "-0.6865581477684196503164223",
+    "interval_proof_N_subintervals": 2000,
+    "interval_proof_max_CE_upper_on_interior": "-0.0004023468367",
+    "interval_proof_min_CP_lower_on_interior": "0.0001174939014",
+    "lambda_g_invariance_of_CP": true,
+    "lambda_g_shift_of_CE": "+eta * lambda_g * sin(3*theta)",
+    "obstruction_3_w1_minus_w2_strictly_negative": true,
+    "d_delta_D_dqi_simplified_identity": true
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "script": "phase2/scripts/defb_boundary_renorm.py",
+  "dps": 70,
+  "checks": {
+    "off_shell_conservation_all_4_charges": true,
+    "correction_1_absorption_z_wrong": "1.582575694955840006588047",
+    "correction_1_absorption_z_wrong_exact": "sqrt(21) - 3",
+    "correction_1_absorption_z_right": "0.0",
+    "correction_1_max_conservation_err": "2.26392e-72",
+    "correction_2_energy_trace_plus_sign": true,
+    "correction_3_real_mode_covariance_half_weight": true,
+    "correction_4_asymptotic_z_both_infinities": "exp(-2*pi*i*eta/3)",
+    "correction_5_threshold_rate_at_sqrt3": "0.4330127018922193233818616",
+    "correction_5_printed_wrong_rate": "0.3080127018922193233818616",
+    "correction_6_pole_residue_zero": true,
+    "envelope_theorem_ds1_dsigma_zero_on_vacua": true,
+    "elasticity_triangle_cube_sum_identity": "3*eta*(q1-q2)*(q2-q3)*(q3-q1)",
+    "zero_momentum_transmission_pinned": "z_ph(0; s, eta) = +1",
+    "zero_momentum_slope_scattering_length": "-2*sqrt(3)*eta / (s + 1)",
+    "closed_form_vs_dipole_max_err": "1.35835e-71",
+    "closed_form_vs_quad_max_err": "4.81083e-72",
+    "stable_vacua_casimir_table": {
+      "-1.2": {
+        "Delta_ED_ren": "0.2424341505677696595833574",
+        "ED_sub": "0.07703548194123204472995944",
+        "Delta_PD_Cas": "-0.007206482627222692330440495"
+      },
+      "-1.5": {
+        "Delta_ED_ren": "0.2999754600317957744538139",
+        "ED_sub": "0.09322712424862375588706643",
+        "Delta_PD_Cas": "0.06055750652521987454527241"
+      },
+      "-sqrt(3)": {
+        "Delta_ED_ren": "0.3294920324664136867168042",
+        "ED_sub": "0.09075961782857068306347856",
+        "Delta_PD_Cas": "0.104800179569745683339028"
+      },
+      "-2.0": {
+        "Delta_ED_ren": "0.3513765351619205080995861",
+        "ED_sub": "0.07571208745102448334392283",
+        "Delta_PD_Cas": "0.1514241749020489666878457"
+      },
+      "-2.5": {
+        "Delta_ED_ren": "0.3621713520444601820754585",
+        "ED_sub": "0.01759079240584015113087947",
+        "Delta_PD_Cas": "0.2311757576421033684174888"
+      }
+    },
+    "stable_vacuum_transmission_samples": {
+      "0.5": {
+        "s_st": "-1.7320508075688772935",
+        "I_SD": "-1.33210991172351758162602",
+        "dx_D": "-5.664951832969839004351371",
+        "delta_D_trans_mode": "-2.83443578117603636070576",
+        "delta_D_trans_can": "-3.789718171254680032789008"
+      },
+      "0.52": {
+        "s_st": "-1.8013328398716323853",
+        "I_SD": "-1.363375595399741859213087",
+        "dx_D": "-4.935037101964472876194068",
+        "delta_D_trans_mode": "-2.672130572245224357795017",
+        "delta_D_trans_can": "-3.504327239912196322302929"
+      }
+    }
+  }
+}

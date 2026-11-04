@@ -1,0 +1,909 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{booktabs,longtable,array}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\hb}{\hbar}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\artanh}{\operatorname{artanh}}
+
+\newcommand{\La}{\textbf{(a)}}
+\newcommand{\Lb}{\textbf{(b)}}
+\newcommand{\Lc}{\textbf{(c)}}
+\newcommand{\Ld}{\textbf{(d)}}
+
+\newcommand{\sren}{\texttt{phase2/\allowbreak scripts/\allowbreak defb\_\allowbreak boundary\_\allowbreak renorm.py}}
+\newcommand{\shol}{\texttt{phase2/\allowbreak scripts/\allowbreak defb\_\allowbreak boundary\_\allowbreak holonomy.py}}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+
+\title{\textbf{Renormalised One-Loop Quantum Defect Boundary Theory\\
+and Universal KP-Triangle Holonomy Proofs\\
+for the Good Boussinesq Equation}}
+\author{Research Agent --- Project \texttt{quantum\_boussinesq\_solitons} (PI: G.~Delius)}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We carry out ranked next step~\#4 of the revised Phase~2 master report
+(\texttt{phase2/report.tex}): constructing the renormalised one-loop quantum
+boundary theory for the Corrigan--Zambon (CZ) type-I integrable defect in the
+good Boussinesq equation and proving the canonical-charge and absorbed-momentum
+KP-triangle holonomy statements across \emph{all} nondegenerate KP triangles,
+incorporating all six corrections from the independent audit
+\texttt{phase2/audit\_defq.tex} (\texttt{phase2/errata.tex} entry N07).
+\begin{enumerate}
+\item \textbf{Renormalised one-loop boundary theory and uniqueness of
+counterterms \Lc\ (\sren):} With the corrected plus sign in the quadratic
+energy trace,
+$\langle E_{D,2}\rangle_q + \langle E_{D,2}\rangle_{-q} = \langle K\rangle_q + \langle K\rangle_{-q} = +\frac{\omega(q)}{4\pi}\big(\theta_D'(q)+\theta_D'(-q)\big) = -\frac{\sqrt{3}\eta\sigma_{\mathrm{vac}}}{4\pi} + O(q^{-2})$,
+we derive \emph{exact real elementary closed forms} for the finite one-loop
+Casimir momentum $\Delta P_D^{\mathrm{Cas}}(\sigma_{\mathrm{vac}},\eta)$, the
+density-subtracted Casimir energy $\mathcal{E}_D^{\mathrm{sub}}(\sigma_{\mathrm{vac}},\eta)$,
+and the mode-sum renormalised Casimir energy
+$\Delta E_D^{\mathrm{ren}}(\sigma_{\mathrm{vac}},\eta)$ (verified against the
+two-root dipole representation to $1.36\times 10^{-71}$ and compact-interval
+rational quadrature to $4.81\times 10^{-72}$). Within the integrable CZ
+parameter family $(s,\rho_0,\tau_0,h_0)$, an exact \emph{envelope theorem} on
+static vacua ($\tau'(\sigma_i)=h'(\sigma_i)=0$) proves that $O(\hb)$ shifts
+$\delta\sigma_i$ of the vacuum roots and $\delta s_1$ of the lower integration
+limit contribute \emph{zero} at $O(\hb)$ to $E_D^{\mathrm{vac}}(q_i)$ and
+$P_D^{\mathrm{vac}}(q_i)$. Imposing (i) preservation of the $w_\varphi=0$
+vacuum ($\delta\rho_{0,1}=0$), (ii) minimal ground-state subtraction at the
+reference stable vacuum ($\delta\tau_{0,1}=\delta h_{0,1}=0$), and (iii) the
+physical zero-momentum transmission slope (scattering length)
+$a_D(s,\eta) = \theta_D^{\mathrm{phys}\prime}(0^+;s,\eta) = -\frac{2\sqrt{3}\eta}{s+1}$
+(since $z_{\mathrm{ph}}(0;s,\eta)=+1$ is topologically pinned) uniquely fixes
+$(\delta s_1,\delta\rho_{0,1},\delta\tau_{0,1},\delta h_{0,1}) = (0,0,0,0)$.
+Including the bulk vacuum-elasticity counterterm
+$\Delta\mathcal{H}_{\mathrm{bulk}} = \hb\lambda_g u^2$ of
+\texttt{phase2/onebody\_scheme.tex} shifts the directed triangle sum of
+mode-sum soliton energies by
+$2\lambda_g\eta(q_1-q_2)(q_2-q_3)(q_3-q_1) \ne 0$, uniquely selecting the
+continuum zero-sound-shift scheme $\lambda_g = 0$ for mode-sum edge balance.
+\item \textbf{Recomputed $O(\hb^0)$ transmission phase and stable-vacuum
+absorption analysis \Lc\ (\sren):} Using the audited convention
+$s = \sigma_{\mathrm{vac}} = -2\sqrt{3}q_D$ for scattering and
+$c = \eta\sigma_{\mathrm{vac}} = -2\sqrt{3}\eta q_D$ for the decaying-mode
+spectrum, we verify genuine $z_t=0$ time-dependent absorption conservation to
+$2.26\times 10^{-72}$ (replacing the old script's spurious input $s=+1.5$ with
+$z_t = \sqrt{21}-3 \ne 0$). Because $f'(q) = 12q^2-1 > 0$ on the stable domain
+$|q| > \frac{1}{2\sqrt{3}}$, at most one root of the KP cubic
+$4q^3-q = \mathrm{const}$ is linearly stable ($c \le -1$) for a fixed
+orientation $\eta$; thus the only absorption/emission balance whose external
+defect states are linearly stable vacua is the composite closed-cycle process
+$D_\eta(q_{\mathrm{st}}) + S_1 + S_2 \leftrightarrow D_\eta(q_{\mathrm{st}}) + \bar{S}_3$
+returning to the unique stable ground state $q_{\mathrm{st}}$.
+\item \textbf{Universal KP-triangle holonomy theorem \Lc\ (\shol):}
+Reducing $\Delta P_{\mathrm{can}}(k,v)$ and $\Delta E_{\mathrm{can}}(k)$ to
+elementary functions of $k=\sin\alpha$ and $v=\epsilon\cos\alpha$ and
+parametrising all nondegenerate KP triangles on the fundamental domain
+$\vartheta \in (0,\frac{\pi}{3})$, we prove by exact endpoint asymptotics,
+exact symmetry-point derivatives at $\vartheta=\frac{\pi}{6}$ (where
+$\mathcal{C}_P(\frac{\pi}{6})=0$,
+$\mathcal{C}_E(\frac{\pi}{6}) = -\frac{3\sqrt{3}}{4\pi}\ln(2+\sqrt{3})\,\eta \ne 0$,
+and $\mathcal{C}_P'(\frac{\pi}{6}) = \frac{3\sqrt{3}\ln(2+\sqrt{3})-9}{\pi}\,\eta \ne 0$),
+and rigorous \texttt{mpmath.iv} interval arithmetic across $2000$ subintervals
+that $\eta\,\mathcal{C}_E(\vartheta) < 0$ for \emph{every}
+$\vartheta \in (0,\frac{\pi}{3})$ and $\mathcal{C}_P(\vartheta) = 0$ on
+$(0,\frac{\pi}{3})$ \emph{if and only if} $\vartheta = \frac{\pi}{6}$. Thus
+$(\mathcal{C}_E,\mathcal{C}_P) \ne (0,0)$ for \emph{every} nondegenerate KP
+triangle, and $\mathcal{C}_P(\vartheta)$ is strictly invariant under the bulk
+elasticity counterterm $\lambda_g$. We likewise prove universally that the
+absorbed-soliton momentum remainder $\mathcal{R}_{\mathrm{abs}}$ has a
+strictly negative branch-point coefficient $w_1(\vartheta)-w_2(\vartheta) < 0$
+on all $\vartheta \in (0,\frac{\pi}{3})$, and derive the exact pole-free
+identity
+$\partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta) = -\frac{2\sqrt{3}}{3}(12q_i^2-1)\epsilon_3\ln|z_t(3;q_i,\eta)| + 4\epsilon_3\eta k_3(v_3+2\sqrt{3}q_i)$.
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+
+% ==============================================================================
+\section{Conventions, dictionary, and incorporation of the \texttt{audit\_defq} verdicts}
+\label{sec:conventions}
+% ==============================================================================
+
+\subsection{Fixed project conventions and the two defect parameters \texorpdfstring{$s$ and $c$}{s and c}}
+
+Throughout this report we work on the \textbf{good} Boussinesq branch in the
+fixed conventions of \texttt{AGENTS.md}:
+\begin{align}
+  u_{tt} &= u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad
+  u = \varphi_x = 2(\log\tau)_{xx}, \label{eq:good_bq}\\
+  \mathcal{L} &= \frac{1}{2}\varphi_t^2 - \frac{1}{2}\varphi_x^2 + \varphi_x^3 - \frac{1}{2}\varphi_{xx}^2, \qquad
+  \Omega = \int \dd\pi \wedge \dd\varphi, \quad \pi = \varphi_t. \label{eq:bulk_lag}
+\end{align}
+A classical one-soliton state $S = (\alpha,\epsilon)$ with
+$\alpha \in (0,\frac{\pi}{2})\setminus\{\frac{\pi}{3}\}$ and
+$\epsilon \in \{+1,-1\}$ has amplitude parameter $k = \sin\alpha$, velocity
+$v = \epsilon\cos\alpha$, frequency $\omega_{\mathrm{sol}} = kv$, spectral
+parameter $\ell = -\epsilon\cos 3\alpha$, KP roots
+$p_a = \frac{1}{2}(k + v/\sqrt{3}) > p_b = \frac{1}{2}(v/\sqrt{3} - k)$
+satisfying $p_a^2 + p_a p_b + p_b^2 = \frac{1}{4}$ and
+$\ell = 3\sqrt{3}(4p_{a/b}^3 - p_{a/b})$, and conserved classical bulk charges
+\La/\Lc:
+\begin{equation}\label{eq:sol_data}
+  M = 2k, \qquad
+  \Pi = -Mv = -2\epsilon k\cos\alpha, \qquad
+  P = \frac{2}{3}\epsilon k^3\cos\alpha, \qquad
+  E = \frac{2}{15}k^3(5 - 4k^2).
+\end{equation}
+
+In the integrable type-I defect construction of Corrigan and Zambon (CZ)
+\cite{CZ} \La\ (with dimensional constants $c_{\mathrm{CZ}}=\lambda=\kappa=1$),
+the bulk potential $u_{\mathrm{CZ}}$ satisfies
+$\mathcal{L}_{\mathrm{CZ}} = \frac{1}{2}u_{\mathrm{CZ},t}^2 - \frac{1}{2}u_{\mathrm{CZ},x}^2 - \frac{1}{3}u_{\mathrm{CZ},x}^3 - \frac{1}{2}u_{\mathrm{CZ},xx}^2$,
+giving the exact project dictionary \Lc\ (\sren):
+\begin{equation}\label{eq:cz_dict}
+  u_{\mathrm{CZ}} = -3\varphi_L \;(x<0), \qquad
+  v_{\mathrm{CZ}} = -3\varphi_R \;(x>0), \qquad
+  \mathcal{L}_{\mathrm{CZ}} = 9\,\mathcal{L}, \qquad
+  D_{\mathrm{proj}} = \frac{1}{9}D_{\mathrm{CZ}}, \qquad
+  (E_{\mathrm{CZ}},P_{\mathrm{CZ}}) = 9\,(E,P).
+\end{equation}
+Following Section~2 of the independent audit \texttt{phase2/audit\_defq.tex}
+\Lc, we distinguish explicitly between the \textbf{scattering parameter} $s$ and
+the \textbf{spectral stability parameter} $c$:
+\begin{equation}\label{eq:sc_dict}
+  \boxed{\;
+  s = \sigma_{\mathrm{vac}} = -2\sqrt{3}\,q_D, \qquad
+  q_D = -\frac{s}{2\sqrt{3}}, \qquad
+  c := \eta\,\sigma_{\mathrm{vac}} = \eta\,s = -2\sqrt{3}\,\eta\,q_D, \qquad
+  \eta \in \{+1,-1\}.
+  \;}
+\end{equation}
+Here $s = \sigma_{\mathrm{vac}}$ enters the classical and linearised scattering
+transmission factors directly,
+\begin{align}
+  z_t(\alpha,\epsilon;q_D,\eta) &= \left(\frac{v + s - \eta\sqrt{3}\,k}{v + s + \eta\sqrt{3}\,k}\right)
+  = \left(\frac{p_b - q_D}{p_a - q_D}\right)^\eta, \label{eq:zt_sol}\\
+  z_{\mathrm{ph}}(q;s,\eta) &= \left(\frac{\sgn(q)\sqrt{1+q^2} + s - \ii\sqrt{3}\,q}{\sgn(q)\sqrt{1+q^2} + s + \ii\sqrt{3}\,q}\right)^\eta, \label{eq:zph_phonon}
+\end{align}
+whereas the linearised decaying-mode determinant on a constant defect vacuum
+$\sigma_{\mathrm{vac}}$ depends on the product $c = \eta\sigma_{\mathrm{vac}}$:
+\begin{equation}\label{eq:det_c}
+  \frac{\det M_{4\times 4}(g;\sigma_{\mathrm{vac}},\eta)}{(\kappa_1-\kappa_2)^2}
+  = -\frac{2}{3}\,S^2(S^2-1)\,P_-(S;c)\,P_+(S;c), \qquad
+  P_\mp(S;c) = S^2 - \frac{\sqrt{3}\mp 1}{2}cS + \frac{c^2-2\mp\sqrt{3}}{2},
+\end{equation}
+with $S = \kappa_1+\kappa_2 = \sqrt{1+2g} > 1$ and growth rate
+$g = \frac{1}{2}(S^2-1) > 0$ \Lc.
+
+\subsection{Verification of the six corrections from \texttt{audit\_defq.tex}}
+
+Before constructing the renormalised boundary theory, our first script
+(\sren, Section~1) independently verifies all six corrections identified by
+\texttt{phase2/audit\_defq.tex} (\texttt{phase2/errata.tex} entry N07):
+
+\begin{proposition}[Verification of the six \texttt{audit\_defq} corrections, \Lc, \sren]\label{prop:audit_corrections}
+\begin{enumerate}
+\item \textbf{True $z_t=0$ soliton absorption vs spurious extra $\eta$:}
+At $q_1 = \frac{\sqrt{3}}{4}$, $q_2 = \frac{\sqrt{7}-\sqrt{3}}{8}$, and
+$\eta = -1$, passing $s_{\mathrm{wrong}} = -2\sqrt{3}q_1\eta = +\frac{3}{2}$
+into a function expecting bare $s = -2\sqrt{3}q_1 = -\frac{3}{2}$ yields regular
+transmission with the exact algebraic factor
+\begin{equation}\label{eq:z_wrong_exact}
+  z_{\mathrm{wrong}} = \frac{12}{3+\sqrt{21}} = \sqrt{21} - 3
+  = 1.5825756949558400065880471\ldots \ne 0.
+\end{equation}
+With the correct bare parameter $s = \eta\sqrt{3}k - v = -2\sqrt{3}q_1 = -\frac{3}{2}$
+(for $\eta=-1$) or $s = -2\sqrt{3}q_2$ (for $\eta=+1$), transmission vanishes
+identically ($z_t = 0$) and direct half-line quadrature of
+$(E_{\mathrm{tot}},P_{\mathrm{tot}},\Pi_{\mathrm{tot}},M_{\mathrm{tot}})(t)$ at
+$t \in \{-4,0,3.5\}$ is conserved to $2.26\times 10^{-72}$.
+\item \textbf{Plus sign in the quadratic energy trace and $\langle J_{\mathrm{bulk},2}\rangle_q = 0$:}
+For the quadratic defect Lagrangian $D_2 = a_t F_1 + b_t G_1 - E_{D,2}$ with
+$K := a_t F_1 + b_t G_1$ and
+$E_{D,2} = -A\sigma_0(a_x^2 + a_x b_x + b_x^2) - \frac{1-\sigma_0^2}{2}(a-b)(a_x+b_x) + \frac{A\sigma_0(1-\sigma_0^2)}{4}(a-b)^2$
+($A = \eta/\sqrt{3}$), the bulk integration-by-parts boundary term
+$J_{\mathrm{bulk},2}$ has $\langle J_{\mathrm{bulk},2}\rangle_q = 0$ on
+reflectionless plane waves, and the symmetric $\pm q$ trace obeys the exact
+pointwise identity with a \textbf{plus} sign:
+\begin{equation}\label{eq:ED2_plus_sign}
+  \boxed{\;
+  \langle E_{D,2}\rangle_q + \langle E_{D,2}\rangle_{-q}
+  = \langle K\rangle_q + \langle K\rangle_{-q}
+  = +\frac{\omega(q)}{4\pi}\Big(\theta_D'(q;s,\eta) + \theta_D'(-q;s,\eta)\Big)
+  = -\frac{\sqrt{3}\,\eta\,\sigma_0}{\pi}\,
+    \frac{q\sqrt{1+q^2}\big(4q^2 + \sigma_0^2 - 1\big)}
+         {16q^4 + 4(\sigma_0^2+2)q^2 + (\sigma_0^2-1)^2}.
+  \;}
+\end{equation}
+(In \texttt{defq\_oneloop\_renorm.py}, a sign error in the printed string on
+line~350 produced a false minus sign in Eq.~(27) of
+\texttt{defq\_charges\_fusion.tex}, while a typo replacing $a_x^2+a_x b_x+b_x^2 \mapsto q^2(2+\Rea z)$
+by $q^2(1+2\Rea z)$ on line~293 produced a spurious mismatch between
+$\langle E_{D,2}\rangle_{\mathrm{sym}}$ and $\langle K\rangle_{\mathrm{sym}}$.)
+\item \textbf{Real-mode vacuum covariance:}
+A real cosine mode $\frac{1}{\sqrt{\pi\omega}}\Rea(\ee^{\ii(qx-\omega t)})$ has
+ordinary time average $\frac{1}{2\pi\omega}$; obtaining the standard vacuum
+contraction $\langle a^2\rangle_q = \frac{1}{4\pi\omega(q)}$ used in
+\eqref{eq:ED2_plus_sign} requires either mode amplitude
+$\frac{1}{\sqrt{2\pi\omega(q)}}$ or an explicit zero-point weight of
+$\frac{1}{2}$ upon time averaging.
+\item \textbf{Coincident signed-wavenumber limits at $\pm\infty$:}
+Because both $\sgn(q)\sqrt{1+q^2}$ and $-\ii\sqrt{3}q$ change sign under
+$q \mapsto -q$, the phonon transmission factor \eqref{eq:zph_phonon} has the
+\emph{same} limit at both infinities:
+\begin{equation}\label{eq:zph_limits}
+  \lim_{q\to +\infty} z_{\mathrm{ph}}(q;s,\eta)
+  = \lim_{q\to -\infty} z_{\mathrm{ph}}(q;s,\eta)
+  = \ee^{-2\pi\ii\eta/3}.
+\end{equation}
+\item \textbf{Exact growth rate at the branch-switch threshold $c = \sqrt{3}$:}
+At $c = \eta\sigma_{\mathrm{vac}} = \sqrt{3}$, the marginal root has
+$g_2(\sqrt{3}) = 0$ ($S=1$) and the remaining strictly positive admissible
+growth rate from \eqref{eq:det_c} is
+\begin{equation}\label{eq:g1_sqrt3}
+  g_1(\sqrt{3}) = \frac{\sqrt{3}}{4} = 0.43301270189221932338\ldots
+  \ne \frac{2\sqrt{3}-1}{8} = 0.30801270189221932338\ldots.
+\end{equation}
+\item \textbf{Removable poles in $\partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta)$:}
+Because $\ell(p) = 3\sqrt{3}(4p^3 - p)$ satisfies $\ell_3 = \ell(p_{3,a}) = \ell(p_{3,b})$,
+the quotient
+\begin{equation}\label{eq:ell_quotient}
+  \frac{\ell_3 - \ell(q_i)}{p_{3,a/b} - q_i}
+  = 3\sqrt{3}\Big(4(p_{3,a/b}^2 + p_{3,a/b}q_i + q_i^2) - 1\Big)
+\end{equation}
+is a polynomial with zero pole residue at $q_i = p_{3,a/b}$, refuting the
+simple-pole argument in Proposition~4.3 of \texttt{defq\_charges\_fusion.tex}.
+\end{enumerate}
+\end{proposition}
+
+% ==============================================================================
+\section{Renormalised one-loop boundary theory and boundary renormalisation conditions}
+\label{sec:renorm}
+% ==============================================================================
+
+\subsection{Exact real elementary closed forms for the defect Casimir charges}
+
+On any linearly stable defect vacuum
+$c = \eta\sigma_{\mathrm{vac}} \le -1$ ($\eta q_D \ge \frac{1}{2\sqrt{3}}$),
+there are no growing modes ($S > 1$), and the one-loop vacuum expectation
+values of the quadratic boundary momentum $P_{D,2}$ and quadratic energy
+$E_{D,2}$ are given by integrating the symmetric spectral traces over
+$q \in (0,\infty)$. By changing variables to $u = \sqrt{1+q^2} \in [1,\infty)$
+(where $q\,\dd q = u\,\dd u$), the square root in $\omega(q) = qu$ and in
+$\theta_D'(\pm q;s,\eta) = -2\sqrt{3}\eta\frac{\sigma_{\mathrm{vac}}u \pm 1}{u(4u^2 \pm 2\sigma_{\mathrm{vac}}u + \sigma_{\mathrm{vac}}^2 - 3)}$
+rationalises completely \Lc\ (\sren).
+
+\begin{theorem}[Exact elementary closed forms for one-loop defect Casimir charges, \Lc, \sren]\label{thm:casimir_closed}
+Let $\sigma = \sigma_{\mathrm{vac}} = -2\sqrt{3}q_D \in \mathbb{R}\setminus\{\pm 1\}$
+and $D_\pm(u) := 4u^2 \pm 2\sigma u + \sigma^2 - 3$. Then:
+\begin{enumerate}
+\item In the variable $u = \sqrt{1+q^2} \in [1,\infty)$ (or compact variable
+$z = 1/u \in (0,1]$), the UV-finite Casimir momentum
+$\Delta P_D^{\mathrm{Cas}}(\sigma,\eta) := \int_0^\infty \big(\langle P_{D,2}\rangle_q + \langle P_{D,2}\rangle_{-q}\big)\,\dd q$
+and the UV-subtracted local Casimir energy
+$\mathcal{E}_D^{\mathrm{sub}}(\sigma,\eta) := \int_0^\infty \big[\langle E_{D,2}\rangle_q + \langle E_{D,2}\rangle_{-q} + \frac{\sqrt{3}\eta\sigma}{4\pi}\frac{q}{\sqrt{1+q^2}}\big]\,\dd q$
+reduce to the exact rational integrals
+\begin{align}
+  \Delta P_D^{\mathrm{Cas}}(\sigma,\eta)
+  &= \frac{2\sqrt{3}\,\eta}{\pi}\int_1^\infty
+     \frac{(\sigma^2 - 2)u^2 + \frac{1}{2}(3 - \sigma^2)}{D_+(u)\,D_-(u)}\,\dd u, \label{eq:PD_rat_u}\\
+  \mathcal{E}_D^{\mathrm{sub}}(\sigma,\eta)
+  &= \frac{\sqrt{3}\,\eta\,\sigma}{4\pi}\int_1^\infty
+     \frac{-4u^2 + (\sigma^2 - 3)^2}{D_+(u)\,D_-(u)}\,\dd u. \label{eq:Esub_rat_u}
+\end{align}
+\item Evaluating \eqref{eq:PD_rat_u}--\eqref{eq:Esub_rat_u} in closed form gives
+for $|\sigma| < 2$:
+\begin{align}
+  \Delta P_D^{\mathrm{Cas}}(\sigma,\eta)
+  &= \frac{\eta}{8\pi}\!\left[
+     \sqrt{3}\,\sigma\ln\left|\frac{\sigma + 1}{\sigma - 1}\right|
+     - \sqrt{4 - \sigma^2}\,\ln\left|\frac{\sqrt{3} + \sqrt{4 - \sigma^2}}{\sqrt{3} - \sqrt{4 - \sigma^2}}\right|
+     \right], \label{eq:PD_closed_le2}\\
+  \Delta E_D^{\mathrm{ren}}(\sigma,\eta)
+  &= \frac{\eta}{16\pi}\!\left[
+     -4\sqrt{3}\,\sigma
+     + \sqrt{3}(2 - \sigma^2)\ln\left|\frac{\sigma + 1}{\sigma - 1}\right|
+     - \sigma\sqrt{4 - \sigma^2}\,\ln\left|\frac{\sqrt{3} + \sqrt{4 - \sigma^2}}{\sqrt{3} - \sqrt{4 - \sigma^2}}\right|
+     \right], \label{eq:ED_closed_le2}\\
+  \mathcal{E}_D^{\mathrm{sub}}(\sigma,\eta)
+  &= \Delta E_D^{\mathrm{ren}}(\sigma,\eta) + \frac{\sqrt{3}\,\eta\,\sigma}{4\pi}
+  = \frac{\eta}{16\pi}\!\left[
+     \sqrt{3}(2 - \sigma^2)\ln\left|\frac{\sigma + 1}{\sigma - 1}\right|
+     - \sigma\sqrt{4 - \sigma^2}\,\ln\left|\frac{\sqrt{3} + \sqrt{4 - \sigma^2}}{\sqrt{3} - \sqrt{4 - \sigma^2}}\right|
+     \right], \label{eq:Esub_closed_le2}
+\end{align}
+and for $|\sigma| \ge 2$ (by smooth analytic continuation
+$\sqrt{4-\sigma^2}\,\artanh\frac{\sqrt{4-\sigma^2}}{\sqrt{3}} \mapsto -\sqrt{\sigma^2-4}\,\arctan\frac{\sqrt{\sigma^2-4}}{\sqrt{3}}$):
+\begin{align}
+  \Delta P_D^{\mathrm{Cas}}(\sigma,\eta)
+  &= \frac{\eta}{8\pi}\!\left[
+     \sqrt{3}\,\sigma\ln\left|\frac{\sigma + 1}{\sigma - 1}\right|
+     + 2\sqrt{\sigma^2 - 4}\,\arctan\frac{\sqrt{\sigma^2 - 4}}{\sqrt{3}}
+     \right], \label{eq:PD_closed_gt2}\\
+  \Delta E_D^{\mathrm{ren}}(\sigma,\eta)
+  &= \frac{\eta}{16\pi}\!\left[
+     -4\sqrt{3}\,\sigma
+     + \sqrt{3}(2 - \sigma^2)\ln\left|\frac{\sigma + 1}{\sigma - 1}\right|
+     + 2\sigma\sqrt{\sigma^2 - 4}\,\arctan\frac{\sqrt{\sigma^2 - 4}}{\sqrt{3}}
+     \right]. \label{eq:ED_closed_gt2}
+\end{align}
+At $\sigma = -2$ ($q_D = \frac{1}{\sqrt{3}}$), these reduce to the exact special
+values
+$\Delta P_D^{\mathrm{Cas}}(-2,\eta) = \frac{\sqrt{3}\ln 3}{4\pi}\eta$,
+$\Delta E_D^{\mathrm{ren}}(-2,\eta) = \frac{\sqrt{3}(4+\ln 3)}{8\pi}\eta$, and
+$\mathcal{E}_D^{\mathrm{sub}}(-2,\eta) = \frac{\sqrt{3}\ln 3}{8\pi}\eta$.
+Across $\sigma \in \{-1.2,-1.5,-\sqrt{3},-2.0,-2.5\}$,
+\eqref{eq:PD_closed_le2}--\eqref{eq:ED_closed_gt2} agree with the two-root
+dipole representation to $1.36\times 10^{-71}$ and with compact-interval
+quadrature of \eqref{eq:PD_rat_u}--\eqref{eq:Esub_rat_u} to
+$4.81\times 10^{-72}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{table}[htbp]
+\centering
+\caption{One-loop renormalised defect Casimir charges on linearly stable vacua
+($\eta=+1$, $c = \sigma_{\mathrm{vac}} < -1$) from Theorem~\ref{thm:casimir_closed},
+verified to $70$-digit working precision (\sren).}
+\label{tab:casimir_stable}
+\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$\sigma_{\mathrm{vac}} = -2\sqrt{3}q_D$ & $\Delta E_D^{\mathrm{ren}}(\sigma_{\mathrm{vac}},+1)$ & $\mathcal{E}_D^{\mathrm{sub}}(\sigma_{\mathrm{vac}},+1)$ & $\Delta P_D^{\mathrm{Cas}}(\sigma_{\mathrm{vac}},+1)$ \\\midrule
+$-1.2$ & $+0.24243415056776965958$ & $+0.07703548194123204473$ & $-0.00720648262722269233$ \\
+$-1.5$ & $+0.29997546003179577445$ & $+0.09322712424862375589$ & $+0.06055750652521987455$ \\
+$-\sqrt{3}$ & $+0.32949203246641368672$ & $+0.09075961782857068306$ & $+0.10480017956974568334$ \\
+$-2.0$ & $+0.35137653516192050810$ & $+0.07571208745102448334$ & $+0.15142417490204896669$ \\
+$-2.5$ & $+0.36217135204446018208$ & $+0.01759079240584015113$ & $+0.23117575764210336842$ \\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Envelope theorem on static vacua and boundary renormalisation conditions}
+
+At cutoff $\Lambda$ ($T := \sqrt{1+\Lambda^2}$), the equal-mode-count Casimir
+energy $E_D^{\mathrm{mode}}(\sigma_{\mathrm{vac}},\eta;\Lambda) = -\frac{\sqrt{3}\eta\sigma_{\mathrm{vac}}}{2\pi}(T-1) + \Delta E_D^{\mathrm{ren}}(\sigma_{\mathrm{vac}},\eta) + O(\Lambda^{-1})$
+has a linear UV divergence proportional to
+$\sigma_{\mathrm{vac}} = s + \sqrt{3}\eta M_D$. Adding the unique UV boundary
+counterterm
+\begin{equation}\label{eq:UV_bdry_ct}
+  \delta E_D^{\mathrm{ct,UV}}(\sigma;\Lambda)
+  = +\frac{\sqrt{3}\,\eta(T-1)}{2\pi}\,\sigma
+  = \frac{\sqrt{3}\,\eta(T-1)}{2\pi}\,s + \frac{3(T-1)}{2\pi}\big(\varphi_R(0^+) - \varphi_L(0^-)\big)
+\end{equation}
+(or half this coefficient in the direct local density scheme
+$E_D^{\mathrm{dens}}(\Lambda)$) cancels the linear UV divergence and completes
+the open-half-line bulk normal-ordering tadpole
+$\frac{3(T-1)}{2\pi}\int_{x\ne 0}\varphi_x\,\dd x = \frac{3(T-1)}{2\pi}(M_{\mathrm{tot}} - M_D)$
+into the topological charge $\frac{3(T-1)}{2\pi}M_{\mathrm{tot}}$ \Lc.
+
+For the remaining finite $O(\hb)$ boundary counterterms within the off-shell
+integrable CZ parameter family
+\begin{equation}\label{eq:cz_param_shift}
+  (s,\,\rho_0,\,\tau_0,\,h_0) \;\longmapsto\;
+  (s + \hb\,\delta s_1,\;\rho_0 + \hb\,\delta\rho_{0,1},\;\tau_0 + \hb\,\delta\tau_{0,1},\;h_0 + \hb\,\delta h_{0,1}),
+\end{equation}
+together with the bulk vacuum-elasticity counterterm
+$\Delta\mathcal{H}_{\mathrm{bulk}} = \hb\lambda_g u^2$ of
+\texttt{phase2/onebody\_scheme.tex} \Lc, we establish the following exact
+variational formulas (\sren, Sections~2--4):
+
+\begin{proposition}[Envelope theorem on static defect vacua and uniqueness of boundary renormalisation conditions, \Lc, \sren]\label{prop:envelope_uniqueness}
+Let $\sigma_i = -2\sqrt{3}q_i$ ($i=1,2,3$) be the three static vacuum roots of
+$\rho(\sigma_i) = \rho_0 + \frac{\sqrt{3}\eta}{2}(\sigma_i - \sigma_i^3/3) = 0$
+for $s = -2\sqrt{3}q_D$.
+\begin{enumerate}
+\item \textbf{Envelope theorem on static vacua:}
+Because $\tau'(\sigma_i) = -\sigma_i\rho(\sigma_i) = 0$,
+$h'(\sigma_i) = -\rho(\sigma_i) = 0$, and $\rho(s) = 0$, both the induced
+$O(\hb)$ shifts $\delta\sigma_i$ of the static vacuum roots and the lower-limit
+shift $\delta s_1$ in $\tau(\sigma) = \tau_0 - \int_s^\sigma z\rho(z)\,\dd z$
+and $h(\sigma) = h_0 - \int_s^\sigma \rho(z)\,\dd z$ contribute \textbf{zero}
+at $O(\hb)$ to the static vacuum charges $E_D^{\mathrm{vac}}(q_i) = -\tau(\sigma_i)/9$
+and $P_D^{\mathrm{vac}}(q_i) = h(\sigma_i)/9$. Reducing modulo the KP cubic
+$\sigma_i^3 - 3\sigma_i = s^3 - 3s$, the exact $O(\hb)$ counterterm shifts of
+the static defect vacuum charges are
+\begin{equation}\label{eq:exact_vac_shifts}
+  \boxed{\;
+  \delta E_D^{\mathrm{vac}}(q_i) = -\frac{1}{9}\delta\tau_{0,1} + \frac{2}{3}\delta\rho_{0,1}\big(q_i^2 - q_D^2\big), \qquad
+  \delta P_D^{\mathrm{vac}}(q_i) = \frac{1}{9}\delta h_{0,1} + \frac{2\sqrt{3}}{9}\delta\rho_{0,1}\big(q_i - q_D\big),
+  \;}
+\end{equation}
+while the static root locations shift by
+$\delta q_i = \frac{\eta\,\delta\rho_{0,1}}{3(1 - 12q_i^2)}$.
+\item \textbf{Natural boundary renormalisation conditions and uniqueness:}
+The four finite boundary counterterm parameters
+$(\delta s_1,\delta\rho_{0,1},\delta\tau_{0,1},\delta h_{0,1})$ are uniquely
+fixed to $(0,0,0,0)$ by three physical boundary renormalisation conditions:
+\begin{itemize}
+\item[(a)] \emph{Preservation of the $w_\varphi = 0$ reference vacuum:}
+Requiring that $\varphi_L(0^-) - \varphi_R(0^+) = 0$ ($\sigma = s_{\mathrm{ren}}$)
+remain a static vacuum solution of $\rho(\sigma)=0$ at $O(\hb)$ uniquely fixes
+$\delta\rho_{0,1} = 0$.
+\item[(b)] \emph{Reference ground-state normalisation:}
+Requiring that the additive action constants at the reference vacuum
+$\sigma = s_{\mathrm{ren}}$ vanish ($\tau(s_{\mathrm{ren}}) = h(s_{\mathrm{ren}}) = 0$,
+so the quantum ground-state charges are given purely by the spectral Casimir
+integrals $\Delta E_D^{\mathrm{ren}}, \Delta P_D^{\mathrm{Cas}}$) uniquely fixes
+$\delta\tau_{0,1} = 0$ and $\delta h_{0,1} = 0$. (Alternative ground-state
+normalisation conventions shift all three vacua by the same constant and cancel
+in all vacuum jumps $Q_D(q_{i+1}) - Q_D(q_i)$.)
+\item[(c)] \emph{Zero-momentum transmission slope (scattering length):}
+At $q = 0$, the phonon transmission amplitude \eqref{eq:zph_phonon} is
+topologically pinned to $z_{\mathrm{ph}}(0;s,\eta) = +1$ for every non-cusp
+vacuum $s \ne -1$, so the value at $q=0$ cannot fix $\delta s_1$. However, the
+zero-momentum phase derivative (defect scattering length)
+\begin{equation}\label{eq:aD_slope}
+  a_D(s,\eta) := \left.\frac{\dd\theta_D^{\mathrm{phys}}(q;s,\eta)}{\dd q}\right|_{q=0^+}
+  = -\frac{2\sqrt{3}\,\eta}{s + 1}
+\end{equation}
+is a strictly monotone one-to-one function of $s$ on the stable half-line
+$\eta s \le -1$. Defining the renormalised defect parameter $s_{\mathrm{ren}}$
+by $a_D^{\mathrm{ren}}(s_{\mathrm{ren}},\eta) = -\frac{2\sqrt{3}\eta}{s_{\mathrm{ren}}+1}$
+(or by the physical soliton absorption root $q_D^{\mathrm{ren}} = -s_{\mathrm{ren}}/(2\sqrt{3})$)
+uniquely fixes $\delta s_1 = 0$.
+\end{itemize}
+\item \textbf{Interaction with the bulk vacuum-elasticity counterterm
+$\Delta\mathcal{H}_{\mathrm{bulk}} = \hb\lambda_g u^2$:}
+On any spatially constant defect vacuum ($u_L = u_R = 0$),
+$\int_{x\ne 0} u^2\,\dd x = 0$, so $\lambda_g$ does not shift the defect
+Casimir charges. On a bulk soliton $S_i = (\alpha_i,\epsilon_i)$, adding
+$\Delta\mathcal{H}_{\mathrm{bulk}} = \hb\lambda_g u^2$ leaves
+$\Delta P_{\mathrm{mode}}(S_i)$ unchanged, shifts $\Delta E_1^{\mathrm{ren}}(S_i)$
+by $+\frac{2}{3}\lambda_g k_i^3$, and shifts the canonical pair by
+\begin{equation}\label{eq:lam_g_shifts}
+  \delta_{\lambda_g}\Delta P_{\mathrm{can}}(S_i) = 2\lambda_g v_i k_i, \qquad
+  \delta_{\lambda_g}\Delta E_{\mathrm{can}}(S_i) = \frac{2}{3}\lambda_g k_i(3 - 2k_i^2),
+\end{equation}
+preserving $\dd\Delta E_{\mathrm{can}} = v\,\dd\Delta P_{\mathrm{can}}$ and the
+fixed-$P$ energy shift $+\frac{2}{3}\lambda_g k_i^3$. Around any KP triangle
+$\{q_1,q_2,q_3\}$ with $\rho_i = \eta\sgn(q_i - q_{i+1})$, the cubic identity
+\begin{equation}\label{eq:cube_sum_id}
+  \sum_{i=1}^3 \rho_i\,k_{S_i}^3
+  = \eta\sum_{i=1}^3 (q_i - q_{i+1})^3
+  = 3\eta\,(q_1 - q_2)(q_2 - q_3)(q_3 - q_1) \ne 0
+\end{equation}
+shows that $\lambda_g = 0$ (the continuum zero-sound-shift scheme) is the
+\emph{unique} value of $\lambda_g$ for which the mode-sum soliton energies
+balance the analytically continued defect Casimir jumps across a KP triangle.
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Scope of the counterterm classification, \Ld]\label{rem:ct_scope}
+Following \texttt{phase2/audit\_defq.tex} (Section~6), Proposition~\ref{prop:envelope_uniqueness}
+classifies all integrable counterterms within the classical CZ functional
+family $(s,\rho_0,\tau_0,h_0)$ plus the bulk total-derivative and $u^2$
+counterterms \Lc. Whether higher-derivative quantum boundary operators outside
+the classical CZ ansatz could exist with anomalous quantum conservation laws is
+an open question beyond one-loop semiclassics \Ld.
+\end{remark}
+
+% ==============================================================================
+\section{Recomputed \texorpdfstring{$O(\hb^0)$}{O(hbar\^0)} transmission phase and absorption between stable vacua}
+\label{sec:transmission_absorption}
+% ==============================================================================
+
+\subsection{Recomputed \texorpdfstring{$O(\hb^0)$}{O(hbar\^0)} soliton--defect transmission phase on stable vacua}
+
+On any linearly stable defect ground state $q_{\mathrm{st}}$
+($c = \eta\sigma_{\mathrm{st}} = -2\sqrt{3}\eta q_{\mathrm{st}} \le -1$),
+the renormalised boundary conditions $(\delta s_1,\delta\rho_{0,1},\delta\tau_{0,1},\delta h_{0,1}) = (0,0,0,0)$
+mean that no finite boundary counterterm shifts the classical transmission
+action $\frac{1}{\hb}\delta_{D,\mathrm{cl}}(\alpha,\epsilon;q_{\mathrm{st}},\eta)$
+at fixed bare parameters. Expressing the one-loop transmission phase at fixed
+physical soliton momentum $P^{\mathrm{phys}} = P_{\mathrm{cl}}(\alpha,\epsilon) + \hb\,\Delta P(\alpha,\epsilon)$
+therefore gives \Lc\ (\sren):
+\begin{equation}\label{eq:delta_trans_ren}
+  \delta_D^{\mathrm{trans,ren}}(P^{\mathrm{phys}};q_{\mathrm{st}},\eta)
+  = I_{SD}(\alpha,\epsilon;q_{\mathrm{st}},\eta)
+    - \Delta x_D(\alpha,\epsilon;q_{\mathrm{st}},\eta)\,\Delta P(\alpha,\epsilon),
+\end{equation}
+where $\Delta x_D(\alpha,\epsilon;q_{\mathrm{st}},\eta) = -k^{-1}\ln|z_t(\alpha,\epsilon;q_{\mathrm{st}},\eta)|^\epsilon$
+and $I_{SD}(\alpha,\epsilon;q_{\mathrm{st}},\eta) = -\int_{-\infty}^\infty \frac{\dd q}{4\pi}\,\theta_{\mathrm{sol}}'(q;\alpha)\,\theta_D^{\mathrm{asympt}}(q;s_{\mathrm{st}},\eta)$
+with $s_{\mathrm{st}} = -2\sqrt{3}q_{\mathrm{st}}$ (Table~\ref{tab:trans_stable}).
+Under the bulk vacuum-elasticity counterterm $\Delta\mathcal{H}_{\mathrm{bulk}} = \hb\lambda_g u^2$,
+$\delta_D^{\mathrm{trans,ren}}$ in the mode-sum scheme ($\Delta P = \Delta P_{\mathrm{mode}}$)
+is completely invariant, while in the canonical scheme ($\Delta P = \Delta P_{\mathrm{can}}$)
+it shifts by $-2\lambda_g v k\,\Delta x_D = +2\lambda_g v\ln|z_t|^\epsilon$ \Lc.
+
+\begin{table}[htbp]
+\centering
+\caption{Recomputed $O(\hb^0)$ soliton--defect transmission phase \eqref{eq:delta_trans_ren}
+for a regular test soliton ($\alpha_3 = 0.35$, $\epsilon_3 = +1$) across
+linearly stable defect vacua ($\eta = +1$, $q_{\mathrm{st}} \ge \frac{1}{2}$,
+$c = s_{\mathrm{st}} \le -\sqrt{3}$) at $\delta s_1 = \lambda_g = 0$ (\sren).}
+\label{tab:trans_stable}
+\small
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$q_{\mathrm{st}}$ & $s_{\mathrm{st}} = -2\sqrt{3}q_{\mathrm{st}}$ & $I_{SD}(3;q_{\mathrm{st}},+1)$ & $\delta_D^{\mathrm{trans,ren}}$ ($\Delta P_{\mathrm{mode}}$) & $\delta_D^{\mathrm{trans,ren}}$ ($\Delta P_{\mathrm{can}}$) \\\midrule
+$0.50$ & $-\sqrt{3} \approx -1.73205081$ & $-1.3321099117235175816$ & $-2.8344357811760363607$ & $-3.7897181712546800328$ \\
+$0.52$ & $-1.8013328398716323853$ & $-1.3633755953997418592$ & $-2.6721305722452243578$ & $-3.5043272399121963223$ \\\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Why stable-vacuum absorption balance reduces to closed KP cycles}
+
+\begin{proposition}[Monotonicity proof that no single absorption edge connects two stable vacua, \Lc, \sren]\label{prop:monotonicity_stable}
+For a fixed defect orientation $\eta \in \{+1,-1\}$, linear stability ($c = -2\sqrt{3}\eta q \le -1$)
+requires $\eta q \ge \frac{1}{2\sqrt{3}}$. On the entire stable half-line
+$|q| > \frac{1}{2\sqrt{3}}$, the KP cubic polynomial $f(q) = 4q^3 - q$ has
+strictly positive derivative
+\begin{equation}\label{eq:f_prime_pos}
+  f'(q) = 12q^2 - 1 > 0 \qquad \forall\,|q| > \frac{1}{2\sqrt{3}}.
+\end{equation}
+Consequently, $f(q)$ is strictly injective on the stable domain
+$\eta q \ge \frac{1}{2\sqrt{3}}$, so \textbf{no two distinct roots of
+$4q^3 - q = 4q_D^3 - q_D$ can both lie in the linearly stable regime for the
+same orientation $\eta$}.
+\end{proposition}
+
+Proposition~\ref{prop:monotonicity_stable} has a direct consequence for testing
+absorption balance \textbf{between stable vacua only}:
+\begin{enumerate}
+\item At fixed orientation $\eta$, any elementary single-soliton transition
+$D_\eta(q_i) + S_i \to D_\eta(q_{i+1})$ has at least one linearly unstable
+endpoint ($c \in (-1,2)$).
+\item The \emph{only} absorption/emission processes whose external asymptotic
+defect states are linearly stable vacua at fixed $\eta$ are \textbf{closed
+cycles returning to the unique stable vacuum $q_{\mathrm{st}}$}, namely the
+composite two-soliton fusion transition
+\begin{equation}\label{eq:composite_stable}
+  D_\eta(q_{\mathrm{st}}) + S_1 + S_2 \;\longleftrightarrow\; D_\eta(q_{\mathrm{st}}) + \bar{S}_3
+\end{equation}
+(or the three-soliton loop $D_\eta(q_{\mathrm{st}}) + S_1 + S_2 + S_3 \leftrightarrow D_\eta(q_{\mathrm{st}})$).
+Because the initial and final defect state in \eqref{eq:composite_stable} is
+the \emph{identical} stable vacuum $D_\eta(q_{\mathrm{st}})$, the defect vacuum
+charge $Q_D^{\mathrm{quant}}(q_{\mathrm{st}})$ cancels out completely between
+the initial and final states, without ever requiring a quantum charge
+assignment on the two unstable vertices!
+\item Therefore, one-loop energy--momentum conservation in the stable-to-stable
+composite process \eqref{eq:composite_stable} at unshifted classical absorption
+rapidities reduces \emph{purely} to the vanishing of the directed KP-triangle
+holonomy $(\mathcal{C}_E,\mathcal{C}_P)$ of the three bulk solitons
+$S_1,S_2,S_3$ \Lc.
+\end{enumerate}
+
+% ==============================================================================
+\section{Universal symbolic and interval proof of the KP-triangle holonomy theorem}
+\label{sec:holonomy}
+% ==============================================================================
+
+\subsection{Elementary closed-form reduction of \texorpdfstring{$(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$}{(Delta E\_can, Delta P\_can)} and \texorpdfstring{$(\mathcal{C}_E(\vartheta),\mathcal{C}_P(\vartheta))$}{(C\_E(theta), C\_P(theta))}}
+
+We first reduce the bulk soliton co-moving effective Lagrangian
+$L_1(\alpha) = v\Delta P_{\mathrm{mode}}(\alpha,\epsilon) - \Delta E_1^{\mathrm{ren}}(\alpha)$
+and canonical collective-coordinate charges
+$(\Delta E_{\mathrm{can}},\Delta P_{\mathrm{can}})$ to elementary functions of
+$k = \sin\alpha$ and $v = \epsilon\cos\alpha$ \Lc\ (\shol, Section~1):
+
+\begin{proposition}[Elementary closed forms for $L_1$, $\Delta E_{\mathrm{can}}$, and $\Delta P_{\mathrm{can}}$, \Lc, \shol]\label{prop:can_closed}
+For every $\alpha \in (0,\frac{\pi}{2})\setminus\{\frac{\pi}{3}\}$ and
+$\epsilon \in \{+1,-1\}$, with $k = \sin\alpha$ and $v = \epsilon\cos\alpha$:
+\begin{enumerate}
+\item The tangent ratio in $\Delta P_{\mathrm{can}}(\alpha,\epsilon)$ obeys the
+exact trigonometric identity
+\begin{equation}\label{eq:tan_ratio_id}
+  \frac{\tan\!\big(\frac{\alpha + 2\pi/3}{2}\big)}{\tan\!\big(\frac{\alpha - 2\pi/3}{2}\big)}
+  \equiv \frac{2\sin\alpha + \sqrt{3}}{2\sin\alpha - \sqrt{3}}
+  = \frac{2k + \sqrt{3}}{2k - \sqrt{3}}.
+\end{equation}
+\item In $L_1(\alpha) = v\Delta P_{\mathrm{mode}} - \Delta E_1^{\mathrm{ren}}$,
+the third root $\phi_3 = \alpha$ drops out identically because
+$\cos\alpha - \cos\phi_3 = 0$, while the remaining two roots
+$\phi_{1,2} = \alpha \pm \frac{2\pi}{3}$ satisfy
+$\sin(\alpha \pm \frac{2\pi}{3})\big(\cos\alpha - \cos(\alpha \pm \frac{2\pi}{3})\big) \equiv \pm\frac{\sqrt{3}}{4}(3 - 4k^2)$.
+Consequently, $L_1$, $\Delta P_{\mathrm{can}}$, and $\Delta E_{\mathrm{can}}$
+have the exact closed forms (verified to $5.07\times 10^{-70}$):
+\begin{align}
+  L_1(k) &= \frac{3k}{2\pi} - \frac{\sqrt{3}}{8\pi}(3 - 4k^2)\ln\left|\frac{2k + \sqrt{3}}{2k - \sqrt{3}}\right|, \label{eq:L1_closed}\\
+  \Delta P_{\mathrm{can}}(k,v) &= -\frac{\sqrt{3}}{\pi}\,v\,\ln\left|\frac{2k + \sqrt{3}}{2k - \sqrt{3}}\right|, \label{eq:Pcan_closed}\\
+  \Delta E_{\mathrm{can}}(k) &= -\frac{3k}{2\pi} - \frac{\sqrt{3}}{8\pi}(5 - 4k^2)\ln\left|\frac{2k + \sqrt{3}}{2k - \sqrt{3}}\right|. \label{eq:Ecan_closed}
+\end{align}
+\end{enumerate}
+\end{proposition}
+
+Every nondegenerate KP triple $\{q_1,q_2,q_3\}$ ($q_1+q_2+q_3=0$,
+$q_1 q_2 + q_2 q_3 + q_3 q_1 = -\frac{1}{4}$) is parametrised up to cyclic
+relabelling and orientation reversal by the fundamental domain
+$\vartheta \in (0,\frac{\pi}{3})$ via \Lc\ (\shol, Section~2):
+\begin{equation}\label{eq:qj_theta}
+  q_j(\vartheta) = -\frac{1}{\sqrt{3}}\cos\!\left(\vartheta + \frac{2\pi j}{3}\right) \quad (j=1,2,3), \qquad
+  4q_j(\vartheta)^3 - q_j(\vartheta) = -\frac{\cos(3\vartheta)}{3\sqrt{3}}.
+\end{equation}
+On the entire open interval $\vartheta \in (0,\frac{\pi}{3})$, the three roots
+maintain the strict ordering
+\begin{equation}\label{eq:qj_order}
+  q_3(\vartheta) < -\frac{1}{2\sqrt{3}} < q_2(\vartheta) < +\frac{1}{2\sqrt{3}} < q_1(\vartheta),
+\end{equation}
+so the edge signs $\rho_i = \eta\sgn(q_i - q_{i+1})$ are constant across
+$(0,\frac{\pi}{3})$: $\rho_1 = +\eta$, $\rho_2 = +\eta$, $\rho_3 = -\eta$, and
+the three edge solitons $S_i = \{q_i,q_{i+1}\}$ have exact parameters
+\begin{equation}\label{eq:edge_params}
+  \begin{aligned}
+  S_1 &: \quad k_1(\vartheta) = \sin\vartheta, & v_1(\vartheta) &= +\cos\vartheta, & \rho_1 &= +\eta,\\
+  S_2 &: \quad k_2(\vartheta) = \sin\!\left(\frac{\pi}{3}-\vartheta\right), & v_2(\vartheta) &= -\cos\!\left(\frac{\pi}{3}-\vartheta\right), & \rho_2 &= +\eta,\\
+  S_3 &: \quad k_3(\vartheta) = \sin\!\left(\vartheta+\frac{\pi}{3}\right) = k_1 + k_2, & v_3(\vartheta) &= -\cos\!\left(\vartheta+\frac{\pi}{3}\right), & \rho_3 &= -\eta.
+  \end{aligned}
+\end{equation}
+
+\subsection{Universal proof across all KP triangles}
+
+\begin{theorem}[Universal canonical-charge holonomy theorem for all KP triangles, \Lc, \shol]\label{thm:universal_holonomy}
+For every $\vartheta \in (0,\frac{\pi}{3})$ and $\eta \in \{+1,-1\}$, the
+canonical-charge KP-triangle holonomies
+$\mathcal{C}_E(\vartheta) := \sum_{i=1}^3 \rho_i\Delta E_{\mathrm{can}}(S_i)$
+and $\mathcal{C}_P(\vartheta) := \sum_{i=1}^3 \rho_i\Delta P_{\mathrm{can}}(S_i)$
+satisfy:
+\begin{enumerate}
+\item \textbf{Exact closed forms:}
+Because $\sum_{i=1}^3 \rho_i k_i = \eta(k_1 + k_2 - k_3) \equiv 0$, the
+$-\frac{3k_i}{2\pi}$ linear tadpole in \eqref{eq:Ecan_closed} cancels
+identically around every KP triangle, giving (verified against vertex sums to
+$5.46\times 10^{-70}$):
+\begin{align}
+  \mathcal{C}_E(\vartheta)
+  &= -\frac{\sqrt{3}\,\eta}{8\pi}\!\left[
+     (5 - 4k_1^2)\ln\frac{\sqrt{3}+2k_1}{\sqrt{3}-2k_1}
+     + (5 - 4k_2^2)\ln\frac{\sqrt{3}+2k_2}{\sqrt{3}-2k_2}
+     - (5 - 4k_3^2)\ln\frac{2k_3+\sqrt{3}}{2k_3-\sqrt{3}}
+     \right], \label{eq:CE_universal}\\
+  \mathcal{C}_P(\vartheta)
+  &= -\frac{\sqrt{3}\,\eta}{\pi}\!\left[
+     v_1\ln\frac{\sqrt{3}+2k_1}{\sqrt{3}-2k_1}
+     + v_2\ln\frac{\sqrt{3}+2k_2}{\sqrt{3}-2k_2}
+     - v_3\ln\frac{2k_3+\sqrt{3}}{2k_3-\sqrt{3}}
+     \right], \label{eq:CP_universal}
+\end{align}
+where all three logarithm arguments are strictly greater than $1$ on
+$\vartheta \in (0,\frac{\pi}{3})$.
+\item \textbf{Reflection symmetry and exact values at the symmetric triple
+$\vartheta = \frac{\pi}{6}$ ($\{q_1,q_2,q_3\} = \{\frac{1}{2},0,-\frac{1}{2}\}$):}
+Under reflection $\vartheta \mapsto \frac{\pi}{3} - \vartheta$ across the
+midpoint $\vartheta = \frac{\pi}{6}$, $\mathcal{C}_E(\vartheta)$ is \emph{even}
+and $\mathcal{C}_P(\vartheta)$ is \emph{odd}, with exact midpoint values
+\begin{align}
+  \mathcal{C}_E\!\left(\frac{\pi}{6}\right)
+  &= -\frac{3\sqrt{3}}{4\pi}\ln(2+\sqrt{3})\,\eta
+  = -0.5445577069714240983808714\ldots\,\eta \ne 0, \label{eq:CE_sym}\\
+  \mathcal{C}_P\!\left(\frac{\pi}{6}\right) &= 0, \qquad
+  \mathcal{C}_P'\!\left(\frac{\pi}{6}\right)
+  = \frac{3\sqrt{3}\ln(2+\sqrt{3}) - 9}{\pi}\,\eta
+  = -0.6865581477684196503164223\ldots\,\eta \ne 0. \label{eq:CP_sym}
+\end{align}
+\item \textbf{Exact endpoint asymptotics and cancellation identity:}
+For all $\vartheta \in (0,\frac{\pi}{3})$, the difference of the cusp logarithms
+$L_2 := \ln\frac{\sqrt{3}+2k_2}{\sqrt{3}-2k_2}$ and
+$L_3 := \ln\frac{2k_3+\sqrt{3}}{2k_3-\sqrt{3}}$ obeys the exact singularity-free
+identity
+\begin{equation}\label{eq:L3_minus_L2_id}
+  L_3(\vartheta) - L_2(\vartheta)
+  \equiv \ln\!\left(\frac{2k_3 + \sqrt{3}}{\sqrt{3} + 2k_2}\cdot
+         \frac{1 + \sqrt{3}\tan(\vartheta/2)}{1 - \sqrt{3}\tan(\vartheta/2)}\right),
+\end{equation}
+and as $\vartheta \to 0^+$ (and symmetrically as $\vartheta \to (\frac{\pi}{3})^-$),
+\begin{equation}\label{eq:CE_CP_asympt}
+  \mathcal{C}_E(\vartheta) = -\frac{3\eta}{2\pi}\,\vartheta\!\left(\ln\frac{2\sqrt{3}}{\vartheta} + 1\right) + O(\vartheta^2\ln\vartheta), \qquad
+  \mathcal{C}_P(\vartheta) = +\frac{3\eta}{\pi}\,\vartheta\!\left(\ln\frac{2\sqrt{3}}{\vartheta} - 2\right) + O(\vartheta^2\ln\vartheta).
+\end{equation}
+\item \textbf{Universal non-vanishing on $(0,\frac{\pi}{3})$:}
+Combining analytical bounds on $(0,10^{-4}]$ (where
+$-\eta\mathcal{C}_E(\vartheta)/\vartheta > 5.46$ and
+$\eta\mathcal{C}_P(\vartheta)/\vartheta > 8.07$), rigorous \texttt{mpmath.iv}
+interval evaluation of \eqref{eq:CE_universal}--\eqref{eq:L3_minus_L2_id} across
+$2000$ subintervals of $[10^{-4},\frac{\pi}{6}-10^{-3}]$ (certifying
+$\eta\mathcal{C}_E(\vartheta) \le -4.02\times 10^{-4} < 0$ and
+$\eta\mathcal{C}_P(\vartheta) \ge +1.17\times 10^{-4} > 0$), and rigorous
+interval bounds on $[\frac{\pi}{6}-10^{-3},\frac{\pi}{6}]$ (certifying
+$\eta\mathcal{C}_E(\vartheta) < -0.54 < 0$ and
+$\eta\mathcal{C}_P'(\vartheta) < -0.68 < 0$ with $\mathcal{C}_P(\frac{\pi}{6})=0$):
+\begin{equation}\label{eq:universal_nogo_ineq}
+  \boxed{\;
+  \eta\,\mathcal{C}_E(\vartheta) < 0 \quad \forall\,\vartheta \in \left(0,\frac{\pi}{3}\right), \qquad
+  \mathcal{C}_P(\vartheta) = 0 \iff \vartheta = \frac{\pi}{6}, \qquad
+  \big(\mathcal{C}_E(\vartheta),\mathcal{C}_P(\vartheta)\big) \ne (0,0) \quad \forall\,\vartheta \in \left(0,\frac{\pi}{3}\right).
+  \;}
+\end{equation}
+\item \textbf{Exact invariance of $\mathcal{C}_P(\vartheta)$ under the bulk
+vacuum-elasticity counterterm $\lambda_g$:}
+Because $\rho_i v_i k_i = \sqrt{3}\eta(q_i^2 - q_{i+1}^2)$ telescopes to zero
+around every triangle ($\sum_{i=1}^3 \rho_i v_i k_i \equiv 0$), the canonical
+momentum holonomy is completely independent of $\lambda_g$:
+\begin{equation}\label{eq:CP_CE_lamg}
+  \mathcal{C}_P^{\lambda_g}(\vartheta) \equiv \mathcal{C}_P(\vartheta), \qquad
+  \mathcal{C}_E^{\lambda_g}(\vartheta) = \mathcal{C}_E(\vartheta) + \eta\,\lambda_g\sin(3\vartheta) \qquad
+  \forall\,\lambda_g \in \mathbb{R}.
+\end{equation}
+In particular, for every $\vartheta \ne \frac{\pi}{6}$,
+$\mathcal{C}_P^{\lambda_g}(\vartheta) \ne 0$ for all $\lambda_g \in \mathbb{R}$,
+and at $\vartheta = \frac{\pi}{6}$ the vector
+$\big(\mathcal{C}_E^{\lambda_g}(\frac{\pi}{6}),\mathcal{C}_P^{\lambda_g}(\frac{\pi}{6})\big)$
+is non-zero in both the continuum zero-sound-shift scheme ($\lambda_g=0$) and
+the Toda-matched scheme ($\lambda_g = \frac{9}{4\pi} \approx 0.716197 \ne \frac{3\sqrt{3}}{4\pi}\ln(2+\sqrt{3}) \approx 0.544558$).
+\end{enumerate}
+\end{theorem}
+
+\subsection{Universal proof for the absorbed-soliton momentum remainder and vertex-shift derivative}
+
+Finally, we upgrade Proposition~4.3 of \texttt{phase2/defq\_charges\_fusion.tex}
+to a universal proof across all nondegenerate KP triangles while replacing its
+refuted simple-pole argument (\texttt{audit\_defq.tex} Correction~(vi)) by the
+exact pole-free derivative identity \Lc\ (\shol, Section~4):
+
+\begin{proposition}[Universal non-vanishing of $\mathcal{R}_{\mathrm{abs}}$ and exact vertex-derivative identity, \Lc, \shol]\label{prop:universal_Rabs}
+For any nondegenerate KP triangle $\vartheta \in (0,\frac{\pi}{3})$ and test
+soliton $3 = (\alpha_3,\epsilon_3)$, let
+$\mathcal{R}_{\mathrm{abs}}(\alpha_3,\epsilon_3;\vartheta) := \sum_{i=1}^3 \rho_{\mathrm{tree},i}\,\Delta X_{S_i}(3,S_i)\,\Delta P(S_i) = \sum_{i=1}^3 (w_{i-1} - w_i)\ln|z_t(3;q_i,\eta)|$
+where $w_i := \Delta P(S_i)/k_{S_i}$.
+\begin{enumerate}
+\item \textbf{Universal strict sign separation $w_1(\vartheta) < 0 < w_2(\vartheta)$:}
+On every nondegenerate KP triangle $\vartheta \in (0,\frac{\pi}{3})$, edge $S_1$
+has $\alpha_1 = \vartheta \in (0,\frac{\pi}{3})$ and $\epsilon_1 = +1$ ($v_1 > 0$),
+while edge $S_2$ has $\alpha_2 = \frac{\pi}{3}-\vartheta \in (0,\frac{\pi}{3})$
+and $\epsilon_2 = -1$ ($v_2 < 0$). Because $\Delta P_{\mathrm{can}}(\alpha,+1) < 0$
+and $\Delta P_{\mathrm{mode}}(\alpha,+1) / \sin\alpha \le -\frac{\ln 3}{2\pi} < -0.17 < 0$
+for all $\alpha \in (0,\frac{\pi}{3})$ (certified analytically and across $500$
+interval subdivisions), every $\vartheta \in (0,\frac{\pi}{3})$ satisfies
+\begin{equation}\label{eq:w1_lt_w2}
+  \boxed{\;
+  w_1(\vartheta) < 0 < w_2(\vartheta) \quad\Longrightarrow\quad
+  w_1(\vartheta) - w_2(\vartheta) < 0 \qquad
+  \forall\,\vartheta \in \left(0,\frac{\pi}{3}\right),
+  \;}
+\end{equation}
+for \emph{both} $\Delta P = \Delta P_{\mathrm{can}}$ and
+$\Delta P = \Delta P_{\mathrm{mode}}$ (as well as for any $\lambda_g \ge 0$,
+since $\delta_{\lambda_g}w_i = 2\lambda_g v_i$ is only negative if $\lambda_g<0$).
+Because $\ln|z_t(3;q_2,\eta)| = \eta\ln\big|\frac{p_{3,b}-q_2}{p_{3,a}-q_2}\big|$
+has logarithmic branch points at $p_{3,a/b} = q_2(\vartheta)$ that are disjoint
+from $q_1(\vartheta)$ and $q_3(\vartheta)$, $\mathcal{R}_{\mathrm{abs}}(\alpha_3,\epsilon_3;\vartheta)$
+is a non-zero function of $\alpha_3$ on \textbf{every} nondegenerate KP
+triangle.
+\item \textbf{Exact pole-free formula for $\partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta)$
+and telescoping of vertex shifts:}
+On the soliton root locus $\ell_3 = \ell(p_{3,a}) = \ell(p_{3,b})$, the apparent
+poles $\frac{\ell_3 - \ell(q_i)}{p_{3,a/b}-q_i}$ in the derivative of
+$\delta_{D,\mathrm{cl}}(3;q_i,\eta) = \frac{2}{9}\big(\ell_3 - \ell(q_i)\big)\epsilon_3\ln|z_t(3;q_i,\eta)| - \frac{2}{3}\big(\Pi_3 M_D(q_i) - \Pi_D(q_i)M_3\big)$
+cancel identically, yielding the exact smooth identity
+\begin{equation}\label{eq:d_delta_dqi_exact}
+  \boxed{\;
+  \frac{\partial\delta_{D,\mathrm{cl}}(3;q_i,\eta)}{\partial q_i}
+  = -\frac{2\sqrt{3}}{3}\big(12q_i^2 - 1\big)\epsilon_3\ln\big|z_t(3;q_i,\eta)\big|
+    + 4\epsilon_3\eta\,k_3\big(v_3 + 2\sqrt{3}\,q_i\big).
+  \;}
+\end{equation}
+Any single-valued one-loop shift $q_i \mapsto q_i + \hb\,\delta q_i$ of the
+defect vertices telescopes identically to zero around the closed triangle
+($\sum_{i=1}^3 \big[\partial_{q_{i+1}}\delta_{D,\mathrm{cl}}(3;q_{i+1},\eta)\delta q_{i+1} - \partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta)\delta q_i\big] \equiv 0$)
+and therefore cannot cancel $\mathcal{R}_{\mathrm{abs}}$ around a closed KP
+triangle.
+\end{enumerate}
+\end{proposition}
+
+\begin{remark}[Qualified physical scope of the triangle obstructions, \Ld]\label{rem:qualified_scope}
+Theorem~\ref{thm:universal_holonomy} and Proposition~\ref{prop:universal_Rabs}
+settle the mathematical question left open by \texttt{phase2/audit\_defq.tex}:
+there is \textbf{no counterexample KP triangle} on which $(\mathcal{C}_E,\mathcal{C}_P)$
+or $\mathcal{R}_{\mathrm{abs}}$ vanishes at the unshifted classical absorption
+rapidities \Lc. As stressed in \texttt{phase2/audit\_defq.tex}, the physical
+interpretation remains qualified \Ld: if a future non-perturbative quantum
+bound-state or resonance construction establishes the $O(\hb)$ absorption-rapidity
+shift $a_{1,i} = \big(\Delta P_{\mathrm{mode}}(S_i) - \Delta P_{\mathrm{can}}(S_i)\big)/P_{\mathrm{cl}}'(S_i)$
+and modifies the fixed-momentum fusion prescription across unstable defect
+resonances, closure could be restored via those shifted kinematics \Ld.
+\end{remark}
+
+% ==============================================================================
+\section{Summary of claims, verification scripts, and failures recorded}
+\label{sec:summary_failures}
+% ==============================================================================
+
+\subsection{Summary table of claims and checks}
+
+\begin{longtable}{@{}L{5.6cm}cL{3.8cm}L{4.8cm}@{}}
+\toprule
+Claim / Formula & Label & Script & Precision / Tolerance \\\midrule\endhead
+Off-shell conservation of $(E,P,\Pi,M)_{\mathrm{tot}}$ for arbitrary $(s,\rho_0,\tau_0,h_0)$ and $\eta=\pm 1$ & \Lc & \sren & Exact symbolic (\texttt{SymPy}) \\
+True $z_t=0$ absorption conservation vs old script's $s=+1.5$, $z_{\mathrm{wrong}}=\sqrt{21}-3$ & \Lc & \sren & $2.26\times 10^{-72}$ ($70$ dps \texttt{mpmath}) \\
+Quadratic energy trace plus sign \eqref{eq:ED2_plus_sign}, $\langle J_{\mathrm{bulk},2}\rangle_q=0$, and $z_{\mathrm{ph}}(\pm\infty)=\ee^{-2\pi\ii\eta/3}$ & \Lc & \sren & Exact symbolic (\texttt{SymPy}) \\
+Branch-switch growth rate $g_1(\sqrt{3})=\sqrt{3}/4 \ne (2\sqrt{3}-1)/8$ and removable pole \eqref{eq:ell_quotient} & \Lc & \sren & Exact symbolic (\texttt{SymPy}) \\
+Envelope theorem on static vacua: $\delta\sigma_i,\delta s_1$ give zero $O(\hb)$ shift of $(E_D^{\mathrm{vac}},P_D^{\mathrm{vac}})$ \eqref{eq:exact_vac_shifts} & \Lc & \sren & Exact polynomial reduction (\texttt{SymPy}) \\
+Zero-momentum pinning $z_{\mathrm{ph}}(0)=1$ and scattering length $a_D(s,\eta)=-2\sqrt{3}\eta/(s+1)$ fixing $\delta s_1=0$ & \Lc & \sren & Exact symbolic (\texttt{SymPy}) \\
+Exact elementary closed forms \eqref{eq:PD_closed_le2}--\eqref{eq:ED_closed_gt2} for $(\Delta E_D^{\mathrm{ren}},\mathcal{E}_D^{\mathrm{sub}},\Delta P_D^{\mathrm{Cas}})$ & \Lc & \sren & $1.36\times 10^{-71}$ vs dipole; $4.81\times 10^{-72}$ vs quadrature \\
+Bulk elasticity shift \eqref{eq:lam_g_shifts} and KP triangle cube sum \eqref{eq:cube_sum_id} selecting $\lambda_g=0$ for mode-sum balance & \Lc & \sren & Exact symbolic (\texttt{SymPy}) \\
+Monotonicity $f'(q)=12q^2-1>0$ on $|q|>\frac{1}{2\sqrt{3}}$ and recomputed $O(\hb^0)$ transmission phase \eqref{eq:delta_trans_ren} & \Lc & \sren & Exact symbolic \& $70$ dps \texttt{mpmath} \\
+Elementary closed forms \eqref{eq:L1_closed}--\eqref{eq:Ecan_closed} for $L_1(k)$, $\Delta P_{\mathrm{can}}(k,v)$, $\Delta E_{\mathrm{can}}(k)$ & \Lc & \shol & Exact symbolic \& $5.07\times 10^{-70}$ \\
+Universal closed-form holonomies $(\mathcal{C}_E(\vartheta),\mathcal{C}_P(\vartheta))$ \eqref{eq:CE_universal}--\eqref{eq:CP_universal} and midpoint/endpoint values \eqref{eq:CE_sym}--\eqref{eq:CE_CP_asympt} & \Lc & \shol & Exact symbolic \& $5.46\times 10^{-70}$ \\
+Universal proof that $\eta\mathcal{C}_E(\vartheta)<0$ on $(0,\frac{\pi}{3})$ and $\mathcal{C}_P(\vartheta)=0 \iff \vartheta=\frac{\pi}{6}$, plus $\lambda_g$-invariance of $\mathcal{C}_P$ & \Lc & \shol & Analytical bounds + $2000$ \texttt{mpmath.iv} intervals \\
+Universal proof that $w_1(\vartheta)<0<w_2(\vartheta)$ in $\mathcal{R}_{\mathrm{abs}}$ and exact vertex derivative \eqref{eq:d_delta_dqi_exact} & \Lc & \shol & Exact symbolic + $500$ \texttt{mpmath.iv} intervals \\
+Exhaustive non-CZ quantum boundary counterterms and resonance continuation of unstable vacua & \Ld & --- & Qualified open physical questions \\\bottomrule
+\end{longtable}
+
+\subsection{Failures recorded}
+
+In accordance with \texttt{AGENTS.md}, we record both the six audit-flagged
+errors from \texttt{phase2/defq\_charges\_fusion.tex} that are corrected here
+and the intermediate script failures encountered and fixed during the
+development of \sren\ and \shol:
+
+\begin{enumerate}
+\item \textbf{Hand-typed decimal literal for $z_{\mathrm{wrong}} = \sqrt{21}-3$ (\sren):}
+In the initial draft of \sren, $z_{\mathrm{wrong}}$ at $q_1=\sqrt{3}/4$, $\eta=-1$
+was compared to a decimal string typed beyond the 21st digit, failing at
+$4.33\times 10^{-22}$ against the tolerance $10^{-55}$. Derived the exact
+algebraic value $z_{\mathrm{wrong}} = \frac{12}{3+\sqrt{21}} = \sqrt{21}-3$ and
+verified agreement to $<10^{-70}$.
+\item \textbf{Derivative part of $\langle E_{D,2}\rangle_q$ copied from $\langle P_{D,2}\rangle_q$ (\sren):}
+In \texttt{defq\_oneloop\_renorm.py} (line~293), the contraction of
+$a_x^2 + a_x b_x + b_x^2$ in $E_{D,2}$ was mistyped as $q^2(1+2\Rea z)$ (the
+integrand of $\frac{1}{2}(a_x^2+b_x^2)+2a_x b_x$ from $P_{D,2}$) instead of
+$q^2(2+\Rea z)$, causing $\langle E_{D,2}\rangle_{\mathrm{sym}} - \langle K\rangle_{\mathrm{sym}} \ne 0$.
+Replacing $1+2\Rea z$ by the correct $2+\Rea z$ makes
+$\langle E_{D,2}\rangle_{\mathrm{sym}} \equiv \langle K\rangle_{\mathrm{sym}} \equiv +\frac{\omega}{4\pi}(\theta_D'(q)+\theta_D'(-q))$
+hold identically.
+\item \textbf{Polynomial reduction modulo the KP cubic in the envelope-theorem check (\sren):}
+Using \texttt{.subs(sig\_sym**3, ...)} in \texttt{SymPy} did not reduce the
+quartic power $\sigma_i^4$ in $\partial_\epsilon\tau(\sigma_i+\epsilon\delta\sigma_i)$,
+leaving an unreduced remainder in $\partial_{\delta\sigma_i}\delta E_D^{\mathrm{vac}}$.
+Replacing \texttt{.subs} by exact polynomial remainder reduction
+\texttt{sp.rem(..., sig\_sym**3 - 3*sig\_sym - (s**3 - 3*s), sig\_sym)} reduced
+the derivative identically to zero.
+\item \textbf{Sign of $\cos\psi_{1,2}$ and analytic continuation across $|\sigma|=2$ in $\Delta E_D^{\mathrm{ren}}$ (\sren):}
+An initial sign swap between $\cos(\frac{2\pi}{3}-\gamma) = \frac{-\sigma+\sqrt{3(4-\sigma^2)}}{4}$
+and $\cos(-\frac{2\pi}{3}-\gamma)$ gave $-1$ instead of $\frac{2-\sigma^2}{2}$
+in the coefficient of $\ln\big|\frac{\sigma+1}{\sigma-1}\big|$ in
+$\Delta E_D^{\mathrm{ren}}$ (failing against the dipole sum at $\sigma=-1.2$ by
+$0.15839$), and using $\arctan\frac{\sqrt{3}}{\sqrt{\sigma^2-4}}$ instead of
+$\arctan\frac{\sqrt{\sigma^2-4}}{\sqrt{3}}$ for $|\sigma|>2$ introduced a
+branch offset of $\frac{15}{64} = 0.234375$ at $\sigma=-2.5$. Fixing both signs
+and using the smooth continuation
+$\sqrt{4-\sigma^2}\artanh\frac{\sqrt{4-\sigma^2}}{\sqrt{3}} \mapsto -\sqrt{\sigma^2-4}\arctan\frac{\sqrt{\sigma^2-4}}{\sqrt{3}}$
+together with the exact cancelled rational integrand \eqref{eq:Esub_rat_u} on
+$z=1/u \in [0,1]$ gave $70$-digit agreement ($4.81\times 10^{-72}$).
+\item \textbf{Interval dependency near the cusp logarithms $L_2,L_3$ as $\vartheta \to 0^+$ (\shol):}
+Evaluating $(5-4k_2^2)L_2 - (5-4k_3^2)L_3$ in \texttt{mpmath.iv} as two
+separate interval logarithms on $[10^{-4},3.6\times 10^{-4}]$ suffered from
+interval dependency ($\pm 0.177$). Factoring $L_3 - L_2$ via the exact
+singularity-free identity \eqref{eq:L3_minus_L2_id} (and similarly factoring
+$\frac{2\cos\alpha-1}{\sqrt{3}-2\sin\alpha} = \tan(\frac{\alpha}{2}+\frac{\pi}{6})$
+in $w_{\mathrm{mode}}$ on $[\frac{\pi}{6},\frac{\pi}{3})$) eliminated the
+endpoint dependency completely.
+\item \textbf{Factor of $2$ in the polynomial part of $\partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta)$ (\shol):}
+In the initial target expression for $\partial_{q_i}\delta_{D,\mathrm{cl}}(3;q_i,\eta)$,
+substituting $M_3 = 2k_3$ into $4\sqrt{3}M_3 q_i = 8\sqrt{3}k_3 q_i$ was written
+as $4\epsilon_3\eta k_3(v_3 + \sqrt{3}q_i)$ instead of
+$4\epsilon_3\eta k_3(v_3 + 2\sqrt{3}q_i) = 4\epsilon_3\eta k_3(v_3 - s_i)$.
+Correcting the coefficient to $2\sqrt{3}q_i$ gave exact symbolic identity.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{CZ}
+E.~Corrigan and C.~Zambon,
+\emph{Integrable defects in the Boussinesq equations},
+J.~Phys.~A: Math.~Theor.\ \textbf{56} (2023) 345202,
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772}
+(full text read in \texttt{literature/}).
+
+\bibitem{FK}
+L.~D.~Faddeev and V.~E.~Korepin,
+\emph{Quantum theory of solitons},
+Phys.~Rep.\ \textbf{42} (1978) 1--87,
+\href{https://doi.org/10.1016/0370-1573(78)90058-3}{doi:10.1016/0370-1573(78)90058-3}
+(full text read in \texttt{literature/}).
+\end{thebibliography}
+
+\end{document}
