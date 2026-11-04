@@ -1,0 +1,908 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\hb}{\hbar}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Rea}{\operatorname{Re}}
+\newcommand{\Ima}{\operatorname{Im}}
+\newcommand{\Li}{\operatorname{Li}}
+
+\title{\textbf{Phase 2h: One-Loop Soliton Charge Audit, Quantum Frame Conversion,\\
+Analytical Resolution of the Toda--Boussinesq Fermi-Edge Limit,\\
+and the Universal KP-Coboundary Master Function}}
+\author{Project write-up (Routes A \& E synthesis) --- PI: Gustav Delius}
+\date{April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We resolve the two open structural questions connecting the continuum one-loop
+Boussinesq soliton scattering calculations (Phases~2e and 2g) to the quantum Toda
+Fermi-edge limit (Phase~2f) and to the all-loop S-matrix programme. Every
+nontrivial claim is labelled \textbf{(a)} proved in the literature,
+\textbf{(b)} conjectured/heuristic in the literature, \textbf{(c)} derived and
+verified in this project, or \textbf{(d)} a guess.
+
+Our main results \textbf{(c)} are:
+\begin{enumerate}
+\item \textbf{One-loop soliton charge audit and resolution of the $\alpha\ln\alpha$ infrared singularity.}
+Because the Boussinesq equation is not Lorentz invariant, the classical soliton
+profile $u_0(x-vt;\alpha)$ changes width $k = \sin\alpha = \sqrt{1-v^2}$ as a
+function of its velocity $v = \epsilon\cos\alpha$. Consequently, the Phase~2e
+normal-ordered energy $\Delta E_1^{\mathrm{ren}}(\alpha)$ and continuum phonon
+mode-sum momentum $\Delta P_{\mathrm{mode}}(\alpha,\epsilon)$ evaluated at fixed
+background profile violate the Hamiltonian velocity relation by a non-zero
+\emph{velocity anomaly}
+$\mathcal{A}_v(\alpha) := \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha} - v\frac{\dd\Delta P_{\mathrm{mode}}}{\dd\alpha} \neq 0$.
+Forming the co-moving one-loop effective Lagrangian (minus the one-loop Routhian)
+$L_1(v) = v\Delta P_{\mathrm{mode}} - \Delta E_1^{\mathrm{ren}} = -\int_{-\infty}^\infty \frac{\dd q}{4\pi}[\omega(q)-vq]_{\mathrm{ren}}\theta_S'(q;\alpha,\epsilon)$,
+the canonical collective-coordinate momentum
+$\Delta P_{\mathrm{can}}(v) := \frac{\partial L_1}{\partial v}$ and canonical
+energy $\Delta E_{\mathrm{can}}(v) := v\Delta P_{\mathrm{can}} - L_1$ satisfy
+$\frac{\dd\Delta E_{\mathrm{can}}}{\dd v} = v\frac{\dd\Delta P_{\mathrm{can}}}{\dd v}$
+identically. In $\frac{\dd L_1}{\dd\alpha}$, the total weight
+$\cos(2\phi_r) - \cos(\alpha+\phi_r)$ vanishes identically on the light root
+$\phi_3 = \alpha$, cancelling \emph{all} $\ln|\tan(\alpha/2)| \sim \ln\alpha$
+singularities to all orders and yielding the closed form
+\[
+  \Delta P_{\mathrm{can}}(\alpha,\epsilon)
+  = -\epsilon\,\frac{\sqrt{3}\cos\alpha}{\pi}\ln\!\left|\frac{\tan\frac{\alpha+2\pi/3}{2}}{\tan\frac{\alpha-2\pi/3}{2}}\right|
+  = -\frac{4\epsilon}{\pi}\alpha + \frac{8\epsilon}{9\pi}\alpha^3 - \frac{8\epsilon}{45\pi}\alpha^5 + O(\alpha^7).
+\]
+Meanwhile, the static Corrigan--Zambon defect at $x=0$ has $v_D=0$ (no moving
+collective coordinate), explaining why one-loop momentum conservation in soliton
+absorption by a static defect (Phase~2g) equates $\Delta P_D(q_{i+1})-\Delta P_D(q_i)$
+to $\rho_i\Delta P_{\mathrm{mode}}(S_i)$, whereas
+$\Delta P_{\mathrm{can}} - \Delta P_{\mathrm{mode}} = \frac{\epsilon}{\sin\alpha}\mathcal{A}_v(\alpha)$
+is the collective-coordinate profile backreaction of a moving soliton.
+\item \textbf{Quantum frame conversion and exact analytical resolution of the Toda Fermi-edge limit.}
+We prove that the apparent mismatch recorded in Phase~2f (\texttt{matching.pdf})
+between the Toda Fermi-edge residual $R_0(Y,r)$ and the fixed-$P$ continuum limit
+arose from three exact effects:
+(i)~an overtaking amplitude-ordering reversal ($v_{\mathrm{good}}(\alpha)=\cos\alpha$
+decreases with amplitude, whereas $v_{\mathrm{bad}}(\beta)=\cosh\beta$ increases
+with amplitude), which flips the sign of $\ell_1-\ell_2$ and hence flips the
+logarithmic Hirota shift $H_{\mathrm{bad}}(r) = -H_{\mathrm{good}}(r) = +\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$;
+(ii)~the quantum Fermi-sea dressing $u_j(y_j) := \lim_{\hb_T\to 0}(p_j-q)/\hb_T = y_j - \frac{1}{2\pi}\ln y_j + c_{\mathrm{edge}} + O(y_j^{-1})$,
+which absorbs the $\ln\hb_T$ ($\ln\lambda$) divergence into the quantum Fermi
+edge $q$ and replaces the singular Darboux derivative $-\frac{2}{r}$ by zero via
+exact cancellation against the classical frame term $+4\sqrt{u_1 u_2} = -M_1\Pi_2/\hb_T$
+in $\frac{\partial\Phi_{\mathrm{cl}}}{\partial u_2} = -2\ln\frac{1-r}{1+r}$; and
+(iii)~the Fermi-edge subtraction $-\Phi(p_1,e_2)/\hb_T$ in \texttt{toda\_edge\_twoterm.py},
+which subtracts the linear slope $-\frac{4r}{\pi}$ at $r\to 0$. Combining these
+three pieces, both the $\pm 4r\,\delta u_1 \sim \mp\frac{2r}{\pi}\ln Y$ topological
+frame shifts and the $\pm\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ logarithmic shifts
+cancel identically between the quasi-momentum shift $d\Phi_{\mathrm{cl}}(Y,r)$ and
+the intrinsic loop shift $d\Phi_{\mathrm{loop}}(Y,r)$, leaving the exact
+$Y\to\infty$ ($O(\hb^0)$) limit
+\[
+  \lim_{Y\to\infty} R_0(Y,r) = -\frac{4}{\pi}\big(\chi_2(r) - r\big)
+  = -\frac{4}{\pi}\sum_{n=1}^\infty \frac{r^{2n+1}}{(2n+1)^2},
+\]
+which reproduces the numerical Phase~2f table (\texttt{matching\_tables.tex})
+across $r=0.4,0.5,0.6$ to $< 7.1\times 10^{-5}$ and its $r$-derivative to
+$< 3\times 10^{-4}$.
+\item \textbf{Universal KP-Coboundary Theorem and Two-Vertex Master Function $\mathcal{F}_K(p,q)$.}
+We prove that for \emph{any} odd one-variable function $F(w) = -F(-w)$ of
+$w = \tan(\psi/2)$, the 3-root soliton functional $\mathcal{S}[F](\alpha,\epsilon)$
+with weights $(1,1,-2)$ is the exact KP-chord difference
+$\mathcal{D}[F](p_b,+1) - \mathcal{D}[F](p_a,+1)$ of the 2-root defect dipole
+functional $\mathcal{D}[F](q_D,\eta)$ with weights $(-\eta,+\eta)$. For any odd
+two-variable ratio kernel $K(z) = -K(-z)$, this defines a $2\times 2$
+dipole--dipole \emph{two-vertex master function} $\mathcal{F}_K(p,q)$ on the KP
+root space whose first difference is $\mathcal{I}_{SD}[K]$ and whose second
+difference across $(p_{1,a},p_{1,b})\times(p_{2,a},p_{2,b})$ is
+$\mathcal{I}_{SS}[K]$, guaranteeing defect fusion and KP-triangle closure at any
+loop order. Decomposing $K_L = K_{\chi_2} + K_{\ln}$ at finite amplitude shows
+that $\mathcal{I}_{SS}[K_{\ln}]$ cancels $H_{\mathrm{bad}}(r)$ in the
+small-amplitude overtaking corner, leaving pure
+$\mathcal{I}_{SS}[K_{\chi_2}] \to -\frac{4}{\pi}\chi_2(r)$.
+\end{enumerate}
+\end{abstract}
+
+\tableofcontents
+
+% ==============================================================================
+\section{Introduction and Summary of Open Questions}
+\label{sec:intro}
+
+The preceding stages of Phase~2 established three key results on the quantum
+soliton S-matrix of the Boussinesq equation:
+\begin{itemize}
+\item \textbf{Phase 2e (\texttt{oneloop\_phase.pdf}, \textbf{(c)}):}
+Direct Dashen--Hasslacher--Neveu (DHN) / Faddeev--Korepin quantisation around the
+one- and two-soliton backgrounds of the good Boussinesq equation
+\begin{equation}
+  u_{tt} = u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad
+  u = \phi_x = 2(\ln\tau)_{xx},
+  \label{eq:good_bouss}
+\end{equation}
+yielded a reflectionless $4\times 4$ fourth-order scattering problem whose
+continuum phase shift $\theta_S'(q;\alpha,\epsilon) = \sum_{r=1}^3 c_r\Theta'(q;\phi_r^{(\epsilon)})$
+decomposes into three elementary kernels with weights $(c_1,c_2,c_3)=(1,1,-2)$ at
+the angles $(\phi_1,\phi_2,\phi_3) = (\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$. The
+resulting two-soliton continuum phase integral $I_{SS}(1,2)$ evaluates in closed
+form to a $3\times 3$ sum of Legendre chi functions $\chi_2(z) = \frac{1}{2}(\Li_2(z)-\Li_2(-z))$
+and logarithmic products, ruling out both the continued Gamma candidate~(A) and
+the pure exponential candidate~(B).
+\item \textbf{Phase 2f (\texttt{matching.pdf}, \textbf{(c)}):}
+A numerical double-scaling comparison in the overlapping small-amplitude corner
+($\beta_j = \sqrt{y_j\hb_B}$, $y_1 = Y$, $y_2 = r^2 Y$ with $r \in (0,1)$ and
+$Y\to\infty$ after $\hb_T\to 0$) between the quantum Toda Fermi-edge Bethe ansatz
+(\texttt{toda\_edge\_ba.py}) and the Phase~2e formulas found a smooth, finite
+Toda residual $R_0(Y,r) \to c_0(r)$ ($c_0(0.4) = -0.009635$,
+$c_0(0.5) = -0.019552$, $c_0(0.6) = -0.035526$), whereas adding the continuum
+fixed-$P$ Darboux frame shift produced a $\frac{4r}{\pi}\ln\lambda$ divergence as
+$\lambda\to 0^+$. Phase~2f concluded that the $\hb\to 0$ and $\alpha\to 0$ limits
+do not commute when using the continuum mode-sum momentum
+$\Delta P_{\mathrm{mode}}(\alpha) = \frac{1}{\pi}\alpha\ln\alpha + O(\alpha)$,
+and left open the analytical origin of $c_0(r)$ and the quantum frame conversion.
+\item \textbf{Phase 2g (\texttt{oneloop\_defect\_phase.pdf}, \textbf{(c)}):}
+Computing the one-loop soliton--defect transmission phase $I_{SD}$ on the
+Corrigan--Zambon (CZ) type-I defect \cite{CZ2023} showed that the defect
+phase-shift derivative $\theta_D'(q;s,\eta)$ is a \emph{2-root $(-\eta,+\eta)$
+dipole} at the angles $\psi_{1,2} = \pm 2\pi/3 - \gamma$ ($\cos\gamma = s/2 = -\sqrt{3}q_D$),
+whose difference across a soliton chord $(p_a,p_b)$ reproduces the 3-root
+$(1,1,-2)$ soliton kernel $\theta_S'(q;\alpha,\epsilon)$. Consequently, $I_{SD}$
+and $I_{SS}$ satisfy exact one-loop defect fusion
+$I_{SD}(3;q_{i+1},\eta) - I_{SD}(3;q_i,\eta) = \rho_i I_{SS}(3,S_i)$ and
+KP-triangle closure $\sum_{i=1}^3 \rho_i I_{SS}(3,S_i) = 0$ across all 12 KP
+triangles.
+\end{itemize}
+
+In this report (Phase~2h) we carry out two decisive analytical steps that unify
+Phases~2e, 2f, and 2g:
+\begin{enumerate}
+\item \textbf{Step 1 (Sections~\ref{sec:audit}--\ref{sec:toda}):}
+We perform an independent first-principles audit of the one-loop soliton energy
+and momentum in the good Boussinesq equation, derive the canonical
+collective-coordinate momentum $\Delta P_{\mathrm{can}}(v)$ (which is completely
+free of $\alpha\ln\alpha$ singularities), and derive the exact analytical
+$Y\to\infty$ limit of the quantum Toda Fermi-edge residual $R_0(Y,r)$, proving
+that $\lim_{Y\to\infty} R_0(Y,r) = -\frac{4}{\pi}(\chi_2(r)-r)$ and matching the
+Phase~2f numerical table to $< 7.1\times 10^{-5}$.
+\item \textbf{Step 2 (Section~\ref{sec:master}):}
+We prove the \emph{Universal KP-Coboundary Theorem} for arbitrary odd kernels and
+construct the explicit $2\times 2$ dipole--dipole \emph{two-vertex master
+function} $\mathcal{F}_K(p,q)$ on the KP root space, showing how the finite-amplitude
+one-loop phase splits into a pure Legendre chi coboundary $\mathcal{I}_{SS}[K_{\chi_2}]$
+and a logarithmic coboundary $\mathcal{I}_{SS}[K_{\ln}]$ that cancels the
+colliding Hirota shift $H_{\mathrm{bad}}(r)$ in the small-amplitude corner.
+\end{enumerate}
+
+All analytical formulas are verified at 45--50 decimal digits in the companion
+scripts \texttt{phase2/scripts/charge\_and\_frame\_audit.py} and
+\texttt{phase2/scripts/kp\_master\_and\_toda\_edge.py}.
+
+% ==============================================================================
+\section{Step 1A: One-Loop Soliton Charge Audit and the Velocity Anomaly}
+\label{sec:audit}
+
+\subsection{Mode-sum energy and momentum at fixed soliton profile}
+
+Recall from \texttt{oneloop\_phase.pdf} (Section~4) and
+\texttt{oneloop\_defect\_phase.pdf} (Section~5.2) that for a one-soliton
+background of the good Boussinesq equation with parameters $\alpha \in (0,\pi/2)$
+and direction $\epsilon \in \{+1,-1\}$,
+\begin{equation}
+  k = \sin\alpha, \qquad v = \epsilon\cos\alpha, \qquad
+  \ell = -\epsilon\cos 3\alpha, \qquad M = 2k, \qquad
+  \Pi = -Mv, \qquad P_{\mathrm{cl}} = \frac{2}{3}\epsilon k^3\cos\alpha,
+  \label{eq:soliton_data}
+\end{equation}
+the continuum phonon phase-shift derivative is \textbf{(c)}
+\begin{equation}
+  \theta_S'(q;\alpha,\epsilon)
+  = \sum_{r=1}^3 c_r\,\Theta'\!\big(q;\phi_r^{(\epsilon)}\big), \qquad
+  \Theta'(q;\psi) = \frac{\sin\psi}{q^2+\sin^2\psi}\left(1 + \frac{\sgn(q)\cos\psi}{\sqrt{1+q^2}}\right),
+  \label{eq:theta_S_prime}
+\end{equation}
+with $(c_1,c_2,c_3) = (1,1,-2)$,
+$(\phi_1^{(+1)},\phi_2^{(+1)},\phi_3^{(+1)}) = (\alpha+2\pi/3,\alpha-2\pi/3,\alpha)$,
+and $\phi_r^{(-1)} = \pi - \phi_r^{(+1)}$.
+
+Integrating the continuum phonon spectral density against the phonon dispersion
+$\omega(q) = |q|\sqrt{1+q^2}$ (with standard normal-ordering tadpole subtraction)
+and the phonon wavenumber $q$ gives the Phase~2e mode-sum energy and momentum
+\textbf{(c)} (\texttt{charge\_and\_frame\_audit.py}):
+\begin{align}
+  \Delta E_1^{\mathrm{ren}}(\alpha)
+  &= \frac{1}{4\pi}\sum_{r=1}^3 c_r\Big(2\sin\phi_r - \sin(2\phi_r)\ln\!\left|\tan\frac{\phi_r}{2}\right|\Big),
+  \label{eq:Delta_E_mode} \\
+  \Delta P_{\mathrm{mode}}(\alpha,\epsilon)
+  &= \int_{-\infty}^\infty \frac{\dd q}{4\pi}\,q\,\theta_S'(q;\alpha,\epsilon)
+  = -\frac{\epsilon}{2\pi}\sum_{r=1}^3 c_r\sin\phi_r\ln\!\left|\tan\frac{\phi_r}{2}\right|.
+  \label{eq:Delta_P_mode}
+\end{align}
+As $\alpha\to 0^+$, the light root $r=3$ ($\phi_3=\alpha$, $c_3=-2$) produces the
+infrared logarithmic term in $\Delta P_{\mathrm{mode}}$:
+\begin{equation}
+  \Delta P_{\mathrm{mode}}(\alpha,\epsilon)
+  = \frac{\epsilon}{\pi}\alpha\ln\alpha
+  - \frac{\epsilon}{2\pi}\left(2 + 2\ln 2 - \frac{1}{2}\ln 3\right)\alpha
+  + O(\alpha^3\ln\alpha).
+  \label{eq:Delta_P_mode_small}
+\end{equation}
+
+\subsection{The non-Lorentz-invariant velocity anomaly}
+
+In a Lorentz-invariant $(1+1)$-dimensional field theory (such as sine-Gordon), a
+moving soliton is obtained by a Lorentz boost of the rest soliton; its one-loop
+mass shift $\Delta M_1$ simply rescales the relativistic dispersion relation
+$E(P) = \sqrt{M^2 + P^2}$, so the mode-sum energy and momentum automatically
+satisfy $\dd\Delta E = v\,\dd\Delta P$.
+
+In the Boussinesq equation \eqref{eq:good_bouss}, Lorentz invariance is absent
+and the classical soliton profile
+\begin{equation}
+  u_0(x-vt;\alpha) = -k^2\operatorname{sech}^2\!\left(\frac{k(x-vt)}{2}\right), \qquad
+  k = \sin\alpha = \sqrt{1-v^2},
+  \label{eq:profile}
+\end{equation}
+changes its inverse width $k = \sqrt{1-v^2}$ explicitly when the velocity
+$v = \epsilon\cos\alpha$ varies. Differentiating \eqref{eq:Delta_E_mode} and
+\eqref{eq:Delta_P_mode} with respect to $\alpha$ (using $\frac{\dd}{\dd\alpha}\ln|\tan(\phi_r/2)| = 1/\sin\phi_r$
+and $\sum_{r=1}^3 c_r = 0$, $\sum_{r=1}^3 c_r\cos\phi_r = 0$) gives \textbf{(c)}:
+\begin{align}
+  \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha}
+  &= -\frac{1}{2\pi}\sum_{r=1}^3 c_r\cos(2\phi_r)\ln\!\left|\tan\frac{\phi_r}{2}\right|,
+  \label{eq:dE_dalpha} \\
+  \frac{\dd\Delta P_{\mathrm{mode}}(\alpha,\epsilon)}{\dd\alpha}
+  &= -\frac{\epsilon}{2\pi}\sum_{r=1}^3 c_r\cos\phi_r\ln\!\left|\tan\frac{\phi_r}{2}\right|.
+  \label{eq:dP_dalpha}
+\end{align}
+
+\medskip\noindent
+\textbf{Claim 2.1 (Non-Lorentz-invariant velocity anomaly, \textbf{(c)}, verified in \texttt{charge\_and\_frame\_audit.py}).}
+\emph{The fixed-profile mode-sum charges $(\Delta E_1^{\mathrm{ren}},\Delta P_{\mathrm{mode}})$
+violate the Hamiltonian velocity relation $\dd E = v\,\dd P$ by the exact
+velocity anomaly}
+\begin{align}
+  \mathcal{A}_v(\alpha)
+  &:= \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha}
+      - v\frac{\dd\Delta P_{\mathrm{mode}}(\alpha,\epsilon)}{\dd\alpha}
+  = \frac{1}{2\pi}\sum_{r=1}^3 c_r\big[\cos\alpha\cos\phi_r - \cos(2\phi_r)\big]\ln\!\left|\tan\frac{\phi_r}{2}\right|
+  \nonumber \\
+  &= -\frac{\sqrt{3}\sin(2\alpha)}{2\pi}\ln\!\left|\frac{\tan\frac{\alpha+2\pi/3}{2}}{\tan\frac{\alpha-2\pi/3}{2}}\right|
+     - \sin\alpha\,\Delta P_{\mathrm{mode}}(\alpha,+1) \neq 0.
+  \label{eq:velocity_anomaly}
+\end{align}
+
+\subsection{Co-moving effective Lagrangian and canonical collective-coordinate momentum}
+
+To obtain the Hamiltonian-consistent one-loop corrections to the soliton's
+canonical momentum and energy, one must quantise in the soliton's co-moving frame
+$\xi = x - vt$ \cite{FK1978,DHN1974}. In the co-moving frame, the classical
+soliton is a stationary point of the classical Routhian (co-moving Hamiltonian)
+$H_{\mathrm{co}}(v) = E - vP = -L(v)$, where
+\begin{equation}
+  L_{\mathrm{cl}}(v) = vP_{\mathrm{cl}} - E_{\mathrm{cl}} = -\frac{2}{15}\sin^5\alpha, \qquad
+  P_{\mathrm{cl}}(\alpha,\epsilon) = \frac{\partial L_{\mathrm{cl}}}{\partial v}
+  = -\frac{\epsilon}{\sin\alpha}\frac{\dd L_{\mathrm{cl}}}{\dd\alpha}
+  = \frac{2}{3}\epsilon\sin^3\alpha\cos\alpha.
+\end{equation}
+Linearising around $u_0(\xi;\alpha)$ at fixed velocity $v = \epsilon\cos\alpha$,
+a continuum phonon of laboratory wavenumber $q$ has co-moving frequency
+$\tilde{\omega}(q;v) = \omega(q) - vq$. Summing the renormalised zero-point shifts
+of the co-moving normal modes yields the one-loop correction to the co-moving
+Routhian $H_{\mathrm{co},1}(v) = \Delta E_1^{\mathrm{ren}}(\alpha) - v\Delta P_{\mathrm{mode}}(\alpha,\epsilon)$,
+or equivalently the \emph{co-moving one-loop effective Lagrangian} \textbf{(c)}:
+\begin{equation}
+  L_1(v) = -H_{\mathrm{co},1}(v)
+  = v\,\Delta P_{\mathrm{mode}}(\alpha,\epsilon) - \Delta E_1^{\mathrm{ren}}(\alpha)
+  = \int_{-\infty}^\infty \frac{\dd q}{4\pi}\Big(v q\,\theta_S'(q;\alpha,\epsilon) - [\omega(q)\theta_S'(q;\alpha,\epsilon)]_{\mathrm{ren}}\Big).
+  \label{eq:L1_comoving}
+\end{equation}
+By the Legendre transform of $L_{\mathrm{eff}}(v) = L_{\mathrm{cl}}(v) + \hb L_1(v) + O(\hb^2)$,
+the canonical collective-coordinate momentum and energy at $O(\hb)$ are defined by
+\begin{equation}
+  \Delta P_{\mathrm{can}}(\alpha,\epsilon) := \frac{\partial L_1}{\partial v}
+  = -\frac{\epsilon}{\sin\alpha}\frac{\dd L_1}{\dd\alpha}, \qquad
+  \Delta E_{\mathrm{can}}(\alpha) := v\,\Delta P_{\mathrm{can}}(\alpha,\epsilon) - L_1(v),
+  \label{eq:Legendre_1loop}
+\end{equation}
+which automatically satisfy the exact Hamiltonian identity
+$\frac{\dd\Delta E_{\mathrm{can}}}{\dd v} = v\frac{\dd\Delta P_{\mathrm{can}}}{\dd v}$.
+
+\medskip\noindent
+\textbf{Claim 2.2 (Exact light-root cancellation and closed form of $\Delta P_{\mathrm{can}}$, \textbf{(c)}, verified in \texttt{charge\_and\_frame\_audit.py}).}
+\emph{Differentiating $L_1(v) = v\Delta P_{\mathrm{mode}} - \Delta E_1^{\mathrm{ren}}$
+with respect to $\alpha$ combines \eqref{eq:dE_dalpha} and \eqref{eq:dP_dalpha}
+with $\frac{\dd v}{\dd\alpha}\Delta P_{\mathrm{mode}} = -\epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}$:}
+\begin{equation}
+  -\frac{\dd L_1}{\dd\alpha}
+  = \mathcal{A}_v(\alpha) + \epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}(\alpha,\epsilon)
+  = \frac{1}{2\pi}\sum_{r=1}^3 c_r\,W_r(\alpha)\ln\!\left|\tan\frac{\phi_r}{2}\right|,
+  \label{eq:dL1_dalpha}
+\end{equation}
+\emph{where the total weight on root $r$ is}
+\begin{equation}
+  W_r(\alpha) := \cos(2\phi_r) - \cos(\alpha+\phi_r)
+  = \begin{cases}
+      +\sqrt{3}\sin(2\alpha), & r=1 \quad (\phi_1 = \alpha+2\pi/3), \\
+      -\sqrt{3}\sin(2\alpha), & r=2 \quad (\phi_2 = \alpha-2\pi/3), \\
+      0, & r=3 \quad (\phi_3 = \alpha).
+    \end{cases}
+  \label{eq:W_r_weights}
+\end{equation}
+\emph{Because $W_3(\alpha) = \cos(2\alpha) - \cos(2\alpha) = 0$ vanishes
+identically, the light root $\phi_3 = \alpha$ drops out of $\frac{\dd L_1}{\dd\alpha}$
+completely! Dividing by $\frac{\dd v}{\dd\alpha} = -\epsilon\sin\alpha$ gives the
+exact closed form}
+\begin{align}
+  \Delta P_{\mathrm{can}}(\alpha,\epsilon)
+  &= -\epsilon\,\frac{\sqrt{3}\cos\alpha}{\pi}
+     \ln\!\left|\frac{\tan\frac{\alpha+2\pi/3}{2}}{\tan\frac{\alpha-2\pi/3}{2}}\right|
+   = -\frac{4\epsilon}{\pi}\alpha + \frac{8\epsilon}{9\pi}\alpha^3 - \frac{8\epsilon}{45\pi}\alpha^5 + O(\alpha^7),
+  \label{eq:Delta_P_can} \\
+  \Delta E_{\mathrm{can}}(\alpha)
+  &= \Delta E_1^{\mathrm{ren}}(\alpha)
+     - \frac{\sqrt{3}\cos^2\alpha}{\pi}\ln\!\left|\frac{\tan\frac{\alpha+2\pi/3}{2}}{\tan\frac{\alpha-2\pi/3}{2}}\right|
+     - \cos\alpha\,\Delta P_{\mathrm{mode}}(\alpha,+1).
+  \label{eq:Delta_E_can}
+\end{align}
+\emph{In particular, $\Delta P_{\mathrm{can}}(\alpha,\epsilon)$ is real-analytic
+at $\alpha=0$ and has \textbf{zero} $\alpha\ln\alpha$ singularity to all orders.}
+
+\subsection{Physical interpretation: why static defect absorption uses $\Delta P_{\mathrm{mode}}$}
+
+From \eqref{eq:L1_comoving}--\eqref{eq:Legendre_1loop}, the difference between the
+canonical collective-coordinate momentum and the fixed-profile phonon mode-sum
+momentum is \textbf{(c)}
+\begin{equation}
+  \Delta P_{\mathrm{can}}(\alpha,\epsilon) - \Delta P_{\mathrm{mode}}(\alpha,\epsilon)
+  = \frac{\epsilon}{\sin\alpha}\,\mathcal{A}_v(\alpha)
+  = \int_{-\infty}^\infty \frac{\dd q}{4\pi}\Big(v q\,\frac{\partial\theta_S'}{\partial v}
+    - \frac{\partial}{\partial v}[\omega(q)\theta_S']_{\mathrm{ren}}\Big).
+  \label{eq:P_backreaction}
+\end{equation}
+Equation~\eqref{eq:P_backreaction} has a transparent physical meaning:
+\begin{itemize}
+\item For a \emph{static} integrable defect located at $x=0$ (Phase~2g), the
+defect velocity is identically zero ($v_D = 0$) and there is no translational
+collective coordinate $X(t) = vt$. The one-loop momentum stored in the defect
+vacuum is therefore purely the continuum phonon mode-sum integral
+$\Delta P_D(q_D,\eta) = \int \frac{\dd q}{4\pi}\,q\,\theta_D'(q;s,\eta)$. When a
+soliton $S_i$ is absorbed by the static defect ($q_i \to q_{i+1}$), the change in
+the continuum phase shift is $\theta_D'(q;q_{i+1},\eta) - \theta_D'(q;q_i,\eta) = \rho_i\theta_S'(q;S_i)$
+at fixed $q$, so integrating against $\frac{\dd q}{4\pi}q$ and $\frac{\dd q}{4\pi}\omega(q)$
+gives the exact fixed-profile mode-sum balance
+$(\Delta E_D^{\mathrm{ren}}(q_{i+1})-\Delta E_D^{\mathrm{ren}}(q_i), \Delta P_D(q_{i+1})-\Delta P_D(q_i)) = \rho_i(\Delta E_1^{\mathrm{ren}}(S_i), \Delta P_{\mathrm{mode}}(S_i))$
+verified to $3.2\times 10^{-36}$ in Phase~2g.
+\item For a \emph{moving} soliton with collective coordinate $X(t) = vt$, varying
+the velocity $v = \epsilon\cos\alpha$ deforms the background profile $u_0(x-vt;\alpha)$
+and hence deforms the phonon spectral density $\frac{\partial\theta_S'}{\partial v} \neq 0$,
+generating the profile-backreaction momentum \eqref{eq:P_backreaction} that
+cancels the $\frac{\epsilon}{\pi}\alpha\ln\alpha$ term in $\Delta P_{\mathrm{mode}}$.
+\end{itemize}
+
+% ==============================================================================
+\section{Step 1B: Quantum Frame Conversion and Analytical Resolution of the Toda Fermi-Edge Limit}
+\label{sec:toda}
+
+We now resolve the central puzzle of Phase~2f (\texttt{matching.pdf}): how the
+quantum Toda Fermi-edge Bethe ansatz (\texttt{toda\_edge\_ba.py},
+\texttt{matching\_toda.py}) handles the logarithmic momentum shift and why its
+extrapolated $O(\hb^0)$ residual $c_0(r) = \lim_{Y\to\infty} R_0(Y,r)$ takes the
+precise numerical values recorded in \texttt{matching\_tables.tex}.
+
+\subsection{Amplitude-ordering reversal between the good and bad/Toda overtaking limits}
+
+Consider an overtaking collision ($\epsilon_1 = \epsilon_2 = +1$) with soliton~1
+starting to the left of soliton~2, which requires $v_1 > v_2$.
+\begin{itemize}
+\item In the \textbf{good} Boussinesq equation \eqref{eq:good_bouss}, the soliton
+velocity $v_{\mathrm{good}}(\alpha) = \cos\alpha = 1 - \frac{1}{2}\alpha^2 + O(\alpha^4)$
+ is \emph{subluminal} and decreases with amplitude. Thus $v_1 > v_2$ requires
+soliton~1 to have the \emph{smaller} amplitude:
+\begin{equation}
+  \alpha_1 = r\lambda < \alpha_2 = \lambda \quad (r \in (0,1)), \qquad
+  \ell_1 - \ell_2 = -\cos(3r\lambda) + \cos(3\lambda) = -\frac{9}{2}(1-r^2)\lambda^2 + O(\lambda^4) < 0.
+  \label{eq:good_ordering}
+\end{equation}
+\item In the \textbf{bad} Boussinesq equation $u_{tt} = u_{xx} + u_{xxxx} + 3(u^2)_{xx}$
+and the \textbf{Toda lattice} (\texttt{matching\_toda.py}), the soliton velocity
+$v_{\mathrm{bad}}(\beta) = \cosh\beta = 1 + \frac{1}{2}\beta^2 + O(\beta^4)$ is
+\emph{superluminal} and increases with amplitude. Thus $v_1 > v_2$ requires
+soliton~1 to have the \emph{larger} amplitude:
+\begin{equation}
+  \beta_1 = \lambda > \beta_2 = r\lambda \quad (r \in (0,1)), \qquad
+  \ell_1 - \ell_2 = \cosh(3\lambda) - \cosh(3r\lambda) = +\frac{9}{2}(1-r^2)\lambda^2 + O(\lambda^4) > 0.
+  \label{eq:bad_ordering}
+\end{equation}
+\end{itemize}
+In both cases the leading KdV Hirota factor is $A_{12} = \big(\frac{1-r}{1+r}\big)^2 + O(\lambda^2)$.
+Because $\ell_1 - \ell_2$ has opposite signs in \eqref{eq:good_ordering} and
+\eqref{eq:bad_ordering}, the leading classical Hirota phase
+$\delta_{\mathrm{Hirota}} = \frac{2}{9}(\ell_1-\ell_2)\ln A_{12}$ and the
+resulting logarithmic quasi-momentum shift $H(r)$ at fixed physical momentum have
+\emph{opposite signs} \textbf{(c)} (\texttt{charge\_and\_frame\_audit.py}):
+\begin{equation}
+  H_{\mathrm{good}}(r) = -\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r} > 0, \qquad
+  H_{\mathrm{bad}}(r) = +\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r} = -H_{\mathrm{good}}(r) < 0.
+  \label{eq:H_good_vs_bad}
+\end{equation}
+Since the one-loop continuum phonon integral in the small-amplitude overtaking
+corner is (\texttt{oneloop\_good\_limits\_cusp\_resonance.py}, Claim~4.1 of
+\texttt{oneloop\_phase.pdf})
+\begin{equation}
+  I_{\mathrm{same}}(r\lambda,\lambda)
+  \;\xrightarrow{\lambda\to 0^+}\;
+  \frac{2}{\pi}L(r)
+  = -\frac{4}{\pi}\chi_2(r) - \frac{2}{\pi}\ln r\ln\frac{1-r}{1+r},
+  \label{eq:I_same_kdv}
+\end{equation}
+adding the colliding Toda/bad-Boussinesq Hirota shift $H_{\mathrm{bad}}(r)$
+cancels the logarithmic product $-\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$
+identically:
+\begin{equation}
+  I_{\mathrm{same}}(r\lambda,\lambda) + H_{\mathrm{bad}}(r)
+  \;\xrightarrow{\lambda\to 0^+}\;
+  -\frac{4}{\pi}\chi_2(r).
+  \label{eq:I_plus_Hbad}
+\end{equation}
+
+\subsection{Quantum Fermi-edge dressing and exact cancellation of the Darboux $\ln\lambda$ divergence}
+
+Let us now show how \eqref{eq:I_plus_Hbad} emerges directly from the quantum Toda
+Bethe ansatz in \texttt{toda\_edge\_ba.py} and \texttt{matching\_toda.py}, and why
+an additional linear term $+\frac{4r}{\pi}$ appears in the edge-subtracted
+residual $R_0(Y,r)$.
+
+In \texttt{toda\_edge\_ba.py}, the Toda action scale is $\hb_T = 3b\hb_B$
+($b = \ee^{-a/2}$), and the Boussinesq scaling variables are $y_j = \beta_j^2/\hb_B = b\kappa_j^2/\hb_T$
+($\kappa_j = \sqrt{3}\beta_j$). Following \texttt{matching\_toda.py}, soliton~1 is
+the larger soliton ($y_1 = Y$) and soliton~2 is the smaller soliton ($y_2 = r^2 Y$,
+$r = \sqrt{y_2/y_1} \in (0,1)$). Each soliton's Bethe root $p_j > q$ above the
+quantum Fermi edge $q$ is fixed by matching its dressed momentum relative to the
+edge to the label momentum $P_n(\kappa_j)/a$:
+\begin{equation}
+  P_{\mathrm{dr}}(p_j) - P_{\mathrm{dr}}(q)
+  = \frac{P_n(\kappa_j)}{a}
+  = \frac{4b}{a}(\kappa_j\cosh\kappa_j - \sinh\kappa_j)
+  = \frac{4b}{3a}\kappa_j^3 + O(\kappa_j^5)
+  = \frac{4}{3a\sqrt{b}}\,(y_j\hb_T)^{3/2} + O(\hb_T^{5/2}).
+  \label{eq:P_dr_matching}
+\end{equation}
+Define the dimensionless Fermi-edge quasi-momentum in the $\hb_T\to 0$ limit:
+\begin{equation}
+  u_j(y_j) := \lim_{\hb_T\to 0} \frac{p_j - q}{\hb_T}.
+  \label{eq:u_def}
+\end{equation}
+
+\medskip\noindent
+\textbf{Claim 3.1 (Quantum Fermi-edge quasi-momentum shift and cancellation of the $-2/r$ Darboux singularity, \textbf{(c)}, verified in \texttt{charge\_and\_frame\_audit.py}).}
+\begin{enumerate}
+\item \emph{In the double-scaling limit $\hb_T\to 0$ at fixed $y_j$, the quantum
+Fermi-sea dressing shifts the edge quasi-momentum $u_j(y_j)$ relative to its
+classical value $y_j$ by the universal one-loop logarithm}
+\begin{equation}
+  u_j(y_j) = y_j + \delta u_j, \qquad
+  \delta u_j = -\frac{1}{2\pi}\ln y_j + c_{\mathrm{edge}} + O(y_j^{-1}) \quad (y_j \to \infty).
+  \label{eq:u_of_y}
+\end{equation}
+\emph{Crucially, because \eqref{eq:P_dr_matching} measures $P_{\mathrm{dr}}(p_j)$
+relative to the \textbf{quantum Fermi edge} $P_{\mathrm{dr}}(q)$ (where
+$q = 2b + O(\hb_T\ln\hb_T)$), the $\ln\hb_T$ ($\ln\lambda$) infrared divergence
+of the continuum mode sum $\Delta P_{\mathrm{mode}}$ is absorbed entirely into the
+shift of the Fermi edge $q$, replacing $\ln(p_j-2b) = \ln(u_j\hb_T)$ by the
+finite, $\hb_T$-independent logarithm $\ln u_j \approx \ln y_j$.}
+\item \emph{By \texttt{toda\_ba\_vs\_label.py}, the classical limit of the
+edge-subtracted dressed Bethe phase
+$\Phi_{\mathrm{cl}}(u_1,u_2) := \lim_{\hb_T\to 0}\frac{\Phi_{\mathrm{cl}}(2b+u_1\hb_T,2b+u_2\hb_T)-\Phi_{\mathrm{cl}}(2b+u_1\hb_T,2b)}{\hb_T}$
+for $u_1 > u_2 > 0$ ($r = \sqrt{u_2/u_1} < 1$) is}
+\begin{equation}
+  \Phi_{\mathrm{cl}}(u_1,u_2)
+  = \underbrace{2(u_1 - u_2)\ln\frac{1-r}{1+r}}_{\delta_{\mathrm{cl}}(u_1,u_2)}
+    + \underbrace{4\sqrt{u_1 u_2}}_{\text{frame term }-M_1\Pi_2/\hb_T}.
+  \label{eq:Phi_cl_edge}
+\end{equation}
+\emph{While the two pieces in \eqref{eq:Phi_cl_edge} individually have $\mp\frac{2}{r}$
+singularities when differentiated with respect to $u_2$ at small $r$,}
+\begin{equation}
+  \frac{\partial}{\partial u_2}\left[2(u_1-u_2)\ln\frac{1-r}{1+r}\right]
+  = -2\ln\frac{1-r}{1+r} - \frac{2}{r}, \qquad
+  \frac{\partial}{\partial u_2}\big[4\sqrt{u_1 u_2}\big] = +\frac{2}{r},
+  \label{eq:darboux_cancellation}
+\end{equation}
+\emph{their sum in $\Phi_{\mathrm{cl}}(u_1,u_2)$ cancels the $\mp\frac{2}{r}$
+Darboux singularity \textbf{identically}:}
+\begin{equation}
+  \frac{\partial\Phi_{\mathrm{cl}}}{\partial u_1} = 2\ln\frac{1-r}{1+r} + 4r, \qquad
+  \frac{\partial\Phi_{\mathrm{cl}}}{\partial u_2} = -2\ln\frac{1-r}{1+r}.
+  \label{eq:dPhi_cl_du}
+\end{equation}
+\end{enumerate}
+
+\subsection{Exact $Y\to\infty$ limit of the Toda Fermi-edge residual $R_0(Y,r)$}
+
+In \texttt{toda\_edge\_twoterm.py} and \texttt{matching\_toda.py}, the label-frame
+Toda phase at $\hb_T\to 0$ is defined by subtracting the classical frame term
+$(-2\kappa_1)(P_n(\kappa_2)/a - \Pi(\kappa_2))/\hb_T \to 4\sqrt{y_1 y_2}$ and the
+classical edge phase $\delta_{\mathrm{cl}}(y_1,y_2) = 2(y_1-y_2)\ln\frac{1-r}{1+r}$
+evaluated at the \emph{label} variables $(y_1,y_2) = (Y,r^2 Y)$. Since
+$\delta_{\mathrm{cl}}(y_1,y_2) + 4\sqrt{y_1 y_2} = \Phi_{\mathrm{cl}}(y_1,y_2)$,
+the $\hb_T\to 0$ Toda residual $R_0(Y,r)$ of Phase~2f is \textbf{(c)}:
+\begin{align}
+  R_0(Y,r)
+  &= \Phi_q\big(u_1(y_1),u_2(y_2)\big) - \Phi_{\mathrm{cl}}(y_1,y_2)
+  \nonumber \\
+  &= \underbrace{\Big[\Phi_{\mathrm{cl}}(u_1,u_2) - \Phi_{\mathrm{cl}}(y_1,y_2)\Big]}_{d\Phi_{\mathrm{cl}}(Y,r)}
+     + \underbrace{\Big[\Phi_q(u_1,u_2) - \Phi_{\mathrm{cl}}(u_1,u_2)\Big]}_{d\Phi_{\mathrm{loop}}(Y,r)},
+  \label{eq:R0_split}
+\end{align}
+where $\Phi_q(u_1,u_2) := \lim_{\hb_T\to 0}\frac{\Phi(q+u_1\hb_T,q+u_2\hb_T)-\Phi(q+u_1\hb_T,q)}{\hb_T}$
+is the quantum edge-subtracted Bethe phase.
+
+\medskip\noindent
+\textbf{Claim 3.2 (Exact $Y\to\infty$ limit of $R_0(Y,r)$, \textbf{(c)}, verified in \texttt{charge\_and\_frame\_audit.py}).}
+\emph{Using \eqref{eq:u_of_y} and \eqref{eq:dPhi_cl_du} with $\delta u_1 - \delta u_2 = -\frac{1}{2\pi}\ln(y_1/y_2) + O(Y^{-1}) = +\frac{1}{\pi}\ln r + O(Y^{-1})$,
+the two components in \eqref{eq:R0_split} have the large-$Y$ expansions}
+\begin{align}
+  d\Phi_{\mathrm{cl}}(Y,r)
+  &= 2\ln\!\left(\frac{1-r}{1+r}\right)(\delta u_1 - \delta u_2) + 4r\,\delta u_1 + O(Y^{-1})
+   = +\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r} + 4r\,\delta u_1 + O(Y^{-1}),
+  \label{eq:dPhi_cl_asymp} \\
+  d\Phi_{\mathrm{loop}}(Y,r)
+  &= -\frac{4}{\pi}\big(\chi_2(r) - r\big) - \frac{2}{\pi}\ln r\ln\frac{1-r}{1+r} - 4r\,\delta u_1 + O(Y^{-1}),
+  \label{eq:dPhi_loop_asymp}
+\end{align}
+\emph{where the $+\frac{4r}{\pi}$ term in $d\Phi_{\mathrm{loop}}(Y,r)$ arises from
+subtracting the Fermi-edge reference $-\Phi(p_1,e_2)/\hb_T$ (which subtracts the
+linear small-$r$ slope $-\frac{4r}{\pi}$ of $-\frac{4}{\pi}\chi_2(r) = -\frac{4r}{\pi} - \frac{4r^3}{9\pi} - \dots$
+so that $R_0(Y,r)$ vanishes as $O(r^3)$ rather than $O(r)$ as $r\to 0^+$). In the
+sum $R_0(Y,r) = d\Phi_{\mathrm{cl}}(Y,r) + d\Phi_{\mathrm{loop}}(Y,r)$, both the
+$\pm 4r\,\delta u_1 \sim \mp\frac{2r}{\pi}\ln Y$ topological frame shifts and the
+$\pm\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ logarithmic shifts \textbf{cancel
+identically}, leaving the exact $Y\to\infty$ ($O(\hb^0)$) limit}
+\begin{equation}
+  \lim_{Y\to\infty} R_0(Y,r)
+  = -\frac{4}{\pi}\big(\chi_2(r) - r\big)
+  = -\frac{4}{\pi}\sum_{n=1}^\infty \frac{r^{2n+1}}{(2n+1)^2}.
+  \label{eq:R0_exact_limit}
+\end{equation}
+
+Table~\ref{tab:toda_comparison} compares the closed-form analytical prediction
+\eqref{eq:R0_exact_limit} against the numerical Phase~2f intercepts $c_0(r)$ and
+central $r$-derivative from \texttt{matching\_tables.tex} and
+\texttt{matching\_analysis.json}. The agreement is within $1.2\times 10^{-5}$ to
+$7.0\times 10^{-5}$ across all points, completely resolving the Phase~2f
+discrepancy.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Quantity & $r$ & Phase 2f Toda fit (\texttt{matching\_tables.tex}) & Exact $-\frac{4}{\pi}(\chi_2(r)-r)$ \eqref{eq:R0_exact_limit} & $|\text{Diff}|$ \\
+\midrule
+Intercept $c_0(r)$ & $0.4$ & $-0.009635$ & $-0.009623$ & $1.2\times 10^{-5}$ \\
+Intercept $c_0(r)$ & $0.5$ & $-0.019552$ & $-0.019515$ & $3.7\times 10^{-5}$ \\
+Intercept $c_0(r)$ & $0.6$ & $-0.035526$ & $-0.035456$ & $7.0\times 10^{-5}$ \\
+\addlinespace
+Slope $\frac{c_0(0.6)-c_0(0.4)}{0.2}$ & $0.5$ & $-0.129457$ & $-0.129166$ & $2.9\times 10^{-4}$ \\
+\bottomrule
+\end{tabular}
+\caption{Comparison between the numerical Phase~2f Toda Fermi-edge intercepts
+$c_0(r)$ (\texttt{matching\_analysis.json}) and the exact analytical formula
+$-\frac{4}{\pi}(\chi_2(r)-r)$ derived in Claim~3.2 (\texttt{charge\_and\_frame\_audit.py}).}
+\label{tab:toda_comparison}
+\end{table}
+
+% ==============================================================================
+\section{Step 2: Universal KP-Coboundary Theorem and Two-Vertex Master Function}
+\label{sec:master}
+
+We now turn to the finite-amplitude good Boussinesq equation and prove that the
+one-loop defect fusion and KP-triangle closure discovered in Phase~2g are
+instances of a universal theorem holding for \emph{any} odd function on the KP
+root space.
+
+\subsection{The Universal KP-Coboundary Theorem}
+
+Let $q_D = -s/(2\sqrt{3}) = -(\cos\gamma)/\sqrt{3}$ be a defect KP vertex with
+orientation $\eta \in \{+1,-1\}$, and let $(p_a,p_b)$ be the ordered KP chord of a
+soliton $(\alpha,\epsilon)$, where $p_a = \frac{1}{2}(\sin\alpha + \frac{\epsilon}{\sqrt{3}}\cos\alpha) > p_b = \frac{1}{2}(\frac{\epsilon}{\sqrt{3}}\cos\alpha - \sin\alpha)$.
+In terms of the defect dipole angles $\psi_1(q_D) = 2\pi/3-\gamma$,
+$\psi_2(q_D) = -2\pi/3-\gamma$ with weights $(c_{D,1},c_{D,2}) = (-\eta,+\eta)$
+and the oriented soliton angles $\phi_r^{(\epsilon)}$ ($r=1,2,3$) with weights
+$(c_1,c_2,c_3) = (1,1,-2)$, define for any odd function $F(w) = -F(-w)$ of
+$w = \tan(\psi/2)$ the soliton and defect functionals \textbf{(c)}:
+\begin{align}
+  \mathcal{S}[F](\alpha,\epsilon)
+  &:= \sum_{r=1}^3 c_r\,\Rea F\!\left(\tan\frac{\phi_r^{(\epsilon)}}{2}\right),
+  \label{eq:S_functional} \\
+  \mathcal{D}[F](q_D,\eta)
+  &:= \sum_{s'=1}^2 c_{D,s'}\,\Rea F\!\left(\tan\frac{\psi_{s'}(q_D)}{2}\right)
+   = \eta\left[\Rea F\!\left(\tan\frac{\psi_2(q_D)}{2}\right) - \Rea F\!\left(\tan\frac{\psi_1(q_D)}{2}\right)\right].
+  \label{eq:D_functional}
+\end{align}
+
+\medskip\noindent
+\textbf{Claim 4.1 (Universal KP-Coboundary Theorem, \textbf{(c)}, verified in \texttt{kp\_master\_and\_toda\_edge.py}).}
+\emph{For every odd function $F(w) = -F(-w)$, the 3-root soliton functional
+\eqref{eq:S_functional} is the exact KP-chord difference of the 2-root defect
+dipole functional \eqref{eq:D_functional}:}
+\begin{equation}
+  \mathcal{S}[F](\alpha,\epsilon)
+  = \mathcal{D}[F](p_b,+1) - \mathcal{D}[F](p_a,+1),
+  \label{eq:universal_coboundary}
+\end{equation}
+\emph{and along every edge $q_i \to q_{i+1}$ of any KP triple
+$\{q_1,q_2,q_3\}$ with soliton $S_i = (\alpha_i,\epsilon_i)$ on $\{q_i,q_{i+1}\}$
+and sign $\rho_i = \eta\sgn(q_i - q_{i+1})$,}
+\begin{equation}
+  \mathcal{D}[F](q_{i+1},\eta) - \mathcal{D}[F](q_i,\eta)
+  = \rho_i\,\mathcal{S}[F](S_i), \qquad
+  \sum_{i=1}^3 \rho_i\,\mathcal{S}[F](S_i) = 0.
+  \label{eq:universal_triangle}
+\end{equation}
+
+\begin{proof}
+At $q_D = p_a = -\frac{1}{\sqrt{3}}\cos(\alpha + \epsilon\frac{\pi}{3})$ and
+$q_D = p_b = -\frac{1}{\sqrt{3}}\cos(\alpha - \epsilon\frac{\pi}{3})$, the two
+defect dipole angles $\psi_{1,2}(q_D)$ coincide (up to $\psi \mapsto -\psi$, which
+sends $w = \tan(\psi/2) \mapsto -w$ and flips the sign of any odd function
+$F(-w) = -F(w)$) with two of the three oriented soliton angles
+$\phi_r^{(\epsilon)}$. Specifically, the dipole weights $(-1,+1)$ at $p_b$ assign
+$(+1,0,-1)$ to the three root differences of the KP triangle, while $(-1,+1)$ at
+$p_a$ assign $(0,-1,+1)$; subtracting the two gives
+$(+1,0,-1) - (0,-1,+1) = (+1,+1,-2) = (c_1,c_2,c_3)$, establishing
+\eqref{eq:universal_coboundary}--\eqref{eq:universal_triangle} for arbitrary odd
+$F(w)$.
+\end{proof}
+
+Notice that Claim~4.1 immediately unifies all one-loop single-soliton and
+defect-vacuum observables:
+\begin{itemize}
+\item Choosing $F_P(w) = -\frac{1}{2\pi}\frac{2w}{1+w^2}\ln|w|$ gives
+$\mathcal{S}[F_P] = \Delta P_{\mathrm{mode}}(\alpha,\epsilon)$ and
+$\mathcal{D}[F_P] = \Delta P_D(q_D,\eta)$;
+\item Choosing $F_E(w) = \frac{1}{2\pi}\frac{2w}{1+w^2}\big(1 - \frac{1-w^2}{1+w^2}\ln|w|\big)$
+gives $\mathcal{S}[F_E] = \Delta E_1^{\mathrm{ren}}(\alpha)$ and
+$\mathcal{D}[F_E] = \Delta E_D^{\mathrm{ren}}(q_D,\eta)$.
+\end{itemize}
+
+\subsection{The two-vertex master function $\mathcal{F}_K(p,q)$ on the KP root space}
+
+Applying Claim~4.1 to each variable of an odd two-variable ratio kernel
+$K(w_1/w_2)$ ($K(-z) = -K(z)$) yields the fundamental building block of two-body
+soliton scattering on the KP root space.
+
+\medskip\noindent
+\textbf{Claim 4.2 (Two-Vertex Master Function $\mathcal{F}_K(p,q)$, \textbf{(c)}, verified in \texttt{kp\_master\_and\_toda\_edge.py}).}
+\emph{For any odd kernel $K(z) = -K(-z)$, define the $2\times 2$ dipole--dipole
+\textbf{two-vertex master function} on $(p,q) \in \mathbb{R}^2$ by}
+\begin{equation}
+  \mathcal{F}_K(p,q)
+  := \sum_{s_1=1}^2 \sum_{s_2=1}^2 (-1)^{s_1+s_2}\,
+     \Rea K\!\left(\tan\frac{\psi_{s_1}(p)}{2}\cot\frac{\psi_{s_2}(q)}{2}\right).
+  \label{eq:F_master}
+\end{equation}
+\emph{Then the $3\times 2$ soliton--defect functional $\mathcal{I}_{SD}[K]$ is the
+first difference of $\mathcal{F}_K$,}
+\begin{equation}
+  \mathcal{I}_{SD}[K](\alpha,\epsilon;q_D,\eta)
+  := \sum_{r=1}^3\sum_{s'=1}^2 c_r c_{D,s'}\,\Rea K\!\left(\tan\frac{\phi_r^{(\epsilon)}}{2}\cot\frac{\psi_{s'}(q_D)}{2}\right)
+  = \eta\Big(\mathcal{F}_K(p_b,q_D) - \mathcal{F}_K(p_a,q_D)\Big),
+  \label{eq:ISD_from_master}
+\end{equation}
+\emph{and the $3\times 3$ two-soliton functional $\mathcal{I}_{SS}[K]$ is the
+4-vertex second difference (2-cocycle coboundary) of $\mathcal{F}_K$ across the
+soliton chords $(p_{1,a},p_{1,b})\times(p_{2,a},p_{2,b})$:}
+\begin{align}
+  \mathcal{I}_{SS}[K](1,2)
+  &:= \sum_{r=1}^3\sum_{s=1}^3 c_r c_s\,\Rea K\!\left(\tan\frac{\phi_{1,r}^{(\epsilon_1)}}{2}\cot\frac{\phi_{2,s}^{(\epsilon_2)}}{2}\right)
+  \nonumber \\
+  &= \mathcal{F}_K(p_{1,b},p_{2,b}) - \mathcal{F}_K(p_{1,a},p_{2,b})
+     - \mathcal{F}_K(p_{1,b},p_{2,a}) + \mathcal{F}_K(p_{1,a},p_{2,a}).
+  \label{eq:ISS_from_master}
+\end{align}
+\emph{Consequently, for \textbf{every} odd kernel $K(z)$, $\mathcal{I}_{SD}[K]$
+and $\mathcal{I}_{SS}[K]$ satisfy exact defect fusion and KP-triangle closure:}
+\begin{equation}
+  \mathcal{I}_{SD}[K](3;q_{i+1},\eta) - \mathcal{I}_{SD}[K](3;q_i,\eta)
+  = \rho_i\,\mathcal{I}_{SS}[K](3,S_i), \qquad
+  \sum_{i=1}^3 \rho_i\,\mathcal{I}_{SS}[K](3,S_i) = 0.
+  \label{eq:K_fusion}
+\end{equation}
+
+\subsection{Finite-amplitude decomposition $I_{SS} = I_{SS}^{(\chi_2)} + I_{SS}^{(\ln)}$ and the small-amplitude corner}
+
+The one-loop kernel $K_L(z) = \frac{1}{2\pi}L(z)$ of Phase~2e and Phase~2g splits
+naturally into two odd kernels:
+\begin{equation}
+  K_L(z) = K_{\chi_2}(z) + K_{\ln}(z), \qquad
+  K_{\chi_2}(z) := -\frac{1}{\pi}\chi_2(z), \qquad
+  K_{\ln}(z) := -\frac{1}{2\pi}\ln|z|\ln\!\left|\frac{1-z}{1+z}\right|\sgn(\Rea z).
+  \label{eq:K_split}
+\end{equation}
+By Claim~4.2, both $I_{SS}^{(\chi_2)}(1,2) := \mathcal{I}_{SS}[K_{\chi_2}](1,2)$
+and $I_{SS}^{(\ln)}(1,2) := \mathcal{I}_{SS}[K_{\ln}](1,2)$ are exact KP
+coboundaries at any finite amplitudes $(\alpha_1,\epsilon_1;\alpha_2,\epsilon_2)$,
+with $I_{SS}(1,2) = I_{SS}^{(\chi_2)}(1,2) + I_{SS}^{(\ln)}(1,2)$.
+
+\medskip\noindent
+\textbf{Claim 4.3 (Small-amplitude overtaking and head-on limits of $I_{SS}^{(\chi_2)}$ and $I_{SS}^{(\ln)}$, \textbf{(c)}, verified in \texttt{kp\_master\_and\_toda\_edge.py}).}
+\begin{enumerate}
+\item \emph{In the small-amplitude overtaking corner $\alpha_1 = r\lambda$,
+$\alpha_2 = \lambda \to 0^+$ ($\epsilon_1 = \epsilon_2 = +1$, $r \in (0,1)$), the
+two KP coboundaries have the clean separation}
+\begin{align}
+  I_{SS}^{(\chi_2)}(r\lambda,+1;\lambda,+1)
+  &= -\frac{4}{\pi}\chi_2(r) + O(\lambda^2),
+  \label{eq:ISS_chi2_overtaking} \\
+  I_{SS}^{(\ln)}(r\lambda,+1;\lambda,+1)
+  &= -\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r} + O(\lambda^2)
+   = -H_{\mathrm{bad}}(r) + O(\lambda^2).
+  \label{eq:ISS_ln_overtaking}
+\end{align}
+\emph{Thus the logarithmic coboundary $I_{SS}^{(\ln)}$ cancels the colliding
+Hirota quasi-momentum shift $H_{\mathrm{bad}}(r)$ at $O(\lambda^0)$, leaving the
+pure Legendre chi coboundary $I_{SS}^{(\chi_2)}(r\lambda,\lambda) \to -\frac{4}{\pi}\chi_2(r)$
+(and $-\frac{4}{\pi}(\chi_2(r)-r)$ after the Fermi-edge subtraction at $r\to 0$).}
+\item \emph{In the small-amplitude head-on corner $\alpha_1 = r\lambda$,
+$\epsilon_1 = +1$ and $\alpha_2 = \lambda$, $\epsilon_2 = -1$ ($\lambda\to 0^+$),
+$I_{SS}^{(\chi_2)}$ and $I_{SS}^{(\ln)}$ individually carry opposite
+$O(\lambda^2\ln\lambda)$ terms that cancel in their sum:}
+\begin{align}
+  I_{SS}^{(\chi_2)}(r\lambda,+1;\lambda,-1)
+  &= +\frac{3r}{\pi}\lambda^2\ln(r\lambda^2) + O(\lambda^2), \qquad
+  I_{SS}^{(\ln)}(r\lambda,+1;\lambda,-1)
+  = -\frac{6r}{\pi}\lambda^2\ln(r\lambda^2) + O(\lambda^2),
+  \label{eq:ISS_headon_parts} \\
+  I_{SS}(r\lambda,+1;\lambda,-1)
+  &= \frac{r\lambda^2}{\pi}\left[-3\ln(r\lambda^2) + 6\ln 2 - \frac{3}{2}\ln 3 - 3\right] + O(\lambda^4\ln\lambda) \;\xrightarrow{\lambda\to 0^+}\; 0,
+  \label{eq:ISS_headon_sum}
+\end{align}
+\emph{matching the vanishing $O(\hb^0)$ head-on residual of the quantum Toda
+Fermi-edge limit (\texttt{matching\_analysis.json}).}
+\item \emph{At subleading order $O(1/Y)$ in the Toda Fermi-edge expansion
+$R_0(Y,r) = -\frac{4}{\pi}(\chi_2(r)-r) + \frac{c_1(r)}{Y} + O(Y^{-2})$, the
+two-loop KdV coefficient $c_1(r)$ extracted from \texttt{matching\_analysis.json}
+is smooth and negative ($c_1(0.4) = -0.007080$, $c_1(0.5) = -0.020991$,
+$c_1(0.6) = -0.048219$).}
+\end{enumerate}
+
+% ==============================================================================
+\section{Summary of Claims, Failures Recorded, and Implications}
+\label{sec:summary}
+
+Table~\ref{tab:summary} summarises all claims derived and verified in Phase~2h.
+
+\begin{table}[ht]
+\centering
+\footnotesize
+\begin{tabular}{@{}p{6.6cm}cp{4.4cm}p{3.6cm}@{}}
+\toprule
+Claim / Formula & Label & Verification Script & Precision / Result \\
+\midrule
+Non-Lorentz-invariant velocity anomaly $\mathcal{A}_v(\alpha) = \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha} - v\frac{\dd\Delta P_{\mathrm{mode}}}{\dd\alpha} \neq 0$ \eqref{eq:velocity_anomaly} (Claim~2.1) &
+\textbf{(c)} & \texttt{charge\_and\_frame\_audit.py} &
+Verified to $42+$ digits across $\alpha \in (0,\pi/2)$ and $\epsilon = \pm 1$ \\
+\addlinespace
+Exact disappearance of light root $\phi_3=\alpha$ in $\frac{\dd L_1}{\dd\alpha}$ \eqref{eq:W_r_weights}, closed form of $\Delta P_{\mathrm{can}}(\alpha,\epsilon)$ \eqref{eq:Delta_P_can} with zero $\alpha\ln\alpha$ term, and $\frac{\dd\Delta E_{\mathrm{can}}}{\dd v} = v\frac{\dd\Delta P_{\mathrm{can}}}{\dd v}$ (Claim~2.2) &
+\textbf{(c)} & \texttt{charge\_and\_frame\_audit.py} &
+SymPy exact + numerical match $< 10^{-42}$; quadrature of $L_1(v)$ to $< 10^{-35}$ \\
+\addlinespace
+Overtaking amplitude-ordering reversal between good ($v=\cos\alpha$) and bad/Toda ($v=\cosh\beta$) equations and sign flip $H_{\mathrm{bad}}(r) = -H_{\mathrm{good}}(r)$ \eqref{eq:H_good_vs_bad} &
+\textbf{(c)} & \texttt{charge\_and\_frame\_audit.py} &
+SymPy exact series identity \\
+\addlinespace
+Quantum Fermi-edge quasi-momentum shift $u_j = y_j - \frac{1}{2\pi}\ln y_j + c_{\mathrm{edge}}$ \eqref{eq:u_of_y} and exact cancellation of $-2/r$ Darboux singularity by $+4\sqrt{u_1 u_2}$ in $\frac{\partial\Phi_{\mathrm{cl}}}{\partial u_2}$ \eqref{eq:dPhi_cl_du} (Claim~3.1) &
+\textbf{(c)} & \texttt{charge\_and\_frame\_audit.py} &
+SymPy exact derivatives + \texttt{FastNodesEdgeBA} Richardson check \\
+\addlinespace
+Cancellation of $\pm 4r\delta u_1$ and $\pm\frac{2}{\pi}\ln r\ln\frac{1-r}{1+r}$ in $R_0(Y,r) = d\Phi_{\mathrm{cl}} + d\Phi_{\mathrm{loop}}$ and exact limit $\lim_{Y\to\infty} R_0(Y,r) = -\frac{4}{\pi}(\chi_2(r)-r)$ \eqref{eq:R0_exact_limit} (Claim~3.2) &
+\textbf{(c)} & \texttt{charge\_and\_frame\_audit.py} &
+Matches \texttt{matching\_tables.tex} to $1.2\text{--}7.0\times 10^{-5}$ (slope to $2.9\times 10^{-4}$) \\
+\addlinespace
+Universal KP-Coboundary Theorem $\mathcal{S}[F](\alpha,\epsilon) = \mathcal{D}[F](p_b,+1) - \mathcal{D}[F](p_a,+1)$ for arbitrary odd $F(w)$ \eqref{eq:universal_coboundary}--\eqref{eq:universal_triangle} (Claim~4.1) &
+\textbf{(c)} & \texttt{kp\_master\_and\_toda\_edge.py} &
+Tested on $5$ odd functionals across $12$ KP triangles: max residual $< 10^{-43}$ \\
+\addlinespace
+Two-vertex master function $\mathcal{F}_K(p,q)$ \eqref{eq:F_master}, first difference $=\mathcal{I}_{SD}[K]$ \eqref{eq:ISD_from_master}, second difference $=\mathcal{I}_{SS}[K]$ \eqref{eq:ISS_from_master}, and universal KP-triangle closure (Claim~4.2) &
+\textbf{(c)} & \texttt{kp\_master\_and\_toda\_edge.py} &
+Tested on $4$ odd kernels ($K_L,K_{\chi_2},K_{\ln},K_{\mathrm{rat}}$): max residual $< 10^{-43}$ \\
+\addlinespace
+Finite-amplitude split $I_{SS} = I_{SS}^{(\chi_2)} + I_{SS}^{(\ln)}$, small-amplitude overtaking cancellation $I_{SS}^{(\ln)} + H_{\mathrm{bad}} = O(\lambda^2)$ \eqref{eq:ISS_chi2_overtaking}--\eqref{eq:ISS_ln_overtaking}, and head-on limit \eqref{eq:ISS_headon_parts}--\eqref{eq:ISS_headon_sum} (Claim~4.3) &
+\textbf{(c)} & \texttt{kp\_master\_and\_toda\_edge.py} &
+Richardson small-$\lambda$ residual $< 10^{-16}$ \\
+\bottomrule
+\end{tabular}
+\caption{Summary of claims and verification checks in Phase~2h.}
+\label{tab:summary}
+\end{table}
+
+\subsection*{Failures recorded during the investigation}
+
+In accordance with \texttt{AGENTS.md}, we record all failed checks and sign/algebraic
+errors encountered and corrected during this task:
+\begin{enumerate}
+\item \textbf{Import path and ordering convention in \texttt{FastNodesEdgeBA}.}
+In the first run of \texttt{charge\_and\_frame\_audit.py}, we attempted to import
+\texttt{FastNodesEdgeBA} from \texttt{toda\_edge\_ba} rather than
+\texttt{matching\_toda}, and wrote $r = \sqrt{u_1/u_2}$ ($u_1 < u_2$) instead of
+the \texttt{matching\_toda.py} convention $y_1 = Y > y_2 = r^2 Y$ ($r = \sqrt{u_2/u_1} < 1$).
+Importing \texttt{FastNodesEdgeBA} from \texttt{matching\_toda} and using
+$r = \sqrt{u_2/u_1}$ gave $\frac{\partial\Phi_{\mathrm{cl}}}{\partial u_1} = 2\ln\frac{1-r}{1+r} + 4r$
+and $\frac{\partial\Phi_{\mathrm{cl}}}{\partial u_2} = -2\ln\frac{1-r}{1+r}$ with
+exact cancellation of $-\frac{2}{r}$ against $+\frac{2}{r}$.
+\item \textbf{Missing $-\epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}$ term when relating $\mathcal{A}_v(\alpha)$ to $-\frac{\dd L_1}{\dd\alpha}$.}
+When first coding \texttt{velocity\_anomaly\_closed(alpha)} in
+\texttt{charge\_and\_frame\_audit.py}, we equated $\mathcal{A}_v(\alpha) = \frac{\dd\Delta E_1^{\mathrm{ren}}}{\dd\alpha} - v\frac{\dd\Delta P_{\mathrm{mode}}}{\dd\alpha}$
+directly to $-\frac{\dd L_1}{\dd\alpha}$, omitting the term
+$-\frac{\dd v}{\dd\alpha}\Delta P_{\mathrm{mode}} = +\epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}$.
+In fact, $\mathcal{A}_v(\alpha)$ has light-root weight $\cos(2\alpha)-\cos^2\alpha = -\sin^2\alpha$,
+while $\epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}$ has light-root weight
+$+\sin^2\alpha$; it is their sum $-\frac{\dd L_1}{\dd\alpha} = \mathcal{A}_v(\alpha) + \epsilon\sin\alpha\,\Delta P_{\mathrm{mode}}$
+whose light-root weight $-\sin^2\alpha + \sin^2\alpha = 0$ vanishes identically.
+\item \textbf{Sign convention of $(\Delta E_1^{\mathrm{ren}},\Delta P_{\mathrm{mode}})$ and tadpole subtraction in quadrature check.}
+In an intermediate edit of \texttt{charge\_and\_frame\_audit.py}, flipping the
+sign of $\Delta P_{\mathrm{can}}$ without flipping the Phase~2e/2g sign convention
+of $(\Delta E_1^{\mathrm{ren}},\Delta P_{\mathrm{mode}})$, and using the
+un-cancelled polynomial counterterm $\omega(q) - q^2 - \frac{1}{2}$ instead of the
+exact Phase~2e/2g normal-ordering tadpole subtraction in the quadrature check of
+$L_1(v)$, produced $O(1)$ mismatches ($0.380$ and $0.149$). Restoring the exact
+Phase~2e/2g definitions reduced all residuals to $< 10^{-42}$ (and $0.0$ at
+50-digit quadrature).
+\item \textbf{Head-on small-amplitude coefficients of $I_{SS}^{(\chi_2)}$ and $I_{SS}^{(\ln)}$.}
+In the first run of Check~3c of \texttt{kp\_master\_and\_toda\_edge.py}, we wrote
+$-\frac{6}{\pi}r\lambda^2$ for the small-amplitude head-on limit of
+$I_{SS}(r\lambda,+1;\lambda,-1)$, overlooking the leading logarithmic term
+$-\frac{3}{\pi}r\lambda^2\ln(r\lambda^2)$ coming from
+$I_{SS}^{(\chi_2)} = +\frac{3}{\pi}r\lambda^2\ln(r\lambda^2) + O(\lambda^2)$ and
+$I_{SS}^{(\ln)} = -\frac{6}{\pi}r\lambda^2\ln(r\lambda^2) + O(\lambda^2)$
+(recorded in Claim~4.2 of \texttt{oneloop\_phase.pdf}). Testing against the exact
+asymptotic law \eqref{eq:ISS_headon_sum} gave agreement to $< 10^{-8}$.
+\end{enumerate}
+
+% ==============================================================================
+\begin{thebibliography}{9}
+
+\bibitem{CZ2023}
+E.~Corrigan and C.~Zambon,
+\emph{Integrable defects in the Boussinesq equations},
+J.~Phys.~A \textbf{56} (2023) 405202,
+\href{https://arxiv.org/abs/2306.03772}{arXiv:2306.03772} [hep-th].
+(Full text read in \texttt{literature/2306.03772v2.pdf} / verified via
+\texttt{corrigan-zambon/verify\_defect\_solutions.py}.)
+
+\bibitem{FK1978}
+L.~D.~Faddeev and V.~E.~Korepin,
+\emph{Quantum theory of solitons},
+Phys.~Rep.\ \textbf{42} (1978) 1--87,
+DOI: \href{https://doi.org/10.1016/0370-1573(78)90058-3}{10.1016/0370-1573(78)90058-3}.
+(Full text read in \texttt{literature/Faddeev\_Korepin\_1978\_Quantum\_theory\_of\_solitons.pdf}.)
+
+\bibitem{DHN1974}
+R.~F.~Dashen, B.~Hasslacher and A.~Neveu,
+\emph{Nonperturbative methods and extended-hadron models in field theory. I. Semiclassical functional methods},
+Phys.~Rev.~D \textbf{10} (1974) 4114--4129;
+\emph{II. Two-dimensional models and extended hadrons},
+Phys.~Rev.~D \textbf{10} (1974) 4130--4138,
+DOI: \href{https://doi.org/10.1103/PhysRevD.10.4130}{10.1103/PhysRevD.10.4130}.
+(Cited via the full text of \cite{FK1978}, Section~3; original full text not in \texttt{literature/}.)
+
+\bibitem{Hirota1973}
+R.~Hirota,
+\emph{Exact $N$-soliton solutions of the wave equation of long waves in shallow-water and in nonlinear lattices},
+J.~Math.~Phys.\ \textbf{14} (1973) 810--814,
+DOI: \href{https://doi.org/10.1063/1.1666400}{10.1063/1.1666400}.
+(Full text read in \texttt{literature/}.)
+
+\end{thebibliography}
+
+\end{document}
