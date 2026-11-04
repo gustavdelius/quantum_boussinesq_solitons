@@ -1,0 +1,589 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.35cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\Ca}{\textbf{(a)}\ }
+\newcommand{\Cc}{\textbf{(c)}\ }
+\newcommand{\Cd}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\kernels}{\file{good_twobody_kernels.py}}
+\newcommand{\ct}{\file{good_twobody_counterterms.py}}
+\newcommand{\three}{\file{good_twobody_threebody.py}}
+\newcommand{\grid}{\file{good_twobody_grid.py}}
+\newcommand{\insertcheck}{\file{good_twobody_local_insertion.py}}
+\emergencystretch=3em
+\title{Good-equation two-soliton scattering at one loop:\\
+fixed-momentum counterterm response, three-soliton tests,\\
+and the unresolved antisymmetric phase}
+\author{Quantum Boussinesq solitons project --- PI: Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Cc We independently evaluate the audited continuum integrals in both
+channels, verify three-soliton phonons by four-wave Hirota coefficient tests,
+and compute the response of the classical canonical scattering phase to
+\(\Delta H=\lambda\hbar\int u^2\dd x\) at fixed physical momenta:
+\[
+ K_\lambda=3\delta_0+4\sum_{j=1}^2P_j\Delta X'_j
+ =\frac23(v_2-v_1)\log A_{12}+\text{finite endpoint terms}.
+\]
+It is antisymmetric under exchange of the complete particle labels and is
+generically nonzero. Thus the canonical antisymmetric response is not
+scheme independent. We also give responses to finite changes of the kinetic,
+cubic and bending coefficients. A separate connected local-insertion
+calculation checks the logarithmic term.
+
+\Cc Scalar three-body factorisation and the exact factorised phonon
+transmission do not determine an unknown antisymmetric pair contribution.
+We exhibit a rank-two pair function that passes these tests; this is a
+counterexample to sufficiency of the tested constraints, not a freely
+adjustable physical coupling. \Cd The boundary-compatible projected
+two- and three-soliton determinants and quantum state map remain
+uncomputed. Consequently this is a partial result, not the requested
+absolute physical one-loop phase. The JSON grid has 270 rows with explicit
+unknown physical entries, numerical ingredients, counterterm coefficients,
+and separate near-resonance data. No unknown is replaced by zero.
+\end{abstract}
+
+\section{Scope and controlling evidence}
+Labels (a), (b), (c), (d) mean literature proof, literature heuristic,
+project derivation, and guess or unestablished identification. All new
+derived formulas below are checked by the script named in their section;
+scripts and caches are in \file{phase2/scripts/}. Exact algebra and
+finite numerical tests are distinguished. No legacy script was run or
+imported; only \file{good_twobody*} files were written. No renormalisation
+condition or quantum boundary prescription is selected.
+
+\Cc The controlling inputs are \file{audit_det_projected.tex},
+\file{audit_projected_measure.tex}, \file{audit_determinant_foundations.tex},
+\file{audit_smx.tex}, \file{audit_frame_dictionary.tex}, and
+\file{errata.tex}; the corresponding package claims are used only with
+their audit qualifications. In particular, neither the raw phonon integral
+nor its antisymmetrisation has been established as the full projected
+determinant. The Toda Krein equation is an additional microscopic input in
+a different model. It is not a consequence of scalar factorisation and is
+not imported into the good equation. This is a statement of the supplied
+audit record, not a new literature theorem.
+
+The fixed convention is
+\begin{gather*}
+ u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx},\qquad u=\phi_x=2(\log\tau)_{xx},\\
+ L=\tfrac12\phi_t^2-\tfrac12u^2+u^3-\tfrac12u_x^2,\qquad
+ \Omega=\int\dd\pi\wedge\dd\phi,\quad \pi=\phi_t.
+\end{gather*}
+All real quantum candidates in the numerical grid are restricted to
+\(0<\alpha_j<\pi/3\), \(A_{12}>0\), and unequal velocities.
+Angles are in radians. A displayed ordered phase refers to particle 1
+overtaking particle 2; exchanged labels denote the inverse oriented
+generator. Both \(++\), \(--\), \(+-\), and \(-+\) are saved.
+
+\section{Classical normalization and fixed-momentum conversion}
+\paragraph{Checked input \Cc\ (\ct, \kernels).}
+With \(k_j=\sin\alpha_j\), \(v_j=\epsilon_j\cos\alpha_j\),
+\[
+ M_j=2k_j,\quad \Pi_j=-2k_jv_j,\quad P_j=\frac23v_jk_j^3,
+ \quad E_j=\frac23k_j^3-\frac8{15}k_j^5,\quad
+ \ell_j=-\epsilon_j\cos3\alpha_j.
+\]
+The energy is the errata-corrected one. Define
+\begin{align}
+ p_{ja}&=\tfrac12(k_j+v_j/\sqrt3),&
+ p_{jb}&=\tfrac12(v_j/\sqrt3-k_j),\\
+ A_{12}&=\frac{(p_{1a}-p_{2a})(p_{1b}-p_{2b})}
+ {(p_{1a}-p_{2b})(p_{1b}-p_{2a})},&
+ T_{12}&=\frac23M_1M_2(v_1-v_2),\\
+ \delta_0&=\frac29(\ell_1-\ell_2)\log A_{12}+T_{12},&
+ \gamma_j&=-\frac{3\cos2\alpha_j}{\sin\alpha_j\sin3\alpha_j},\\
+ \Delta X'_1&=-\frac{\log A_{12}}{k_1}+\gamma_1M_2,&
+ \Delta X'_2&=\frac{\log A_{12}}{k_2}-\gamma_2M_1.
+ \label{eq:shifts}
+\end{align}
+Direct differentiation of the root-cross-ratio expression verifies
+\(\partial_{P_j}\delta_0=-\Delta X'_j\), without defining one side
+from the other. It also verifies antisymmetry of the derived responses
+under simultaneous exchange of angles and species.
+
+\paragraph{Conditional interface \Cc/\Cd\ (\ct, \grid).}
+First-order inversion of
+\(P_j^{\rm phys}=P_j(\alpha_j)+\hbar p_j(\alpha_j)+O(\hbar^2)\)
+gives the algebraic conversion
+\begin{equation}
+ \delta_{1,P}=\delta_{1,\alpha}+R[p],\qquad
+ R[p]=\sum_j\Delta X'_jp_j.
+ \label{eq:conversion}
+\end{equation}
+The physical identification of both \(p_j\) and
+\(\delta_{1,\alpha}\) is still \Cd. The scripts retain two audited
+trace representatives to expose this issue:
+\begin{align}
+ p_{\rm m}(\alpha,\epsilon)
+ &=-\frac{\epsilon}{2\pi}\sum_r c_r\sin\varphi_r
+                 \log|\tan(\varphi_r/2)|,\\
+ e_{\rm m}(\alpha)
+ &=\frac{-6\sin\alpha-2\sum_r c_r\sin\varphi_r\cos\varphi_r
+                    \log|\tan(\varphi_r/2)|}{4\pi},\\
+ L_1&=vp_{\rm m}-e_{\rm m},\qquad p_{\rm can}=\frac{\dd L_1}{\dd v},\\
+ (\varphi_1,\varphi_2,\varphi_3)
+ &=(\alpha+2\pi/3,\alpha-2\pi/3,\alpha),\quad(c_1,c_2,c_3)=(1,1,-2).
+ \label{eq:charges}
+\end{align}
+\Cc The mode momentum is checked by independent half-line integration.
+The canonical representative is the derivative of the same conditional
+trace, not a new physical momentum determination. Switching from
+\(p_{\rm m}\) to \(p_{\rm can}\) requires changing the label-frame
+phase by \(-R[p_{\rm can}-p_{\rm m}]\); otherwise it changes the answer.
+Agreement of the fixed-momentum one-body energy does not justify that
+inconsistent switch in a two-body phase.
+
+\section{Elastic and other bulk counterterm responses}
+\paragraph{Exact rescaling \Cc\ (\ct).}
+Consider the family, with positive \(a,b,d\) near one,
+\begin{equation}
+ H_{a,b,d,g}=\int\left(\frac a2\pi^2+\frac b2u^2-gu^3+
+                               \frac d2u_x^2\right)\dd x.
+\end{equation}
+The transformation
+\begin{equation}
+ x=L_xX,\quad t=L_tT,\quad \phi=F\Phi,\qquad
+ L_x=\sqrt{d/b},\quad L_t=\frac{\sqrt{d/a}}b,\quad F=\frac{\sqrt{bd}}g
+ \label{eq:scaling}
+\end{equation}
+maps its action to \(s\) times the fixed action and its momentum to
+\(p_*\) times the fixed momentum, where
+\begin{equation}
+ s=\frac{db^{3/2}}{\sqrt a\,g^2},\qquad
+ p_*=\frac{b^2\sqrt d}{\sqrt a\,g^2},\qquad
+ \delta_{a,b,d,g}(P_1,P_2)
+ =s\,\delta_0(P_1/p_*,P_2/p_*).
+ \label{eq:scaledphase}
+\end{equation}
+The last expression uses the continuously rescaled classical Darboux
+coordinates and fixed laboratory momentum units. Every transformed
+Lagrangian coefficient and the independently transformed canonical
+momentum are checked symbolically. The crucial momentum factor for an
+elastic change is \(b^2\), whereas the action factor is \(b^{3/2}\).
+
+\Cc Set
+\[
+ a=1+2\kappa\hbar,\quad b=1+2\lambda\hbar,\quad
+ g=1-\eta\hbar,\quad d=1+2\zeta\hbar.
+\]
+Thus \(\Delta H/\hbar=\int(\lambda u^2+\eta u^3+
+\zeta u_x^2+\kappa\pi^2)\dd x\). With
+\(D=\sum_jP_j\Delta X'_j\), expansion of the exact rescaling gives
+\begin{align}
+ K_\lambda&=3\delta_0+4D,& K_\eta&=2\delta_0+2D,\\
+ K_\zeta&=2\delta_0+D,& K_\kappa&=-\delta_0-D.
+ \label{eq:responses}
+\end{align}
+All four are checked by numerically solving the exact deformed momentum
+equations before taking a central difference. At 75 digits and step
+\(10^{-18}\), the largest discrepancy is \(1.87\times10^{-35}\),
+below the unchanged \(10^{-32}\) assertion. This is a finite-difference
+validation error, not an uncertainty in an unknown quantum determinant.
+
+\Cc In particular,
+\begin{equation}
+ \boxed{K_\lambda=\frac23(v_2-v_1)\log A_{12}
+       +3T_{12}+4(P_1\gamma_1M_2-P_2\gamma_2M_1).}
+ \label{eq:lambda}
+\end{equation}
+The response changes sign under complete label exchange; hence its
+symmetric part vanishes. At \((\alpha_1,\alpha_2)=(0.3,0.6)\),
+\[
+ K_\lambda^{++}=0.05008140486841890958\ldots,\qquad
+ K_\lambda^{+-}=-0.22517393868334175848\ldots.
+\]
+Consequently there is no general \(\lambda\)-independence of the
+antisymmetric canonical phase. The statement is for the specified
+classical-frame response, with other bulk and boundary couplings held
+fixed. It is not a claim that an uncomputed quantum boundary prescription
+is independent of all possible scheme changes.
+
+\paragraph{Independent connected insertion \Cc\ (\insertcheck).}
+The bilinear equation implies, for \(f=\log\tau\),
+\(f_{tt}-f_{xx}+f_{xxxx}+6f_{xx}^2=0\).
+Let \(F(t)\) be the spatial integral of
+\(\log\tau_{12}-\log\tau_1-\log\tau_2\), with the time-independent
+right plateau \(\log A_{12}\) subtracted. Then
+\begin{equation}
+ \int\dd t\dd x\,[u_{12}^2-u_1^2-u_2^2]
+ =-\frac23[F'(+\infty)-F'(-\infty)]
+ =\frac23(v_1-v_2)\log A_{12}.
+ \label{eq:insertion}
+\end{equation}
+Indeed \(F'(-\infty)=-v_2\log A_{12}\) and
+\(F'(+\infty)=-v_1\log A_{12}\). Independent spatial quadratures
+at \(t=\pm3000\) test these slopes in both channels. The minus sign
+from \(\Delta L=-\lambda\hbar u^2\) reproduces the logarithmic
+part of \eqref{eq:lambda}. The remaining finite part is the difference
+between the connected bulk insertion and the response of the canonical
+scattering generator, including its changing endpoint/Darboux terms.
+Dropping those terms would not implement the stipulated fixed canonical
+momenta and frame. Their quantum state interpretation is not resolved here.
+
+\paragraph{What ``other allowed counterterms'' means.}
+\Cc\ (\ct, \three) A finite tadpole \(\mu\hbar\int u\dd x\)
+has zero connected scattering insertion: the exact tau asymptotes give
+\(M_N=\sum_j2k_j\) at every time. Vacuum constants also cancel after
+vacuum normalization. For a uniform background \(U\), the large-momentum
+expansion of the one-loop energy integrand is checked directly from
+\begin{equation}
+ \tfrac12\sqrt{q^2+q^4-6Uq^2}
+ =\tfrac12|q|\sqrt{1+q^2}
+ -\frac{3U|q|}{2\sqrt{1+q^2}}
+ -\frac{9U^2|q|}{4(1+q^2)^{3/2}}+O(U^3).
+\end{equation}
+Only its term linear in \(U\) is UV divergent in one spatial dimension.
+For a one-loop background ring with \(n\) insertions the superficial
+anisotropic degree is \(3-2n\): each insertion contributes at most
+two internal spatial derivatives, each propagator degree \(-4\),
+and the frequency/momentum measure degree \(3\). Thus no further
+bulk divergent counterterm is forced at this order in the specified
+cubic theory. These are perturbative UV statements, not infrared or
+boundary renormalisation results.
+
+\Cd Symmetries alone do not restrict finite local modifications to
+\eqref{eq:responses}. Terms such as \(\hbar c_nu^n\) and higher
+derivative terms are possible changes of the theory; boundary operators
+are a separate issue. Their finite coefficients are not fixed by the
+given data. We parameterise their possible contribution as
+\(\sum_A c_AK_A\), with \(K_A\) \emph{uncomputed} outside the
+four-coupling family above, rather than assert an exhaustive finite
+classification. No new higher interaction is silently set to a preferred
+value. The response \(K_\lambda\) is ready to accept the parallel
+renormalisation package's coefficient without choosing that coefficient.
+
+\section{Continuum integrals and the symmetric/antisymmetric split}
+\paragraph{Definitions and independent checks \Cc\ (\kernels, \grid).}
+Use the Jost phase continuous on each open half-line and vanishing at
+infinity. With the roots and weights of \eqref{eq:charges},
+\begin{align}
+ \theta(q;\alpha,\epsilon)=-\sum_r c_r\bigg[&
+ \operatorname{sgn}(q)\arctan\frac{\sin\varphi_r}{|q|}\\[-1ex]
+ &+\epsilon\arctan\frac{\sin\varphi_r\cos\varphi_r}
+ {|q|\sqrt{1+q^2}+q^2+\sin^2\varphi_r}\bigg],\nonumber\\
+ \theta'(q)&=\sum_r\frac{c_r\sin\varphi_r}{q^2+\sin^2\varphi_r}
+ \left(1+\frac{\epsilon\operatorname{sgn}(q)\cos\varphi_r}{\sqrt{1+q^2}}\right).
+\end{align}
+The transmission obtained directly from the KP-root cross ratio agrees
+with \(e^{i\theta}\). Differentiation of the arctangent formula agrees
+with the independently written derivative. Define ordinary half-line
+integrals, with no delta function inserted at zero,
+\begin{equation}
+ I_{12}=\frac1{4\pi}\int_{\mathbb R\setminus\{0\}}
+       \theta_1\theta'_2\dd q,\qquad
+ J_{12}=\frac{I_{12}-I_{21}}2,\qquad
+ I_{12}^{\rm sym}=-\frac\pi4(\epsilon_1+\epsilon_2).
+ \label{eq:integrals}
+\end{equation}
+The last equality follows from the endpoints
+\(\theta(0^\pm)=\pi(\pm1+\epsilon)\). Independent quadrature for
+all four orientations gives maximum closed-form discrepancy
+\(5.94\times10^{-66}\) at 65 digits.
+
+\Cc For reproducibility the closed form uses
+\begin{align}
+ L(z)&=\int_0^z\frac{2\log|t|}{1-t^2}\dd t,\qquad
+ L(1)=-\pi^2/4,\quad L(-z)=-L(z),\\
+ I^{++}(\alpha_1,\alpha_2)
+ &=\frac1{2\pi}\sum_{rs}c_rc_sL\left(
+       \frac{\tan(\varphi_{1r}/2)}{\tan(\varphi_{2s}/2)}\right),\\
+ I^{+-}(\alpha_1,\alpha_2)
+ &=\frac1{2\pi}\sum_{rs}c_rc_sL\left(
+       \tan(\varphi_{1r}/2)\tan(\varphi_{2s}/2)\right),\\
+ I^{\epsilon_1\epsilon_2}
+ &=\tfrac12(\epsilon_1+\epsilon_2)I^{++}
+   +\tfrac12(\epsilon_1-\epsilon_2)I^{+-}.
+\end{align}
+These are real half-line formulas, not a prescription for holomorphic
+crossing beyond their stated domain. In particular \(I\) and \(J\)
+are alternative representatives sharing a local gradient, not additive
+pieces of the phase. The raw symmetric term is an endpoint artifact;
+it is not a physical symmetric scattering phase established by this work.
+
+\paragraph{Exactly what is independent of \(\lambda\).}
+\Cc At one-loop order the displayed undeformed-background integrals
+\(I,J\), their endpoint symmetric term, and the reference-trace
+conversion \(R[p_{\rm m}]\) are \(\lambda\)-independent. An
+order-\(\hbar\) deformation of their arguments affects the scattering
+phase only at the next loop order. All explicitly computed local
+\(\lambda\) dependence at this order is \(\lambda K_\lambda\)
+in the rescaled classical frame. The antisymmetric \(J\) alone is
+independent of \(\lambda\); the antisymmetric canonical response is
+not. Nothing here proves scheme independence of the unknown boundary
+contribution under more general changes of the theory.
+
+\Cd A useful but conditional parametrisation is
+\begin{equation}
+ \delta_{1,P}=J_{12}+R[p_{\rm m}]+\lambda K_\lambda
+ +\eta K_\eta+\zeta K_\zeta+\kappa K_\kappa+B_{12}
+ +\sum_Ac_AK_A.
+ \label{eq:unknown}
+\end{equation}
+Here \(B_{12}\) includes the missing boundary/collective determinant,
+state map, and absolute normalization relative to the displayed trace
+representative. It is not known to be a constant. If scalar exchange is
+identified with inverse physical scattering, a locally continuous unitary
+representative has symmetric part zero, and \(B_{21}=-B_{12}\) modulo
+the phase branch. This algebraic parametrisation does not prove that the
+quantum theory is elastic or factorised.
+
+\begin{center}\small
+\begin{tabular}{@{}ccrrrr@{}}\toprule
+Channel & $(\alpha_1,\alpha_2)$ & $J$ & $R[p_{\rm m}]$ & $R[p_{\rm can}]$ & $K_\lambda$\\\midrule
+$++$ & $(.2,.4)$ & .412598425 & 2.479485715 & 3.699829027 & .064969423\\
+$++$ & $(.3,.6)$ & .392706352 & 1.968010544 & 3.666344128 & .050081405\\
+$++$ & $(.4,.6)$ & .227909672 & .811937649 & 2.079893527 & .057940143\\
+$+-$ & $(.2,.4)$ & .217194901 & 4.825323137 & 6.747182050 & .061623021\\
+$+-$ & $(.3,.6)$ & .408542241 & 4.915210065 & 8.209382585 & -.225173939\\
+$+-$ & $(.4,.6)$ & .478642156 & 5.241126358 & 9.896087545 & -1.073366855\\\bottomrule
+\end{tabular}
+\end{center}
+\Cc\ (\grid) These are ingredients, not two competing physical
+answers obtained by selecting a preferred momentum convention.
+For example \(J+R[p_{\rm m}]=2.360716896635\ldots\) at
+\((.3,.6,++)\); its difference from the full phase has no numerical
+error bound because \(B_{12}\) is uncomputed.
+
+\section{Three-soliton test: what factorisation does and does not fix}
+\paragraph{Exact mode construction \Cc\ (\three).}
+For \(E_j=\exp[k_j(x-v_jt-x_{0j})]\), define
+\begin{equation}
+ \tau_N(E)=\sum_{\mu\in\{0,1\}^N}
+        \prod_j E_j^{\mu_j}\prod_{i<j}A_{ij}^{\mu_i\mu_j}.
+\end{equation}
+Adding a fourth infinitesimal wave \(K=iq\),
+\(W=i|q|\sqrt{1+q^2}\) to \(N=3\) gives
+\begin{equation}
+ \delta\phi=2\partial_x\left[
+     e^{iqx-i\omega t}\frac{\tau_3(T_1E_1,T_2E_2,T_3E_3)}
+                                  {\tau_3(E_1,E_2,E_3)}\right],
+ \qquad T_j=A(j,\mathrm{ph}),\quad \omega=|q|\sqrt{1+q^2}.
+ \label{eq:threephonon}
+\end{equation}
+The coefficient test expands the full four-wave bilinear equation using
+\(\mathcal P(K,W)=W^2-K^2+K^4\) and
+\(A_{ij}=-\mathcal P(K_i-K_j,W_i-W_j)/
+\mathcal P(K_i+K_j,W_i+W_j)\). It checks all 81 exponential
+coefficients exactly for a rational three-soliton configuration and one
+imaginary phonon. Independent 75-digit checks cover three right-movers
+and a mixed-direction triple, with both signs of phonon momentum.
+This is explicit coefficient evidence, not a spectral completeness proof.
+
+\Cc Exact polynomial clustering gives
+\begin{align}
+ \tau_3|_{E_3=0}&=\tau_2(E_1,E_2),\\
+ \lim_{E_3\to\infty}\frac{\tau_3}{E_3}
+ &=\tau_2(A_{13}E_1,A_{23}E_2),\\
+ \lim_{E_3\to\infty}
+ \frac{\tau_3(T_jE_j)}{\tau_3(E_j)}
+ &=T_3\frac{\tau_2(T_1A_{13}E_1,T_2A_{23}E_2)}
+                 {\tau_2(A_{13}E_1,A_{23}E_2)}.
+\end{align}
+Thus the continuum transmission is \(\prod_jT_j\). In a sequence of
+separated binary collisions, the \emph{formal continuum representative}
+is the sum of the oriented \(J_{ij}\). This is what the script records;
+the full three-body determinant entry is \texttt{null}.
+
+\paragraph{A precise insufficiency result \Cc\ (\three).}
+Suppose a scalar three-body amplitude has the stipulated cluster form
+\(S_3=S_{12}S_{13}S_{23}\). For any real antisymmetric pair function
+\(F_{ij}\), the replacements
+\begin{equation}
+ S_{ij}\longmapsto e^{iF_{ij}}S_{ij},\qquad
+ S_3\longmapsto e^{i(F_{12}+F_{13}+F_{23})}S_3
+ \label{eq:pairfreedom}
+\end{equation}
+preserve that factorisation and scalar collision-order consistency.
+An explicit example is
+\begin{equation}
+ F_{12}=c(P_1M_2-P_2M_1),\qquad c\in\mathbb R.
+ \label{eq:F}
+\end{equation}
+It is nonzero, antisymmetric, vanishes on a zero-charge leg, and has
+rank at most two as a kernel of one-body charges. Its \(3\times3\)
+minors vanish identically. It also changes sign under the formal map
+\((P,M)\mapsto(-P,-M)\) on either leg. This last algebraic property
+is not an asserted physical crossing axiom for the good theory.
+
+The example does not evade the Toda audit: that audit additionally has
+a microscopic Fredholm/Krein equation, and its excluded example has
+infinite rank. Neither the finite-rank condition nor scalar clustering
+by itself eliminates \eqref{eq:F}. A fully determined Boussinesq
+determinant gradient would eliminate additions that change that gradient;
+the point is that such a gradient has not been established on the
+physical constrained domain.
+
+\Cd Thus computing the exact three-soliton \emph{phonon modes} and
+imposing clustering does not compute its one-loop \emph{phase}, and
+does not fix \(B_{12}\) or the residual \(\vartheta\).
+This result concerns sufficiency of the proposed test, not a proof of
+arbitrary physical freedom. Spatial removal of a spectator at finite
+observation time must also be distinguished from an infinite-time
+scattering experiment in which that spectator eventually collides.
+
+\paragraph{The boundary obstruction persists \Cc/\Cd\ (\three).}
+For the centered potential \(\Phi=k\tanh(kx/2)\),
+\begin{equation}
+ \Phi_\alpha=\cos\alpha\,[\tanh(kx/2)+(kx/2)\operatorname{sech}^2(kx/2)],
+ \qquad \|\Phi_\alpha\|_{[-R,R]}^2=2R\cos^2\alpha+O(1).
+\end{equation}
+The tail slope is rechecked by independent quadrature. The controlling
+projector audit gives localized data whose collective projection acquires
+a nonzero endpoint tail. Those collective and radiation directions cannot
+be integrated independently with both held in a fixed-endpoint domain.
+Even at finite dimension,
+\(\det\left(\begin{smallmatrix}A&B\\B^T&C\end{smallmatrix}\right)
+=\det C\det(A-BC^{-1}B^T)\); knowledge of the radiation block does not
+compute the Schur factor. The scripts check this identity in a nontrivial
+scalar-block example. \Cd A common domain, propagated constraints,
+completeness, the Schur factor, and temporal state normalization remain
+necessary. No full determinant or relative Maslov index is claimed here.
+
+\section{Approach to resonance and cached data}
+\paragraph{Regular head-on Y-boundary \Cc\ (\grid).}
+For \(\epsilon_1=+1,\epsilon_2=-1\), fix
+\(0<\alpha_1<\pi/3\) and put
+\(\alpha_2=\pi/3-\alpha_1-h\), \(h\downarrow0\).
+The root denominator vanishes and \(A_{12}\to+\infty\).
+The integrals have a finite limit, checked by direct endpoint quadrature.
+For either specified momentum function \(p\),
+\begin{align}
+ J+R[p]&=C_p\log A_{12}+B_p+o(1),\\
+ C_p&=\left[-p_1/k_1+p_2/k_2\right]_{h=0},\qquad
+ B_p=\left[J+\gamma_1M_2p_1-\gamma_2M_1p_2\right]_{h=0},\\
+ K_\lambda&=C_\lambda\log A_{12}+B_\lambda+o(1),\qquad
+ C_\lambda=\left[\tfrac23(v_2-v_1)\right]_{h=0},\\
+ B_\lambda&=\left[3T_{12}
+       +4(P_1\gamma_1M_2-P_2\gamma_2M_1)\right]_{h=0}.
+ \label{eq:resonance}
+\end{align}
+At \(\alpha_1=0.4\), the checked numbers are
+\begin{align*}
+ J_*&=0.516497248493590315982850593057\ldots,\\
+ C_{p_{\rm m}}&=1.27122424749067227378534580175\ldots,\\
+ C_\lambda&=-1.14589177876216227606321733046\ldots.
+\end{align*}
+Therefore the logarithmic coefficient of the conditional mode
+representative is \(C_{p_{\rm m}}+\lambda C_\lambda\) when the
+other computed bulk changes are absent. \Cd The unknown boundary
+phase can change the full asymptotics; this is not a prediction of a
+physical resonant amplitude or fusion rule. The expansion is taken at
+fixed regular angles before the resonance limit and is not asserted
+uniform when \(\hbar|\log h|\) becomes order one.
+
+\Cc\ (\grid) The genuine overtaking Y-line is
+\(\alpha_1+\alpha_2=2\pi/3\). It has no interior point with both
+legs on the light branch. We save classical responses approaching this
+line with one heavy leg, with quantum phases explicitly absent.
+The light overtaking \(A\to0\) limit on the diagonal is instead an
+equal-velocity threshold; the sampled \(K_\lambda\) tends to zero,
+not to a nonzero logarithmic divergence. The historical
+\(|\alpha_1-\alpha_2|=\pi/3\) overtaking resonance is false:
+\(A(0.2,0.2+\pi/3)=0.355465479849\ldots\), finite and nonzero.
+The grid does not analytically continue a real one-loop phase through
+an unstable heavy branch or a singular \(A<0\) tau function.
+
+\paragraph{Files and error budget \Cc\ (all five scripts).}
+\file{good_twobody_grid.json} covers the Cartesian angles
+\(0.1,0.2,\ldots,1.0\), excluding equal velocities and nonpositive
+head-on \(A\), in all four orientations: 270 rows.
+Each row is recalculated at 55 and 75 digits; the largest difference
+in its tested numerical fields is \(8.31\times10^{-55}\).
+The independent quadrature tolerance is \(10^{-55}\), the fixed-momentum
+finite-difference tolerance \(10^{-32}\), and tabulated decimals are
+rounded. These are deterministic numerical consistency estimates, not
+rigorous interval enclosures. They do not cover the unknown physical
+determinant, whose uncertainty is unbounded by this calculation.
+
+\file{good_twobody_resonance.json} contains three head-on approaches
+at \(\alpha_1=0.2,0.4,0.5\) with
+\(h=10^{-2},10^{-4},\ldots,10^{-12}\), limiting coefficients and
+subtracted remainders, plus the overtaking threshold and heavy Y-line
+diagnostics. At the last head-on point the maximum discrepancy from the
+subtracted limits is below \(10^{-8}\); individual finite-distance
+errors are stored rather than identified with quadrature errors.
+The other four JSON files hold kernel, scaling, mode, and local-insertion
+verification results. Strings retain 55 significant digits; \texttt{null}
+means uncomputed, never zero.
+
+\clearpage
+\section{Claim/check summary and failures recorded}
+\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{8cm}>{\raggedright\arraybackslash}p{6.4cm}@{}}\toprule
+Claim and status & New checker\\\midrule\endhead
+\Cc Continuum $I,J$, all orientations; endpoint symmetric term & \kernels; \grid\\
+\Cc Fixed-momentum response to $u^2,u^3,u_x^2,\pi^2$; antisymmetry & \ct\\
+\Cc Connected $u^2$ insertion and canonical endpoint difference & \insertcheck\\
+\Cc Four-wave coefficient tests; exact three-soliton clustering & \three\\
+\Cc Scalar clustering is insufficient to fix the pair phase & \three, rank-two example\\
+\Cc Regular grid and qualified resonance asymptotics & \grid\\
+\Cd Complete projected determinant, absolute physical phase, quantum state map & Not computed; explicit unknown entries\\
+\Cd Other finite local interactions and quantum resonant channels & Not determined by the supplied theory and checks\\\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The first connected-insertion quadrature subtracted three nearly
+constant temporal log-tau derivatives numerically on an infinite interval.
+Its unchanged \(10^{-35}\) slope test failed at the overtaking point,
+\(t=-3000\), with error \(8.2718016287\times10^{-4}\).
+The plateau cancellation was performed algebraically before integration,
+and equality of the original and stabilized integrands was proved with
+SymPy. The same test and tolerance were retained. This failure is not
+hidden by the final success markers.
+\item An initial hand scaling assigned momentum the action factor
+\(b^{3/2}\). Direct transformation of
+\(P=-\int\pi\phi_x\dd x\) corrected it to \(b^2\) before
+the numerical checks. The exact transformed momentum and independent
+inverse-momentum tests are included to prevent recurrence.
+\item The intended inference ``factorised three-soliton phonons plus
+clustering fixes the quantum antisymmetric phase'' fails as a logical
+completion strategy: \eqref{eq:pairfreedom}--\eqref{eq:F} preserve the
+tested constraints. This is a negative result, not a failed numerical
+test repaired by deleting a constraint. The full three-body phase was
+not computed.
+\item The inherited identification of a continuum integral with the
+absolute determinant, the old false overtaking resonance line, and the
+uncorrected classical energy are not adopted. Their controlling audits
+and errata retain precedence. No check was weakened and no legacy
+failure was claimed to have been repaired by this package.
+\item The first PDF build had two overwide equation lines and one
+overwide command line. They were split; an orphan section heading and
+a split reading-scope paragraph were moved to fresh pages before the
+final two-pass build and rendered inspection. Scientific formulas were unchanged.
+\end{enumerate}
+
+\paragraph{Verification commands.}
+Run each of the five named scripts with the environment variable
+\texttt{PYTHONDONTWRITEBYTECODE=1} and command
+\texttt{python3 phase2/scripts/}\emph{script}.
+Each successful run ends with \texttt{ALL CHECKS PASSED} only after its
+assertions. Total runtime is comfortably below 30 minutes on this machine;
+the 270-row grid took about 107 seconds. Build this note by running
+\texttt{pdflatex -interaction=nonstopmode -halt-on-error good\_twobody.tex}
+twice in \file{phase2/}. No project-wide script loop is needed.
+
+\clearpage
+\section*{Reference verification and reading scope}
+The repository inputs listed in Section 1 were read, with particular
+attention to the audit verdicts. For the external reference below, the
+local PDF title page and relevant full-text passages on printed pages
+52--53, 62 and 65--66 were read; the entire paper was \emph{not} read
+for this package. No new arXiv identifier or DOI is asserted.
+\Ca Faddeev--Korepin's discussion explicitly concerns a Klein--Gordon
+fluctuation determinant and leaves a factor \(Z\) to supplementary
+requirements in its two-body formula. \Cd Applying its full determinant
+argument to the constrained fourth-order Boussinesq problem remains
+unproved here; the reference is not cited as that missing theorem.
+
+\begin{thebibliography}{1}
+\bibitem{FK} L.~D.~Faddeev and V.~E.~Korepin,
+\emph{Quantum theory of solitons}, Physics Reports \textbf{42}, no.~1
+(1978), 1--87. [Local PDF, title page and specified full-text passages read.]
+\end{thebibliography}
+\end{document}

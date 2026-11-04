@@ -1,0 +1,50 @@
+{
+  "precision": 75,
+  "exact_coefficient_count": 81,
+  "samples": [
+    {
+      "epsilon": [
+        1,
+        1,
+        1
+      ],
+      "q": "-0.7",
+      "max_relative_coefficient_residual": "2.763573937630222280123632596096127862757120116619610043e-76",
+      "formal_pair_sum_J": "1.479923123144921745650185972676604345831845734482604296"
+    },
+    {
+      "epsilon": [
+        1,
+        1,
+        1
+      ],
+      "q": "0.37",
+      "max_relative_coefficient_residual": "2.272806226519810642445152105930734290765347212200867022e-76",
+      "formal_pair_sum_J": "1.479923123144921745650185972676604345831845734482604296"
+    },
+    {
+      "epsilon": [
+        1,
+        1,
+        -1
+      ],
+      "q": "-0.7",
+      "max_relative_coefficient_residual": "6.258743133931403501533018212245070812443740677675811344e-75",
+      "formal_pair_sum_J": "1.266797964816051448174997345520635997745946773309354295"
+    },
+    {
+      "epsilon": [
+        1,
+        1,
+        -1
+      ],
+      "q": "0.37",
+      "max_relative_coefficient_residual": "1.173514337612138156537440914795950777333201377064214627e-75",
+      "formal_pair_sum_J": "1.266797964816051448174997345520635997745946773309354295"
+    }
+  ],
+  "rank_two_ambiguity_example": "-0.03998105952873599202215311320447297961528770970946252757",
+  "tail_slope_error": "5.083810216348139025127077296645635851830004541648887832e-34",
+  "conclusion": "factorised Jost solutions and scalar clustering do not fix a quantum pair phase",
+  "full_threebody_determinant": null
+}
