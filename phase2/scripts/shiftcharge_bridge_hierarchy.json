@@ -1,0 +1,42 @@
+{
+  "scope": "Exact continuum classical charge and finite-regulator Weyl-degree diagnostic",
+  "density": "-3*p0**2*u0 + p1**2 - s*u0**3 + s*u1**2 + 3*u0**4 - 9*u0*u1**2 + u2**2",
+  "coefficient_solution": {
+    "a": "-3",
+    "b": "3",
+    "c": "-9",
+    "d": "1",
+    "e": "h",
+    "f": "-2*h - 1",
+    "g": "h + 1"
+  },
+  "continuum_euler_residuals": [
+    0,
+    0
+  ],
+  "soliton_charge": "4*k**5*(20*k**2 - 21)/105",
+  "soliton_quadrature": [
+    {
+      "k": "0.23",
+      "charge": "-0.0004889659127847619047619047619047619047619047619047619047619047619047619",
+      "error": "8.843436600416711296395624307507609160822784373182752138264272353452638e-75"
+    },
+    {
+      "k": "0.51",
+      "charge": "-0.02076460539161142857142857142857142857142857142857142857142857142857143",
+      "error": "2.829899712133347614846599778402434931463290999418480684244567153104844e-73"
+    },
+    {
+      "k": "0.79",
+      "charge": "-0.09984901488259809523809523809523809523809523809523809523809523809523809",
+      "error": "0.0"
+    }
+  ],
+  "third_moyal_contraction": 0,
+  "naive_three_site_classical_bracket_at_point": "-75/8",
+  "failures_recorded": [
+    "Naive periodic central-difference lattice does not preserve the extra charge; its nonzero bracket is an explicitly checked rejected regulator."
+  ],
+  "continuum_quantum_operator_constructed": false,
+  "runtime_seconds": 2.557774248998612
+}

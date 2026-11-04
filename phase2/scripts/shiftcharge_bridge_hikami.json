@@ -1,0 +1,83 @@
+{
+  "scope": "Formal Poisson and mode-algebra contraction, not a physical Hilbert-space construction",
+  "checks": [
+    "Second GD bracket independently derived from Miura Frechet operator",
+    "Formal skew-adjointness of every differential-operator block",
+    "Real good PDE and canonical-energy dictionaries",
+    "Large-V Poisson-pencil contraction to canonical first bracket",
+    "Hamiltonian generates the target flow under contracted bracket",
+    "Fixed-vacuum determinant and Fourier inertia obstructions",
+    "Real constant Miura fields obey the discriminant bound violated by large V",
+    "Exact W3 mode central term gives physical canonical hbar scaling",
+    "Highest-weight Gram matrix becomes indefinite",
+    "Quantum derivative coefficient and A2 root-field normalization",
+    "Multiplicative Baxter arguments have finite additive spectral-shift limits",
+    "Common vacuum cubic root z=-ell/(12*sqrt(3)) gives Baxter step Delta ell=-9i*hbar/2",
+    "80-digit finite-parameter Gram and g-normalization checks"
+  ],
+  "formulas": {
+    "U": "1/4-3*u/2",
+    "V": "sqrt(3)*pi/4",
+    "tau": "sqrt(3)*t",
+    "kappa": "sqrt(3)/(8*Lambda)",
+    "c": "-128*sqrt(3)*pi*Lambda/hbar",
+    "gamma": "pi*g",
+    "g_relation": "c=50-24*(g+1/g)",
+    "determinant_ratio": "4*(D - 1)*(D + 1)*(2*D - 1)**2*(2*D + 1)**2/81",
+    "constant_Miura_discriminant": "4*U^3-27*V^2=4*a^2*(a^2-3*b^2)^2>=0",
+    "VV_highest_weight_commutator": "4*n*(20*U0**2*c + 25*U0*c*n**2 + 110*U0*n**2 - 80*U0 + 5*c*n**4 + 22*n**4 + 8)/(5*c**2)",
+    "physical_density": "(8/27)*(U^3+9*V^2+3*U_x^2/4-3*U/16+1/32)",
+    "Baxter_argument_limit": "t=Lambda+z, t*q^a-Lambda -> z+i*a*sqrt(3)*hbar/16",
+    "soliton_spectral_dictionary": "z=-ell/(12*sqrt(3))",
+    "Baxter_ell_step": "-9*i*hbar/2"
+  },
+  "failures_recorded": [
+    "Direct same-background identification fails because UU brackets disagree",
+    "Real invertible translation-invariant same-vacuum linear map fails Fourier inertia",
+    "Inherited highest-weight vacuum fails positive-norm Gram test after large-V contraction",
+    "Large V at fixed U leaves the real constant Miura-background domain"
+  ],
+  "implementation_failures": [],
+  "physical_S_matrix": null,
+  "runtime_seconds": 2.3249580999981845,
+  "numerics": [
+    {
+      "Lambda": 10,
+      "central_charge": "-6964.98955865939654628126050934587801197081439267612381018836",
+      "g": "0.00342128533819619191138089589293836650816990774064277319394216",
+      "gamma": "0.0107482848843116277406917417525234389072106848007266925693919",
+      "gram_eigenvalues": [
+        "-0.108461299443915821019456329916655156321976370561395483606734",
+        "0.0984116515365502412865723093549393013984658932913737479511433"
+      ]
+    },
+    {
+      "Lambda": 100,
+      "central_charge": "-69649.8955865939654628126050934587801197081439267612381018836",
+      "g": "0.000344333411744566634011334846734375408826171514435583636500732",
+      "gamma": "0.00108175531672223996810266823178958135600585745350165020256837",
+      "gram_eigenvalues": [
+        "-0.103877301280900675817139965449354401435484885773740206091582",
+        "0.102872280832775642438581605207442527396457193806688468914028"
+      ]
+    },
+    {
+      "Lambda": 1000,
+      "central_charge": "-696498.955865939654628126050934587801197081439267612381018836",
+      "g": "0.0000344555825206227418374803075685595596290617068766982567484994",
+      "gamma": "0.000108245404921945296339298790244539593927307471296625888344403",
+      "gram_eigenvalues": [
+        "-0.103424425423853692111718859424483546713425873911890393212095",
+        "0.103323922822467304019810323818434956424056338272784723858219"
+      ]
+    }
+  ],
+  "Baxter_argument_errors_at_Lambda_1e20": [
+    "2.107231376205515870197660453350805758775e-21",
+    "6.825793962815276086473628113822436060146e-22",
+    "3.403453068479708856109193649331543926517e-22",
+    "3.403453068479708856109193649331543926517e-22",
+    "6.825793962815276086473628113822436060146e-22",
+    "2.107231376205515870197660453350805758775e-21"
+  ]
+}

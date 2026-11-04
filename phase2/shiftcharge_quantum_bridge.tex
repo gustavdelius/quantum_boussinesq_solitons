@@ -1,0 +1,991 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,geometry,hyperref}
+\geometry{margin=23mm}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\A}{\textbf{(a)}\ }
+\newcommand{\B}{\textbf{(b)}\ }
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\hk}{\file{shiftcharge_bridge_hikami.py}}
+\newcommand{\df}{\file{shiftcharge_bridge_deformation.py}}
+\newcommand{\scs}{\file{shiftcharge_bridge_sector.py}}
+\newcommand{\hy}{\file{shiftcharge_bridge_hierarchy.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{Toward exact canonical good-Boussinesq scattering\\
+Poisson contraction, soliton sectors and current deformations}
+\author{Quantum Boussinesq solitons project\\PI Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C A coordinated investigation tests the proposed quantum-model route beyond
+the equation-level dictionary. The standard $W_3$ construction quantises the
+second Gelfand--Dickey bracket, whereas the specified potential theory uses
+the first. A singular large-spin-background contraction recovers the canonical
+bracket with an explicit $\hbar$ normalization. Its multiplicative Baxter
+arguments acquire finite additive shifts whose spacing in the soliton variable
+$\ell$ is $9\hbar/2$. The inherited highest-weight annihilation conditions
+are incompatible with a positive norm and the required real target fields.
+The normalization and existence of the limiting Baxter operators remain open.
+
+\C Independently, an anchored current deformation gives an exact classical
+Hamiltonian family. It preserves isolated-soliton energy and momentum and
+has first-order two-body action response $-g(P_1M_2-P_2M_1)$.
+Its leading local density
+identifies a dynamical matching parameter that one-body energy and vacuum
+elasticity miss. A Gaussian infrared calculation shows that changing soliton
+charges requires a nontrivial state dictionary even with arbitrarily cheap
+finite-volume compensation.
+
+\D The exact physical S-matrix and the seed phase coefficient remain
+undetermined. The constructive outcome is an explicit candidate algebraic
+contraction, a relative scattering deformation, and quantitative tests for the
+physical representation and soliton states needed to complete the construction.
+\end{abstract}
+
+\section{Scope and research verdict}
+Claims use the project's meanings of (a), literature result, (b), literature
+heuristic, (c), project derivation or computation, and (d), unestablished
+identification or research proposal. Conditional algebraic and Gaussian
+results retain their stated scope. Every new displayed (c) formula is checked
+by the script named in its subsection. The four scripts live in
+\file{phase2/scripts/} and write only their adjacent JSON caches.
+
+\C The work followed the proposed canonical real-form and one-soliton
+dictionary test, an independent conserved-current deformation calculation,
+and an independent sector audit. The two latter investigations cross-reviewed
+the contraction, normalization and domain qualifications. A further
+first-bracket conservation-law diagnostic was derived separately.
+Existing packages, controlling audits and the previous
+\file{shiftcharge_oneloop.tex} were used as context. The optional
+\file{audit_good_renorm.tex} and \file{audit_defect_bootstrap.tex} were absent
+from the repository inventory. No old script was run or imported.
+
+\C The fixed target is
+\begin{equation}
+ H_0=\int\left[\frac{\pi^2+u^2+u_x^2}{2}-u^3\right]\dd x,\qquad
+ u=\phi_x,\quad \{\phi(x),\pi(y)\}=\delta(x-y).
+ \label{target}
+\end{equation}
+It gives $u_t=\pi_x$ and
+$\pi_t=(u-3u^2-u_{xx})_x$. Its charges are
+$M=\int u\,\dd x$, $\Pi=\int\pi\,\dd x$, and
+$P=-\int\pi u\,\dd x$. The finite quadratic subtraction
+$\lambda\hbar\int u^2\dd x$ remains a parameter.
+\D Transferring source normal ordering to a physical target representation
+is required before any value of $\lambda$ can be inferred.
+
+\begin{center}
+\small
+\begin{tabular}{@{}L{4.0cm}L{5.7cm}L{5.3cm}@{}}
+\toprule
+Question & Result established & Remaining input\\
+\midrule
+Direct $W_3$ identification & \C Brackets disagree at the target vacuum &
+\D A change of representation or a singular limit\\
+Canonical contraction & \C Correct first bracket, energy and $\hbar$ scale &
+\D Positive representation and operator convergence\\
+Baxter equation & \C Finite argument shifts and the $9\hbar/2$ unit &
+\D Vacuum-normalized functions and soliton eigenstates\\
+$P\wedge M$ freedom & \C Explicit classical current-deformation direction &
+\D Absolute seed scattering and quantum generator\\
+Soliton state space & \C Infrared norm and finite-volume compensation tests &
+\D Interacting dressing and scattering limits\\
+Exact physical S-matrix & \D Undetermined &
+\D The preceding physical inputs and channel closure\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The canonical dictionary and its obstruction}
+\subsection{Source bracket and independent reconstruction}
+\A Bazhanov--Hibberd--Khoroshkin (BHK) explicitly identify their classical
+algebra as the second Gelfand--Dickey structure. Their scalar Lax operator
+is $D^3-UD+V-U_x/2-\lambda_{\rm sp}^3$.
+Hikami supplies a lattice chiral algebra and a third-order Baxter relation.
+The relevant full-text passages were read as recorded in
+Section~\ref{sources}. \cite{BHK,Hikami}
+
+\C (\hk) With coefficients placed to the left of $D=\partial_x$, the
+second bracket is independently reconstructed as
+\begin{align}
+ (J_2)_{UU}&=2D^3-2UD-U_x,&
+ (J_2)_{UV}&=-3VD-2V_x, \nonumber\\
+ (J_2)_{VU}&=-3VD-V_x.&& \nonumber
+\end{align}
+\begin{equation}
+ (J_2)_{VV}=-\frac{D^5}{6}+\frac{5U}{6}D^3+\frac{5U_x}{4}D^2
+ +\left(\frac{3U_{xx}}4-\frac{2U^2}3\right)D
+ +\frac{U_{xxx}}6-\frac{2UU_x}3 .
+ \label{j2}
+\end{equation}
+The calculation starts from the source Miura fields
+\begin{equation}
+ U=a^2+b^2+2a_x,\qquad
+ \sqrt3V=\frac23b^3-2a^2b-3ab_x-a_xb-b_{xx},
+ \label{miura}
+\end{equation}
+and the current bracket $-\tfrac12D$ in each component. Composing their
+Fr\'echet derivatives with this bracket and the formal adjoint reproduces
+all four blocks of \eqref{j2}. Formal skew-adjointness is checked separately.
+
+\C The exact real PDE dictionary is
+\begin{equation}
+ U=\frac14-\frac32u,\qquad V=\frac{\sqrt3}{4}\pi,\qquad
+ \tau=\sqrt3\,t.
+ \label{dictionary}
+\end{equation}
+The source flow $U_\tau=-2V_x$,
+$V_\tau=U_{xxx}/6-2UU_x/3$ then gives \eqref{target}.
+However the target canonical bracket in these variables is
+\begin{equation}
+ J_1=-\frac{3\sqrt3}{8}
+ \begin{pmatrix}0&D\\D&0\end{pmatrix}.
+ \label{j1}
+\end{equation}
+Its $UU$ bracket vanishes, whereas \eqref{j2} has a third derivative and
+field-dependent terms. Scalar rescaling of time or $\hbar$ cannot identify
+the displayed observable maps.
+
+\subsection{How far the obstruction extends}
+\C (\hk) At $U=1/4,V=0$,
+\begin{equation}
+ J_2=\operatorname{diag}\left(
+ 2D(D^2-\tfrac14),-\frac{D(D^2-1)(D^2-\tfrac14)}6\right),
+ \qquad
+ \frac{\det J_2}{\det J_1}
+ =\frac{64}{81}(D^2-\tfrac14)^2(D^2-1).
+ \label{det-ratio}
+\end{equation}
+The nonconstant determinant ratio excludes a finite-order differential
+linear change with a finite-order differential inverse at this vacuum.
+More generally, for constant backgrounds the Hermitian Fourier symbol is
+\begin{equation}
+ iJ_2(iq)=q
+ \begin{pmatrix}
+ 2(q^2+U)&3V\\
+ 3V&(q^2+U)(q^2+4U)/6
+ \end{pmatrix},
+ \label{symbol}
+\end{equation}
+with determinant
+\begin{equation}
+ q^2\left[\frac{(q^2+U)^2(q^2+4U)}3-9V^2\right].
+ \label{symbol-det}
+\end{equation}
+At the stated vacuum and $q>0$, $iJ_2(iq)$ is positive definite and
+$iJ_1(iq)$ has one eigenvalue of each sign. Inertia under Hermitian congruence
+excludes a real invertible translation-invariant linear Fourier map at this
+same vacuum, including a nonlocal one.
+\D Changes of vacuum, complex reality conditions and singular limits
+require separate tests.
+
+\section{A singular contraction with the correct quantum scale}
+\subsection{Poisson pencil and Hamiltonian}
+\C (\hk) A concrete escape from the fixed-vacuum obstruction is
+\begin{equation}
+ V_{\rm source}=V+\Lambda,\qquad
+ \kappa_\Lambda=\frac{\sqrt3}{8\Lambda},\qquad
+ \lim_{\Lambda\to+\infty}\kappa_\Lambda J_2(U,V+\Lambda)=J_1 .
+ \label{contraction}
+\end{equation}
+The limit holds coefficient by coefficient for fields of finite size.
+The shifted bracket has a large off-diagonal first-derivative term,
+which survives this rescaling.
+
+\C Let $F(U,V)=U^3+9V^2+3U_x^2/4$. The physical Hamiltonian has the exact
+density representation
+\begin{equation}
+ H_0=\frac8{27}\int\left[F(U,V)-\frac3{16}U+\frac1{32}\right]\dd x.
+ \label{energy-map}
+\end{equation}
+Direct substitution of \eqref{dictionary} verifies this identity, and
+$J_1$ acting on its functional gradient gives physical $t$ evolution.
+The required large-background subtraction obeys
+\begin{equation}
+ F(U,V+\Lambda)-18\Lambda(V+\Lambda)+9\Lambda^2=F(U,V).
+ \label{subtraction}
+\end{equation}
+Thus a shifted higher integral with lower-integral subtractions supplies a
+candidate Hamiltonian. The source's Hamiltonian time and its normalized
+circle integrals must be converted explicitly.
+
+\A BHK's spin-six quantum density contains
+$:T^3:+9:W^2:+(c_{\rm V}-10):T_x^2:/32$.
+\C With $T=(c_{\rm V}/24)U$ and
+$W=i(-c_{\rm V}/24)^{3/2}(V+\Lambda)$, division by
+$(c_{\rm V}/24)^3$ gives the derivative coefficient
+\begin{equation}
+ \frac34\left(1-\frac{10}{c_{\rm V}}\right).
+ \label{quantum-density}
+\end{equation}
+\D The source regularized product is part of this algebraic prescription.
+Its limit in a new physical representation, including the finite subtractions,
+has yet to be constructed.
+
+\subsection{Exact mode normalization and failure of the inherited vacuum}
+\C (\hk) On a circle of circumference $2\pi$, use the source
+$e^{-inx}$ convention and define
+\begin{equation}
+ U_n=\frac{24}{c_{\rm V}}\left(L_n-\frac{c_{\rm V}}{24}\delta_{n0}\right),
+ \qquad
+ V_n=\frac{W_n}{i(-c_{\rm V}/24)^{3/2}}-\Lambda\delta_{n0}.
+ \label{modes}
+\end{equation}
+The exact mixed source commutator gives
+\begin{equation}
+ [U_n,V_m]=\frac{24}{c_{\rm V}}(2n-m)
+ \left(V_{n+m}+\Lambda\delta_{n+m,0}\right).
+ \label{mixed}
+\end{equation}
+Choosing
+\begin{equation}
+ c_{\rm V}(\Lambda)=-\frac{128\sqrt3\pi\Lambda}{\hbar}
+ \label{central-scaling}
+\end{equation}
+makes its central term precisely
+$-3\sqrt3\hbar n\,\delta_{n+m,0}/(16\pi)$, the Fourier form of
+\eqref{j1}. The $UU$ and $VV$ commutators vanish in the coefficientwise
+contraction at fixed mode indices and finite rescaled fields.
+This establishes an algebraic $\hbar$ dictionary.
+
+\C The required physical involution is
+$U_n^\dagger=U_{-n}$, $V_n^\dagger=V_{-n}$. With the factor of $i$ in
+\eqref{modes}, this requires $L_n^\dagger=L_{-n}$ and
+$W_n^\dagger=-W_{-n}$ when $c_{\rm V}<0$.
+Retaining the source highest-weight annihilation conditions
+$U_n|0\rangle=V_n|0\rangle=0$ for $n>0$ then gives the limiting Gram matrix
+\begin{equation}
+ G_n\longrightarrow
+ \begin{pmatrix}0&K_n\\K_n&0\end{pmatrix},
+ \qquad K_n=-\frac{3\sqrt3\hbar n}{16\pi}.
+ \label{gram}
+\end{equation}
+Its eigenvalues have opposite signs. Already the exact $UU$ entry is
+$48n(n^2+U_0)/c_{\rm V}$, which is negative at $n=1,U_0=1/4$.
+At $\Lambda=1000,\hbar=1$ the two independently evaluated level-one
+eigenvalues are approximately $-0.1034244254$ and $0.1033239228$.
+This excludes the inherited annihilation conditions with the required
+target reality structure as a positive vacuum.
+
+\C For constant real Miura currents, \eqref{miura} also implies
+\begin{equation}
+ 4U^3-27V^2=4a^2(a^2-3b^2)^2\geq0.
+ \label{discriminant}
+\end{equation}
+At $U=1/4$ it requires $|V|\leq1/(12\sqrt3)$.
+The large-$\Lambda$ path therefore leaves the real constant-Miura sector.
+\D A different polarization or a different representation could still
+realise the contracted canonical algebra. The existing CFT eigenstates
+do not yet supply that construction.
+
+\subsection{Baxter arguments become additive}
+\A BHK identify the transfer-matrix spectral parameter as
+$t_{\rm sp}=\lambda_{\rm sp}^3$, and give the exact relation
+\begin{equation}
+ Q(t_{\rm sp}q^3)-T(t_{\rm sp}q^{1/2})Q(t_{\rm sp}q)
+ +\overline T(t_{\rm sp}q^{-1/2})Q(t_{\rm sp}q^{-1})
+ -Q(t_{\rm sp}q^{-3})=0.
+ \label{source-baxter}
+\end{equation}
+Here $q=e^{i\pi\mathfrak g}$ and
+$c_{\rm V}=50-24(\mathfrak g+\mathfrak g^{-1})$.
+The bar labels the second transfer operator.
+
+\C (\hk) Select the small positive $\mathfrak g_\Lambda$ root and
+put $t_{\rm sp}=\Lambda+z$. Equations \eqref{central-scaling} and
+\eqref{source-baxter} give
+\begin{equation}
+ \eta=\frac{\sqrt3\hbar}{16},\qquad
+ A_r(z)=q_\Lambda^r(\Lambda+z)-\Lambda
+ \longrightarrow z+ir\eta .
+ \label{arguments}
+\end{equation}
+For $Q_\Lambda(z)=Q(\Lambda+z)$, and analogously for the transfer
+operators, the finite-$\Lambda$ relation is exactly
+\begin{align}
+ Q_\Lambda(A_3(z))
+ &-T_\Lambda(A_{1/2}(z))Q_\Lambda(A_1(z))\nonumber\\
+ &+\overline T_\Lambda(A_{-1/2}(z))Q_\Lambda(A_{-1}(z))
+ -Q_\Lambda(A_{-3}(z))=0 .
+ \label{finite-baxter}
+\end{align}
+The argument limits are checked symbolically and with 80-digit arithmetic.
+At $\Lambda=10^{20},\hbar=1,z=0.70$ the largest of the six sampled
+argument errors is below $2.2\times10^{-21}$.
+
+\D If compatible normalizations and domains give limits of the operators
+or eigenfunctions, their prospective equation is
+\begin{equation}
+ Q(z+3i\eta)-T(z+i\eta/2)Q(z+i\eta)
+ +\overline T(z-i\eta/2)Q(z-i\eta)-Q(z-3i\eta)=0.
+ \label{limit-baxter}
+\end{equation}
+A $z$-dependent scalar renormalization of $Q_\Lambda$ changes the
+coefficients. Establishing these normalized limits is a dynamical step.
+
+\C The soliton roots
+\begin{equation}
+ \mu_\pm=\frac{-v/\sqrt3\pm k}{2},\qquad
+ k^2+v^2=1,\qquad \ell=v(4k^2-1)
+\end{equation}
+satisfy
+\begin{equation}
+ \mu_+^3-\frac{\mu_+}4
+ =\mu_-^3-\frac{\mu_-}4
+ =z=-\frac{\ell}{12\sqrt3}.
+ \label{spectral}
+\end{equation}
+Successive $Q$ arguments in \eqref{limit-baxter} are separated by
+$2i\eta$, giving
+\begin{equation}
+ \Delta\ell=-12\sqrt3(2i\eta)=-\frac92i\hbar .
+ \label{spacing}
+\end{equation}
+This agrees with the unit in the project's semiclassical string condition.
+\D Identification of actual roots, physical poles or fusion amplitudes
+requires the limiting eigenfunctions and their state interpretation.
+
+\section{A dynamical realization of the antisymmetric direction}
+\subsection{Currents and the anchored generator}
+\A Generalized current deformations produce relative scattering dressings
+under specified locality and scattering assumptions. The source treatments
+retain finite-volume boundary terms and allow momentum-dependent charge
+eigenvalues. Their full-text derivations motivate the following independent
+Boussinesq calculation. \cite{DDY,CD}
+
+\C (\df) The target conservation laws have densities and currents
+\begin{equation}
+ q_M=u,\quad j_M=-\pi,\qquad
+ q_P=p=-\pi u,\quad
+ j_P=\frac{\pi^2+u^2+u_x^2}{2}-2u^3-u u_{xx}.
+ \label{currents}
+\end{equation}
+Both continuity equations are checked directly from \eqref{target}.
+For a fixed left endpoint $\phi_-$, let $\chi=\phi-\phi_-$ and set
+\begin{equation}
+ X=-\int_{x<y}u(x)p(y)\,\dd x\dd y
+   =\int\chi\pi u\,\dd x .
+ \label{generator}
+\end{equation}
+The integrated current cross product is
+\begin{align}
+ {\cal D}&=q_Mj_P-j_Mq_P
+ =-\frac12\pi^2u+\frac12u^3-2u^4-u^2u_{xx}+\frac12u u_x^2,\nonumber\\
+ \int{\cal D}\,\dd x
+ &=\int{\cal D}_{\rm bulk}\,\dd x-[u^2u_x],\nonumber\\
+ {\cal D}_{\rm bulk}
+ &=-\frac12\pi^2u+\frac12u^3-2u^4+\frac52u u_x^2 .
+ \label{deformation-density}
+\end{align}
+For localized derivatives and vanishing currents the boundary term vanishes,
+and $\partial_gH_g=\{H_g,X\}$ at $g=0$ gives this perturbation.
+An independently checked local identity is
+\begin{equation}
+ \partial_t(\chi\pi u)=\partial_x(\chi j_P)-{\cal D}.
+ \label{local-generator}
+\end{equation}
+
+\subsection{The exact classical family}
+\C (\df) The anchored canonical flow is
+\begin{equation}
+ \partial_g\chi=\chi\chi_x,\qquad
+ \partial_g\pi=\chi\pi_x.
+\end{equation}
+Its characteristic solution is
+\begin{equation}
+ x=y-g\chi_0(y),\quad
+ \chi_g(x)=\chi_0(y),\quad
+ \pi_g(x)=\pi_0(y),\quad
+ u_g(x)=\frac{u_0(y)}{1-gu_0(y)} .
+ \label{reciprocal}
+\end{equation}
+The chart requires $1-gu_0(y)>0$.
+Writing $J=1-gu_0$, the variations at fixed $x$ obey
+$\delta\chi_g=\delta\chi_0/J$ and
+$\delta\pi_g=\delta\pi_0+g\pi'_0\delta\chi_0/J$.
+Since $\dd x=J\dd y$, their wedge product preserves the canonical
+symplectic form.
+
+\C Transforming the Hamiltonian gives the all-order classical expression
+\begin{equation}
+ \boxed{
+ H_g=\int\left[
+ \frac{\pi^2(1-gu)}2+\frac{u^2}{2(1-gu)}
+ -\frac{u^3}{(1-gu)^2}+\frac{u_x^2}{2(1-gu)^5}
+ \right]\dd x .}
+ \label{hg}
+\end{equation}
+Differentiation at $g=0$ reproduces \eqref{deformation-density}.
+\D Quantum ordering, contact subtractions and a global self-adjoint
+generator have yet to be constructed. The possible singularity of
+\eqref{reciprocal} is a concrete limitation of the classical chart.
+
+\C Within that anchored chart the field integrals obey
+\begin{equation}
+ T_gM=M,\qquad T_gP=P,\qquad T_g\Pi=\Pi+gP.
+ \label{chargeflow}
+\end{equation}
+Here the left endpoint is a fixed c-number.
+\D If it is promoted to a dynamical global shift variable, the complete
+boundary symplectic problem must be solved. A uniform shift of $\phi$ and
+$\phi_-$ together leaves the bilocal expression invariant. The formal
+constant-shift vector field is also outside the fixed-endpoint tangent
+space. Consequently \eqref{chargeflow} is used as a verified anchored
+field-integral response, without asserting a global quantum commutator.
+
+\subsection{One-body invariance and the centroid identity}
+\C (\df) A solution of $H_g$ is obtained by applying $T_{-g}$ to a
+solution of $H_0$. For an isolated soliton,
+\begin{equation}
+ x=y+g\chi_0(y,t),\qquad
+ u_{\rm phys}=\frac{u_0}{1+gu_0},\qquad \pi_{\rm phys}=-v u_0 .
+\end{equation}
+Direct integration, separately from the canonical argument, gives
+\begin{equation}
+ M_g=M_0,\quad P_g=P_0,\quad E_g=E_0,\quad
+ \Pi_g=\Pi_0-gP_0,\quad B_g=B_0+\frac{gM_0^2}{2},
+ \qquad B=\int xu\,\dd x.
+ \label{onebody-deform}
+\end{equation}
+The centroid retains its original velocity. The deformed Hamiltonian has
+$\dot\phi=(1-gu)\pi$, so its integrated continuity identity is
+\begin{equation}
+ -M v_{\rm cm}=\int(1-gu)\pi\,\dd x=\Pi+gP.
+ \label{deformed-ward}
+\end{equation}
+The original identity uses the original kinetic Hamiltonian.
+This calculation explains how a proportional shift of $\Pi$ can accompany
+an unchanged dispersion in a different Hamiltonian family.
+
+\C On a classical one-soliton profile,
+$\pi=-vu$, $v^2=1-k^2$, and $u_x^2=k^2u^2-2u^3$ imply
+\begin{equation}
+ {\cal D}_{\rm bulk}=3k^2u^3-7u^4,\qquad
+ \int u^3\dd x=\frac{4k^5}{15},\quad
+ \int u^4\dd x=\frac{4k^7}{35},\quad
+ \int{\cal D}_{\rm bulk}\dd x=0 .
+ \label{onebody-zero}
+\end{equation}
+The vacuum potential in \eqref{hg} has $V_g''(0)=1$ exactly.
+For $g=O(\hbar)$, this direction has no quadratic vacuum term or
+one-soliton energy shift at order $\hbar$. Its independent cubic kinetic
+operator $-\pi^2u/2$ also distinguishes it from $\lambda u^2$.
+Thus these one-body and vacuum measurements do not determine this
+relative scattering deformation at that order.
+
+\subsection{Two-body phase and an independent collision test}
+\C (\df) Fix incoming ordering $x_1<x_2$ and outgoing ordering
+$x_1>x_2$. For isolated symmetric solitons,
+$X_j=-M_jP_j/2$. The separated generator has limits
+\begin{equation}
+ X_{\rm in}=X_1+X_2-M_1P_2,\qquad
+ X_{\rm out}=X_1+X_2-M_2P_1 .
+\end{equation}
+Consequently
+\begin{equation}
+ X_{\rm out}-X_{\rm in}
+ =-(P_1M_2-P_2M_1)=-Q_{12},\qquad
+ \Delta I=-g\int{\cal D}\,\dd x\dd t=-gQ_{12}.
+ \label{action-shift}
+\end{equation}
+The last equality is the first-order fixed-momentum action response.
+It gives a leading semiclassical relative factor
+\begin{equation}
+ \exp\left[-\frac{ig}{\hbar}Q_{12}\right].
+ \label{relative-factor}
+\end{equation}
+Taking $g=-\hbar c_{\rm CDD}$ realises the displayed order-one direction.
+This is the full relative phase response. Computing only the response of
+the old topological cross term would omit other dynamical and frame terms.
+
+\C The checker constructs an independent exact two-soliton tau function
+at $k_1=0.25,k_2=0.60$, both right-moving. It first tests the canonical field
+equations, then integrates $X$ at $t=\pm2500$. It finds
+\begin{align}
+ X_{\rm in}&=-0.1292414735326871203679552509113167,\nonumber\\
+ X_{\rm out}&=-0.08374454648958529813414045528563667,\nonumber\\
+ X_{\rm out}-X_{\rm in}
+ &=0.04549692704310182223381479562568000=-Q_{12}.
+\end{align}
+The incoming and outgoing factorizations each agree within $2\times10^{-47}$
+against a declared $10^{-37}$ tolerance. A separate calculation at the
+collision gives
+\begin{equation}
+ \int{\cal D}_{\rm bulk}(x,0)\,\dd x
+ =-0.0004539822987511666070508801904128653,
+\end{equation}
+and verifies it against $-\dot X$ to better than $10^{-65}$.
+This is a current-insertion check through a collision. The projected
+functional determinant remains uncomputed.
+
+\D If a self-adjoint renormalized $X$, a common domain and asymptotic
+soliton states exist, the candidate unitary is $U_g=e^{igX/\hbar}$.
+With $H_g=U_gH_0U_g^\dagger$ and a fixed asymptotic coordinate
+identification, the relative quantum relation would be
+\begin{equation}
+ S_g(P_1,P_2)=
+ e^{-igQ_{12}/\hbar}S_0(P_1,P_2).
+ \label{conditional-quantum}
+\end{equation}
+Transforming the observables and asymptotic identification along with the
+Hamiltonian gives the corresponding equivalent description.
+Holding the laboratory coordinate, field and circumference fixed makes
+\eqref{hg} a different Hamiltonian representative.
+
+\D Equation \eqref{conditional-quantum} leaves the seed $S_0$ undetermined.
+Specifying $g=0$ selects the original member of this family. It does not
+calculate the coefficient called $c$ in an incomplete seed-phase ansatz.
+The full functional continuum ambiguity also remains unclassified.
+
+\subsection{Finite circumference retains a boundary contribution}
+\C (\df) On an interval $[a,b]$, the anchored generator is
+\[
+ X=-\int_a^b p(y)\int_a^y u(x)\dd x\dd y .
+\]
+Using the primitive anchored at $a$ at each time, the continuity equations give
+\begin{equation}
+ -\dot X=\int_a^b{\cal D}\dd x+j_M(a)P-Mj_P(b).
+ \label{interval}
+\end{equation}
+At periodic endpoints this reads
+$\int{\cal D}=-\dot X+Mj_P(a)-j_M(a)P$.
+A finite-interval numerical profile with nonzero endpoint currents checks
+the complete identity independently to better than $10^{-65}$.
+The reciprocal coordinate map sends a period $L$ with potential twist $M$
+to $L-gM$.
+\D Identifying $-\dot X$ with $\{H,X\}$ requires a boundary phase space in
+which both functionals have Hamiltonian vector fields.
+
+\C The corresponding algebraic ring-phase contribution is
+\begin{align}
+ \sum_l\Delta\delta_{jl}
+ &=-\frac g\hbar(P_jM_{\rm tot}-M_jP_{\rm tot}),\nonumber\\
+ \frac{P_jL}{\hbar}+\sum_l\Delta\delta_{jl}
+ &=\frac{P_j(L-gM_{\rm tot})}{\hbar}
+   +\frac{gM_jP_{\rm tot}}{\hbar}.
+ \label{ring-shift}
+\end{align}
+\D Deriving a physical finite-volume spectrum requires a fixed
+circumference and independently defined seam. The length response and the
+charge-dependent twist must be kept in that dictionary.
+
+\section{The soliton sector has a measurable infrared requirement}
+\subsection{Conserved charges and the finite-ring zero mode}
+\C (\scs) In the derivative-field algebra the first Hamiltonian
+operator is $\left(\begin{smallmatrix}0&D\\D&0\end{smallmatrix}\right)$.
+Constant gradients show that $M$ and $\Pi$ are central for compactly
+supported derivative-field observables. In the potential algebra,
+$\{\phi(x),\Pi\}=1$. With decaying bulk fields,
+\begin{equation}
+ \dot M=[\pi],\qquad
+ \dot\Pi=[u-3u^2-u_{xx}].
+\end{equation}
+Endpoint variables need their own phase-space treatment.
+
+\C The traveling branch has
+\begin{equation}
+ M=2k,\qquad \Pi=-2kv,\qquad
+ P=\frac23k^3v=\frac{vM^3}{12},\qquad
+ v=\epsilon\sqrt{1-M^2/4}.
+ \label{fixed-sector}
+\end{equation}
+Fixing its kink height fixes the amplitude, leaving discrete velocity
+signs. This bare classical family supplies no open momentum interval
+inside one fixed-height sector.
+\D Dressed field states can carry other momenta in that sector.
+Their relation to derivatives along the classical $E(P)$ branch has to be
+specified.
+
+\C At fixed twist $M$ on a ring,
+\begin{align}
+ \phi(x)&=\Phi+\frac{Mx}{L}+\widetilde\phi(x),&
+ \pi(x)&=\frac{\Pi}{L}+\widetilde\pi(x),\nonumber\\
+ \Omega&=\dd\Pi\wedge\dd\Phi+
+ \int\dd\widetilde\pi\wedge\dd\widetilde\phi .
+ \label{ring-sector}
+\end{align}
+The tilded fields are periodic with zero mean.
+The uniform configuration has
+\begin{equation}
+ H_{\rm unif}=\frac{\Pi^2+M^2}{2L}-\frac{M^3}{L^2},
+ \qquad P_{\rm unif}=-\frac{M\Pi}{L}.
+\end{equation}
+\D Compactification of $\Phi$, allowed values of $M$, and quantum
+boundary conditions remain additional data.
+
+\subsection{Positive canonical oscillator polarization}
+\C (\scs) The positive quadratic-vacuum representation can be written
+explicitly. For nonzero ring modes with $q_n=2\pi n/L$, take
+$\phi_n^\dagger=\phi_{-n}$,
+$\pi_n^\dagger=\pi_{-n}$ and
+$[\phi_n,\pi_m]=i\hbar\delta_{n+m,0}/L$. Define
+\begin{equation}
+ b_n=\sqrt{\frac{L}{2\hbar}}
+ \left(\sqrt{\omega_n}\phi_n+\frac{i\pi_n}{\sqrt{\omega_n}}\right),
+ \qquad \omega_n=|q_n|\sqrt{1+q_n^2}.
+ \label{polarization}
+\end{equation}
+The independent oscillator checks give
+$[b_n,b_m^\dagger]=\delta_{nm}$, $[b_n,b_m]=0$, and the inverses
+\begin{equation}
+ \phi_n=\sqrt{\frac{\hbar}{2L\omega_n}}(b_n+b_{-n}^\dagger),
+ \qquad
+ \pi_n=-i\sqrt{\frac{\hbar\omega_n}{2L}}(b_n-b_{-n}^\dagger).
+\end{equation}
+At a finite symmetric mode cutoff the quadratic Hamiltonian is
+\begin{equation}
+ H_2=\sum_{n\ne0}\hbar\omega_n
+ \left(b_n^\dagger b_n+\frac12\right).
+ \label{positive-energy}
+\end{equation}
+The modes $b_n$ and $b_{-n}$ are independent annihilation operators.
+The source conditions that both $U_n$ and $V_n$ annihilate for $n>0$
+would force both $b_n$ and $b_{-n}^\dagger$ to annihilate the state.
+The latter condition is incompatible with a positive Fock vacuum.
+
+\D The free canonical polarization is therefore available. The open
+representation problem is to realise the limiting commuting densities and
+transfer/Baxter operators with compatible ordering and domains in this
+polarization, and to extend it to the charged soliton sectors.
+
+\subsection{Exact Gaussian overlap test}
+\C (\scs) Completing the square in the oscillator wavefunctions
+gives overlap magnitude $e^{-N_{\rm diff}/2}$, where in the good free
+vacuum
+\begin{equation}
+ N_{\rm diff}=\frac1{2\hbar}\int\frac{\dd q}{2\pi}
+ \left[\omega(q)|\Delta\widehat\phi(q)|^2+
+ \frac{|\Delta\widehat\pi(q)|^2}{\omega(q)}\right],
+ \qquad \omega(q)=|q|\sqrt{1+q^2}.
+ \label{occupation}
+\end{equation}
+For real initial data the cross term cancels between $q$ and $-q$.
+At $q\ne0$, $\Delta\widehat\phi=\Delta\widehat u/(iq)$.
+The global additive constant is a separate zero mode.
+For the exponentially localized soliton profiles considered here,
+$\Delta\widehat u(0)=\Delta M$ and
+$\Delta\widehat\pi(0)=\Delta\Pi$. Hence
+\begin{equation}
+ \boxed{
+ N_{\rm diff}(\mu)=
+ \frac{(\Delta M)^2+(\Delta\Pi)^2}{2\pi\hbar}
+ \log\frac1\mu+O(1).}
+ \label{ir-log}
+\end{equation}
+The regulated overlap magnitude has power
+$[(\Delta M)^2+(\Delta\Pi)^2]/(4\pi\hbar)$.
+Changing these charges is therefore an infrared-divergent coherent
+displacement of the quadratic-vacuum representation on the line.
+\D This calculation does not determine an interacting infrared exponent
+or establish the existence or failure of a dressed scattering operator.
+
+\C The independent Fourier quadrature uses
+\begin{equation}
+ u_k(x)=\frac{k^2}{2}\operatorname{sech}^2(kx/2),\qquad
+ \widehat u_k(q)=\frac{2\pi q}{\sinh(\pi q/k)},\qquad
+ \widehat\pi_k(q)=-v\widehat u_k(q).
+ \label{fourier}
+\end{equation}
+For right movers $k_1=0.31,k_2=0.53$ at $\hbar=1$, the predicted
+occupation logarithm coefficient is
+\begin{equation}
+ A_N=0.04605009066875933660934658357463906 .
+\end{equation}
+Independent cutoff integrals at $\mu=10^{-6},10^{-12},10^{-24}$ converge
+after subtracting $A_N\log(1/\mu)$ and reproduce its coefficient to
+better than $2.0\times10^{-26}$. A fixed-amplitude translation by $1.7$
+at $k=0.31$ instead has the finite limiting occupation
+$0.005859161839779369150053652746685633$.
+
+\subsection{Compensation in one finite-volume space}
+\C (\scs) Periodize each localized profile and subtract its own
+uniform $M/L$ and $\Pi/L$ pedestals. Both profiles now have the same
+total charges $M=\Pi=0$. Their nonzero Fourier coefficients retain
+\eqref{fourier}. For $q_n=2\pi n/L$,
+\begin{equation}
+ N_L=\frac1{\hbar L}\sum_{n\geq1}
+ \left[
+ \frac{\sqrt{1+q_n^2}}{q_n}|\Delta\widehat u(q_n)|^2+
+ \frac{|\Delta\widehat\pi(q_n)|^2}{q_n\sqrt{1+q_n^2}}
+ \right].
+ \label{finite-overlap}
+\end{equation}
+These profiles define periodic initial data.
+The exact nonlinear periodic traveling solution is a separate problem.
+The independently summed doubling slopes approach $A_N$.
+
+\begin{center}
+\begin{tabular}{@{}rrr@{}}
+\toprule
+$L$ & $[N_{2L}-N_L]/\log2$ & Error from $A_N$\\
+\midrule
+256 & 0.0461099132406 & $5.98226\times10^{-5}$\\
+512 & 0.0460650331524 & $1.49425\times10^{-5}$\\
+1024 & 0.0460538254672 & $3.73480\times10^{-6}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\C No fitted logarithm coefficient enters this test. The occupation
+quadratures and Fourier sums use $q\leq8$, where the exact hyperbolic-sine
+factors suppress the tail. The many digits retained in JSON are arithmetic
+output. The quoted convergence tests, rather than all those digits, are
+the numerical accuracy claims. The logarithm survives charge compensation
+in a common finite-volume oscillator space.
+
+\C A separate construction places a smooth cloud far from the pulse,
+\begin{equation}
+ u_c(x)=\frac{\Delta M}{L}w((x-R)/L),\quad
+ \pi_c(x)=\frac{\Delta\Pi}{L}w((x-R)/L),\quad
+ \int w=1 .
+\end{equation}
+It has fixed compensating charges and
+\begin{align}
+ H_c&=\frac{(\Delta M)^2+(\Delta\Pi)^2}{2L}I_2
+ -\frac{(\Delta M)^3}{L^2}I_3
+ +\frac{(\Delta M)^2}{2L^3}I_d,\nonumber\\
+ P_c&=-\frac{\Delta M\Delta\Pi}{L}I_2 ,
+ \label{cloud}
+\end{align}
+where $I_2=\int w^2$, $I_3=\int w^3$, and $I_d=\int(w')^2$.
+For $w=e^{-y^2}/\sqrt\pi$ the moments are
+$I_2=I_d=1/\sqrt{2\pi}$ and $I_3=1/(\sqrt3\pi)$.
+Direct spatial quadrature checks the complete charges and energy at two
+widths. Thus vanishing compensation energy and a controlled state
+normalization are separate requirements.
+
+\D The quantum dictionary should identify operators intertwining
+boundary-charge representations or a finite-volume family with controlled
+soft compensation. The zero mode, nonzero phonon modes, and seam
+normalization need explicit treatment before extracting a scattering phase.
+
+\section{A first-bracket quantum-integrability diagnostic}
+\C (\hy) An additional conserved density can be derived directly
+in canonical fields, without using the $W_3$ representation. Let
+\begin{equation}
+ H_s=\int\left[\frac{\pi^2+s u^2+u_x^2}{2}-u^3\right]\dd x .
+\end{equation}
+Solving a weighted polynomial ansatz by setting both Euler derivatives of
+its time derivative to zero gives, modulo a multiple of $H_s$,
+\begin{align}
+ {\cal Q}_7&=\int\left[
+ \pi_x^2+u_{xx}^2-3u\pi^2+3u^4-9u u_x^2
+ +s(u_x^2-u^3)\right]\dd x,\nonumber\\
+ \{H_s,{\cal Q}_7\}&=0 .
+ \label{q7}
+\end{align}
+This holds with appropriate vanishing boundary flux or periodic fields.
+The script solves for the coefficients independently, then verifies
+the final conservation law. Direct soliton integration at $s=1$ gives
+\begin{equation}
+ {\cal Q}_7[u_k,-vu_k]=\frac{4k^5(20k^2-21)}{105},
+ \label{q7sol}
+\end{equation}
+with independent 70-digit quadrature at three amplitudes.
+
+\C A finite-dimensional Weyl-symbol degree observation applies to
+linear canonical regulators. $H_s$ is at most cubic in the coordinate
+variables and quadratic in momenta, with no mixed kinetic terms.
+The charge in \eqref{q7} is at most quadratic in momenta.
+The only potentially nonzero third derivative of $H_s$ is purely in
+coordinates, whereas the corresponding third momentum derivative of
+$\mathcal Q_7$ vanishes. All higher odd Moyal contractions vanish by degree.
+Thus for these regulated polynomial symbols
+\begin{equation}
+ [\operatorname{Op}_{\rm W}(H_s),
+   \operatorname{Op}_{\rm W}({\cal Q}_7)]
+ =i\hbar\operatorname{Op}_{\rm W}
+   \bigl(\{H_s,{\cal Q}_7\}_{\rm regulator}\bigr).
+ \label{weyl}
+\end{equation}
+
+\C The regulator's classical bracket need not vanish.
+For the naive periodic three-site central-difference discretization,
+at $\phi=(1,2,4)$ and $\pi=(2,-1,3)$ with $s=1$, it is exactly
+$-75/8$. This rejected regulator is retained as an explicit failure.
+\D Constructing renormalized continuum operators still requires a
+compatible regulator, domain and ordering prescription. The finite
+Weyl identity supplies a diagnostic for that work. Equation \eqref{q7}
+also persists for arbitrary $s$, so this conservation-law test alone
+cannot select the finite elastic subtraction.
+
+\section{What can now be attempted toward the exact amplitude}
+\D The first proposed assignment has produced a precise obstruction and
+a candidate replacement. The remaining programme is organized by observable
+tests rather than by an assumed scalar-factor ansatz.
+
+\begin{enumerate}
+\item Realise the limiting commuting densities in the explicit positive
+canonical polarization \eqref{polarization}, replacing the inherited
+highest-weight annihilation conditions. Determine the finite normal-ordering
+terms and common domains. Equations \eqref{j1}, \eqref{energy-map},
+\eqref{central-scaling} and \eqref{q7} provide explicit checks.
+\item Obtain vacuum-normalized limits of the transfer and Baxter operators
+at $t_{\rm sp}=\Lambda+z$. Establish convergence or identify an obstruction.
+The six finite shifts in \eqref{arguments} and the spectral relation
+\eqref{spectral} fix the proposed canonical scale.
+\item Identify one-soliton states or intertwiners with the correct $M,\Pi,P$
+and classical profile. Test their infrared normalization against
+\eqref{ir-log} and \eqref{finite-overlap}, keeping the interacting nature
+of the final exponent as a separate question.
+\item Derive two-excitation finite-volume equations in that same
+representation. Separate the dispersion, soft-state normalization,
+potential seam and circumference response using \eqref{interval} and
+\eqref{ring-shift}. Then extract the phase and compare several kinematic
+points with a boundary-compatible continuum calculation.
+\item Match the coefficient of \eqref{deformation-density} in fixed
+canonical fields and physical coordinates. It is the explicit local
+direction associated with the relative $P\wedge M$ factor.
+This matching supplements the finite quadratic subtraction.
+\end{enumerate}
+
+\C The resonant-channel audit already requires care with heavy classical
+solitons. \D The light branch supplies the initial candidate sector.
+Closure under quantum scattering, including phonon and number-changing
+channels, must follow from the constructed states and conserved operators.
+
+\D At this stage there is no extracted physical $S_0$, no physical
+two-soliton determinant, and no values of $c_{\rm good}(\lambda)$ or
+$c_{\rm bad}$. The new result is a relative deformation law and a canonical
+functional-equation route with its representation obstruction identified.
+The earlier Toda comparison remains method validation with its audited
+dictionary qualifications.
+
+\section{Verification coverage and failures recorded}
+\small
+\begin{longtable}{@{}L{4.0cm}L{6.4cm}L{4.6cm}@{}}
+\toprule
+Claim group & Independent verification & Script\\
+\midrule\endhead
+Second versus first bracket & Miura Fr\'echet reconstruction, formal adjoints,
+Fourier inertia and discriminant & \hk\\
+Canonical contraction & PDE, energy, bracket coefficients and exact mixed modes &
+\hk\\
+Representation and Baxter scale & Exact finite-parameter Gram matrices,
+80-digit argument limits and spectral polynomial reduction & \hk\\
+Current deformation & Continuity laws, reciprocal Jacobian, symplectic form,
+exact classical Hamiltonian and one-body integrals & \df\\
+Scattering and ring response & Exact two-soliton field equations, separated
+and collision quadratures, finite-interval boundary currents & \df\\
+Soliton sectors & Positive oscillator algebra, Gaussian integral, exact Fourier transform, logarithm
+coefficient, independent finite-ring sums and cloud quadratures & \scs\\
+Canonical extra charge & Independent coefficient solve, Euler derivatives,
+soliton quadrature and rejected lattice regulator & \hy\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\C The symbolic checks use SymPy. Numerical checks use 70 or 80 decimal
+digits. The four scripts together run in about one minute on the
+task machine, with the two-soliton deformation quadrature taking most of
+the time. The deformation checker records 49 symbolic and numerical
+checks, including independent charge quadratures and exact-tau
+collision tests. Each script ends by printing \texttt{ALL CHECKS PASSED}.
+JSON files distinguish computed quantities from unconstructed physical
+observables. Numerical agreement certifies the stated tests.
+
+\begin{enumerate}
+\item \C Direct same-vacuum identification fails the $UU$ bracket test.
+The stronger real Fourier-map attempt fails the inertia test.
+\item \C The large-background contraction leaves the real constant-Miura
+region. The inherited highest-weight annihilation conditions fail positivity
+under the required target involution.
+\item \C The bare traveling-soliton family has no open momentum branch at
+fixed kink height. Low-energy charge compensation retains an infrared
+logarithm in its Gaussian state normalization.
+\item \C One-body dispersion and vacuum elasticity miss the current
+deformation at order $\hbar$. This records failure of those observables to
+fix the relative two-body direction.
+\item \C The naive three-site canonical regulator fails the extra-charge
+commutation test, with exact bracket $-75/8$.
+\item \C Promoting the anchored charge response to a global quantum
+commutator requires additional boundary data. The report retains that
+qualification explicitly.
+\item \C The Belov--Chaltikian HTML retrieval failed. The local full PDF
+supplied the required passages. BHK's printed equation (2.24) repeats
+$I_4$ for the spin-six density, and the cubic printed after equation (2.29)
+disagrees with its displayed Lax operator. The source pages were visually
+checked. All spectral calculations here use equation (2.26) and direct
+polynomial substitution.
+\item \C No Python implementation assertion failed and no numerical
+tolerance was weakened. Two document-authoring submissions initially
+failed because LaTeX dollar-brace syntax was interpreted by the JavaScript
+template wrapper. Rephrasing that math command fixed the wrapper before
+the affected text was written. The first PDF build exposed two overfull
+lines, repaired by splitting the operator display and the interval formula.
+A draft numerical-sample label was corrected from $z=0.37$ to the actual
+checker input $z=0.70$ during independent review. The computed bound was
+unchanged. Review also restricted the logarithm's bounded-remainder
+statement to the exponentially localized profiles actually studied and
+stated the interval identity in terms of $-\dot X$ before any boundary
+Poisson identification.
+\end{enumerate}
+
+\section{Sources and reading depth}\label{sources}
+\A Relevant full-text passages were read for each external reference below.
+The reading did not reproduce every proof in the cited papers.
+
+\begin{itemize}
+\item Hikami \cite{Hikami}, sections 1--2, the Baxter result and analytic
+assumption in section 3, sections 4--5, conclusion and appendices A--B.
+Its inversion identity labelled unitarity needs a specified adjoint before
+being used as physical Hilbert-space unitarity.
+\item BHK \cite{BHK}, introduction, sections 2.1--2.2 and 3.2--3.3,
+the spectral convention in section 4.2 and equation (1.11).
+Printed pages 8--10 were visually inspected. The current work independently
+checks the target normalization and the required reality structure.
+\item Belov--Chaltikian \cite{BC}, sections 1--5, including the lattice
+brackets, classical bi-Hamiltonian construction and continuum discussion.
+\item Doyon--Durnin--Yoshimura \cite{DDY}, sections 2--3, appendix B and
+the boundary formulas in appendix C.
+\item Cardy--Doyon \cite{CD}, sections 2.2, 3.2--3.3 and 3.6.
+\end{itemize}
+
+{\raggedright
+\C Internal inputs include the README Status, the ranked programme in
+\file{report.tex}, \file{good_renorm.tex},
+\file{shiftcharge_oneloop.tex}, \file{audit_resonant_channels.tex},
+\file{audit_charges_action.tex}, \file{audit_projected_measure.tex},
+\file{audit_det_projected.tex}, and the controlling errata.
+The new scripts and this report use the prefix \file{shiftcharge}.
+Existing files and git state were left untouched.\par}
+
+\begin{thebibliography}{9}
+\raggedright
+\bibitem{Hikami}
+K.~Hikami, \emph{Baxter Equation for Quantum Discrete Boussinesq Equation},
+Nucl.\ Phys.\ B \textbf{604} (2001) 580--602,
+\href{https://arxiv.org/abs/nlin/0102021}{arXiv:nlin/0102021}.
+
+\bibitem{BHK}
+V.~V.~Bazhanov, A.~N.~Hibberd and S.~M.~Khoroshkin,
+\emph{Integrable structure of $W_3$ conformal field theory, quantum
+Boussinesq theory and boundary affine Toda theory},
+Nucl.\ Phys.\ B \textbf{622} (2002) 475--547,
+\href{https://arxiv.org/abs/hep-th/0105177}{arXiv:hep-th/0105177}.
+
+\bibitem{BC}
+A.~A.~Belov and K.~D.~Chaltikian,
+\emph{Lattice analogues of $W$-algebras and Classical Integrable Equations},
+\href{https://arxiv.org/abs/hep-th/9303166}{arXiv:hep-th/9303166}.
+
+\bibitem{DDY}
+B.~Doyon, J.~Durnin and T.~Yoshimura,
+\emph{The Space of Integrable Systems from Generalised
+$T\overline T$-Deformations},
+SciPost Phys.\ \textbf{13} (2022) 072,
+\href{https://arxiv.org/abs/2105.03326}{arXiv:2105.03326},
+\href{https://doi.org/10.21468/SciPostPhys.13.3.072}{doi:10.21468/SciPostPhys.13.3.072}.
+
+\bibitem{CD}
+J.~Cardy and B.~Doyon,
+\emph{$T\overline T$ deformations and the width of fundamental particles},
+JHEP \textbf{04} (2022) 136,
+\href{https://arxiv.org/abs/2010.15733}{arXiv:2010.15733},
+\href{https://doi.org/10.1007/JHEP04(2022)136}{doi:10.1007/JHEP04(2022)136}.
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,164 @@
+{
+  "claims": {
+    "local_charge_fluxes": {
+      "M_dot": "[pi] at the spatial endpoints",
+      "Pi_dot": "[u-3u^2-u_xx] at the spatial endpoints",
+      "first_Hamiltonian_operator": "[[0,D],[D,0]]",
+      "casimir_scope": "M and Pi are central for compactly supported derivative-field observables",
+      "potential_algebra": "{phi(x),Pi}=1; Pi is not central in the potential algebra"
+    },
+    "fixed_height_traveling_branch": {
+      "mass": "M=2k",
+      "shift_charge": "Pi=-2kv",
+      "momentum": "P=2k^3 v/3=v M^3/12",
+      "velocity": "v=epsilon sqrt(1-M^2/4)",
+      "consequence": "At fixed M the classical traveling soliton has only the two velocity signs, not an open momentum interval"
+    },
+    "ring_zero_modes": {
+      "decomposition": "phi=Phi+M*x/L+phi_tilde, pi=Pi/L+pi_tilde, fixed M and zero-mean tilded fields",
+      "symplectic_form": "dPi wedge dPhi + integral d pi_tilde wedge d phi_tilde",
+      "uniform_energy": "(Pi^2+M^2)/(2L)-M^3/L^2",
+      "uniform_momentum": "-M Pi/L"
+    },
+    "oscillator_overlap": {
+      "absolute_overlap": "exp(-[omega Delta_x^2+Delta_p^2/omega]/(4 hbar))",
+      "relative_occupation": "[omega Delta_x^2+Delta_p^2/omega]/(2 hbar)"
+    },
+    "positive_canonical_fock_polarization": {
+      "Fourier_convention": "phi(x)=sum_n phi_n exp(-i q_n x), q_n=2 pi n/L; phi_n^dagger=phi_-n and pi_n^dagger=pi_-n",
+      "canonical_mode_algebra": "[phi_n,pi_m]=i hbar delta_(n+m,0)/L",
+      "annihilator": "b_n=sqrt(L/(2 hbar)) [sqrt(omega_n) phi_n+i pi_n/sqrt(omega_n)], n nonzero",
+      "frequency": "omega_n=abs(q_n) sqrt(1+q_n^2)",
+      "commutators": "[b_n,b_m^dagger]=delta_nm, [b_n,b_m]=0",
+      "independence": "b_n and b_-n are independent annihilation modes, not adjoints",
+      "inverse_phi": "phi_n=sqrt(hbar/(2L omega_n)) (b_n+b_-n^dagger)",
+      "inverse_pi": "pi_n=-i sqrt(hbar omega_n/(2L)) (b_n-b_-n^dagger)",
+      "quadratic_Hamiltonian": "H2=sum_(n nonzero) hbar omega_n (b_n^dagger b_n+1/2), with a finite mode cutoff before vacuum subtraction",
+      "real_mode_pair": "b_+=(a_cos+i a_sin)/sqrt(2), b_-=(a_cos-i a_sin)/sqrt(2)",
+      "target_modes": "U_n=(3i q_n/2) phi_n, V_n=sqrt(3) pi_n/4 for n nonzero",
+      "positive_gram": "Matrix([[9*hbar*q**2/(8*L*omega), -3*sqrt(3)*hbar*q/(16*L)], [-3*sqrt(3)*hbar*q/(16*L), 3*hbar*omega/(32*L)]])",
+      "Gram_determinant": 0,
+      "highest_weight_conflict": "U_n|0>=V_n|0>=0 for n>0 would require both b_n|0>=0 and b_-n^dagger|0>=0, impossible for a nonzero positive-norm vector",
+      "scope": "Explicit positive canonical algebra and free-vacuum Fock space. Realization of contracted T/Q operators, renormalized interaction and interacting soliton states remains unconstructed."
+    },
+    "soliton_fourier_transform": {
+      "formula": "u_hat(q)=2 pi q/sinh(pi q/k), pi_hat(q)=-v u_hat(q)",
+      "checks": [
+        {
+          "k": "0.31",
+          "q": "0.08",
+          "residual": "0.0"
+        },
+        {
+          "k": "0.53",
+          "q": "0.27",
+          "residual": "0.0"
+        },
+        {
+          "k": "0.41",
+          "q": "0.51",
+          "residual": "0.0"
+        }
+      ]
+    },
+    "infrared_log": {
+      "hbar_for_numbers": 1,
+      "k1": "0.31",
+      "k2": "0.53",
+      "delta_M": "-0.44",
+      "delta_Pi": "0.3094208349226606964625132579769101622757250859918901514",
+      "occupation_log_coefficient": "0.04605009066875933660934658357463906385180411873781479642",
+      "coherent_overlap_power": "0.02302504533437966830467329178731953192590205936890739821",
+      "formula": "N_diff(mu)=[Delta_M^2+Delta_Pi^2]/(2 pi hbar) log(1/mu)+O(1)",
+      "occupation": [
+        {
+          "mu": "0.000001",
+          "N": "0.6309773492323364805856933980219625222121855809309365853",
+          "N_subtracted": "-0.005228164597120234356758631042825416711879122327060591088"
+        },
+        {
+          "mu": "0.000000000001",
+          "N": "1.267182863062343231273658927719200140456202547088801239",
+          "N_subtracted": "-0.005228164596570198611245130410375737391926859427193114187"
+        },
+        {
+          "mu": "1.0e-24",
+          "N": "2.539593890721256661158563535884521536644853653798221795",
+          "N_subtracted": "-0.005228164596570198611244580374630219051405159233766910316"
+        }
+      ],
+      "coefficient_residual": "1.990645742734638043882892168429172748137234956789047113e-26"
+    },
+    "finite_ring": {
+      "common_charge_sector": "M=Pi=0 after uniform compensation of each periodized profile",
+      "occupation": [
+        {
+          "L": "256.0",
+          "N": "0.192018912830640378618345770356548199829402778446174762"
+        },
+        {
+          "L": "512.0",
+          "N": "0.2239798691892022912576973575463864042823622688940848297"
+        },
+        {
+          "L": "1024.0",
+          "N": "0.2559097170411807299659161393042583624822662231087235414"
+        },
+        {
+          "L": "2048.0",
+          "N": "0.2878317963177760436012106702315946286745736926563879248"
+        }
+      ],
+      "doubling_slopes": [
+        "0.0461099132405658535646948921570922577331126172484751499",
+        "0.04606503315238841405426996854408549261403760468525431707",
+        "0.04605382546720840743261959827800529329660732868387136662"
+      ],
+      "slope_errors": [
+        "0.00005982257180651695534830858245319388130849851066035347488",
+        "0.00001494248362907744492338496944642876223348594743952064304",
+        "0.000003734798449070823273014703366229444803209946056570200763"
+      ],
+      "interpretation": "A log L divergence survives in a common compensated periodic oscillator space"
+    },
+    "translation_control": {
+      "k": "0.31",
+      "displacement": "1.7",
+      "occupation_limit": "0.005859161839779369150053652746685633167579778832533022841",
+      "cutoff_difference": "-1.683121592787639570871914429749974017536453217775533269e-25",
+      "interpretation": "Translation at fixed charges has finite infrared coherent occupation"
+    },
+    "compensating_cloud": {
+      "fields": "u_c=Delta_M w((x-R)/L)/L, pi_c=Delta_Pi w((x-R)/L)/L, integral w=1",
+      "gaussian": "w(y)=exp(-y^2)/sqrt(pi)",
+      "energy": "sqrt(2)*(M**2 + Pi**2)/(4*sqrt(pi)*L) - sqrt(3)*M**3/(3*pi*L**2) + sqrt(2)*M**2/(4*sqrt(pi)*L**3)",
+      "momentum": "-sqrt(2)*M*Pi/(2*sqrt(pi)*L)",
+      "scaling": "M_c and Pi_c stay fixed, H_c=O(1/L), P_c=O(1/L); spatial separation removes soliton-cloud cross terms",
+      "independent_quadratures": [
+        {
+          "width": "13.0",
+          "energy": "0.00446174902660833623623601476526525296128673011419278612",
+          "energy_residual": "0.0"
+        },
+        {
+          "width": "31.0",
+          "energy": "0.001842425604413256086413224386104804439516139269198736138",
+          "energy_residual": "0.0"
+        }
+      ]
+    }
+  },
+  "failures_recorded": [
+    "The tentative identification of the bare traveling-wave family with an open momentum branch at fixed kink height fails: M=2k fixes k.",
+    "The tentative inference that an arbitrarily low-energy compensating background is harmless to the Fock-state limit fails: the occupation diverges logarithmically with box length.",
+    "No Python assertion failed during the implementation and no numerical tolerance was weakened."
+  ],
+  "limitations": [
+    "These are exact Gaussian-vacuum and classical phase-space diagnostics, not a construction of interacting quantum solitons.",
+    "The divergent free coherent norm does not prove that an interacting dressed S-matrix or stable soliton state cannot exist.",
+    "The finite-ring profile uses exact periodization and a uniform charge compensation; it is initial data, not an exact periodic nonlinear traveling solution.",
+    "A fixed total charge sector can accommodate a varying local soliton profile with a soft cloud. Its interacting asymptotic evolution and scattering normalization remain to be derived.",
+    "No claim about quantum decay, exact factorization, or a physical infraparticle exponent is made."
+  ],
+  "runtime_seconds": 5.3175477309996495
+}

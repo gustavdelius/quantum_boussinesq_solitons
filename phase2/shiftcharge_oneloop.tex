@@ -1,0 +1,648 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,longtable,array,geometry,hyperref}
+\geometry{margin=23mm}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\sech}{\operatorname{sech}}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcommand{\alg}{\file{shiftcharge_algebra.py}}
+\newcommand{\modes}{\file{shiftcharge_modes.py}}
+\newcommand{\calcheck}{\file{shiftcharge_calibration.py}}
+\newcommand{\proj}{\file{shiftcharge_projection.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\title{One-loop shift charge of Boussinesq solitons:\
+centroid identity, mean-profile response, and the unresolved two-body coefficient}
+\author{Quantum Boussinesq solitons project --- PI: Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C The exhibited freedom $c(P_1M_2-P_2M_1)$ has one coefficient and admits
+a rank-zero defect consistency test, but the cited package does not classify
+the entire continuum ambiguity. The centroid identity follows from the
+canonical continuity equation, subject to its domain and boundary limits.
+It does not justify holding the kink height fixed while moving along the
+quantum one-soliton dispersion branch.
+
+\C A fresh continuum-mode calculation gives a finite conditional mean-profile
+shift charge, including the finite quadratic counterterm. Its direct momentum
+insertion agrees with the canonical derivative of the audited one-body trace.
+At fixed momentum the corresponding kink-height correction is nonzero;
+its contribution cancels the apparent leading rational term from changing
+the shift charge alone. The separate, already-known Darboux recoil reproduces
+Toda's $2(r-r^{-1})/\pi$, but is not a constant times $P\wedge M$.
+\D \textbf{Conclusion (C):} neither $c_{\rm bad}$ nor
+$c_{\rm good}(\lambda)$ is determined. The proposed identification fails as
+a complete mechanism; the boundary-compatible projected expectation,
+two-body determinant and common quantum frame remain missing.
+\end{abstract}
+
+\section{Scope, evidence and the freedom actually established}
+Labels mean literature proof (a), literature heuristic (b), project derivation
+or computation (c), and an unestablished physical identification (d).
+No external full text or abstract was newly read and no external reference
+identifier is asserted. Internal sources are listed at the end. Every new
+displayed (c) formula is covered by the named scripts, located in
+\file{phase2/scripts/}; their accompanying JSON files retain the numerical
+results and explicit nulls. Conditional mathematical results are not promoted
+to constructed quantum observables.
+
+\C The fixed good convention is retained, with the bad equation used only
+for formal continuation and Toda validation. README Status, the master
+report including its ranked programme, the named packages, their relevant
+audits and the errata were consulted. The frame and determinant qualifications
+override package interpretations. Neither \file{audit_defect_bootstrap.tex}
+nor \file{audit_good_renorm.tex} existed when checked during this work;
+a reference to the latter in another audit is not evidence of its contents.
+No old script was executed or imported; no git operation or existing-file edit
+was made. No renormalisation condition is selected for the PI.
+
+\paragraph{Independent structure check \C (\alg).}
+Write $Q_{12}=P_1M_2-P_2M_1$. In the displayed two-function ansatz,
+\begin{equation}
+ F_{12}=A P_1M_2+B M_1P_2,\qquad F_{12}+F_{21}=(A+B)(P_1M_2+P_2M_1).
+\end{equation}
+Thus antisymmetry leaves one coefficient, $A=-B=c$. All mixed $3\times3$
+minors vanish, while mixed $2\times2$ minors need not vanish. This is a
+rank-two example, not an exhaustive classification. In particular,
+\file{defect_bootstrap.tex} explicitly retains additional unknown $U_{12}$.
+The stronger premise ``the full phase is known up to one number'' is not
+established by that package or the audits.
+
+\C For a good KP chord with endpoints $a,b$,
+\begin{gather}
+ k=a-b,\quad v=\sqrt3(a+b),\quad a^2+ab+b^2=\tfrac14,\qquad
+ M=m(a)-m(b),\quad P=p(a)-p(b),\label{chords}\\
+ m(z)=2z,\qquad p(z)=2\sqrt3 z^4-z^2/\sqrt3-\sqrt3/36.
+\end{gather}
+Polynomial reduction verifies the charge primitives independently. They
+telescope on a triangle. For a spectator $t$, the lift
+$W_z(t)=c[P_t m(z)-M_t p(z)]$ satisfies
+$W_b-W_a=-F(t,a\!\to\! b)$, with the orientation reversed if the chord is
+reversed. This supplies a rank-zero witness for the homogeneous cycle
+constraint; scalar transmission commutativity adds no rank. It does not
+construct a quantum absorption vertex. The corrected Toda characteristic
+source and its axis data, discussed in \file{twobody_toda.tex} and its audit,
+are additional dynamical inputs, not continuum bootstrap consequences.
+
+\section{What changes at fixed physical momentum}
+\paragraph{Conventions and inversion \C (\alg).}
+For the good branch put
+\begin{gather}
+ k=\sin\alpha,\quad v=\epsilon\sqrt{1-k^2},\quad
+ M_0=2k,\quad \Pi_0=-2kv,\quad P_0=\tfrac23vk^3,\\
+ E_0=\tfrac2{15}k^3(5-4k^2),\qquad \dd E_0=v\dd P_0.
+\end{gather}
+Take a label $a$ away from $P_0'(a)=0$ and write
+$P=P_0+\hbar p$, $\Pi=\Pi_0+\hbar q$, $M=M_0+\hbar m$.
+At fixed physical $P$, the argument changes by $-\hbar p/P_0'$; hence
+\begin{equation}
+ \bar q=q-\frac{\Pi_0'}{P_0'}p,\qquad
+ \bar m=m-\frac{M_0'}{P_0'}p.\label{fixedP}
+\end{equation}
+The bars are essential: fixed classical label, fixed velocity, fixed kink
+height and fixed physical momentum are different operations.
+
+\paragraph{Topological term and frame subtraction \C (\alg).}
+In the specified chamber-reversing convention the tree phase contains
+\begin{equation}
+ T_0=-\tfrac23(\Pi_{0,1}M_{0,2}-\Pi_{0,2}M_{0,1}),\qquad
+ S_{\rm cb}=\tfrac12(\Pi_1M_2+\Pi_2M_1),\quad
+ \delta^{\rm raw}=\delta+S_{\rm cb}.
+\end{equation}
+Replacing its charge arguments gives the following \emph{part} of the
+order-one exponent:
+\begin{align}
+ T_1|_P&=-\tfrac23[\bar q_1M_{0,2}+\Pi_{0,1}\bar m_2
+                  -\bar q_2M_{0,1}-\Pi_{0,2}\bar m_1],\label{T1}\\
+ (S_{\rm cb})_1|_P&=\tfrac12[\bar q_1M_{0,2}+\Pi_{0,1}\bar m_2
+                  +\bar q_2M_{0,1}+\Pi_{0,2}\bar m_1].\label{S1}
+\end{align}
+The latter must be subtracted from a raw fixed-chamber answer; it is symmetric
+and must not be counted again as an antisymmetric phase.
+\D Substitution into $T_0$ alone is not a derivation of the full quantum phase:
+the dynamical term, quantum delays and state map can also change.
+
+\C If $\bar m=0$, a sufficient condition for $T_1=cQ_{12}$ is
+\begin{equation}
+ \bar q(P)=\kappa P+aM_0(P),\qquad c=-\tfrac23\kappa,\label{span}
+\end{equation}
+with a common constant $a$ on the domain. It is also necessary if equality
+holds for every pair with nonzero $M_0$: divide the wedge equality by
+$M_{0,1}M_{0,2}$ and fix one argument. Thus proportionality to $P$ is
+sufficient but not necessary; a multiple of $M$ is invisible. A generic
+$\bar q$ instead gives a different rank-two wedge. With nonzero $\bar m$,
+the full condition is the wedge equation \eqref{T1}, not \eqref{span}.
+The coefficient $-2/3$ cannot be replaced by $+1$ in this convention.
+
+\paragraph{Darboux frame \C (\alg, \calcheck).}
+With $\gamma_0=\dd\Pi_0/\dd P_0$, the corrected coefficient expressed in
+physical momentum is $\gamma=\gamma_0+\hbar\partial_P\bar q$.
+If $d_j$ denotes the unknown correction to the physical spatial delay,
+the two Darboux shifts change by
+\begin{equation}
+ \delta\Delta X'_1=d_1+(\partial_{P_1}\bar q_1)M_{0,2}
+                         +\gamma_{0,1}\bar m_2,\qquad
+ \delta\Delta X'_2=d_2-(\partial_{P_2}\bar q_2)M_{0,1}
+                         -\gamma_{0,2}\bar m_1.\label{frame}
+\end{equation}
+Keeping $d_j=\bar m_j=0$ arbitrarily is generally not integrable: the curl
+of the prospective phase derivatives is
+$-\bar q_1'M_2'-\bar q_2'M_1'$, which need not vanish.
+Thus a charge correction does not by itself supply a phase generator.
+Separately, conversion of an existing label-frame phase gives
+\begin{equation}
+ R[p]=-\sum_jp_j\partial_{P_j}\delta_0
+      =\sum_jp_j\Delta X'_j=H[p]+D[p],\qquad
+ D[p]=p_1\gamma_{0,1}M_{0,2}-p_2\gamma_{0,2}M_{0,1}.\label{recoil}
+\end{equation}
+This is not an extra term to add after already including the same argument
+shift in \eqref{fixedP}. The derivative of the full classical phase, rather
+than of its topological part alone, is involved.
+
+\section{Centroid identity and the kink-height sector}
+\paragraph{Local identity and boundary limit \C (\alg).}
+The canonical Hamiltonian, including $\hbar\lambda\int u^2$, has
+$\dot\phi=\pi$ and $u_t=\pi_x$. For a smooth compact cutoff $f_R$ define
+\begin{equation}
+ B_R=\int x f_R(x)u(x)\dd x,\qquad
+ \dot B_R=-\int[f_R(x)+xf_R'(x)]\pi(x)\dd x.\label{cutoff}
+\end{equation}
+Equivalently on a finite interval,
+$\partial_t\int_{-R}^R xu\dd x=[x\pi]_{-R}^R-\int_{-R}^R\pi\dd x$.
+If the smeared limits exist and the last shell/boundary term vanishes,
+$\dot B=-\Pi$ and $\dot M=[\pi]_{-\infty}^{\infty}=0$.
+In a nonzero fixed-height sector, $M$ is a c-number and
+\begin{equation}
+ X_{\rm cm}=B/M,\qquad \Pi=-M\dot X_{\rm cm}.\label{centroid}
+\end{equation}
+There is no ordering correction to this linear continuity identity.
+More generally the equal-time field algebra makes $M$ commute with $B$;
+an inverse of $M$ still needs a nonzero-mass domain. Momentum eigenstates on
+the line are delocalized: a localized state or a regulated matrix-element
+limit is needed to define its centroid. Classical kink tails do not spoil
+\eqref{cutoff}: $\pi$ is localized, although $\phi$ is not.
+\D The full quantum soliton Hilbert space and these limiting domains are
+not constructed by the repository's determinant packages.
+
+\paragraph{Why dispersion is not sufficient \C/\D (\alg).}
+\C If a soliton wavepacket has centroid velocity equal to its group velocity,
+and if its branch energy is $E(P)=E_0(P)+\hbar F(P)$, then its first-order
+charge relation is
+\begin{equation}
+ \bar q=-M_0\partial_PF-v_0\bar m.\label{ward}
+\end{equation}
+The group-velocity/state identification is \D until supplied with the
+appropriate quantum sector and wavepacket. In particular, a derivative in a
+fixed-$M$ sector is not automatically the derivative of a family whose
+$M(P)$ changes. Even granting the branch velocity identification, omitting
+$\bar m$ from \eqref{ward} is an additional assumption.
+
+\C With fixed potential endpoints, $M=\phi(+\infty)-\phi(-\infty)$ has no
+perturbative correction within that sector: decaying fluctuations integrate
+to zero. This protects the endpoint definition, not the classical relation
+$M_0(P_0)=2k(P_0)$. The quantum family can have a shifted relation between
+height and momentum. Already the exactly solvable elastic deformation at
+fixed $P$ gives
+\begin{equation}
+ (\bar m)_{\rm ct}=-\frac{2\lambda k}{3-4k^2},\qquad
+ (\bar q)_{\rm ct}=-\frac{4\lambda kv}{3-4k^2}.\label{CTcharges}
+\end{equation}
+These follow by solving $P=2k^3\sqrt{1-k^2+2\hbar\lambda}/3$ to first
+order, and independently from the velocity-labelled mean response below.
+They demonstrate why exact topological conservation is not an argument for
+$\bar m=0$ along the fixed-$P$ comparison.
+
+\section{Independent continuum-mode insertion of the shift charge}
+\paragraph{Precisely what is computed \C/\D (\modes).}
+\C This section performs a new calculation of the continuum tadpole and the
+linear charge insertion on a stationary, light, good soliton, with the same
+free-vacuum normal ordering as the audited trace. It does not differentiate
+the dispersion to obtain the answer. The final momentum result is then
+compared with that derivative. \D Completeness of the nonzero-frequency
+basis in the constrained quantum domain, its time-dependent projection and
+the finite collective measure are not established; the result is conditional
+on the scattering-continuum prescription. No claim to the fully projected
+physical expectation is made.
+
+\paragraph{Modes and local variance \C (\modes).}
+Set $\xi=x-vt$, $y=\tanh(k\xi/2)$, $u_0=k^2(1-y^2)/2$,
+$h_0=(1+y)/2$, $\omega=|q|\sqrt{1+q^2}$, $\nu=\omega-vq$. The potential
+mode, with asymptotic normalization $1/\sqrt{2\omega}$ and measure
+$\dd q/(2\pi)$, has spatial factor
+\begin{align}
+ f_q&=e^{iq\xi}\left[1+(T_q-1)
+                  \left(h_0+\frac{h_0'}{iq}\right)\right],\\
+ T_q&=-\frac{t_q-i b_q}{t_q+i b_q},\qquad
+ t_q=3kq,\quad b_q=1-2k^2+2q^2-v\operatorname{sgn}(q)\sqrt{1+q^2}.
+\end{align}
+The co-moving pencil is checked directly at both signs of $q$ and $v$:
+\begin{equation}
+ [\partial_\xi^4-k^2\partial_\xi^2
+    +6\partial_\xi(u_0\partial_\xi)
+    +2iv\nu\partial_\xi-\nu^2]f_q=0,\qquad |T_q|=1.
+\end{equation}
+Write $a_q=\Re T_q-1$, $b_q^{\rm im}=\Im T_q$, and define
+\begin{align}
+ A_q&=\tfrac12a_q(q^2-k^2)+kq b_q^{\rm im},&
+ B_q&=-a_qk^4/(8q^2),\\
+ |f_q'|^2-q^2&=A_q(1-y^2)+B_qy^2(1-y^2)^2.\label{density}
+\end{align}
+This is a direct field-mode density, not a phase-density ansatz.
+At a common infrared cutoff $\mu$, the vacuum-subtracted coincident
+variance $g_\mu=\langle\eta_x^2\rangle/\hbar-\langle\eta_x^2\rangle_0/\hbar$
+has the same two shapes with coefficients
+\begin{equation}
+ A_\mu=\int_{|q|>\mu}\frac{A_q\dd q}{4\pi\omega},\qquad
+ B_\mu=\int_{|q|>\mu}\frac{B_q\dd q}{4\pi\omega}.
+\end{equation}
+The limit of $A_\mu$ exists. For $0<k<\sqrt3/2$, putting
+$R=\sqrt{1+q^2}$ gives the independently checked integral
+\begin{align}
+ A&=\frac{3k^2}{4\pi}\int_1^\infty
+ \left[\frac1{4R^2+4vR+4v^2-3}
+       +\frac1{4R^2-4vR+4v^2-3}\right]\dd R\\
+ &=\frac{\sqrt3 k}{4\pi}\operatorname{artanh}\frac{2k}{\sqrt3}.
+ \label{Aintegral}
+\end{align}
+$B_\mu$ has a soft logarithm. It must not simply be dropped in the local
+profile or in a momentum contraction.
+
+\paragraph{Mean profile and direct $\Pi$ insertion \C (\modes).}
+The order-$\hbar$ stationary field equation is
+\begin{equation}
+ H_v u_1=3g_\mu-2\lambda u_0,\qquad
+ H_v=-\partial_\xi^2+k^2-6u_0.\label{tadpole}
+\end{equation}
+The following identities give an explicit solution, modulo translation:
+\begin{gather}
+ H_v\partial_k u_0=-2ku_0,\qquad H_vu_0''=6(u_0')^2,\\
+ u_1=\left(-\frac{3A_\mu}{k^3}+\frac\lambda k\right)\partial_k u_0
+                    +\frac{2B_\mu}{k^6}u_0''.\label{profile1}
+\end{gather}
+In particular the soft term is a translation-spreading contribution with
+zero integrated height. An adjoint check uses
+\begin{equation}
+ w=\frac1{k^2}-\frac3{k^3}\partial_k u_0,\qquad H_vw=1,\quad
+ \int w(1-y^2)\dd\xi=-\frac2{k^3},\quad
+ \int wy^2(1-y^2)^2\dd\xi=0.
+\end{equation}
+Direct integration of \eqref{profile1}, with two distinct finite values of
+$B_\mu$, verifies the same mass response. Since $\Pi=\int\pi$ is linear,
+there is no quadratic Wick contraction of this operator. Its one-loop
+mean correction at fixed velocity is $\int(-vu_1)$, giving
+\begin{equation}
+ \boxed{m_v=-\frac{3\sqrt3}{2\pi k^2}
+              \operatorname{artanh}\frac{2k}{\sqrt3}+\frac{2\lambda}{k},
+ \qquad q_v=-v m_v.}\label{directPi}
+\end{equation}
+The latter was obtained from the stationary field insertion, independently
+of the energy derivative or centroid argument. Setting $q_v=0$ just because
+the Gaussian contraction is zero would omit the entire mean profile.
+
+\paragraph{Direct momentum and a nontrivial comparison \C (\modes).}
+The canonical momentum has both a mean-profile term $2v\int u_0u_1$ and
+a quadratic fluctuation term. Define
+\begin{align}
+ J_q&=\int[\Re(if_qf_q'^*)-q]\dd\xi
+       =-a_q k/q+2a_q q/k+3b_q^{\rm im},\\
+ G_q&=\int(|f_q'|^2-q^2)\dd\xi
+       =4A_q/k+8B_q/(15k).
+\end{align}
+Using $\int(\partial_k u_0)(1-y^2)=2$ and
+$\int(\partial_k u_0)y^2(1-y^2)^2=8/45$, the soft $B_q$ terms cancel
+\emph{between} these contributions before the $q$ integral:
+\begin{align}
+ p_v&=\int\frac{\nu J_q-2vA_q/k}{4\pi\omega}\dd q+2\lambda vk\\
+ &=-\frac{2\sqrt3 v}{\pi}\operatorname{artanh}\frac{2k}{\sqrt3}
+                       +2\lambda vk.\label{directP}
+\end{align}
+Independent 80-digit quadratures, at five signed widths, agree with the
+closed forms to better than $10^{-65}$. The mode pencil and profile equation
+are separately checked. No fitted coefficient sets the tadpole result.
+
+\C Only after this calculation, compare the audited conditional dispersion
+\begin{equation}
+ F_g(k;\lambda)=\frac{\sqrt3}{\pi}(\tfrac34-k^2)
+ \operatorname{artanh}\frac{2k}{\sqrt3}-\frac{3k}{2\pi}
+                          +\frac{2\lambda k^3}{3}.\label{Fg}
+\end{equation}
+It satisfies $p_v=-\partial_v F_g$. With
+\begin{equation}
+ V_1=-p_v/P_{0,v}=\partial_PF_g,\quad
+ \bar m=m_v+M_{0,v}V_1,\quad
+ \bar q=-v m_v+\Pi_{0,v}V_1,\label{directfixed}
+\end{equation}
+the independently computed insertion obeys \eqref{ward}, including
+$-v\bar m$. At $k=.31$, $\epsilon=+1$, $\lambda=0$, for example,
+\begin{equation}
+ (\bar m,\bar q,V_1)=(1.2322718175732764,
+                 -0.7212159462470162,-0.7263708360512509).
+\end{equation}
+The frozen-height prediction $-2kV_1$ even has the opposite sign here.
+This compares two conditional one-body computations; it does not certify
+the missing physical boundary measure.
+
+\section{Bad/Toda calibration before the good application}
+\paragraph{Continuation and dictionary \C/\D (\modes, \calcheck).}
+\C Use the audited formal continuation $F_b(k)=-iF_g(ik)$ with the
+action/Planck dictionary, including reversal of the finite quadratic
+coefficient under continuation. For the mass coefficient the corresponding
+rule is $m_b(k)=i m_g(ik)$, since both $M$ and $\hbar$ scale. Thus at
+fixed velocity $v=\epsilon\sqrt{1+k^2}$,
+\begin{align}
+ m_{v,b}&=-\frac{3\sqrt3}{2\pi k^2}\arctan\frac{2k}{\sqrt3}
+                         -\frac{2\lambda_b}{k},\\
+ p_{v,b}&=-\frac{2\sqrt3 v}{\pi}\arctan\frac{2k}{\sqrt3}
+                         -2\lambda_bvk,\qquad q_{v,b}=-v m_{v,b},\\
+ F_b&=\frac{\sqrt3}{\pi}(\tfrac34+k^2)\arctan\frac{2k}{\sqrt3}
+             -\frac{3k}{2\pi}+\frac{2\lambda_b k^3}{3},\qquad
+ C_b=\lambda_b+2/\pi.\label{bad}
+\end{align}
+These are formal continuations, not a real whole-line bad-vacuum mode sum
+\D. The lattice-matched parameter $\lambda_b=-3/(2\pi)$ gives
+$C_b=1/(2\pi)$ as in the controlling one-body audit.
+
+\C At reference spacing one, the established small-amplitude units are
+\begin{equation}
+ \kappa=\sqrt3\beta,\quad k=\sinh\beta,\quad
+ h_T=3b\hbar_B,\quad b=e^{-1/2},\quad
+ P_B=\overline P_T/(6\sqrt3b),\quad E_B=\overline E_T/(6\sqrt3b^2).
+\end{equation}
+The classical action obeys the corresponding scaling, so its dimensionless
+phase is unchanged. Put $k_1=\rho$, $k_2=r\rho$, $0<r<1$, on the
+right-moving overtaking branch. The same $r$ is the leading
+$\sqrt{y_2/y_1}$ or cube root of the physical momentum ratio.
+\D The additional identification tested here is between the
+continuum canonical \emph{recoil representative} and the exchange-odd part
+of Toda's two-term \emph{directional residual}, using their stated classical
+subtractions. There is no established common quantum operator/endpoint
+dictionary identifying those entire observables.
+
+\paragraph{What actually reproduces the rational term \C (\calcheck).}
+With $\sigma=+1$ for good and $\sigma=-1$ for bad, put
+$C=\lambda-2\sigma/\pi$. At small amplitude the canonical insertion and
+Darboux coefficient obey
+\begin{equation}
+ p_v=2\sigma Ck+O(k^3),\qquad \gamma_0=-k^{-2}+O(1),\qquad
+ D[p]\longrightarrow-4\sigma C(r-r^{-1}).\label{Dlimit}
+\end{equation}
+Consequently the matched bad recoil is exactly $2(r-r^{-1})/\pi$.
+Independent regular quadrature verifies the audited decomposition
+\begin{align}
+ R_{12}^{(1)}&=\frac4\pi\int_0^r\log(s/r)\frac{s^2}{1-s^2}\dd s
+             =-\frac4\pi[\chi_2(r)-r],\\
+ S^{(1)}&=\frac2\pi(r+r^{-1})-\pi,\\
+ \vartheta_N^{(1)}&=R_{12}^{(1)}-S^{(1)}
+       =\pi-\frac4\pi\chi_2(r)+\frac2\pi(r-r^{-1}),\qquad
+ \chi_2(r)=\tfrac12[\operatorname{Li}_2(r)-\operatorname{Li}_2(-r)].
+ \label{Toda}
+\end{align}
+At $r=1/2$, the rational part is $-0.9549296585513720$.
+The whole $\vartheta_N$ is $1.5305278132789631$. Recoil accounts for neither
+the chi-function term nor the endpoint constant.
+\C As an additional check against overidentification, the audited canonical
+continuum candidate $J+D$ differs from \eqref{Toda} by
+\begin{equation}
+ (J+D)-\vartheta_N=-\frac\pi2-\frac2\pi\log r\log\frac{1-r}{1+r},
+\end{equation}
+a nonconstant gap, $-2.0555822900856296$ at $r=1/2$. Rational agreement
+is not validation of the full phase.
+
+\paragraph{Why this is not $c_{\rm bad}$ \C (\calcheck, \modes).}
+The proposed finite-coefficient residual scales as
+\begin{equation}
+ Q_{12}=\tfrac43r(1-r^2)\rho^4+O(\rho^6).
+\end{equation}
+It cannot reproduce an order-one rational function of $r$. Conversely,
+every finite $c$ disappears from this leading Toda limit, so that limit
+cannot determine it. Dividing the rational term by $Q_{12}$ produces a
+kinematic divergence, not a coefficient in the assumed loop expansion.
+
+\C The actual conditional charge response makes the problem still more
+explicit. For either sign of the equation, for $\epsilon=+1$,
+\begin{align}
+ \bar m&=\frac1{\pi k}+\left(\frac{16\sigma}{9\pi}-\frac{2\lambda}{3}\right)k
+           +O(k^3),\\
+ \bar q&=-\frac1{\pi k}+\left(\frac{49\sigma}{18\pi}-\frac{4\lambda}{3}\right)k
+           +O(k^3).\label{smallcharges}
+\end{align}
+Changing $\Pi$ alone in $T_0$ would yield $4(r-r^{-1})/(3\pi)$, only
+two thirds of Toda's rational coefficient. The simultaneous $M$ term in
+\eqref{T1} yields its negative. The surviving topological substitution is
+\begin{equation}
+ T_1|_P=-\frac{2\sigma}{3\pi}\rho^2(1-r^2)(r+r^{-1})+O(\rho^4),
+ \label{toplimit}
+\end{equation}
+not a constant times $Q_{12}$ and not \eqref{Dlimit}. The leading
+$1/k$ charge shift is incompatible with $\Delta\Pi=\hbar\kappa P$.
+These are sequential one-loop coefficients; their use requires
+$\hbar/k^2\ll1$. No uniform finite-$\hbar$ zero-amplitude limit is claimed.
+
+\section{Good equation: parameter dependence and the failed frozen-height shortcut}
+\paragraph{What can be given as a function of $\lambda$ \C (all but \proj).}
+Equations \eqref{directPi}, \eqref{directP} and \eqref{directfixed} give the
+conditional one-body response for every finite $\lambda$. The audited
+small-amplitude coefficient and the isolated rational recoil are
+\begin{equation}
+ C_g(\lambda)=\lambda-2/\pi,\qquad
+ D_g[p]\longrightarrow(-4\lambda+8/\pi)(r-r^{-1}).\label{goodrecoil}
+\end{equation}
+\begin{center}
+\begin{tabular}{@{}cccc@{}}\toprule
+$\lambda$ & $C_g$ & Coefficient in \eqref{goodrecoil} & Physical $c_g$\\\midrule
+$9/(4\pi)$ & $1/(4\pi)$ & $-1/\pi$ & undetermined\\
+$0$ & $-2/\pi$ & $8/\pi$ & undetermined\\\bottomrule
+\end{tabular}
+\end{center}
+\D These recoil coefficients are not values of $c_g$. They neither select
+a scheme nor complete the physical phase.
+
+\C Counterterm accounting is an independent safeguard against double
+counting. In the same specified chamber frame, the complete classical
+elastic response at fixed momenta is
+\begin{equation}
+ \delta_1^{\rm ct}=\lambda K_\lambda,\qquad
+ K_\lambda=3\delta_0-4\sum_jP_j\partial_{P_j}\delta_0.
+\end{equation}
+Fresh finite differences of the exact stiffness-deformed phase, with both
+momenta inverted anew, verify $K_\lambda^{++}=0.05008140486841891$ and
+$K_\lambda^{+-}=-0.22517393868334176$ at $\alpha=(.3,.6)$.
+The isolated $\lambda$ dependence of \eqref{goodrecoil} must be accompanied
+by the corresponding change in the label-frame contribution; replacing
+the momentum convention while leaving that contribution fixed is invalid.
+No $\lambda K_\lambda$ already present in a representative may be added again
+under the name of a new CDD coefficient.
+
+\paragraph{Even imposing $\bar m=0$ does not rescue a universal $c$ \C (\alg).}
+If one nevertheless grants both the branch-velocity identification and
+the frozen-height assumption, then
+\begin{equation}
+ \bar q_{\rm fr}=-M_0 F_P,\qquad
+ c_{\rm eff}(P_1,P_2)=\frac23\frac{F_P(P_1)-F_P(P_2)}{P_1/M_1-P_2/M_2}.
+\end{equation}
+This is a pointwise quotient, not a constant. For $\lambda=0$ on the good
+branch, it is $-2.4463194544$ at $(k_1,k_2)=(.2,.4)$ overtaking,
+$-4.8131022786$ at $(.3,.6)$ overtaking, and $-15.8575027361$ at
+$(.2,.4)$ head-on. The corresponding three values at
+$\lambda=9/(4\pi)$ are $-0.7124456976$, $-1.5929611493$, and
+$1.1003496931$. The failure is structural, not a numerical tolerance issue.
+
+\C On a single right-moving branch only, its small-width limit exists.
+Expanding $F_P=C+D_2k^2+O(k^4)$ gives
+\begin{equation}
+ D_2=\frac{5\sigma\lambda}{6}-\frac{23}{9\pi},\qquad
+ c_{{\rm fr},\rm small}=2D_2.
+\end{equation}
+The resulting good values are $-49/(36\pi)$ at $9/(4\pi)$ and
+$-46/(9\pi)$ at zero; the matched bad value is $-47/(18\pi)$.
+They characterize this expressly false-for-the-computed-branch
+frozen-height shortcut, not $c_{\rm good}$ or $c_{\rm bad}$.
+In opposite directions even the common leading velocity correction changes
+sign, so it cannot be discarded as one common multiple of $M$ in
+\eqref{span}.
+
+\section{Ring and one collision-point projection checks}
+\paragraph{Conditional ring correction \C (\calcheck).}
+For the proposed directional ring phase $\Phi(j\mid l)=\delta(j,l)+\Pi_jM_l$,
+the twist changes by
+\begin{equation}
+ (\Pi_jM_l)_1|_P=\bar q_jM_{0,l}+\Pi_{0,j}\bar m_l.
+\end{equation}
+The symmetric pair correction is exactly \eqref{S1}, and summing the
+assumed equations, including the audited self-winding term, changes the
+total twist by
+\begin{equation}
+ (\Pi_{\rm tot}M_{\rm tot})_1
+       =\bar q_{\rm tot}M_{0,\rm tot}+\Pi_{0,\rm tot}\bar m_{\rm tot}.
+\end{equation}
+The same charge/height response therefore appears in this algebraic check.
+An antisymmetric $cQ_{jl}$ cancels from the total pair sum. \D The ring
+holonomy is still not a quantum wavefunction-transport calculation; it
+provides no independent equation selecting $c$.
+
+\paragraph{Exact two-soliton background at one point \C (\proj).}
+At $\alpha_1=.3$, $\alpha_2=.6$, $\epsilon_1=\epsilon_2=+1$,
+$t=X_1=X_2=0$, the checker uses the exact two-soliton tau function,
+$\tau=1+E_1+E_2+A_{12}E_1E_2$, $E_j=e^{k_j(x-X_j)-k_jv_jt}$,
+and differentiates $\phi=2\partial_x\log\tau$, $\pi=\partial_t\phi$.
+It evaluates the four-modulus symplectic Gram matrix directly, retaining
+all cross terms. Here
+\begin{equation}
+ A_{12}=0.09096862155680799,\qquad
+ \det W=(P_{0,\alpha_1}P_{0,\alpha_2})^2
+          =0.0032005493687711533.
+\end{equation}
+The determinant error is below $10^{-50}$ at 65 digits. For the localized
+test fluctuation $\eta=(0,e^{-x^2})$, its symplectic projection onto these
+four tangents has
+\begin{equation}
+ (\mathcal P\eta)_\phi(-\infty)=0,\qquad
+ (\mathcal P\eta)_\phi(+\infty)=-1.0756732271416573.
+\end{equation}
+Thus the complementary radiation projection does not preserve fixed
+potential endpoints even at this particular collision point.
+
+\D This is an instantaneous Gram determinant, explicitly \emph{not} the
+requested spacetime projected fluctuation determinant. A numerical value
+of the latter would require a boundary-compatible evolving domain, the
+constraint/collective-radiation Schur complement, and time-endpoint state
+normalization. Those inputs are not supplied by the audited machinery.
+Rather than choose them by preference or assign the determinant a zero
+phase, the cache records \file{null}. A single kinematic point does not
+remove this missing-definition problem.
+
+\section{Claim summary, failures recorded, and conclusion}
+\small
+\begin{longtable}{@{}L{5.3cm}L{6.1cm}L{3.4cm}@{}}\toprule
+Claim and status & Evidence and limit & Checker\\\midrule\endhead
+\C One coefficient in the exhibited $P,M$ wedge; defect rank zero & Polynomial primitives, mixed minors and explicit transmission lift. Not a classification. & \alg\\[3pt]
+\C Fixed-$P$ charge and chamber algebra & Symbolic inversion, symmetric subtraction, curl counterexample, exact elastic deformation & \alg\\[3pt]
+\C Continuity/centroid implication & Regulated integration by parts; quantum domain and group-velocity identification remain conditional & \alg\\[3pt]
+\C Conditional direct $m_v,q_v,p_v$ & Field-mode densities, pencil test, explicit mean-profile solution, independent 80-digit integrals & \modes\\[3pt]
+\C Bad/Toda rational recoil match & Symbolic small-width limit and independent ratio-integral quadrature; full phase and $c$ not matched & \calcheck\\[3pt]
+\C Good $\lambda$ dependence & Conditional one-body responses and isolated recoil; full counterterm response checked separately & \alg, \modes, \calcheck\\[3pt]
+\C Conditional ring sum and collision geometry & Charge-product expansion; direct exact-tau symplectic integration and endpoint failure & \calcheck, \proj\\[3pt]
+\D Physical residual $c$, projected expectation and functional determinant & Missing domain/state map and dynamical two-body calculation; explicit nulls & Open\\\bottomrule
+\end{longtable}
+\normalsize
+
+\paragraph{Numerical scope \C.}
+The scripts use 80 decimal digits except the 65-digit collision quadrature.
+Analytic/integral comparisons are asserted at $10^{-65}$ or $10^{-70}$;
+the finite-width Toda recoil test uses $k_1=10^{-16}$ and a distinct
+$10^{-29}$ truncation tolerance. Elastic-response Richardson differences
+use steps $10^{-14}$ and half that, with $10^{-50}$ tolerance.
+The collision integrates to $|x|=600$ and separately verifies its endpoint
+limit. These are numerical diagnostics, not rigorous interval error bounds.
+All four scripts print \texttt{ALL CHECKS PASSED}; their cached runtimes
+total approximately 35 seconds, far below thirty minutes. Physical interpretation
+errors are not hidden inside those numerical tolerances.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item \C The initial stronger premise that the full residual has only one
+coefficient is unsupported: the defect package exhibits one wedge while
+explicitly retaining other unknown contributions. The work was adapted to
+that actual scope.
+\item \C The frozen-height dispersion shortcut fails constant-$c$ and
+cross-channel tests; the nonzero direct height response is retained.
+\item \C The Gaussian linear-$\Pi$ contraction alone misses the mean-profile
+term. The unprojected local tadpole has a soft logarithm. Its integrated
+mass contribution vanishes and its momentum contribution cancels by exact
+identities; no interval or nonzero contribution was discarded.
+\item \C Changing the shift charge alone gives a rational coefficient
+of the wrong size for Toda and omits an equal, opposite height term.
+The full topological substitution and $P\wedge M$ have different scaling.
+\item \C A Darboux-coefficient change with unchanged spatial delays fails
+the curl condition. The known rational recoil cannot be counted a second
+time as a newly computed residual.
+\item \C The conditional continuum/Toda full-phase comparison retains
+a nonconstant gap after the rational terms agree.
+\item \C At the single collision point the instantaneous projection fails
+the fixed-endpoint test. A physical two-body functional determinant and
+quantum ring holonomy were not evaluated, and are not reported as zero.
+\item \C No implementation assertion failed in these four scripts, and
+no tolerance was weakened. The first PDF build failed because the checker
+macro name conflicted with the standard LaTeX command \file{cal}; it was
+renamed before rebuilding. A second build found an accidental form-feed
+character in a formula command; the character was repaired and the long
+charge display was split for layout. The following build exposed two
+missing backslashes before paired left delimiters; those were restored. The two optional audit-file reads reported
+missing files; no claim about their unobserved verdicts is made.
+\end{enumerate}
+
+\paragraph{Conclusion (C).}
+\C The continuity identity survives the stated boundary/domain assumptions;
+the conditional direct mode insertion agrees with it only after the height
+response is included. The tested mechanism does not isolate a universal
+$c(P_1M_2-P_2M_1)$. Toda calibrates the already-known rational recoil,
+not that coefficient. \D Therefore $c_{\rm bad}$ and
+$c_{\rm good}(\lambda)$, including its values at $0$ and $9/(4\pi)$,
+remain undetermined. What is missing is precisely a common physical
+endpoint/state map, the boundary-compatible collective projection and
+two-body determinant (or equivalent dynamical phase input). No additional
+bootstrap identity, choice of the two candidate $\lambda$ values, or
+centroid Ward identity supplied here replaces those inputs.
+
+\paragraph{Internal references and reading scope.}
+{\raggedright
+The following repository texts, rather than newly verified literature
+entries, supply the inherited targets and qualifications:
+\file{README.md}, \file{AGENTS.md}, \file{report.tex}, \file{errata.tex};
+\file{good_twobody.tex}, \file{audit_good_twobody.tex} (frame and constraint
+passages); \file{defect_bootstrap.tex}, \file{audit_resonant_channels.tex};
+\file{good_renorm.tex}, \file{onebody_scheme.tex},
+\file{audit_onebody_scheme.tex}, \file{onebody_dispersion_test.tex};
+\file{det_projected_oneloop.tex}, \file{audit_det_projected.tex},
+\file{charge_frame_master.tex}, \file{audit_charges_action.tex};
+\file{toda_route.tex}, \file{twobody_toda.tex},
+\file{audit_twobody_toda.tex}, \file{audit_frame_dictionary.tex},
+\file{audit_twobody_cont.tex}; \file{smx_candidates.tex}, \file{audit_smx.tex}.
+Relevant existing script implementations were read only; all reported new
+computations use the four independent \file{shiftcharge} scripts.\par}
+\end{document}

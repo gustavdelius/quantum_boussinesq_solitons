@@ -1,0 +1,328 @@
+{
+  "scope": "Classical exact deformation and conditional semiclassical dressing; no quantum domain constructed",
+  "sources_read": [
+    {
+      "id": "arXiv:2105.03326v5",
+      "reading": "Full-text sections 2-3, Appendix B, Appendix C relevant boundary formulas"
+    },
+    {
+      "id": "arXiv:2010.15733v3",
+      "reading": "Full-text sections 2.2, 3.2-3.3, 3.6"
+    }
+  ],
+  "checks": [
+    {
+      "name": "mass continuity",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "momentum continuity",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "current density boundary term",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "generator phi gradient",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "generator pi gradient",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "mass fixed by flow",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "momentum fixed by flow",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "shift charge flow boundary",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "Hamiltonian canonical flow",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "generator time derivative",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "finite Hamiltonian derivative",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "reciprocal Jacobian composition",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "gradient transformation",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "energy of inverse transformed profile",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "mass of inverse transformed profile",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "momentum of inverse transformed profile",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "deformed velocity law",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "symplectic wedge coefficient",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "vacuum elastic curvature unchanged",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "deformation has no quadratic vacuum term",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "zero one-soliton energy perturbation",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "asymptotic generator difference",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "one-loop phase parameter",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "antisymmetry of dressing phase",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "ring length and twist algebra",
+      "kind": "symbolic",
+      "remainder": "0"
+    },
+    {
+      "name": "one-soliton X self term",
+      "kind": "mpmath",
+      "error": "1.6472184286297692538e-83",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "one-soliton integrated deformation",
+      "kind": "mpmath",
+      "error": "1.056165399145539338e-85",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton M",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton P",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton Pi",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton E",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton centroid numerator",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "deformed centroid Ward identity",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "one-soliton X self term",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "one-soliton integrated deformation",
+      "kind": "mpmath",
+      "error": "3.4335484084584217302e-84",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton M",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton P",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton Pi",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton E",
+      "kind": "mpmath",
+      "error": "1.317774742903815403e-82",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "inverse transformed soliton centroid numerator",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "deformed centroid Ward identity",
+      "kind": "mpmath",
+      "error": "0.0",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "two-soliton canonical field equation",
+      "kind": "mpmath",
+      "error": "1.6472184286297692538e-83",
+      "tolerance": "1.0e-70"
+    },
+    {
+      "name": "two-soliton canonical field equation",
+      "kind": "mpmath",
+      "error": "3.2944368572595385076e-83",
+      "tolerance": "1.0e-70"
+    },
+    {
+      "name": "two-soliton canonical field equation",
+      "kind": "mpmath",
+      "error": "2.4708276429446538807e-83",
+      "tolerance": "1.0e-70"
+    },
+    {
+      "name": "two-soliton incoming bilocal factorization",
+      "kind": "mpmath",
+      "error": "1.5652449629769018351e-47",
+      "tolerance": "1.0e-37"
+    },
+    {
+      "name": "two-soliton outgoing bilocal factorization",
+      "kind": "mpmath",
+      "error": "5.3460218126602283319e-48",
+      "tolerance": "1.0e-37"
+    },
+    {
+      "name": "two-soliton action boundary wedge",
+      "kind": "mpmath",
+      "error": "2.0998471442429246683e-47",
+      "tolerance": "1.0e-37"
+    },
+    {
+      "name": "collision integrated current versus X derivative",
+      "kind": "mpmath",
+      "error": "7.7213363842020433772e-84",
+      "tolerance": "1.0e-65"
+    },
+    {
+      "name": "finite interval current boundary term",
+      "kind": "mpmath",
+      "error": "6.5888737145190770152e-83",
+      "tolerance": "1.0e-65"
+    }
+  ],
+  "onebody": [
+    {
+      "k": "0.37",
+      "g": "0.3",
+      "charges": [
+        "0.74",
+        "0.03137216362465936138672813589431143707748",
+        "-0.6968951470711675977526466926524008908197",
+        "0.03007032229333333333333333333333333333333",
+        "0.08214"
+      ]
+    },
+    {
+      "k": "0.61",
+      "g": "-0.2",
+      "charges": [
+        "1.22",
+        "0.1199067101472768565035943117990909621761",
+        "-0.942748382350632157618343044109606388399",
+        "0.1062755306133333333333333333333333333333",
+        "-0.14884"
+      ]
+    }
+  ],
+  "two_soliton": {
+    "k1": "0.25",
+    "k2": "0.6",
+    "time_far": "2500.0",
+    "A": "0.158561328880871310819693412036001891028",
+    "X_in": "-0.1292414735326871203679552509113166664133",
+    "X_out": "-0.08374454648958529813414045528563666519716",
+    "X_difference": "0.04549692704310182223381479562568000121615",
+    "D_at_collision": "-0.0004539822987511666070508801904128653152576"
+  },
+  "finite_interval": {
+    "left": "-1.2",
+    "right": "0.8",
+    "boundary_term": "-0.01871618070798421751861438239600255909419",
+    "integrated_deformation": "0.06201944960388051691230550927170923504254"
+  },
+  "failures_recorded": [],
+  "physical_quantum_S": null,
+  "physical_c_good": null,
+  "runtime_seconds": 37.71248048200505
+}
