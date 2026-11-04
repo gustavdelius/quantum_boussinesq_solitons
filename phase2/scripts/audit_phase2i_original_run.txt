@@ -1,0 +1,31 @@
+=== Check 1: Wiener-Hopf Derivation & FastNodesEdgeBA Check of delta u(y) ===
+  [PASS] Exact Wiener-Hopf asymptotic coefficients of delta u(y):
+         c_edge = (1 - ln(8*pi)) / (2*pi)         = -0.3539878769750351828506
+         d_1    = 0                               (exact cancellation of (ln y)/y)
+         d_0    = 1/48 - 1/(4*pi^2)               = -0.004496962577251109527637
+         e_2    = 0, e_1 = 0                      (exact cancellation of (ln^2 y)/y^2 and (ln y)/y^2)
+         e_0    = (4 + 6*zeta(3) - pi^2)/(96*pi^3)= 0.0004510971788177924879858
+  [PASS] Self-contained FastNodesEdgeBA h->0 extrapolation matches Wiener-Hopf delta u(y) across y in [2, 16].
+
+=== Check 2: Krein Convolution, Cancellation of (ln^2 Y)/Y & (ln Y)/Y, and Exact c_1(r) ===
+  [PASS] Balanced 4-term coboundary Delta(Y, t) cancels both ln(Y) and c_edge identically.
+  [PASS] Exact closed-form two-loop coefficient c_1(r) verified in SymPy:
+         c_1(r)       = -r^3 / (6*(1 - r^2)) - 2*d_0 * [ ((1 - r^2)/r^2)*ln((1-r)/(1+r)) + 2/r ]
+         Delta c_1(r) = c_1(r) - c_1^Gamma(r) = r^2 / (6*(1 + r)) - 2*d_0 * [ ((1 - r^2)/r^2)*ln((1-r)/(1+r)) + 2/r ]
+         lim_{r->1^-} Delta c_1(r) = 1 / pi^2 (the 1/(1-r) threshold pole cancels identically!)
+  [PASS] Closed-form c_1(r) matches 70-digit Wiener-Hopf quadrature across r in [0.2, 0.8]: max err = 6.79e-72
+
+=== Check 3: Classical-Dispersion Subtraction of Saved Phase 2f Toda Data vs Exact c_1(r) ===
+  [PASS] r = 0.4: classical-subtracted Toda c_1(r) = -0.007832 vs exact c_1^WH(r) = -0.007737 (|diff| = 9.50e-05)
+  [PASS] r = 0.5: classical-subtracted Toda c_1(r) = -0.021572 vs exact c_1^WH(r) = -0.021445 (|diff| = 1.27e-04)
+  [PASS] r = 0.6: classical-subtracted Toda c_1(r) = -0.048610 vs exact c_1^WH(r) = -0.048436 (|diff| = 1.74e-04)
+
+=== Check 4: KP Master Function Synthesis, Breather Continuation, and Audit Resolutions (70 digits) ===
+  [PASS] Inversion-antisymmetric kernel K_tilde_L & exact 4-orientation SS/SD identities: max err = 8.15e-71
+  [PASS] Exact crossing symmetry of I_SS[K_tilde_L] and delta_renorm^(can/mode) under alpha_2 -> alpha_2 + pi and pi - alpha_2.
+  [PASS] Analytical continuation to breather locus: Re(I_SS[K_tilde_L]) = 0 and Im(Delta P_can,br) = 0.
+  [PASS] Off-shell defect sewing determinant (-2/3 prefactor) and s=sqrt(3) growing-mode branch switch verified.
+  [PASS] Fermi-edge reciprocity bilinear 8*r*Y*(1/(u'(Y)*u'(r^2 Y)) - 1) = (4/pi)*(r + 1/r) + O(1/Y) verified.
+
+ALL CHECKS PASSED
+AUDIT MEASURED RUNTIME 101.87684258798254

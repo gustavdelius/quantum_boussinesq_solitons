@@ -1,0 +1,19 @@
+WH symbol/normalization discrepancies reproduced; corrected-transform coefficients supported
+finite-h 0.04 681 seconds 4.573036229994614
+finite-h 0.02 1062 seconds 12.471090486011235
+finite-h 0.01 1824 seconds 42.45816303699394
+finite-h 0.005 3348 seconds 203.02994620701065
+finite-h 0.01 2189 seconds 89.92783661201247
+finite-h and independent inverse-Laplace convolution checks complete
+integrals verified and saved data refitted across bases/point sets
+Traceback (most recent call last):
+  File "/home/gustav/Git/quantum_boussinesq_solitons/phase2/scripts/audit_phase2i.py", line 306, in <module>
+    cols.append([mp.diff(lambda t:sewing([t*v for v in j],s)[i],0) for i in range(4)])
+            ^^^^^^
+  File "/home/gustav/Git/quantum_boussinesq_solitons/phase2/scripts/audit_phase2i.py", line 301, in main
+    disc=mp.sqrt(1-4*g*g);ks=[mp.sqrt((1+disc)/2),mp.sqrt((1-disc)/2)]
+                                                    ^^^^
+  File "/home/gustav/Git/quantum_boussinesq_solitons/phase2/scripts/audit_phase2i.py", line 247, in kp
+    def sol(x,e):return mp.sin(x),e*mp.cos(x),(mp.sin(x)+e*mp.cos(x)/mp.sqrt(3))/2,(e*mp.cos(x)/mp.sqrt(3)-mp.sin(x))/2
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

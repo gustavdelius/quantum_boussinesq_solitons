@@ -1,0 +1,543 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak phase2i.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+\title{Independent audit of Phase 2i:\\normalisations, numerical evidence and unresolved identifications}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\Lc\ Phase 2i contains useful new conditional asymptotic calculations and correct
+orientation bookkeeping, but its printed Wiener--Hopf theorem is incorrectly
+normalised, its exchange criterion is false, and its assertion that all six
+audits are resolved is unsupported. The original checker passes despite these
+problems. Independent inverse Laplace transforms support the stated momentum
+coefficients after a missing normalisation is restored. Independent phonon
+quadratures confirm the orientation formulas, not their interpretation as a
+physical determinant normalisation. \Ld\ The physical quantum frame and the
+boundary-compatible projected determinant remain unestablished.
+\end{abstract}
+
+\section{Scope and reproducibility}
+Labels retain their repository meanings: (a) established in literature, (b)
+literature heuristic, (c) project derivation or computational evidence, (d)
+unestablished interpretation or research judgment. All new mathematical checks
+below are in \texttt{scripts/}\scr; numerical evidence is explicitly distinguished
+from a proof. No existing file was edited, no git operation performed, and no
+regularisation, physical charge or phase convention selected. The good-equation
+conventions and the existing Toda extraction are retained. The independent
+quantum-frame investigation is outside this audit's scope.
+
+\Lc\ The Phase 2i source and PDF, the six named audits, the Phase 2f/2h definitions,
+and relevant checkers were read. The Phase 2h independent audit was read in full
+before implementation. This checker imports no Phase 2i formulas or audit
+checker. Only the expressly permitted \texttt{FastNodesEdgeBA} finite-$h$ solver
+is reused; its endpoint is set to exactly $q$, and its root bracket is expanded
+when necessary. Analytical and integral checks use 60-digit mpmath; convolution
+quadrature uses 35 digits; the dense Bethe solver and data regression use
+float64. JSON stores raw data, input hashes, fit variants and timings. Hashes
+are checked again at the end. Finite-$h$ results are cached; use
+\texttt{python3 audit\_phase2i.py --refresh} to regenerate them.
+
+The terms \emph{confirmed}, \emph{qualified}, and \emph{refuted} refer to the
+specific claim, rather than the entire programme. In particular, ``confirmed
+conditional algebra'' does not certify a physical S-matrix. \Ld
+
+\section{Theorem 1: three distinct normalisation problems}
+\paragraph{Fourier symbol: refuted as printed (\scr, \texttt{wh}).}
+\Lc\ Write $T(s)=\widetilde\Phi_{\rm WH}(s)$ with Phase 2i's factor. For
+$\omega\ne0$, direct multiplication gives
+\begin{equation}
+ \Phi_{\rm WH}(i\omega)\Phi_{\rm WH}(-i\omega)
+ =\frac{\pi e^{|\omega|/2}}{\sinh(|\omega|/2)}
+ =\frac{2\pi}{1-e^{-|\omega|}},
+ \label{eq:symbol}
+\end{equation}
+not $2\pi^2 e^{\pi|\omega|}/\sinh(\pi|\omega|)$.
+The digamma integral representation gives the same nonzero-frequency result:
+the cosine term contributes $2\pi/(e^{|\omega|}-1)$ to the transform of
+$-2\operatorname{Re}\psi(1+ix)$, in addition to $2\pi$ from the delta.
+The transform is distributional at zero frequency; this calculation does not
+fix a zero-frequency subtraction or justify dropping the finite-sea constant
+$2\log h$. The large-frequency limit is $2\pi$, whereas the printed symbol
+approaches $4\pi^2$. Four high-precision product checks reproduce the discrepancy.
+The original script never tests this symbol. Its subsequent symbolic series
+uses $T$, so this particular symbol misprint does not propagate into that series.
+
+\paragraph{Momentum Laplace transform: refuted as printed.}
+\Lc\ Let $G(u)=\frac43y(u)^{3/2}$. Since $y(u)\sim u$, its leading Laplace
+coefficient must be $\Gamma(5/2)\,4/3=\sqrt\pi$. The normalisation compatible
+with the implemented expansion is
+\begin{equation}
+ \mathcal L G(s)=\sqrt\pi\,T(s)/s^2,
+ \label{eq:correctG}
+\end{equation}
+not $T(s)/s^2$. Without this factor the leading result is
+$y(u)\sim\pi^{-1/3}u$, incompatible with the asserted $\delta u=O(\log y)$.
+The script silently multiplies every inverse-Laplace term by
+\texttt{sp.sqrt(sp.pi)} in \texttt{rhs\_u}; this is not in the displayed theorem.
+Also, the printed scale $aP_{\rm rel}/(\sqrt{bh}\,h)$ is inconsistent with
+$P_{\rm rel}=4b(\kappa\cosh\kappa-\sinh\kappa)/a$ and
+$\kappa^2=yh/b$: the scale giving $4y^{3/2}/3$ is
+$a\sqrt b\,P_{\rm rel}/h^{3/2}$. These are algebraic normalisation tests,
+not alternative physical conventions.
+
+\paragraph{The printed inverse series is also refuted.}
+\Lc\ Put $A=1/(2\pi)$, $c=c_{\rm edge}$, $d=d_0$, $e=e_0$.
+Reverting $u=y-A\log y+c+d/y+e/y^2$ necessarily gives
+\begin{align}
+ y-u&=v_0+v_1/u+v_2/u^2+\cdots,\\
+ v_0&=A\log u-c,\qquad v_1=Av_0-d,\nonumber\\
+ v_2&=Av_1-\tfrac A2v_0^2+dv_0-e.\label{eq:inverse}
+\end{align}
+In particular the $u^{-2}(\log u)^2$ coefficient is $-1/(16\pi^3)$.
+Phase 2i's equation \texttt{y\_of\_u} has no such term. Numerical inverse
+Laplace transforms independently contradict that displayed equation.
+The script computes an intermediate inverse series but never compares it to
+the printed \texttt{y\_of\_u}; its final reversion can therefore pass.
+
+\paragraph{Coefficients: qualified as a theorem; strong conditional confirmation.}
+\Lc\ With \eqref{eq:correctG}, independent numerical inversion supports
+$c=(1-\log(8\pi))/(2\pi)$,
+$d=1/48-1/(4\pi^2)$ and
+$e=(4+6\zeta(3)-\pi^2)/(96\pi^3)$.
+Fitting the independent inverse transform without setting logarithmic
+coefficients to zero gives
+\[
+ (d_1,e_2,e_1)\simeq(-2.4\,10^{-21},-2.5\,10^{-15},7.2\,10^{-14}),
+ \qquad e_0\simeq0.000451097178279.
+\]
+This fit uses sixteen $u$ values from $1000$ to $1000(1.5)^{15}$ and includes
+all logarithmic terms through $u^{-4}$ in the fitting basis. It is a numerical
+check of the corrected transform, not an independent proof of exact zeros.
+The original formal SymPy reversion supports exact zeros \emph{conditional}
+on its transform input. Independent checks at $u=8,32,128,512,2048,8192$
+find the residual after $e/y^2$ smaller than $0.0004/y^3$.
+
+\Ld\ Matching a homogeneous edge solution to a fixed bulk density is a
+legitimate way to determine its otherwise free amplitude; it is not intrinsically
+an arbitrary convention. Here the projection, zero-frequency matching and
+normalisation are asserted rather than worked through, and two printed
+normalisations contradict that matching. Hence Phase 2i does not supply the
+claimed complete derivation from the finite-$h$ equation. The independent
+finite-$h$ test below is additional evidence, not a replacement for it.
+
+\section{Theorem 2: convolution, contact terms and asymptotics}
+\paragraph{The double Laplace formula is refuted as printed (\scr, \texttt{wh}, \texttt{finite}).}
+\Lc\ In the corrected convention set $B=G'$ and $f=G''$ on the open half-line.
+Stirling's limit gives $B(0^+)=\sqrt\pi$, and therefore
+\[
+ \mathcal L B=\sqrt\pi T/s,\qquad
+ \mathcal L f=\sqrt\pi(T-1).
+\]
+Differentiating the printed convolution
+$2\int_0^{u_2}f(u_1-w)B(u_2-w)\,dw$ at $u_1>u_2$ retains the
+endpoint $2\sqrt\pi f(u_1-u_2)$. Equivalently, use the causal distribution
+$\sqrt\pi\delta+f$, whose Laplace transform is $\sqrt\pi T$.
+The compatible full double transform is
+\begin{equation}
+ 2\pi\frac{T(s_1)T(s_2)-1}{s_1+s_2},
+ \label{eq:double}
+\end{equation}
+with its contact term specified, rather than Phase 2i's prefactor $2$.
+Thus the printed Laplace pair and the classical normalisation of its
+convolution cannot both hold. The original \texttt{verify\_2} does not evaluate
+an inverse transform, the two-variable transform, or a finite-$h$ dressed phase.
+
+\paragraph{Convolution after correction: qualified, numerically supported.}
+\Lc\ We numerically invert \eqref{eq:correctG} and integrate the first
+convolution directly, with 24- and 48-node Gauss quadrature. We compare with
+$[\Phi(q+hu,q+hv)-\Phi(q+hu,q)]/h$ from the finite-sea solver at
+$(u,v)=(4,1),(8,2),(8,4)$. Both arguments are fixed before $h\to0$;
+the corresponding $(Y,r)$ are obtained from the independently computed $y(u)$.
+The finite-$h$ grids, extrapolation spread and numerical results are reported
+in the accompanying tables and JSON. This is a test of the same two-term
+normalisation used in Phases 2f/2h, not an antisymmetrised substitute.
+
+\paragraph{Leading integral and $c_1$: confirmed conditional evaluations (\scr, \texttt{integrals\_data}).}
+\Lc\ Independent quadrature verifies
+\[
+ \frac4\pi\int_0^r\log(s/r)\frac{s^2}{1-s^2}\,ds
+ =-\frac4\pi(\chi_2(r)-r)
+\]
+and the displayed $c_1$ integral against the stated elementary expression,
+at five ratios between $0.2$ and $0.8$, with errors below $10^{-54}$.
+These are useful conditional integral identities. The balanced logarithmic
+coboundary cancels $\log Y$ and $c$ at fixed $t>0$ algebraically.
+\Ld\ It does not alone prove a uniform integrated expansion: $Yt^2$ is not
+large near $t=0$. The asserted $O(Y^{-2})$ remainder and absence of other
+endpoint terms require an endpoint estimate or matched expansion. Replacing
+$v$ by $y(v)$ makes the exact measure regular but does not make a large-$y$
+expansion uniform at $y=0$. Thus the leading limit and two-loop coefficient
+are qualified as conclusions about the Bethe equation, although their formal
+integrals and numerical evidence survive.
+
+\paragraph{The claimed four-term reciprocity resolution is refuted as printed.}
+\Lc\ A four-term edge-subtracted phase vanishes when either argument is zero.
+The asserted symmetric product $2B(u_1)B(u_2)$ does not: $B(0^+)=\sqrt\pi$.
+This is a direct boundary-condition contradiction. The earlier Toda dictionary
+audit explicitly distinguishes two-term and four-term phases by one-body edge
+terms; Phase 2i's remark suppresses that distinction. Its script checks only a
+series of the proposed product in $1/Y$, not the endpoint identity or its
+finite-$h$ limit. \Ld\ No replacement physical quantum frame is selected here.
+
+\section{Saved Toda data and the finite-$h$ error budget}
+\Lc\ The two-term Phase 2f definition is
+\[
+ R_h=\{\Phi(p_1,p_2)-\Phi(p_1,e_2)-M_1(P_{n2}/a-\Pi_2)\}/h
+       -2Y(1-r^2)\log\frac{1-r}{1+r}.
+\]
+Phase 2h defines its $R_0$ as the $h\to0$ limit of the same expression,
+equivalently $\Phi_q(u(Y),u(r^2Y))-\Phi_{\rm cl}(Y,r^2Y)$.
+The Phase 2i saved-data subtraction retains this definition in the limit:
+the finite-$h$ classical Toda phase has the same leading term.
+It is a numerical improvement to the extrapolation, not a new quantum frame.
+Our independent high-precision subtraction uses the hyperbolic cross ratio
+\[
+ A_T=\frac{\sinh^2((\kappa_1-\kappa_2)/2)}
+           {\sinh^2((\kappa_1+\kappa_2)/2)},
+\]
+and the classical momentum and topological term, avoiding the cancellation
+in the source script's Hirota-polynomial evaluation.
+
+\Lc\ The original script fixes $c_0$ to its proposed value and computes
+\begin{equation}
+ \widehat c_1=64[R_0(32)-c_0]-16[R_0(16)-c_0].
+ \label{eq:fixedfit}
+\end{equation}
+This cancels a $Y^{-2}$ term \emph{if} the proposed $c_0$ and a power expansion
+are correct. It is different from the old two-point slope
+$32[R_0(16)-R_0(32)]$, which estimates $c_0$ freely but neglects curvature.
+Consequently its agreement is not an independent simultaneous determination
+of $c_0$ and $c_1$. The numerical tables compare both estimators and free
+quadratic $1/Y$ fits on $Y=8,16,32$ and $4,8,16,32$.
+No fit uses the target $c_1$ as input.
+
+\Ld\ Moving the edge to $q(h)$ does not prove analytic dependence on $h$.
+Subtraction of known classical curvature is justified; rejection of every
+$h\log h$ correction requires an asymptotic argument about the quantum
+finite-sea error. Fit spreads below are sensitivity diagnostics, not
+statistical confidence intervals or rigorous truncation bounds. The finite-$h$
+coefficient estimates do not resolve exact vanishing of logarithmic coefficients.
+
+\paragraph{Fresh finite-$h$ momentum check (c).}
+The grids are $h=0.04,0.02,0.01,0.005$, with respectively
+$681,1062,1824,3348$ Gauss nodes. A separate $h=0.01$ solve uses 2189 nodes.
+The table compares the four-point cubic intercept to the finest-three-point
+quadratic intercept; mesh differences are measured at $h=0.01$.
+\begin{center}\small
+\begin{tabular}{rrrrr}\toprule
+$y$ & Cubic $\delta u$ & Difference from asymptotic & Power-fit spread & Mesh difference\\\midrule
+2 & -0.4663923834 & 4.90e-05 & 2.52e-09 & 1.01e-11\\
+4 & -0.5757147346 & 4.79e-06 & 1.27e-08 & 1.39e-11\\
+8 & -0.6854957971 & 5.52e-07 & 6.62e-08 & 1.68e-11\\
+16 & -0.7955382763 & 9.91e-08 & 3.71e-07 & 1.89e-11\\
+32 & -0.9057166221 & 3.45e-07 & 2.19e-06 & 2.04e-11\\
+64 & -1.0159613570 & 3.48e-06 & 1.29e-05 & 2.15e-11\\
+\bottomrule\end{tabular}\end{center}
+\Lc\ At $y=16$, extracting $e_0$ from this intercept gives $0.00047646$,
+while the power-fit spread propagated by $y^2$ is about $0.000095$.
+At $y=32,64$ that amplification is still worse. Thus finite-$h$ data support
+$c,d$ but do not independently resolve $e_0$ or exact logarithmic zeros.
+The corrected inverse transform provides the sharper conditional test.
+\paragraph{Fresh convolution comparison (c).}
+\begin{center}\small
+\begin{tabular}{rrrrrr}\toprule
+$(u,v)$ & $(Y,r)$ & Convolution & BA cubic & Discrepancy & Power-fit spread\\\midrule
+$(4,1)$ & $(4.598,0.554)$ & 2.19960638 & 2.19960612 & 2.6e-07 & 5.3e-06\\
+$(8,2)$ & $(8.699,0.536)$ & 3.78568886 & 3.78568487 & 4.0e-06 & 4.6e-05\\
+$(8,4)$ & $(8.699,0.727)$ & 10.08223894 & 10.08222807 & 1.1e-05 & 1.3e-04\\
+\bottomrule\end{tabular}\end{center}
+\Lc\ Quadrature changes between 24 and 48 nodes are below $2.6\,10^{-16}$;
+these are float-node quadrature comparisons, not 35-digit accuracy claims.
+The BA discrepancies are smaller than the power-extrapolation spreads.
+The independent mesh comparison changes the three finite-$h$ phases by at most
+$3.7\,10^{-11}$ at $h=0.01$.
+\paragraph{Saved-data sensitivity after classical subtraction (c).}
+All following numbers use the same independently subtracted saved data.
+The fixed-$c_0$ estimator is Eq.~\eqref{eq:fixedfit}. ``Free two'' is the
+unconstrained intercept/slope estimate at $Y=16,32$.
+\begin{center}\small
+\begin{tabular}{rlrrr}\toprule
+$r$ & $h$ extrapolation & Fixed-$c_0$ $c_1$ & Free two $c_1$ & Target\\\midrule
+0.4 & cubic4 & -0.0078316 & -0.0072586 & -0.0077366\\
+0.4 & quad3 & -0.0083604 & -0.0070237 & -0.0077366\\
+0.4 & quad4 & -0.0102111 & -0.0062013 & -0.0077366\\
+0.4 & hlog3 & +0.0065531 & -0.0128715 & -0.0077366\\
+0.4 & hlog4 & +0.0233713 & -0.0191761 & -0.0077366\\
+0.5 & cubic4 & -0.0215719 & -0.0213581 & -0.0214446\\
+0.5 & quad3 & -0.0225280 & -0.0209332 & -0.0214446\\
+0.5 & quad4 & -0.0258741 & -0.0194462 & -0.0214446\\
+0.5 & hlog3 & +0.0051142 & -0.0317775 & -0.0214446\\
+0.5 & hlog4 & +0.0365390 & -0.0435828 & -0.0214446\\
+0.6 & cubic4 & -0.0486099 & -0.0488987 & -0.0484360\\
+0.6 & quad3 & -0.0501045 & -0.0482344 & -0.0484360\\
+0.6 & quad4 & -0.0553354 & -0.0459094 & -0.0484360\\
+0.6 & hlog3 & -0.0055121 & -0.0657401 & -0.0484360\\
+0.6 & hlog4 & +0.0456838 & -0.0850237 & -0.0484360\\
+\bottomrule\end{tabular}\end{center}
+\Lc\ ``cubic4'' uses $0.02,0.01,0.005,0.0025$; ``quad3'' and ``hlog3''
+use the finest three; ``quad4'' and ``hlog4'' use all four. The logarithmic
+basis is $(1,h,h\log h)$. Pure-polynomial alternatives alone shift the
+fixed-$c_0$ estimates by more than $2\,10^{-4}$; logarithmic alternatives
+still reverse signs. Hence the claim that subtraction resolves the earlier
+fit ambiguity is refuted, although the selected cubic comparison passes.
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$r$ & Cubic $h$ fit, free quadratic $1/Y$ (3 points) & Same (4 points) & Fixed-$c_0$ spread\\\midrule
+0.4 & -0.0079815 & -0.0078174 & 0.03358\\
+0.5 & -0.0213367 & -0.0215472 & 0.06241\\
+0.6 & -0.0480635 & -0.0477384 & 0.10102\\
+\bottomrule\end{tabular}\end{center}
+The last column includes all six saved-data variants, also the coarser
+four-point cubic grid $0.04,0.02,0.01,0.005$; it is a sensitivity range.
+No statistical or rigorous error interpretation is assigned. \Lc
+
+
+\section{Theorem 3: correct bookkeeping, false necessity, no physical selection}
+\paragraph{The ``iff'' criterion is refuted (\scr, \texttt{kp}).}
+\Lc\ Inversion antisymmetry is sufficient for antisymmetry of a ratio-kernel
+bilinear under exchange; oddness is unnecessary for that argument.
+For example $K(z)=z^2-z^{-2}$ is even and inversion-antisymmetric and gives
+antisymmetric functionals. More decisively, all soliton and defect weight
+vectors have zero total weight. Adding a constant to $\widetilde K_L$
+changes neither $\mathcal F$ nor $\mathcal I_{SS}$, but destroys both
+claimed kernel identities. This refutes necessity even while retaining
+\emph{both} functional identities universally. A criterion modulo the null
+space, with additional domain assumptions, would be a different statement.
+
+\paragraph{Orientation identities are confirmed; physical interpretation qualified.}
+\Lc\ We reconstruct the elementary arctangent phonon phase independently,
+then integrate $\theta_1\theta'_2/(4\pi)$ on the two open half-lines.
+For $(\alpha_1,\alpha_2)=(0.3,0.7)$ all four orientations satisfy
+\[
+ I^{\rm raw}_{12}=\mathcal I_{SS}[\widetilde K_L]-\epsilon_1\pi/2,
+ \qquad J_{12}=\mathcal I_{SS}[\widetilde K_L]
+                       -(\epsilon_1-\epsilon_2)\pi/4.
+\]
+We separately integrate the rational derivative of the defect transmission
+phase for $q_D=0.4,0.1,-0.45$, both soliton directions and both defect
+orientations. These cover $s<-1$, $|s|<1$, $s>1$, and confirm
+\[
+ I_{SD}^{\rm raw}=\mathcal I_{SD}[\widetilde K_L]
+                         +\epsilon\Delta\theta_D/4.
+\]
+The maximum discrepancy is below $10^{-58}$ (recorded fully in JSON), with tolerance $10^{-50}$.
+Thus the offsets found in the old audit are explained exactly. They have
+been moved into explicit orientation constants, not removed from the raw
+integrals. \Ld\ This is an algebraic redefinition; it does not calculate
+an absolute determinant phase, select $I$ versus $J$, or normalize defect
+states. The real-part kernel used on complex arguments is not itself
+holomorphic. Holomorphic continuation uses the corresponding branchwise
+analytic expression; that distinction must be maintained.
+
+\section{Bootstrap synthesis and defect spectrum}
+\paragraph{Crossing confirmed; printed Darboux identity refuted (\scr, \texttt{kp}).}
+\Lc\ Independent root sums and the canonical/mode charge shifts check both angle
+substitutions. But the printed Darboux defect delay has an extra $\sqrt3$.
+With the repository roots $q_{2,a}-q_{2,b}=k_2$ and the independently
+reconstructed raw delay
+$\Delta x_D=-\epsilon_1\log|(p_{1,b}-q)/(p_{1,a}-q)|/k_1$,
+the right side of the printed coboundary exceeds its left side by
+\begin{equation}
+ 2k_2\gamma_1(\sqrt3-1),\qquad
+ \gamma_1=-\frac{3\cos2\alpha_1}{\sin\alpha_1\sin3\alpha_1}.
+\end{equation}
+Replacing its shift $-2\sqrt3\epsilon_1\eta\gamma_1q$ by
+$-2\epsilon_1\eta\gamma_1q$ gives the claimed identity in all four tested
+orientations. This is an algebraic correction within the existing root
+normalisation, not a new physical convention. The original checker never
+constructs a defect delay. \Ld\ Crossing and this corrected identity do not
+determine a physical fusion constant or supply stable intermediate states.
+
+\paragraph{Breather continuation: qualified.}
+\Lc\ Direct continuation of the same three soliton roots used on the real
+axis gives $\operatorname{Re}\mathcal I_{SS}=0$ and
+$\operatorname{Im}(\Delta P_{\rm can,1}+\Delta P_{\rm can,2})=0$ at both
+quoted conjugate pairs, to $10^{-50}$. Branch-point cancellation at $z=1$
+is independently checked. The original script instead uses angles
+$\alpha\pm\pi/3,\alpha$ in this subsection, different from its real-soliton
+$\alpha\pm2\pi/3,\alpha$ roots. The vanishing real part can survive this
+change because conjugation and exchange symmetry enforce it; that test alone
+does not test the physical root continuation. \Ld\ Pure imaginary phase implies
+a positive multiplier only where that phase is finite. The sampled identities
+are not a global proof of pole freedom or a quantum quantisation rule.
+The shifted Bogdan--Charkina condition is asserted in the text and is absent
+from the checker; neither a corrected breather action nor its charge/frame
+identification is derived. It remains (d).
+
+\paragraph{Defect correction: confirmed, with a threshold qualification (\scr, \texttt{determinant}).}
+\Lc\ Independent differentiation of the nonlinear sewing conditions produces
+the linear matrix. Six off-shell determinants confirm the $-2/3$ prefactor.
+Filtering the four polynomial roots by $S>1$ confirms the absolute-value
+formula for the second growth rate on either side of $s=\sqrt3$.
+At the switching point that rate is zero: there are not two strictly positive
+growth rates there. The corrected determinant and branch switch were already
+established in \texttt{audit\_frames\_defects}; they are successful adoption
+of prior (c) results, not new Phase 2i discoveries.
+
+\section{What happened to each finding of the six audits?}
+\Lc\ The following is a textual coverage audit, not a revalidation of every
+formula in those six documents. ``Relabelled only'' means an outstanding task
+is acknowledged but not solved. Grouped entries combine findings with the
+same disposition; the explicit omissions are listed separately.
+\small
+\begin{longtable}{@{}L{9.7cm}L{5.4cm}@{}}
+\toprule Prior finding & Phase 2i disposition\\\midrule\endhead
+\multicolumn{2}{l}{\textit{Independent Phase 2h audit}}\\
+Orientation-dependent $\pi$ discrepancies & Resolved algebraically by explicit offsets.\\
+Raw exchange sum and nonzero diagonal & Partially resolved: new kernel antisymmetrises a redefined phase.\\
+Oddness alone does not imply antisymmetry & Partially resolved: inversion suffices; new ``iff'' is false.\\
+Saved $c_1$ signs change with fit basis & Partially resolved: subtraction helps; robustness is not proved.\\
+Leading limit previously built into the loop target & Partially resolved: conditional integral is new; WH derivation incomplete.\\
+Classical $(\log Y)^2/Y$ Taylor term & Partially resolved: fixed-$t$ cancellation; endpoint control absent.\\
+Separated head-on asymptotics & Resolved in text; original Phase 2i script does not test them.\\
+Wrong soliton profile & Resolved in text; original Phase 2i script does not test it.\\
+Legendre identity versus physical charge & Relabelled only: field identification remains conditional.\\
+\multicolumn{2}{l}{\textit{Charges and action audit}}\\
+Regulated co-moving action needs cutoff endpoint & Not addressed by a new regulated calculation.\\
+Canonical derivative requires on-shell profile and boundary variation & Relabelled only under general field-theory caveats.\\
+Weighted cosine sum is not zero & Not addressed.\\
+Printed sign of intermediate $dL_1/d\alpha$ formula & Not addressed.\\
+Wrong profile & Resolved by the corrected profile.\\
+Static defect has a localized quadratic momentum & Not addressed explicitly; no operator calculation.\\
+Fifth-degree boundary potential; bulk tadpole insufficient & Partially resolved: potential acknowledged, counterterm open.\\
+Conditional absorption-locus shift, not a charge switch & Not addressed; no quantum sewing/absorption calculation.\\
+\multicolumn{2}{l}{\textit{Determinant foundations audit}}\\
+Fourth-order domain/completeness differs from cited scalar argument & Relabelled only: full determinant remains open.\\
+Wrong co-moving first-derivative sign & Not addressed.\\
+Positive potential-field density check & Not addressed by a new check.\\
+Orientation-dependent endpoints and exchange constants & Resolved algebraically, physical normalization unresolved.\\
+Defect logarithm branch and normalized fusion states & Relabelled only.\\
+Amplitude modes have tails; mixed symplectic term does not vanish & Partially resolved: tail term acknowledged; printed Darboux coefficient is wrong.\\
+Endpoint Hessian is not field spectral flow or Maslov phase & Not addressed specifically; no spectral-flow calculation.\\
+Unit Darboux Jacobian does not fix full functional measure & Relabelled only.\\
+Equal localized endpoint frequencies do not prove cancellation & Not addressed; no localized-mode propagation.\\
+Stable scattering domain and threshold completeness & Relabelled only; no spectral theorem.\\
+\multicolumn{2}{l}{\textit{Frames and defects audit}}\\
+Sewing determinant missing factor sixteen & Resolved.\\
+Growing branch switch and $s=2$ coalescence & Resolved, except marginal point wording.\\
+KP triangle traverses unstable vacua & Relabelled only: physical fusion still open.\\
+Edge reference cannot change a ratio slope & Partially resolved: acknowledged; conditional convolution supplies alternative origin.\\
+Classical frame does not establish quantum frame & Not resolved; a proposed endpoint product is not the missing dictionary.\\
+\multicolumn{2}{l}{\textit{Toda dictionary audit}}\\
+Exact edge momentum and dressed-coordinate Jacobian & Not independently derived in Phase 2i.\\
+Numerical $q(1+10^{-10})$ offset is nonuniform in $h$ & Not addressed by its solver call.\\
+Finite-sea reciprocity has endpoint terms & Partially resolved: invoked, but proposed four-term edge product fails boundary test.\\
+Two-term versus four-term normalization matters & Not resolved; the remark conflates their symmetric remainders.\\
+Classical frame leaves nonseparable symmetric remainder & Partially resolved: proposes an asymptotic expression without verifying identity.\\
+Symmetric part does not fix antisymmetric physical frame & Not addressed by a Ward identity; still open.\\
+\multicolumn{2}{l}{\textit{Projected measure audit}}\\
+Tail-independent Wronskian determinant and collective volume & Not addressed explicitly; already proved in that audit.\\
+Exact collision-time quadrature and conserved boundary flux & Not addressed.\\
+Basis-independent projector & Not addressed.\\
+Projector violates fixed potential endpoints; fixed-$M$ rank loss & Not addressed beyond generic ``measure open''.\\
+Solution tangents need not be temporal determinant zero modes & Not addressed.\\
+Volume/endpoint map does not determine propagation phase & Not addressed.\\
+Signed momentum derivatives need orientation factor & Not addressed explicitly.\\
+Boundary-compatible projected determinant and absolute phase & Relabelled only.\\\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Script audit, summary and failures recorded}
+\Lc\ Running the original script from \texttt{phase2/scripts/} prints
+\texttt{ALL CHECKS PASSED} in 101.88 seconds. The symbol, printed inverse
+series, transform normalisation, double transform, convolution versus Bethe
+data, Darboux delay coboundary, shifted breather condition, and all-six-audit
+coverage are not tested as claimed. Its WH check inserts the missing
+$\sqrt\pi$; its convolution check evaluates formal coefficient integrals
+without constructing that convolution. Its endpoint check expands an assumed
+product. Its breather roots differ from the real-root implementation.
+The numerical momentum table cites four $h$ values and $y=32$, while the
+script actually uses three $h$ values and stops at $y=16$.
+
+\Lc\ The saved-data test is not literally a formula compared with itself:
+it uses independent saved solver output. However it fixes $c_0$ to the target
+and adopts one extrapolation basis. Its $2\,10^{-4}$ discrepancy is a central-fit
+comparison, not a demonstrated total error bar. No evidence was found of
+historical tolerance loosening in the available single script snapshot;
+the present script cannot establish its editing history. The original
+failures list's claim that all prior failures were reproduced is false by
+inspection of the tests and the coverage table.
+
+\begin{longtable}{@{}L{6.5cm}L{2.3cm}L{6.3cm}@{}}
+\toprule Claim & Verdict & Evidence and scope\\\midrule\endhead
+Printed WH symbol, momentum transform and inverse series & Refuted (c) & Product, leading coefficient, reversion; \scr\ \texttt{wh}.\\
+$c,d,e$ and absent logarithmic coefficients & Qualified & Strong corrected-transform evidence (c); derivation and exact edge errors incomplete (d).\\
+Printed double transform & Refuted (c) & Missing $\pi$ after restoring momentum normalisation.\\
+Correctly normalised convolution & Qualified & Independent inverse transform and finite-$h$ comparison (c).\\
+Leading residual and elementary $c_1$ integrals & Confirmed (c) & High-precision quadrature of formal integrals.\\
+Exact Bethe asymptotics and strict remainder & Qualified & Missing uniform endpoint control (d).\\
+Saved-data agreement below $2\,10^{-4}$ & Qualified & Reproduced for one constrained estimator (c); fit sensitivity exceeds that precision.\\
+Universal kernel ``iff'' & Refuted (c) & Constant null kernel and even inversion-odd counterexample.\\
+SS/SD orientation formulas & Confirmed (c) & Independent raw quadrature, all requested orientations/regimes.\\
+Kernel replacement derives physical phase & Qualified & Redefinition with explicit constants; physical normalization open (d).\\
+Crossing / printed Darboux coboundary & Confirmed / refuted (c) & Crossing survives; delay shift has extra $\sqrt3$.\\
+Breather reality and shifted quantisation & Qualified & Reality checked locally (c); physical shift asserted (d).\\
+Defect determinant and branch correction & Confirmed (c) & Independent nonlinear sewing differentiation; marginal-point caveat.\\
+Four-term symmetric endpoint product & Refuted (c) & Violates exact edge-subtraction boundary condition.\\
+All six audits resolved & Refuted (c) & Finding-by-finding coverage table.\\\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item Prior-claim failures: wrong Fourier symbol, missing momentum-transform
+normalisation and physical scale, incompatible printed inverse series, double
+transform normalisation, false necessity criterion, extra $\sqrt3$ in the Darboux delay, and four-term endpoint
+product; unsupported blanket audit-resolution statement. Checks assert the
+existence of these discrepancies rather than asserting the false equalities.
+\item The first independent solver run exceeded its inherited fixed momentum
+bracket at the largest coarse-$h$ sample. The audit now doubles the bracket
+until it encloses the same root; no tolerance or equation was changed.
+\item The first direct Darboux assertion failed. Its initial independent
+transcription also inverted the raw transmission ratio; this was corrected
+against the stated raw delay. The remaining discrepancy is exactly the
+printed extra $\sqrt3$, which the final check explicitly asserts. Neither
+the target equality nor a tolerance was weakened to hide the failure.
+\item One report-assembly command used a repository-relative path while
+already inside \texttt{phase2/}, causing \texttt{FileNotFoundError}; rerunning
+from the repository root fixed the path without changing any result.
+\end{enumerate}
+
+\paragraph{Measured execution and deliverables.}
+\Lc\ The final successful resumed checker ran in 106.01 seconds, reusing the
+completed finite-$h$ and saved-data sections from the first run. Fresh dense
+Bethe solves took 352.46 seconds in total; the original Phase 2i checker took
+101.88 seconds. The finite-$h$ cache contains all five runs, with raw phase,
+momentum, node and normalization data. Independent convolution quadrature
+and data regressions completed before the initially failed Darboux assertion;
+the resumed run rechecks the WH diagnostics and all corrected phonon, crossing,
+breather, Darboux and sewing assertions. Its final line is
+\texttt{ALL CHECKS PASSED}. A normal run of \scr\ reruns every section,
+reusing only the dense-solver cache unless \texttt{--refresh} is specified.
+No existing implementation was changed; the full repository suite was not
+rerun. The new PDF was built twice with \texttt{pdflatex} and all pages
+were rendered and inspected. The TeX file includes its numerical tables
+and needs no separate table input.
+
+\paragraph{References and bibliography leads.}
+\Lc\ No new external reference is cited or claimed read. This audit uses
+local project texts and independently checked mathematics. The bibliographic
+agent's requested leads remain: the Bogdan--Charkina title/equation designation
+differs between Phase 2i and the literature map; the Corrigan--Zambon article
+number differs between Phase 2i and the master report. These are unverified
+bibliographic leads here, not adjudicated reference corrections. No inference
+is drawn from the absence of the git-ignored literature folder.
+
+\paragraph{What is new, and what remains.}
+\Lc\ Phase 2i contributes useful conditional higher-order WH reversion
+coefficients, an elementary formal $c_1(r)$ integral, improved classical
+lattice subtraction, and explicit all-orientation offset identities.
+It adopts the earlier determinant and spectrum corrections. \Ld\ Its most
+important unresolved problem is a controlled, correctly normalised derivation
+linking the finite-sea Bethe phase to a physically defined quantum frame,
+including endpoint/contact terms and uniform edge asymptotics. Algebraic
+kernel choices cannot substitute for that identification or for the projected
+field determinant.
+\end{document}

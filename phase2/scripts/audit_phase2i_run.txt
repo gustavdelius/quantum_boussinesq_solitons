@@ -1,0 +1,5 @@
+WH symbol/normalization discrepancies reproduced; corrected-transform coefficients supported
+raw integrals, orientations, crossing and continuation verified; iff and printed Darboux coefficient refuted
+independent sewing determinant and admissible branches verified
+runtime 106.01146374698146
+ALL CHECKS PASSED
