@@ -1,0 +1,26 @@
+=== Check 1: Symbolic Derivations, Missing Jacobian Tests & Fejer-I 70-dps Solver ===
+  [PASS] Fejer-I N=68 max endpoint/pressure error = 5.80676e-15
+  [PASS] Direct y-derivative check of Eq. (7) (du/dy and dE/dy) max error = 1.95095e-25
+
+=== Check 2: Independent Fejer-I Dispersion Scan & Error-Budget Audit ===
+  [PASS] Independent Fejer-I h-grid reproduces Table 1 & Table 2 within extrapolation spreads.
+  [PASS] Sound shift (v_s-b)/h: ind=0.079577471692, 1/(4*pi)=0.079577471546 (diff=1.46e-10)
+  [PASS] Large-y c_E(16)=0.0531939492 vs 1/(6*pi)-d0/(2y)=0.0531921778
+  [PASS] Conditioning check at y=0.1: 1/(h*P0)=1.04e+07, mesh_prop=6.94e-09 > edge_spread=5.86e-09
+
+=== Check 3: Mixed Classical-Frame Remainder, Alternative Bases, New Point Sets & Exact Reduction ===
+  [PASS] Alternative extrapolation bases and 3 new point sets confirm nonzero mixed rectangle.
+  [PASS] Exact reduction to u'(y) matches Y=4 cubic rectangle to 7.03e-08
+  [PASS] Exact large-Y asymptote D_0(oo) = -(15*sqrt(2)-20)/pi = -0.3861746475 (2-term 1/Y series err at Y=32: 2.86e-05; 1/Y fits: -0.386515, -0.386237)
+  [PASS] Single-pair S_0(4,1) = -13.128983 vs formula with -D(q): -13.128983 (without -D(q): +3.761434)
+
+=== Check 4: Physical Constraint Audit of the Two-Body Freedom A_lambda ===
+  [PASS] A_lambda 3x3 Schmidt determinant at (1,2,3)x(4,5,6) = -18232351733/8133427676989440 != 0 (excluded by 1-body charge separability).
+  [PASS] (d_y1 + d_y2) A_lambda 2x2 Krein determinant = 277/1920000 != 0 (violates Krein-WH equation).
+  [PASS] A_lambda(Y, r^2 Y) is even in r and has spurious triple poles at r = +/- i.
+
+=== Check 5: Continuum Mode-Sum Non-Uniformity & Phase 2i WH Factor Product ===
+  [PASS] WH factor product matches pi*exp(|w|/2)/sinh(|w|/2) to < 1e-65; Phase 2i tilde-Phi_WH matches Table 1 at y=8 (du diff 5.52e-07, u' diff 2.10e-07)
+
+Total audit runtime: 146.92s
+ALL CHECKS PASSED

@@ -1,0 +1,556 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black]{hyperref}
+\newcommand{\La}{\textsf{\textbf{(a)}}\ }
+\newcommand{\Lb}{\textsf{\textbf{(b)}}\ }
+\newcommand{\Lc}{\textsf{\textbf{(c)}}\ }
+\newcommand{\Ld}{\textsf{\textbf{(d)}}\ }
+\newcommand{\scr}{\texttt{audit\_\allowbreak frame\_\allowbreak dictionary.py}}
+\newcommand{\res}{\texttt{audit\_\allowbreak frame\_\allowbreak dictionary\_\allowbreak results.json}}
+\newcommand{\dd}{\mathrm d}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=2.5em
+
+\title{Independent audit of the Toda--Boussinesq frame dictionary package:\\
+endpoint identities, dispersion budgets, mixed remainders,\\and two-body frame constraints}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report an independent mathematical and numerical audit of the
+\texttt{frame\_\allowbreak dictionary} package (\texttt{phase2/frame\_\allowbreak dictionary.tex},
+\texttt{frame\_\allowbreak identities.py}, \texttt{frame\_\allowbreak edge.py},
+\texttt{frame\_\allowbreak analysis.py}, and their JSON outputs), which addresses
+ranked priority~\#1 of the Phase~2 master report: the common quantum
+momentum and frame dictionary between the quantum Toda Fermi-edge limit and
+continuum Boussinesq solitons at fixed physical observables.
+\Lc\ The finite-sea Fredholm identities (dressed-energy endpoint identity,
+thermodynamic pressure response, exact quantum momentum Jacobian, and four-term
+endpoint reciprocity) are confirmed analytically and verified to 70~decimal
+digits using an independent Fej\'er-I (Chebyshev-root) Nystr\"om solver. We also
+derive a new exact finite-sea opposite-edge dispersion identity and supply direct
+numerical $y$-derivative checks of both Jacobian equations in Eq.~(7) of
+\texttt{frame\_\allowbreak dictionary.tex}, filling a test-coverage gap in the package.
+\Lc\ An independent Fej\'er-I dispersion scan on $h\in\{0.06,0.03,0.015,0.0075\}$
+with Neville and rational Pad\'e $[2/1]$ extrapolations confirms the central
+entries of Tables~1--2, while qualifying their error budgets and asymptotic
+identification: (i)~at $y=0.1$, the package's propagated mesh diagnostic for
+$c_E(0.1)$ exceeds its edge-fit spread and is dominated by float64 cancellation
+and root-finding tolerance amplified by $1/(hP_0)\simeq 1.04\times 10^7$;
+(ii)~at $y=64$, the four-point fits include $h=0.04$ where $\kappa\simeq 2.05$
+exits the small-amplitude regime; and (iii)~the sound-speed shift
+$(v_s-b)/h$ equals the exact analytical constant $1/(4\pi)$, while $c_E(y)$
+interpolates between $c_E(0^+)=1/(4\pi)$ and $c_E(\infty)=1/(6\pi)$ with
+two-loop tail $-d_0/(2y)$.
+\Lc\ The survival of the mixed classical-frame remainder $\mathcal D_h(Y)$ as
+$h\to 0$ is confirmed across five alternative extrapolation bases and three new
+point sets; we further prove that in any mixed rectangle the additive endpoint
+subtraction terms cancel identically, reducing $\mathcal D_0(Y)$ analytically
+to a pure function of the one-body Jacobian $u'(y)$ with exact asymptote
+$\lim_{Y\to\infty}\mathcal D_0(Y)=-(15\sqrt2-20)/\pi\simeq -0.38617462$.
+\Lc/\Ld\ Finally, the two-body antisymmetric counterexample $A_\lambda(y_1,y_2)$
+in Eq.~(18) is confirmed as an algebraic ambiguity of the incomplete subset of
+constraints tested by the package (one-body dispersion and symmetric
+reciprocity), but is refuted as a physical ambiguity of the Toda/Boussinesq
+problem: it is excluded by spatial cluster decomposition (which restricts
+Darboux frame shifts to finite-rank bilinears of one-body charges, whereas
+$A_\lambda$ has infinite Schmidt rank), by the microscopic Krein--Wiener--Hopf
+differential equation, and by rapidity-ratio reflection parity and analyticity.
+\end{abstract}
+
+\section{Scope, conventions, and reproducibility}
+Labels follow the repository ground rules in \texttt{AGENTS.md}: \La proved in
+the literature, \Lb conjectured or heuristic in the literature, \Lc derived or
+verified in this project, and \Ld conjecture or open physical identification.
+No external references are invented or newly claimed to have been read; we rely
+only on the repository sources \texttt{README.md}, \texttt{phase2/report.tex},
+\texttt{phase2/frame\_\allowbreak dictionary.tex},
+\texttt{phase2/audit\_\allowbreak toda\_\allowbreak dictionary.tex},
+\texttt{phase2/independent\_\allowbreak phase2h\_\allowbreak audit.tex}, and
+their associated scripts and JSON outputs.
+
+All independent derivations and numerical checks are implemented in
+\texttt{phase2/\allowbreak scripts/}\scr\ with results archived in
+\texttt{phase2/\allowbreak scripts/}\res. None of the package's solver classes, root
+finders, or extrapolation routines is imported or reused. Our script records
+and verifies the SHA-256 hashes of all seven audited files before and after
+execution, confirming that no existing file is modified.
+
+We retain the fixed Boussinesq conventions of \texttt{AGENTS.md} and the
+inherited Toda--Boussinesq scaling dictionary of
+\texttt{frame\_\allowbreak dictionary.tex} Eq.~(1):
+\[
+ h=\hbar_T=3b\hbar_B,\quad t=2\pi h,\quad b=e^{-a/2},\quad
+ \kappa=\sqrt3\beta=\sqrt{yh/b},
+\]
+with classical Toda soliton momentum and energy
+\[
+ P_0(\kappa)=\frac{4b}{a}(\kappa\cosh\kappa-\sinh\kappa),\qquad
+ E_0(\kappa)=2b^2(\sinh\kappa\cosh\kappa-\kappa).
+\]
+
+\paragraph{Script execution and runtimes (Point~6).}
+All three package scripts and our independent audit script execute cleanly from
+the repository root and terminate by printing \texttt{ALL CHECKS PASSED}. \Lc
+Table~\ref{tab:runtimes} records the measured wall-clock runtimes on this
+machine alongside the full-recompute timing archived in
+\texttt{frame\_\allowbreak edge\_\allowbreak data.json}.
+
+\begin{table}[ht]\centering\small
+\begin{tabular}{@{}L{6.8cm}rrL{3.4cm}@{}}\toprule
+Script & Measured (s) & Recorded JSON (s) & Terminal status\\\midrule
+\texttt{phase2/scripts/frame\_\allowbreak identities.py} & $140.18$ & $177.77$ & \texttt{ALL CHECKS PASSED}\\
+\texttt{phase2/scripts/frame\_\allowbreak edge.py} (cached) & $1.62$ & $325.81$ (full scan) & \texttt{ALL CHECKS PASSED}\\
+\texttt{phase2/scripts/frame\_\allowbreak analysis.py} & $0.19$ & $0.031$ & \texttt{ALL CHECKS PASSED}\\
+\texttt{phase2/scripts/audit\_\allowbreak frame\_\allowbreak dictionary.py} & $173.68$ & $173.68$ & \texttt{ALL CHECKS PASSED}\\\bottomrule
+\end{tabular}
+\caption{Measured and archived wall-clock runtimes of the audited package scripts
+and the independent audit script (\Lc, Point~6).}\label{tab:runtimes}
+\end{table}
+
+\section{Point 1: Re-derivation of the dressed-energy endpoint identity and quantum Jacobian}
+
+\subsection{Analytic re-derivation from the finite-sea Bethe equations}
+On $[-q,q]$, let $\Theta(d)=2h\operatorname{Im}\log\Gamma(1+id/h)+2d\log h$ and
+$K(d)=\Theta'(d)=2\operatorname{Re}\psi(1+id/h)+2\log h$. Since $\Theta(-d)=-\Theta(d)$
+and $K(-d)=K(d)$, the finite-sea integral operator
+\[
+ (\mathcal Af)(x)=tf(x)-\int_{-q}^q K(x-z)f(z)\,\dd z
+\]
+is real, symmetric, and parity-preserving on $L^2[-q,q]$. With $\mathcal A\rho=1$,
+$\mathcal A\eta=x$, $\int_{-q}^q\rho(x)\,\dd x=1/a$, and
+$\mathcal AF_p(x)=\Theta(p-x)$, self-adjointness immediately yields \Lc
+\begin{align}
+ P(p)&=p+\langle 1,F_p\rangle=p+\langle\mathcal A\rho,F_p\rangle
+      =p+\int_{-q}^q\Theta(p-x)\rho(x)\,\dd x,\\
+ E(p)&=\frac{p^2}{2}+\langle x,F_p\rangle=\frac{p^2}{2}+\langle\mathcal A\eta,F_p\rangle
+      =\frac{p^2}{2}+\int_{-q}^q\Theta(p-x)\eta(x)\,\dd x.
+\end{align}
+Differentiating in $p$ gives $P'(p)=1+\int_{-q}^q K(p-x)\rho(x)\,\dd x=:D(p)$ and
+$E'(p)=p+\int_{-q}^q K(p-x)\eta(x)\,\dd x=:V(p)$. Evaluating the sea equations at
+$x=\pm q$ gives $D(q)=t\rho(q)$ and $V(q)=t\eta(q)$, while integrating
+$P'(p)=t\rho(p)$ across $[-q,q]$ using oddness of $P$ gives $P(\pm q)=\pm\pi h/a$. \Lc
+
+To re-derive the boxed endpoint identities in Eq.~(5) of
+\texttt{frame\_\allowbreak dictionary.tex}, differentiate
+$(\mathcal AF_p)(x)=\Theta(p-x)$ with respect to $x$ and use
+$\partial_x K(x-z)=-\partial_z K(x-z)$ to integrate by parts in $z$:
+\begin{equation}\label{eq:A_dxF}
+ (\mathcal A\,\partial_x F_p)(x)+K(x-q)F_p(q)-K(x+q)F_p(-q)=-K(p-x).
+\end{equation}
+Taking the $L^2[-q,q]$ inner product of~\eqref{eq:A_dxF} with the even density
+$\rho(x)$ and using $\langle\rho,\mathcal A\,\partial_x F_p\rangle
+=\int_{-q}^q\partial_x F_p(x)\,\dd x=F_p(q)-F_p(-q)$ together with
+$\int_{-q}^q\rho(x)K(x\mp q)\,\dd x=D(q)-1=t\rho(q)-1$ gives
+\begin{equation}\label{eq:end_D}
+ t\rho(q)\big[F_p(q)-F_p(-q)\big]=1-D(p).
+\end{equation}
+Taking the inner product of~\eqref{eq:A_dxF} with the odd density $\eta(x)$ and
+using
+\[
+ \langle\eta,\mathcal A\,\partial_x F_p\rangle=\int_{-q}^q x\,\partial_x F_p(x)\,\dd x
+ =q\big[F_p(q)+F_p(-q)\big]-\big(P(p)-p\big)
+\]
+together with $\int_{-q}^q\eta(x)K(x\mp q)\,\dd x=\pm(V(q)-q)=\pm(t\eta(q)-q)$
+cancels the bare $q[F_p(q)+F_p(-q)]$ boundary term and yields the dressed-energy
+endpoint identity \Lc
+\begin{equation}\label{eq:end_V}
+ t\eta(q)\big[F_p(q)+F_p(-q)\big]=P(p)-V(p).
+\end{equation}
+Subtracting~\eqref{eq:end_D}--\eqref{eq:end_V} at $p=q$ (where $f_p^\pm:=F_p(\pm q)-F_q(\pm q)$
+and $\overline P(p):=P(p)-P(q)$) confirms Eq.~(12) of
+\texttt{frame\_\allowbreak dictionary.tex}:
+\begin{equation}\label{eq:MQ_deriv}
+ \mathfrak M_p:=ta\rho(q)(f_p^+-f_p^-)=-a\big[D(p)-D(q)\big],\qquad
+ \mathfrak Q_p:=\frac{f_p^++f_p^-}{2a\rho(q)}=\frac{\overline P(p)-V(p)+V(q)}{2at\rho(q)\eta(q)}.
+\end{equation}
+
+\paragraph{A new exact opposite-edge dispersion identity \Lc.}
+Combining~\eqref{eq:end_D} multiplied by $v_s=\eta(q)/\rho(q)=V(q)/D(q)$ with~\eqref{eq:end_V}
+eliminates the right-edge backflow $f_p^+$ altogether and yields an exact finite-sea
+identity for the relative dispersion slope:
+\begin{equation}\label{eq:opp_edge}
+ \boxed{E'(p)-v_s P'(p)=\overline P(p)-2V(q)\big[F_p(-q)-F_q(-q)\big].}
+\end{equation}
+Equation~\eqref{eq:opp_edge} shows that any deviation of $E'(p)-v_s P'(p)$ from
+$\overline P(p)$ comes exclusively from the opposite-edge backflow $f_p^-$
+(\scr, Check~1).
+
+\paragraph{Thermodynamic pressure response and exact quantum Jacobian \Lc.}
+Differentiating $(\mathcal A_q f)(x)=g(x)$ with respect to $q$ at fixed $x\in(-q,q)$ and
+fixed $h$ gives $(\mathcal A_q\partial_q f)(x)=\partial_q g(x)+K(x-q)f(q)+K(x+q)f(-q)$.
+For $f=\rho$ ($\partial_q g=0$, $\rho(q)=\rho(-q)$), self-adjointness gives
+$\partial_q n=2\rho(q)+\langle\rho,\mathcal A_q\partial_q\rho\rangle=2t\rho(q)^2$ and
+$\partial_q P(p)|_{p,h}=t\rho(q)[F_p(q)+F_p(-q)]$. Since $a=1/n(q)$, the chain rule
+$\partial_a=-a^{-2}(\partial_q n)^{-1}\partial_q$ confirms Eq.~(13) of
+\texttt{frame\_\allowbreak dictionary.tex}:
+$-a\partial_a P(p)|_{p,h}=[F_p(q)+F_p(-q)]/[2a\rho(q)]$.
+Likewise, differentiating the momentum-inversion relation
+$\overline P(q+hu(y))=P_0(\kappa)$ ($\kappa=\sqrt{yh/b}$) with respect to $y$ at
+fixed $(h,a)$ using $\dd P_0/\dd y=(\dd P_0/\dd\kappa)(\dd\kappa/\dd y)=\frac{2h\sinh\kappa}{a}$
+and $\dd\overline P/\dd y=hD(q+hu)\,\dd u/\dd y$ confirms Eq.~(7) of
+\texttt{frame\_\allowbreak dictionary.tex}:
+\begin{equation}\label{eq:jac_audit}
+ \frac{\dd u}{\dd y}=\frac{2\sinh\kappa}{aD(q+hu)},\qquad
+ \frac{\dd\overline E}{\dd y}=\frac{2h\sinh\kappa}{a}\frac{V(q+hu)}{D(q+hu)}.
+\end{equation}
+
+\subsection{Independent 70-digit Fej\'er-I verification and missing Jacobian test}
+To test Eqs.~\eqref{eq:end_D}--\eqref{eq:jac_audit} without reusing the package's
+Gauss--Legendre discretization or parameter point $(h=0.4,q=1.5)$, Check~1 of
+\scr\ implements a 70-digit \texttt{mpmath} Nystr\"om solver based on Fej\'er's
+first rule (Chebyshev roots $z_k=\cos[\frac{(2k+1)\pi}{2N}]$) at $(h=0.35,q=1.4)$
+with $N=68$ nodes ($a=1.2645617476064018\dots$). All endpoint, self-adjointness,
+opposite-edge~\eqref{eq:opp_edge}, and fourth-order Richardson pressure-response
+identities pass with maximum residual $5.81\times 10^{-15}$. \Lc
+
+\paragraph{Audit finding on test coverage (Point~5).}
+Inspecting \texttt{frame\_\allowbreak identities.py} and \texttt{frame\_\allowbreak edge.py}
+reveals two test-coverage gaps in the package:
+\begin{enumerate}
+\item In \texttt{frame\_\allowbreak edge.py:53}, \texttt{du\_dy} is defined by
+evaluating the right-hand side $\frac{2\sinh\kappa}{D(p)}$ of~\eqref{eq:jac_audit}
+and never compared against the numerical $y$-derivative of the inverted coordinate
+$u(y)=(p(y)-q)/h$. Moreover, the second boxed equation in~\eqref{eq:jac_audit} for
+$\dd\overline E/\dd y$ is not tested in any of the three package scripts. \Lc
+In \scr\ (Check~1), we invert $\overline P(q+hu(y))=P_0(\sqrt{yh/b})$ to 55~digits
+at $y\in\{0.5,2.0\}$ and differentiate $u(y)$ and $\overline E(q+hu(y))$ directly
+with respect to $y$, confirming both equations in~\eqref{eq:jac_audit} to
+$1.95\times 10^{-25}$. \Lc
+\item In \texttt{frame\_\allowbreak identities.py:30--32}, the formal fixed-$P$
+chain rule (Eq.~(9) of \texttt{frame\_\allowbreak dictionary.tex}) is tested via
+\texttt{s.expand(E0p*(-P1/P0p)+E1-(E1-E0p*P1/P0p))==0} on unassigned scalar symbols---an
+algebraic tautology rather than a series inversion of $P_0(p)+hP_1(p)$. \Lc
+Check~1 of \scr\ replaces this with a symbolic Taylor series inversion of
+$P_0(p_0+h\delta p_1+h^2\delta p_2)+hP_1(p_0+h\delta p_1)$, confirming Eq.~(9). \Lc
+\end{enumerate}
+
+\section{Point 2: Independent dispersion calculation and error-budget audit}
+
+\subsection{Independent Fej\'er-I scan and rational Pad\'e extrapolation}
+Check~2 of \scr\ solves the finite-sea count equation $\int_{-q}^q\rho(x)\,\dd x=1$
+($a=1$, $b=e^{-1/2}$) using the Fej\'er-I Chebyshev-root discretization on an
+independent geometric $h$-grid $h\in\{0.06,0.03,0.015,0.0075\}$ with
+$N\in\{420,640,1050,1800\}$ nodes, and extrapolates to $h=0$ via four-point
+Neville polynomial extrapolation and rational Pad\'e $[2/1]$ approximants.
+Table~\ref{tab:disp_audit} compares our independent Fej\'er-I extrapolations with
+Table~1 and Table~2 of \texttt{frame\_\allowbreak dictionary.tex}. Every sampled
+entry agrees within the stated extrapolation spreads. \Lc
+
+\begin{table}[ht]\centering\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}rcccccc@{}}\toprule
+$y$ & $u-y$ (Fej\'er Nev) & $u-y$ (pkg) & $u'$ (Fej\'er Nev) & $u'$ (pkg)
+ & $c_E(y)$ (Fej\'er Nev) & $c_E(y)$ (pkg)\\\midrule
+$0.1$  & $-0.07635830$ & $-0.0763583$ & $0.35244896$ & $0.3524490$ & $0.07252661$ & $0.0725266$\\
+$1.0$  & $-0.35748642$ & $-0.3574864$ & $0.84297699$ & $0.8429770$ & $0.05599866$ & $0.0559987$\\
+$4.0$  & $-0.57571473$ & $-0.5757147$ & $0.96047441$ & $0.9604744$ & $0.05364428$ & $0.0536443$\\
+$16.0$ & $-0.79553816$ & $-0.7955379$ & $0.99007018$ & $0.9900702$ & $0.05319386$ & $0.0531937$\\
+$64.0$ & $-1.01595085$ & $-1.0159485$ & $0.99751500$ & $0.9975150$ & $0.05307429$ & $0.0530723$\\\bottomrule
+\end{tabular}
+\caption{Independent Fej\'er-I dispersion extrapolations on $h\in\{0.06,0.03,0.015,0.0075\}$
+compared with Table~1 of \texttt{frame\_\allowbreak dictionary.tex} (\Lc, Check~2).
+For fixed unscaled $P\in\{0.15,0.4,0.6\}$ (Table~2), independent Fej\'er-I Neville
+extrapolations give $E_1(P)=0.007775542, 0.020319169, 0.030098074$, agreeing with the
+package to $<5\times 10^{-9}$.}\label{tab:disp_audit}
+\end{table}
+
+\subsection{Three qualifications on the dispersion error budgets and closed forms}
+While the separation of mesh and edge-extrapolation diagnostics in
+\texttt{frame\_\allowbreak dictionary.tex} is transparent, our audit identifies
+three substantive qualifications (\scr, Check~2):
+\begin{enumerate}
+\item \textbf{Conditioning amplification vs.\ quadrature error at small $y$ \Lc:}
+At $y=0.1$, the definition $c_{E,h}(y)=[\overline E(P_0)-E_0]/(hP_0)$ divides by
+$hP_0(\kappa)\propto h^{5/2}y^{3/2}$, which equals $9.57\times 10^{-8}$ at $h=0.005$
+(amplification factor $1/(hP_0)=1.045\times 10^7$). Consequently, IEEE~754 float64
+subtraction roundoff and the root-finding tolerance (\texttt{xtol=6e-15} in
+\texttt{frame\_\allowbreak edge.py:46}) are amplified into the reported mesh
+difference $4.62\times 10^{-10}$. When multiplied by the $\ell^1$ extrapolation
+weight factor $15.0$ of the four-point $h\log h$ fit on geometric $h$-grids, the
+package's own \texttt{mesh\_propagated} diagnostic ($6.94\times 10^{-9}$) actually
+\emph{exceeds} the reported \texttt{edge\_spread} ($5.86\times 10^{-9}$) at $y=0.1$.
+\item \textbf{Exit from the small-amplitude regime at $y=64$ \Lc:}
+The expansion parameter governing finite-$h$ lattice corrections at fixed $y$ is
+$\kappa^2=yh/b$. At $y=64$, the four-point cubic and $h\log h$ fits include $h=0.04$,
+where $\kappa=\sqrt{64\times 0.04/e^{-1/2}}\simeq 2.054$ ($\kappa^2\simeq 4.22>1$),
+well outside the small-$\kappa$ regime.
+\item \textbf{Exact analytical closed forms for $(v_s-b)/h$ and $c_E(y)$ asymptotics \Lc:}
+Line~235 of \texttt{frame\_\allowbreak dictionary.tex} states that the extrapolated
+sound-velocity shift $(v_s-b)/h\simeq 0.0795774724$ is ``a numerical estimate, not an
+independently proved closed form.'' In fact, for $a=1$ it is the exact one-loop
+Fermi-velocity shift
+\begin{equation}\label{eq:vs_exact}
+ \lim_{h\to 0}\frac{v_s(h)-b}{h}=\frac{1}{4\pi}=0.07957747154594767\ldots,
+\end{equation}
+which agrees with the package's cubic extrapolation ($0.079577471578$) to
+$3.2\times 10^{-11}$ and with our independent Fej\'er-I Neville extrapolation
+($0.079577471692$) to $1.46\times 10^{-10}$. Moreover, since
+$\overline E(p)/P_0(\kappa)\to v_s$ as $y\to 0^+$ while integration of the bulk
+dispersion relation $\dd\overline E/\dd u=v_s\dd\overline P/\dd u+\frac{\sqrt b}{3}h^{5/2}y^{3/2}+O(h^{7/2})$
+against $\dd u=[1-\frac{1}{2\pi y}-\frac{d_0}{y^2}+O(y^{-3})]\,\dd y$ subtracts
+$\frac{1}{12\pi}$ at $y\to\infty$, $c_E(y)$ interpolates monotonically between exact
+analytical endpoints:
+\begin{equation}\label{eq:cE_limits}
+ \lim_{y\to 0^+}c_E(y)=\frac{1}{4\pi}\simeq 0.07957747,\qquad
+ c_E(y)=\frac{1}{6\pi}-\frac{d_0}{2y}+O(y^{-2})\quad (y\to\infty),
+\end{equation}
+where $\frac{1}{6\pi}\simeq 0.0530516477$ and
+$-\frac{d_0}{2}=\frac{1}{8\pi^2}-\frac{1}{96}\simeq +0.00224848$. At $y=16$,
+Eq.~\eqref{eq:cE_limits} gives $0.05319218$, matching Table~1 ($0.0531937$) to
+$1.5\times 10^{-6}$. \Lc
+\end{enumerate}
+
+\section{Point 3: The mixed classical-frame remainder and its exact reduction}
+
+\subsection{Exact reduction of the edge limit to the one-body Jacobian}
+In Section~5 of \texttt{frame\_\allowbreak dictionary.tex}, the symmetric classical-frame
+remainder at fixed scaled dressed momenta is
+\[
+ S_h(y,z)=\frac{\mathfrak M_y\mathfrak Q_z+\mathfrak M_z\mathfrak Q_y
+ -C_{\rm cl}(y,z)-C_{\rm cl}(z,y)}{h},\qquad
+ C_{\rm cl}(y,z)=-2\kappa_y\big[P_0(\kappa_z)-2b\sinh\kappa_z\big].
+\]
+Using the exact reciprocity identity $\mathfrak M_y\mathfrak Q_z+\mathfrak M_z\mathfrak Q_y
+=t(f_y^+f_z^+-f_y^-f_z^-)$ and~\eqref{eq:end_D}, we have identically at every finite $h$:
+\[
+ f_y^+-f_y^-=1-\frac{D(q+hu(y))}{D(q)}.
+\]
+As $h\to 0$ at fixed $y>0$, the opposite-edge response scales as $f_y^-=O(h)\to 0$,
+while $D(q)=\sqrt{\pi h/b}\,[1+O(h)]$ ($a=1$) and
+$D(q+hu(y))=2\sqrt{yh/b}/u'(y)\,[1+O(yh)]$. Hence
+$\lim_{h\to 0}f_y^+=1-\frac{2\sqrt y}{\sqrt\pi\,u'(y)}$, and since
+$[C_{\rm cl}(y,z)+C_{\rm cl}(z,y)]/h\to 8\sqrt{yz}$, the exact $h\to 0$ limit of
+$S_h(y,z)$ is \Lc (\scr, Check~3):
+\begin{equation}\label{eq:S0_exact}
+ \boxed{S_0(y,z):=\lim_{h\to 0}S_h(y,z)
+ =8\sqrt{yz}\left(\frac{1}{u'(y)\,u'(z)}-1\right)
+  -4\sqrt\pi\left(\frac{\sqrt y}{u'(y)}+\frac{\sqrt z}{u'(z)}\right)+2\pi.}
+\end{equation}
+
+Equation~\eqref{eq:S0_exact} establishes two decisive facts:
+\begin{enumerate}
+\item \textbf{Confirmation of \texttt{frame\_\allowbreak dictionary.tex} lines~339--346 \Lc:}
+For a single pair $(y,z)$, the $-D(q)$ endpoint subtraction contributes the additive
+one-body terms $-4\sqrt\pi\big(\frac{\sqrt y}{u'(y)}+\frac{\sqrt z}{u'(z)}\big)+2\pi$
+in~\eqref{eq:S0_exact}. At $(y,z)=(4,1)$, keeping only the first term of~\eqref{eq:S0_exact}
+gives $+3.7614$, whereas the full formula~\eqref{eq:S0_exact} gives $-13.1290$,
+matching our extrapolated finite-sea value $-13.1290$ to $<10^{-6}$.
+\item \textbf{Exact cancellation of endpoint terms in any mixed rectangle \Lc:}
+In any rectangular second difference
+$\mathcal D_0(y_1,y_0;z_1,z_0)=S_0(y_1,z_1)-S_0(y_0,z_1)-S_0(y_1,z_0)+S_0(y_0,z_0)$,
+the additive one-body terms $-4\sqrt\pi\big(\frac{\sqrt y}{u'(y)}+\frac{\sqrt z}{u'(z)}\big)+2\pi$
+cancel identically, and the remaining bilinear factorises:
+\begin{equation}\label{eq:D0_exact}
+ \boxed{\mathcal D_0(y_1,y_0;z_1,z_0)
+ =8\left(\frac{\sqrt{y_1}}{u'(y_1)}-\frac{\sqrt{y_0}}{u'(y_0)}\right)
+   \left(\frac{\sqrt{z_1}}{u'(z_1)}-\frac{\sqrt{z_0}}{u'(z_0)}\right)
+  -8\big(\sqrt{y_1}-\sqrt{y_0}\big)\big(\sqrt{z_1}-\sqrt{z_0}\big).}
+\end{equation}
+Thus the surviving mixed rectangle in Table~3 of \texttt{frame\_\allowbreak dictionary.tex}
+is governed \emph{solely} by the one-body quantum Jacobian $u'(y)\ne 1$: the classical
+frame subtraction $C_{\rm cl}(y,z)$ used the bare classical factor $\sqrt y$ rather than
+the Jacobian-dressed factor $\sqrt y/u'(y)$. Substituting $u'(y)=1-\frac{1}{2\pi y}-\frac{d_0}{y^2}+O(y^{-3})$
+into~\eqref{eq:D0_exact} for $(y_1,y_0;z_1,z_0)=(2Y,Y;Y/2,Y/4)$ proves analytically
+that $\mathcal D_0(Y)$ has a pure $1/Y$ expansion (no $1/\sqrt Y$ term) with exact
+nonzero large-$Y$ limit \Lc
+\begin{equation}\label{eq:D0_inf}
+ \lim_{Y\to\infty}\mathcal D_0(Y)=-\frac{15\sqrt2-20}{\pi}=-0.38617464750248\ldots
+\end{equation}
+\end{enumerate}
+
+\subsection{Alternative extrapolation bases and new point sets}
+Table~\ref{tab:rect_audit} tests $\mathcal D_h(Y)$ across five extrapolation bases not
+used in \texttt{frame\_\allowbreak analysis.py} (Pad\'e $[1/1]$, Pad\'e $[2/1]$,
+three-point $1+h+h\log h$, four-point $1+h+h^{3/2}+h^2$, and four-point
+$1+h+h^2+h^2\log h$) and compares them with the analytical reduction~\eqref{eq:D0_exact}.
+Check~3 of \scr\ also evaluates~\eqref{eq:D0_exact} on three new independent rectangles
+using the Fej\'er-I solver and directly solved four-term phases $\widehat\Phi(1,2)+\widehat\Phi(2,1)$:
+$(16,4)\times(1,0.25)$ gives $-3.97463$ (Eq.~\eqref{eq:D0_exact}: $-3.97462$),
+$(8,2)\times(0.5,0.1)$ gives $-3.26615$ (Eq.~\eqref{eq:D0_exact}: $-3.26615$), and
+$(16,4)\times(2.56,1.44)$ gives $-0.79218$ (Eq.~\eqref{eq:D0_exact}: $-0.79218$). \Lc
+In every basis and point set, the mixed classical-frame remainder survives the edge
+limit. Furthermore, the symbolic two-term $1/Y$ expansion of~\eqref{eq:D0_exact}
+matches $\mathcal D_0(32)$ to $2.86\times 10^{-5}$, and fitting $\mathcal D_0(Y)$ on
+$Y\in\{8,16,32\}$ to a quadratic in $1/Y$ (or on $Y\in\{4,8,16,32\}$ to a cubic in $1/Y$,
+without the spurious $1/\sqrt Y$ term that pulled the package's first intercept to
+$-0.3276$) gives $-0.38652$ (and $-0.38624$), within $3.4\times 10^{-4}$ of the exact
+asymptote~\eqref{eq:D0_inf}. \Lc
+
+\begin{table}[ht]\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}rccccccc@{}}\toprule
+$Y$ & Pkg quad & Pkg cubic & Pad\'e $[1/1]$ & Pad\'e $[2/1]$ & $h^{3/2}$ fit
+ & $h^2\log h$ fit & Exact Eq.~\eqref{eq:D0_exact}\\\midrule
+$4$  & $-0.504362$ & $-0.504365$ & $-0.504377$ & $-0.504365$ & $-0.504372$ & $-0.504368$ & $-0.504365$\\
+$8$  & $-0.434983$ & $-0.435004$ & $-0.435089$ & $-0.435003$ & $-0.435065$ & $-0.435033$ & $-0.435003$\\
+$16$ & $-0.408705$ & $-0.408890$ & $-0.409478$ & $-0.408878$ & $-0.409412$ & $-0.409136$ & $-0.408877$\\
+$32$ & $-0.395752$ & $-0.397374$ & $-0.401151$ & $-0.397163$ & $-0.401961$ & $-0.399536$ & $-0.397225$\\\bottomrule
+\end{tabular}
+\caption{Survival of the mixed classical-frame rectangle $\mathcal D_0(Y)$ across
+alternative extrapolation bases and comparison with the exact one-body Jacobian
+reduction~\eqref{eq:D0_exact} (\Lc, Check~3).}\label{tab:rect_audit}
+\end{table}
+
+\section{Point 4: Audit of the claimed antisymmetric two-body freedom}
+
+In Section~6 of \texttt{frame\_\allowbreak dictionary.tex}, the authors exhibit
+\begin{equation}\label{eq:Alambda_audit}
+ A_\lambda(y_1,y_2)=\lambda\frac{y_1y_2(y_1-y_2)}{(y_1+y_2)^3},
+\end{equation}
+and note that shifting $B(p_1,p_2)=\widehat\Phi(p_1,p_2)-\mathfrak M_{p_1}\mathfrak Q_{p_2}$
+to $B+hA_\lambda$ preserves all one-body observables, axis vanishing
+$A_\lambda(y_1,0)=0$, the tree-level action limit, and the symmetric reciprocity
+sum $(B+hA_\lambda)(1,2)+(B+hA_\lambda)(2,1)=0$, while shifting $B/h$ at $O(h^0)$ by
+$A_\lambda(Y,r^2Y)=\lambda r^2(1-r^2)/(1+r^2)^3$.
+
+\paragraph{Is $A_\lambda$ a physical ambiguity or an artefact of the tested constraints?}
+Check~4 of \scr\ confirms the algebraic properties of $A_\lambda$ \Lc, but proves that
+it is \textbf{only an artefact of the incomplete set of constraints tested by the
+package}, not a genuine ambiguity of the physical Toda/Boussinesq problem:
+\begin{enumerate}
+\item \textbf{Spatial cluster decomposition and Darboux frame separability (excludes $A_\lambda$) \Lc:}
+In the asymptotic two-soliton sector $|X_1-X_2|\to\infty$, local charge densities
+cluster into single-soliton contributions, so the symplectic cross-term
+$\sum_{i<j}\dd\Pi_i\wedge\dd M_j$ and the resulting Darboux coordinate transformation
+$X_j\mapsto X_j'$ are generated by a finite bilinear $\sum_{a=1}^K f_a(y_1)g_a(y_2)$
+of one-body state functions (Schmidt rank $\le 2$). Consequently, any frame correction
+to the two-body phase must have vanishing $3\times 3$ minors
+$\det_{1\le i,j\le 3}F(y_i,z_j)=0$. By contrast, $A_\lambda(y_1,y_2)$ has infinite
+Schmidt rank: at $(y_1,y_2)\in\{1,2,3\}\times\{4,5,6\}$, Check~4 verifies symbolically
+that $\det_{1\le i,j\le 3}A_1(y_i,z_j)=-\frac{18232351733}{8133427676989440}\ne 0$. Thus $hA_\lambda$
+cannot arise from any redefinition of one-body soliton charges or Darboux coordinates.
+\item \textbf{Microscopic Toda / Krein--Wiener--Hopf differential equation (excludes $A_\lambda$) \Lc:}
+The package tested only the symmetric sum $\widehat\Phi(1,2)+\widehat\Phi(2,1)$,
+whose kernel trivially contains every antisymmetric two-body function. However, the
+Toda Fredholm equation fixes $\widehat\Phi(p_1,p_2)$ itself: in the Fermi-edge limit,
+$(\partial_{u_1}+\partial_{u_2})\widehat\Phi_q(u_1,u_2)=2\psi_-(u_1)[\widetilde\Psi_-(u_2)-\widetilde\Psi_-(0)]$
+is a rank-1 separable product of one-body functions, which uniquely determines
+$\widehat\Phi_q(u_1,u_2)$ from the boundary condition $\widehat\Phi_q(u_1,0)=0$.
+Applying $(\partial_{y_1}+\partial_{y_2})$ to $A_1(y_1,y_2)$ gives
+$+(y_1-y_2)(y_1^2-4y_1y_2+y_2^2)/(y_1+y_2)^4$, whose $2\times 2$ separability
+determinant at $(1,3)\times(2,5)$ is $\frac{277}{1920000}\ne 0$.
+\item \textbf{Crossing / reflection parity and rapidity analyticity (excludes $A_\lambda$) \Lc:}
+With $y_j=\beta_j^2/\hbar_B$ and $r=\beta_2/\beta_1$, $A_\lambda(Y,r^2Y)=\lambda r^2(1-r^2)/(1+r^2)^3$
+is \emph{even} under $r\mapsto -r$ ($\beta_2\mapsto -\beta_2$), whereas the physical
+one-loop residual $R_0(\infty,r)=-\frac{4}{\pi}(\chi_2(r)-r)$ is strictly \emph{odd}
+in $r$. Furthermore, $A_\lambda(Y,r^2Y)$ introduces unphysical third-order poles at
+$r=\pm i$ ($\beta_1^2+\beta_2^2=0$), where the Toda Bethe kernel is regular.
+\item \textbf{What does \emph{not} remove $A_\lambda$ \Lc:}
+The tree-level $O(\hbar^{-1})$ classical limit does not remove $hA_\lambda$ because
+$hA_\lambda/h=O(\hbar^0)$ is one-loop order. Likewise, scalar three-body Yang--Baxter
+and three-body Bethe momentum conservation $\sum_{j=1}^3 P(p_j)L=2\pi h\sum_{j=1}^3 I_j$
+hold for any antisymmetric pair phase, though three-body linear sea backflow
+$F_{p_2,p_3}=F_{p_2}+F_{p_3}$ combined with one-body charge separability excludes
+non-separable frame terms.
+\end{enumerate}
+
+\paragraph{Remaining physical open question \Ld.}
+While $A_\lambda$ is an artefact of testing only symmetric reciprocity, a narrower
+rank-2 question remains genuinely open \Ld: identifying the unique antisymmetric combination
+of \emph{one-body} endpoint responses ($\mathfrak M_1\mathfrak Q_2-\mathfrak M_2\mathfrak Q_1$)
+with the canonical collective-coordinate operators in the continuum Boussinesq Hilbert
+space still requires the projected fluctuation determinant and zero-mode measure.
+
+\section{Additional checks, verdict table, and failures recorded}
+
+\paragraph{Continuum mode-sum non-uniformity and Phase~2i factor product (Check~5) \Lc.}
+Check~5 of \scr\ confirms Eq.~(20) of \texttt{frame\_\allowbreak dictionary.tex}:
+for $\Delta P_g=\epsilon\alpha(\log\alpha+c)/\pi$, the relative shift at fixed
+$y=\alpha^2/\hbar_B$ is $\hbar_B\Delta P_g/P_{g,0}=\frac{3}{2\pi y}(\log\alpha+c)+O(\alpha^2\log\alpha)$,
+which is non-uniform as $\alpha\to 0$ at fixed $y$.
+Check~5 also verifies to 70~digits that for
+$\Phi_{\rm WH}(s)=\sqrt{2\pi/s}\,\Gamma(1+\frac{s}{2\pi})\exp(-\frac{s}{2\pi}\ln\frac{s}{2\pi e})$,
+\[
+ \Phi_{\rm WH}(i\omega)\Phi_{\rm WH}(-i\omega)=\frac{\pi e^{|\omega|/2}}{\sinh(|\omega|/2)}
+ \qquad (\omega\ne 0),
+\]
+confirming that the middle display $\frac{2\pi^2 e^{\pi|\omega|}}{\sinh(\pi|\omega|)}$
+in Eq.~(3) of \texttt{toda\_\allowbreak wh\_\allowbreak and\_\allowbreak kp\_\allowbreak synthesis.tex}
+contains a typographical rescaling ($\omega\mapsto 2\pi\omega$ and an extra $2\pi$
+factor). \textbf{Qualification \Lc:} Because Eq.~(4) of
+\texttt{toda\_\allowbreak wh\_\allowbreak and\_\allowbreak kp\_\allowbreak synthesis.tex}
+divides by $\sqrt{2\pi}$ to define $\widetilde\Phi_{\rm WH}(s)=\Phi_{\rm WH}(s)/\sqrt{2\pi}$
+and uses only $\widetilde\Phi_{\rm WH}(s)$ in its Laplace transforms, the Eq.~(3)
+display typo does not propagate into the Phase~2i expansion of $\delta u(y)$ or $u'(y)-1$,
+which agree with Table~1 of \texttt{frame\_\allowbreak dictionary.tex} to $5.5\times 10^{-7}$
+($\delta u$) and $2.1\times 10^{-7}$ ($u'-1$) at $y=8$, and $9.9\times 10^{-8}$ ($\delta u$)
+and $5.7\times 10^{-9}$ ($u'-1$) at $y=16$.
+
+\begin{table}[ht]\centering\small
+\begin{tabular}{@{}L{5.6cm}L{2.5cm}L{6.2cm}@{}}\toprule
+Audited claim in \texttt{frame\_dictionary.tex} & Verdict & Independent evidence (\scr)\\\midrule
+Classical Toda--Boussinesq charge and velocity scalings, Eqs.~(1), (8) \Lc
+ & \textbf{Confirmed} \Lc & Check~1: exact SymPy limits and series\\
+Finite-sea dressed-momentum and dressed-energy endpoint identities, Eqs.~(2)--(5) \Lc
+ & \textbf{Confirmed} \Lc & Check~1: integration-by-parts proof; 70-dps Fej\'er-I solver ($<5.8\times 10^{-15}$); new identity~\eqref{eq:opp_edge}\\
+Exact quantum momentum and energy Jacobians, Eqs.~(6)--(7) \Lc
+ & \textbf{Confirmed} (coverage qualified) \Lc & Check~1: direct 70-dps $y$-derivative check ($<2.0\times 10^{-25}$); package omitted $\dd\overline E/\dd y$ test\\
+Formal fixed-$P$ one-loop energy inversion, Eq.~(9) \Lc
+ & \textbf{Confirmed} (test qualified) \Lc & Check~1: non-tautological series proof (replacing tautology in \texttt{frame\_identities.py:30--32})\\
+Tabulated dispersion $u-y$, $u'$, $c_E(y)$, $E_1(P)$, and $(v_s-b)/h$, Tables~1--2 \Lc
+ & \textbf{Qualified} \Lc & Check~2: central values reproduced via Fej\'er-I; at $y=0.1$, propagated mesh error $> $ edge spread due to $1/(hP_0)$ amplification; at $y=64$, $\kappa(0.04)\simeq 2.05$; exact $(v_s-b)/h=1/(4\pi)$ and $c_E(\infty)=1/(6\pi)$ proved\\
+Thermodynamic pressure response and endpoint derivatives, Eqs.~(11)--(13) \Lc
+ & \textbf{Confirmed} \Lc & Check~1: analytic proof and 4th-order Richardson $q$-differences ($<5.8\times 10^{-15}$)\\
+Four-term reciprocity and necessity of $-D(q)$ endpoint subtraction, Eqs.~(15)--(16) \Lc
+ & \textbf{Confirmed} \Lc & Check~3: Eq.~\eqref{eq:S0_exact} proves dropping $-D(q)$ shifts $S_0(4,1)$ from $-13.129$ to $+3.761$\\
+Survival of mixed classical-frame rectangle $\mathcal D_h(Y)$ as $h\to 0$, Table~3 \Lc/\Ld
+ & \textbf{Confirmed} (limit qualified) \Lc & Check~3: confirmed across 5 new bases and 3 new point sets; exact reduction~\eqref{eq:D0_exact} to $u'(y)$ proves $\mathcal D_0(\infty)=-(15\sqrt2-20)/\pi\simeq -0.386175$ with no $1/\sqrt Y$ term\\
+Two-body antisymmetric freedom $A_\lambda(y_1,y_2)$, Eqs.~(18)--(19) \Lc/\Ld
+ & \textbf{Qualified / Refuted as physical} \Lc & Check~4: valid counterexample to reciprocity alone, but refuted as a physical frame ambiguity by cluster separability ($\det_{3\times 3}\ne 0$), Krein PDE, and $r$-parity/poles\\
+Continuum mode-sum non-uniformity Eq.~(20) and Phase~2i WH product Eq.~(21) \Lc
+ & \textbf{Confirmed} (scope qualified) \Lc & Check~5: product $\pi e^{|\omega|/2}/\sinh(|\omega|/2)$ verified to $<10^{-65}$; downstream $\widetilde\Phi_{\rm WH}$ unaffected\\\bottomrule
+\end{tabular}
+\caption{Summary verdict table for the \texttt{frame\_\allowbreak dictionary} package.}\label{tab:verdicts}
+\end{table}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item Running \texttt{frame\_\allowbreak identities.py} and
+\texttt{frame\_\allowbreak analysis.py} directly overwrites
+\texttt{frame\_\allowbreak identities.json} and
+\texttt{frame\_\allowbreak analysis.json} with fresh \texttt{seconds} timestamps,
+modifying tracked files outside the \texttt{audit\_\allowbreak frame\_\allowbreak dictionary}
+namespace. Both JSON files were restored byte-for-byte to their initial SHA-256
+hashes, and \scr\ enforces an exact SHA-256 invariance guard across all seven
+audited files.
+\item In an initial mental calculation of the large-$Y$ limit of~\eqref{eq:D0_exact},
+the factor $\frac{1}{\sqrt{Y/2}}-\frac{1}{\sqrt{Y/4}}=-\frac{\sqrt2(\sqrt2-1)}{\sqrt Y}$
+was written without the factor of $\sqrt2$, giving $-\frac{22-15\sqrt2}{\pi}\simeq -0.2504$
+instead of the exact limit $-\frac{15\sqrt2-20}{\pi}\simeq -0.386175$. Exact SymPy
+series expansion in Check~3 of \scr\ caught and corrected the arithmetic before
+any check was finalised; no tolerance was weakened.
+\item In Check~1 of \scr, an initial $N=56$ Fej\'er-I (Chebyshev-root) mesh at
+$(h=0.35,q=1.4)$ gave maximum endpoint/pressure error $2.06\times 10^{-12}$,
+exceeding our strict $10^{-12}$ assertion threshold because $N$-node Fej\'er-I
+quadrature has polynomial degree of exactness $N-1$ (half that of $N$-node
+Gauss--Legendre quadrature). Refining the Fej\'er-I mesh to $N=68$ passed the
+unchanged $10^{-12}$ threshold without weakening any assertion tolerance.
+\item In Check~3 of \scr, a four-point quadratic $1/Y$ fit across $Y\in\{4,8,16,32\}$
+initially failed a $5\times 10^{-4}$ assertion against $\mathcal D_0(\infty)$ (giving
+$-0.3875$ vs.\ $-0.3862$) because at $Y=4$ the lowest rectangle corner is $z_0=Y/4=1$,
+where $1/z_0=1$ is $O(1)$ and contributes $O(10^{-3})$ higher-order $1/z^3$ terms.
+Replacing the heuristic fit by the exact symbolic $O(1/Y)$ and $O(1/Y^2)$ coefficients
+of~\eqref{eq:D0_exact} (which match $\mathcal D_0(32)$ to $2.86\times 10^{-5}$) and
+testing the quadratic fit on $Y\in\{8,16,32\}$ alongside the cubic $1/Y$ fit on
+$Y\in\{4,8,16,32\}$ resolved the issue cleanly.
+\item In Check~4 of \scr, the symbolic assertion on $(\partial_{y_1}+\partial_{y_2})A_1(y_1,y_2)$
+initially had the opposite overall sign ($-$ instead of $+$ in
+$+(y_1-y_2)(y_1^2-4y_1y_2+y_2^2)/(y_1+y_2)^4$), \texttt{sp.solve} for the poles
+$r=\pm i$ of $(1+r^2)^3$ was initially called on a symbol declared with
+\texttt{positive=True} (which filtered out complex roots), and the three-body pairwise
+sum initially used sequential \texttt{.subs(\{y1:y2, y2:y1\})} instead of simultaneous
+\texttt{.xreplace}; all three were fixed in Check~4 without affecting the $2\times 2$
+Krein separability determinant ($\frac{277}{1920000}\ne 0$).
+\item The package's claims that $(v_s-b)/h$ has no proved closed form, that
+$\mathcal D_0(Y)$ may require $1/\sqrt Y$ terms, that $c_E(0.1)$ is purely
+edge-spread-limited, and that $A_\lambda(y_1,y_2)$ represents an unremovable
+two-body physical freedom fail the analytical and physical tests documented in
+Sections~3--5 and are recorded as assertions in \scr.
+\end{enumerate}
+
+\end{document}
