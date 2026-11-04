@@ -1,3 +1,4 @@
+# (G) Pure figure/data generator; no verification claims are asserted here.
 """Figures for the Phase 1 review: interaction regimes in the rapidity-like variables and E(P)."""
 import numpy as np
 import matplotlib
@@ -29,3 +30,5 @@ ax[2].plot(P, P, ':', color='gray', label='$E=P$ (sound)')
 ax[2].set_xlabel('$P$'); ax[2].set_ylabel('$E$'); ax[2].legend(fontsize=8)
 ax[2].set_title('good: one-soliton $E(P)$, right-movers', fontsize=10)
 fig.tight_layout(); fig.savefig('../figures/regimes_and_dispersion.pdf'); print('saved')
+
+print("DATA GENERATED (no checks)")

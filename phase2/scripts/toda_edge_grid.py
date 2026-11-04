@@ -1,3 +1,4 @@
+# (G) Pure figure/data generator; no verification claims are asserted here.
 """Overtaking grid at hbar_T = 0.01 and 0.005: exact Toda normalised phase vs candidate and semiclassics."""
 import json, numpy as np
 from toda_edge_ba import EdgeBA, Psi_T
@@ -13,3 +14,5 @@ for h in [0.01]:
             res.setdefault(h, []).append((y1, y2, t, c, s))
             print('h=%.3f y=(%.2f,%.2f) Toda %+.5f cand %+.5f semi %+.5f  T-c %+.5f  T-s %+.5f' % (h, y1, y2, t, c, s, t - c, t - s), flush=True)
 json.dump({str(k): v for k, v in res.items()}, open('toda_edge_grid.json', 'w'))
+
+print("DATA GENERATED (no checks)")

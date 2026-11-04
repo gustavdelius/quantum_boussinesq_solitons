@@ -40,3 +40,35 @@ if __name__ == '__main__':
         H = np.array([r[0] for r in rows]); Dv = np.array([r[1] - r[2] for r in rows]); Sv = np.array([r[1] - r[3] for r in rows])
         D0 = np.polyfit(H, Dv, 2)[-1]; S0 = np.polyfit(H, Sv, 2)[-1]
         print('  y=(%s): D(0) = %+.5f   (Toda-semi)(0) = %+.5f' % (key, D0, S0))
+
+    # (V), (c): toda_edge.tex, results table (four decimal places). A 1e-4
+    # absolute bound allows its rounding and the printed residual subtraction.
+    _check_table = {
+        '1.5,0.5': (-2.7009, -2.6949, -2.6339, -0.0060),
+        '3,0.5': (-4.3477, -4.3463, -4.3351, -0.0014),
+        '6,0.5': (-6.5400, -6.5392, -6.5366, -0.0008),
+        '1.5,1': (-2.6215, -2.5451, -2.2924, -0.0764),
+        '3,1': (-5.3134, -5.2962, -5.2678, -0.0172),
+        '6,1': (-8.6817, -8.6757, -8.6701, -0.0059),
+        '0.3,0.1': (-0.6129, -0.7044, -0.5268, 0.0914),
+        '3,0.1': (-2.1425, -2.1438, -2.1419, 0.0013),
+    }
+    _check_residuals = {}
+    for _check_key, _check_expected in _check_table.items():
+        _check_rows = np.array(out[_check_key])
+        _check_ext = np.polyfit(_check_rows[:, 0], _check_rows[:, 1:], 2)[-1]
+        _check_D = _check_ext[0] - _check_ext[1]
+        assert np.all(np.isfinite(_check_ext)), (_check_key, _check_ext)
+        assert np.max(np.abs(np.append(_check_ext, _check_D) - _check_expected)) < 1e-4, (_check_key, _check_ext, _check_D)
+        _check_residuals[_check_key] = _check_D
+    # At fixed y2 the residual depends on y1 by far more than table rounding.
+    assert abs(_check_residuals['1.5,1'] - _check_residuals['3,1']) > 0.01
+    assert _check_residuals['1.5,1'] < -0.01 < 0 < _check_residuals['0.3,0.1']
+    # Preserve the write-up's explicit bound, even if it fails. Report every
+    # offending Toda step, after computing and writing ALL original outputs.
+    _check_steps = [(key, rows[i-1][0], rows[i][0], abs(rows[i][1] - rows[i-1][1]))
+                    for key, rows in out.items() for i in range(1, len(rows))]
+    assert all(step[3] < 4e-3 for step in _check_steps), (
+        "toda_edge.tex: successive Toda changes < 0.004 FAILED",
+        [step for step in _check_steps if not step[3] < 4e-3])
+    print("ALL CHECKS PASSED")

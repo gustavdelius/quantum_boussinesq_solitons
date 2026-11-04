@@ -54,7 +54,9 @@ u1 = 2*sp.diff(sp.log(tau_N([k1], [k1*s1])), x, 2)
 print('1-soliton residual:', sp.simplify(pde_residual(u1)))
 assert sp.simplify(pde_residual(u1)) == 0
 # closed form: u = (k^2/2) sech^2((k x - w t)/2)
-assert sp.simplify(u1 - k1**2/2*sp.sech((k1*x - k1*s1*t)/2)**2) == 0 or True
+# (V), (c): review.tex, one-soliton profile. Exponentials give an exact proof;
+# the former assertion silently bypassed this check.
+assert sp.simplify((u1 - k1**2/2*sp.sech((k1*x - k1*s1*t)/2)**2).rewrite(sp.exp)) == 0
 
 import mpmath as mp
 mp.mp.dps = 40
@@ -67,6 +69,8 @@ for e1, e2 in [(1, 1), (1, -1)]:
     vals = [abs(f(mp.mpf(xx), mp.mpf(tt))) for xx, tt in [(0.3, 0.2), (-2.1, 1.7), (5.0, -3.0), (1.0, 8.0)]]
     print('2-soliton eps=(%d,%d) max |residual| at sample points: %s' % (e1, e2, mp.nstr(max(vals), 5)))
     assert max(vals) < mp.mpf(10)**-25
+    # (c): review.tex explicitly reports residuals below 1e-38 at 40 digits.
+    assert max(vals) < mp.mpf("1e-38"), (e1, e2, max(vals))
 
 # ---- 2. Hirota condition for N = 2, 3, 4 (exact) ---------------------------------------------
 def hirota_check(ks, ws):
@@ -103,6 +107,9 @@ for trial in range(3):
     ks = [complex(random.uniform(.1, .9), random.uniform(-.5, .5)) for _ in range(3)]
     ws = [random.choice([1, -1])*k*cmath.sqrt(1 - k*k) for k in ks]
     print('  complex-k Hirota N=3 check:', '%.2e' % hirota_check(ks, ws))
+    # (c): complex arithmetic with cancellation across 64 bilinear terms.
+    # 1e-12 is an absolute roundoff allowance, not an exact complex proof.
+    assert hirota_check(ks, ws) < 1e-12, (trial, hirota_check(ks, ws))
 
 # ---- 3. closed forms --------------------------------------------------------------------------
 ka, kb = sp.symbols('k_1 k_2', positive=True)
@@ -115,4 +122,7 @@ for e, name in [(1, 'overtaking (eps1=eps2)'), (-1, 'head-on (eps1=-eps2)')]:
     diffs = [sp.N((Aex - BD).subs({ka: p, kb: q})) for p, q in num]
     print(name, ': A_12 =', Aex)
     print('   A_12 - BonnemainDoyon(16) at sample points:', [float(d) for d in diffs])
+    # (c): prove the identity for symbolic parameters, beyond sampled floats.
+    assert sp.simplify(Aex - BD) == 0
+    assert all(abs(d) < 1e-12 for d in diffs), (name, diffs)
 print('ALL CHECKS PASSED')

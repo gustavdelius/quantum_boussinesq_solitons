@@ -38,3 +38,16 @@ if __name__ == '__main__':
         ext = lambda f: 2*r[1][f] - r[0][f]
         print('  %-12s Toda %+.5f   cand %+.5f   semi %+.5f   Toda-cand %+.5f   Toda-semi %+.5f'
               % (key, ext('toda'), ext('cand'), ext('semi'), ext('toda') - ext('cand'), ext('toda') - ext('semi')))
+
+    # (V), (c): toda_edge.tex, head-on result, explicitly within 1e-4.
+    # The overtaking four-term comparison is superseded in that write-up;
+    # do not assert agreement for its exploratory overtaking output.
+    for _check_y1, _check_y2 in ((0.5, 0.5), (1.0, 1.0), (2.0, 0.5)):
+        _check_rows = out['ho %.1f %.1f' % (_check_y1, _check_y2)]
+        _check_expected = 4*np.sqrt(_check_y1*_check_y2)
+        for _check_field in ('toda', 'cand', 'semi'):
+            _check_ext = 2*_check_rows[-1][_check_field] - _check_rows[-2][_check_field]
+            assert np.isfinite(_check_ext)
+            assert abs(_check_ext - _check_expected) < 1e-4, (
+                _check_y1, _check_y2, _check_field, _check_ext, _check_expected)
+    print("ALL CHECKS PASSED")

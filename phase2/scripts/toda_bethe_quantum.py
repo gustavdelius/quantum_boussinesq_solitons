@@ -69,8 +69,22 @@ if __name__ == '__main__':
     from toda_bethe_classical import TodaBA
     a = 1.0; cl = TodaBA(a)
     print('classical band edge w = %.6f' % cl.w)
+    # (V), (c): toda_route.tex, finite-hbar convergence at fixed p=1.6.
+    _check_errors = []
     for h in [0.2, 0.1, 0.05, 0.025]:
         ba = TodaBAq(a, h)
         print('hbar=%.3f N=%d: Fermi edge q=%.6f ; P_dr(1.6)=%.6f (cl %.6f) ; E_dr(1.6)-E_dr(q)=%.6f (cl %.6f); Phi(1.6|0.9*... )'
               % (h, ba.N, ba.q, ba.P_dr(1.6), cl.P_dr(1.6), ba.E_dr(1.6) - ba.E_dr(ba.q*(1+1e-9)),
                  cl.E_dr(1.6) - cl.E_dr(cl.w*(1+1e-12))))
+        _check_errors.append(np.abs([ba.q - cl.w,
+            ba.P_dr(1.6) - cl.P_dr(1.6),
+            ba.E_dr(1.6) - ba.E_dr(ba.q*(1+1e-9))
+            - (cl.E_dr(1.6) - cl.E_dr(cl.w*(1+1e-12)))]))
+        assert abs(np.sum(ba.wq*ba.rho) - 1/a) < 1e-10
+        assert np.max(np.abs(ba.A @ ba.rho - 1)) < 1e-10
+    assert np.all(np.isfinite(_check_errors)), _check_errors
+    assert np.all(np.diff(_check_errors, axis=0) < 0), _check_errors
+    # Halving h gives a ratio approaching 1/2 for linear convergence.
+    # A 0.1 absolute allowance tests the leading order at the two finest h.
+    assert np.all(np.abs(_check_errors[-1]/_check_errors[-2] - 0.5) < 0.1), _check_errors
+    print("ALL CHECKS PASSED")

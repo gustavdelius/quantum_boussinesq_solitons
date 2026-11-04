@@ -22,3 +22,10 @@ for bb in [sp.sqrt(3)**-1, sp.I/sp.sqrt(3)]:
                     cands.append((aa, bb, cc, dd))
 print('solutions (a, b, c, d):', cands)
 assert cands
+
+# (V), (c): review.tex, rational solutions: assert the specific real map,
+# rather than merely the existence of some real or complex candidate.
+assert (3, 1/sp.sqrt(3), sp.Rational(1, 3), 1/sp.sqrt(3)) in cands
+assert sp.simplify(expr.subs({a: 3, b: 1/sp.sqrt(3), c: sp.Rational(1, 3),
+                              d: 1/sp.sqrt(3)})/9 - target) == 0
+print("ALL CHECKS PASSED")

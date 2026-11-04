@@ -92,3 +92,22 @@ def Psi_T(m, y1, s1, y2, s2):
     norm = m.Phi(p1, p2, F2) - m.Phi(p1, e2, Fe2) - m.Phi(e1, p2, F2) + m.Phi(e1, e2, Fe2)
     frame = (-2*k1)*(Pn(k2, s2, b)/a - Pi(k2, s2, b))
     return (norm - frame)/m.h, (be1, be2, hB)
+
+# (V), (c): standalone verification of the equations and edge normalisation
+# in toda_edge.tex. Imports retain their original module-only behaviour.
+if __name__ == '__main__':
+    # Use the existing nodecheck.py configuration; do not change solver defaults.
+    _check_m = EdgeBA(1.0, 0.04, npts=700)
+    # Secant stopping is 1e-13 in q; 1e-10 allows conditioning of the count.
+    assert abs(np.sum(_check_m.wq*_check_m.rho) - 1/_check_m.a) < 1e-10
+    assert np.all(_check_m.rho > 0), "Ground-state density must be positive"
+    assert np.max(np.abs(_check_m._system(_check_m.q)[2] @ _check_m.rho - 1)) < 1e-10
+    for _check_s in (1, -1):
+        _check_P = Pn(np.sqrt(3*0.5*_check_m.h/(3*_check_m.b)), _check_s, _check_m.b)/_check_m.a
+        assert abs(_check_m.P_dr(_check_m.p_of_P(_check_P, _check_s))
+                   - _check_m.P_dr(_check_m.edge(_check_s)) - _check_P) < 1e-12
+        # Four-term phase must vanish on either edge. Cancellation is divided
+        # by h=0.04; 1e-10 comfortably resolves a nonzero normalisation error.
+        assert abs(Psi_T(_check_m, 0.0, 1, 0.5, _check_s)[0]) < 1e-10
+        assert abs(Psi_T(_check_m, 0.5, 1, 0.0, _check_s)[0]) < 1e-10
+    print("ALL CHECKS PASSED")

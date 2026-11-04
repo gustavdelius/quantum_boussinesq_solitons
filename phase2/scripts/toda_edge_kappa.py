@@ -35,3 +35,14 @@ print('\nlinear extrapolation hbar -> 0:   residual Toda - V0, V1, V2   (and kap
 for k, r in out.items():
     ext = lambda j: 2*r[1][j] - r[0][j]
     print('  y=(%s): %+.5f  %+.5f  %+.5f    kappa-eta %+.5f' % (k, ext(1) - ext(4), ext(1) - ext(5), ext(1) - ext(6), ext(3) - ext(2)))
+
+# (V), (c): toda_edge.tex, conclusion 3. Ranges there are rounded to two
+# decimals: allow half a last-place unit (0.005), without changing the fits.
+for _check_key, _check_rows in out.items():
+    _check_ext = 2*np.array(_check_rows[1]) - np.array(_check_rows[0])
+    assert np.all(np.isfinite(_check_ext)), (_check_key, _check_ext)
+    assert -0.455 <= _check_ext[3] - _check_ext[2] <= -0.025, (_check_key, _check_ext)
+    assert abs(_check_ext[1] - _check_ext[4]) <= 0.11, (_check_key, _check_ext)
+    assert 0.165 <= abs(_check_ext[1] - _check_ext[5]) <= 0.865, (_check_key, _check_ext)
+    assert 0.275 <= abs(_check_ext[1] - _check_ext[6]) <= 0.495, (_check_key, _check_ext)
+print("ALL CHECKS PASSED")

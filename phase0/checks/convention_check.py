@@ -15,6 +15,10 @@ for s, name in [(-1, 'good'), (1, 'bad')]:
     w2 = k**2 + s*k**4
     res = w2*D(u, 2) - k**2*D(u, 2) - s*k**4*D(u, 4) - c*k**2*D(u**2, 2)
     sol = sp.solve(sp.simplify(res.subs(th, sp.Rational(1, 3))/k**4), c)
+    # (V), (c): the stated convention requires c = 3s, not just some root.
+    assert sol == [3*s], (name, sol)
     # confirm the residual vanishes identically in theta for that c
     assert sp.simplify(res.subs(c, sol[0])) == 0
     print(name, 'c =', sol[0])
+
+print("ALL CHECKS PASSED")
