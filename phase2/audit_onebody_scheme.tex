@@ -1,0 +1,482 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\newcommand{\La}{\textbf{(a)}\ }
+\newcommand{\Lb}{\textbf{(b)}\ }
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\scr}{\texttt{audit\_\allowbreak onebody\_\allowbreak scheme.py}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\emergencystretch=3em
+
+\title{Independent audit of \texttt{onebody\_scheme}:\\
+vacuum elasticity matching, sound-subtracted invariance, and the factor of four}
+\author{Quantum Boussinesq solitons project}
+\date{4 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\Lc We conduct an independent mathematical and numerical audit of
+\texttt{phase2/\allowbreak onebody\_\allowbreak scheme.tex} and its three verification scripts
+(\texttt{onebody\_\allowbreak scheme\_\allowbreak continuum.py},
+\texttt{onebody\_\allowbreak scheme\_\allowbreak dictionary.py},
+and \texttt{onebody\_\allowbreak scheme\_\allowbreak edge.py}). All three scripts execute cleanly in the
+foreground and print \texttt{ALL CHECKS PASSED} without circularity.
+Independent mode sums across four continuum regularisations (sharp wavenumber
+cutoff, dimensional/analytic regularisation, heat-kernel damping, and the 2D
+Euclidean Feynman bubble integral) and two lattice methods confirm the vacuum
+sound-speed coefficients $s_{1,g} = -9/(4\pi)$ (good continuum),
+$s_{1,b,\mathrm{ac}} = +9/(4\pi)$ (formally continued bad continuum), and
+$s_{1,T} = +3/(4\pi)$ (quantum Toda lattice), refuting the assumption
+$s_{1,\mathrm{cont}} = 0$ in \texttt{audit\_\allowbreak onebody.tex}.
+Matching the low-energy vacuum elastic modulus fixes the local effective
+Hamiltonian counterterm $\Delta\mathcal{H} = -\frac{3\hbar_B}{2\pi}u^2$
+from homogeneous ($k=0$) vacuum mode sums alone, with zero input from soliton
+data. Because the classical soliton canonical momentum satisfies
+$P_0 = v\int u_0^2\,\dd x$, any counterterm $\Delta\mathcal{H} = \hbar_B\lambda u^2$
+shifts both $s_1$ and the small-amplitude soliton slope
+$C = \lim_{k\to 0}F(k)/|P_0(k)|$ by exactly $\lambda$, shifting $C_{\mathrm{ac}} = 2/\pi$
+by $\Delta C = -3/(2\pi)$ to $C_{\mathrm{matched}} = 1/(2\pi) = C_T$ and leaving
+the physical sound-subtracted soliton slope $C - s_1 = -1/(4\pi)$ strictly invariant.
+We also confirm the diagnosis of the failed line~383 assertion in
+\texttt{audit\_\allowbreak onebody.py} as a coarse-grid $O((hy)^3)$ quadratic extrapolation
+truncation error ($2.2547\times 10^{-4}$ at $y=64$) on a true $h\to 0$ limiting
+identity. \Ld The scheme explanation \textbf{(A)} stands for the leading
+$O(\hbar_B^0)$ coefficient of the stipulated formally continued trace; it does
+not construct a physical bad-equation fluctuation determinant, repair the real
+stable-band (Scheme~A) resonance, or establish full finite-amplitude equivalence.
+\end{abstract}
+
+\section{Scope, conventions, and script execution}
+Claim labels follow \texttt{AGENTS.md}: (a) proved in the literature,
+(b) conjectured or heuristic in the literature, (c) derived or verified in this
+project, and (d) a guess or unestablished physical identification.
+No external article, preprint, arXiv identifier, or DOI is cited here.
+The internal documents read in full for this audit are \texttt{AGENTS.md},
+\texttt{README.md}, \texttt{phase2/\allowbreak report.tex},
+\texttt{phase2/\allowbreak onebody\_\allowbreak scheme.tex},
+\texttt{phase2/\allowbreak audit\_\allowbreak onebody.tex},
+\texttt{phase2/\allowbreak onebody\_\allowbreak dispersion\_\allowbreak test.tex},
+\texttt{phase2/\allowbreak onebody\_\allowbreak toda\_\allowbreak precision.tex},
+\texttt{phase2/\allowbreak det\_\allowbreak projected\_\allowbreak oneloop.tex},
+\texttt{phase2/\allowbreak frame\_\allowbreak dictionary.tex},
+\texttt{phase2/\allowbreak oneloop.tex}, and
+\texttt{phase2/\allowbreak audit\_\allowbreak phase2i.tex}, together with their scripts and saved JSON files.
+All independent symbolic and 70-digit \texttt{mpmath} checks are implemented in
+\texttt{phase2/\allowbreak scripts/}\scr, which imports no project script, verifies SHA-256
+hashes of all audited files, and ends by printing \texttt{ALL CHECKS PASSED}.
+
+\Lc (\scr) In the project's fixed conventions, $u = \phi_x$, $\pi = \phi_t$,
+$\Omega = \int\dd\pi\wedge\dd\phi$, and the good ($g$) and bad ($b$) Hamiltonian
+densities are
+\begin{equation}
+  \mathcal{H}_g = \tfrac{1}{2}\pi^2 + \tfrac{1}{2}u^2 - u^3 + \tfrac{1}{2}u_x^2,
+  \qquad
+  \mathcal{H}_b = \tfrac{1}{2}\pi^2 + \tfrac{1}{2}u^2 + u^3 - \tfrac{1}{2}u_x^2,
+  \label{eq:Hg-Hb}
+\end{equation}
+generating $u_{tt} = u_{xx} \mp u_{xxxx} \mp 3(u^2)_{xx}$.
+The one-soliton profile $u_0(x,t) = \frac{k^2}{2}\operatorname{sech}^2\frac{k(x-vt)}{2}$
+has $k = \sin\alpha$, $v_g = \epsilon\sqrt{1-k^2}$ (good) and $k = \sinh\beta$,
+$v_b = \epsilon\sqrt{1+k^2}$ (bad), with integral moments
+\begin{equation}
+  \int_{-\infty}^{\infty} u_0\,\dd x = 2k, \qquad
+  \int_{-\infty}^{\infty} u_0^2\,\dd x = \frac{2}{3}k^3, \qquad
+  \int_{-\infty}^{\infty} u_0^3\,\dd x = \frac{4}{15}k^5, \qquad
+  \int_{-\infty}^{\infty} u_{0,x}^2\,\dd x = \frac{2}{15}k^5.
+  \label{eq:moments}
+\end{equation}
+Throughout, $\hbar_B W(U)$ denotes the $O(\hbar_B)$ homogeneous vacuum energy
+density on a constant background strain $u = U$, $c_{\mathrm{sound}} = 1 + \hbar_B s_1 + O(\hbar_B^2)$
+denotes the quantum sound speed in fixed classical Boussinesq units, and
+$\hbar_B F(k) = E_1\big|_P$ denotes the $O(\hbar_B)$ one-soliton energy correction
+at fixed canonical momentum $P$, with small-amplitude slope
+$C := \lim_{k\to 0^+} F(k)/|P_0(k)|$.
+
+\Lc Foreground execution of the audited scripts from the repository root gave:
+\begin{enumerate}
+  \item \texttt{python3 phase2/scripts/onebody\_\allowbreak scheme\_\allowbreak continuum.py}: exited $0$ in $6\,\mathrm{s}$, printed \texttt{ALL CHECKS PASSED}.
+  \item \texttt{python3 phase2/scripts/onebody\_\allowbreak scheme\_\allowbreak dictionary.py}: exited $0$ in $57\,\mathrm{s}$, printed \texttt{ALL CHECKS PASSED}.
+  \item \texttt{python3 phase2/scripts/onebody\_\allowbreak scheme\_\allowbreak edge.py}: exited $0$ in $312\,\mathrm{s}$, printed \texttt{ALL CHECKS PASSED}.
+  \item \texttt{python3 phase2/scripts/audit\_\allowbreak onebody.py}: exited $1$ at line~383 with \texttt{AssertionError} on \texttt{max\_cv\_id\_diff < 3e-6}, confirming the failure reported in \texttt{onebody\_\allowbreak scheme.tex}.
+\end{enumerate}
+
+\section{Point 1: Independent recomputation of the vacuum sound-speed shifts}
+
+\subsection{\texorpdfstring{Good continuum vacuum: $s_{1,g} = -9/(4\pi)$ across four regularisations}{Good continuum vacuum: s1g = -9/(4 pi) across four regularisations}}
+\Lc (\scr) Expanding $\mathcal{H}_g$ around a homogeneous background strain
+$\phi_0(x) = Ux$ ($u = U + \eta_x$, $\pi = \eta_t$, with $U < 1/6$) gives
+\begin{equation}
+  \mathcal{H}_g(U+\eta_x) = \left(\tfrac{1}{2}U^2 - U^3\right)
+  + (U - 3U^2)\eta_x
+  + \tfrac{1}{2}\eta_t^2 + \tfrac{1}{2}(1-6U)\eta_x^2 + \tfrac{1}{2}\eta_{xx}^2 - \eta_x^3,
+\end{equation}
+so small fluctuations have dispersion $\omega_g(q;U) = |q|\sqrt{q^2 + m^2(U)}$
+with $m^2(U) = 1 - 6U$, and classical sound speed squared $c_{s,g,0}^2(U) = 1 - 6U$.
+Because the cubic interaction $-\phi_x^3$ depends only on $\phi_x$ and not on
+$\phi_t = \pi$, every external leg of the one-loop 1PI self-energy
+$\Sigma_{\phi\phi}(p_t,p_x)$ carries a spatial momentum factor $ip_x$. Thus
+$\Sigma_{\phi\phi}(p_t,p_x) = p_x^2\widetilde{\Sigma}(p_t,p_x)$ has
+$\partial_{p_t}^2\Sigma_{\phi\phi}(0,0) = 0$: the canonical kinetic term
+$\frac{1}{2}\pi^2$ receives no one-loop wave-function renormalisation, and the
+thermodynamic sound speed squared at $U=0$ is $c_{s,g}^2 = 1 + \hbar_B W_g''(0) + O(\hbar_B^2)$,
+giving $s_{1,g} = \frac{1}{2}W_g''(0)$ \Lc.
+
+We compute $W_g(U)$ and $W_g''(0)$ by four independent regularisations (\scr):
+\begin{enumerate}
+  \item \textbf{Sharp wavenumber cutoff $|q|\le\Lambda$:}
+  $W_{g,\Lambda}^{\mathrm{bare}}(U) = \frac{1}{2\pi}\int_0^\Lambda q\sqrt{q^2+1-6U}\,\dd q
+  = \frac{(\Lambda^2+1-6U)^{3/2} - (1-6U)^{3/2}}{6\pi}$.
+  In the specified Wick normal ordering $:\!u^3\!: = u^3 - 3\langle u^2\rangle_{0,\Lambda}u$
+  with $\langle u^2\rangle_{0,\Lambda} = \frac{\hbar_B}{2\pi}(\sqrt{\Lambda^2+1}-1)$,
+  passing to $:\!\mathcal{H}_g\!:$ adds the counterterm density
+  $+3\langle u^2\rangle_{0,\Lambda}U = -U\partial_U W_{g,\Lambda}^{\mathrm{bare}}(0)\hbar_B$.
+  Subtracting the $U=0$ vacuum energy and this exact linear tadpole gives a UV-convergent
+  $\Lambda\to\infty$ limit:
+  \begin{equation}
+    W_g(U) = \lim_{\Lambda\to\infty}\Bigl[
+      W_{g,\Lambda}^{\mathrm{bare}}(U) - W_{g,\Lambda}^{\mathrm{bare}}(0)
+      - U\partial_U W_{g,\Lambda}^{\mathrm{bare}}(0)
+    \Bigr]
+    = -\frac{(1-6U)^{3/2} - 1 + 9U}{6\pi}.
+    \label{eq:Wg}
+  \end{equation}
+  \item \textbf{Dimensional / analytic (Riesz) regularisation:}
+  Using $I_\varepsilon(M^2) = \frac{1}{2\pi}\int_0^\infty q(q^2+M^2)^{\frac{1}{2}-\varepsilon}\,\dd q
+  = -\frac{(M^2)^{\frac{3}{2}-\varepsilon}}{4\pi(\frac{3}{2}-\varepsilon)}$ (continued from
+  $\operatorname{Re}\varepsilon > 3/2$) and subtracting $I_\varepsilon(1)$ and the corresponding
+  normal-ordering tadpole $-6U I_\varepsilon'(1)$ cancels the regulator pole and yields~\eqref{eq:Wg}
+  at $\varepsilon\to 0$ \Lc.
+  \item \textbf{Heat-kernel damping and convergent second derivative:}
+  Differentiating twice with respect to $U$ inside the mode integral gives a
+  manifestly UV-convergent integral in $1+1$ dimensions:
+  \begin{equation}
+    W_g''(U) = -\frac{9}{2\pi}\int_0^\infty\frac{q\,\dd q}{(q^2+1-6U)^{3/2}}
+    = -\frac{9}{2\pi\sqrt{1-6U}},
+    \qquad
+    s_{1,g} = \frac{1}{2}W_g''(0) = -\frac{9}{4\pi}.
+    \label{eq:s1g}
+  \end{equation}
+  With exponential damping $e^{-\delta q^2}$, the integral is
+  $-\frac{9}{2\pi}[1 - \sqrt{\pi\delta}e^\delta\operatorname{erfc}(\sqrt{\delta})] \to -\frac{9}{2\pi}$
+  as $\delta\to 0^+$. Furthermore, rationalising the subtracted integrand on $q\in[0,\infty)$ as
+  \begin{equation}
+    q\left(\sqrt{q^2+1-6U} - \sqrt{q^2+1} + \frac{3U}{\sqrt{q^2+1}}\right)
+    = -\frac{18U^2 q}{\sqrt{q^2+1}\bigl(\sqrt{q^2+1-6U}+\sqrt{q^2+1}\bigr)^2}
+  \end{equation}
+  eliminates catastrophic cancellation at large $q$ and reproduces~\eqref{eq:Wg} by direct
+  infinite-line quadrature at $U \in \{0.02, -0.03, 0.05\}$ to $<10^{-65}$ (\scr).
+  \item \textbf{2D Euclidean Feynman bubble diagram:}
+  Evaluating the static one-loop bubble diagram with two cubic $-u^3$ vertices gives
+  \begin{equation}
+    W_g''(0) = -18\int_{-\infty}^{\infty}\frac{\dd q}{2\pi}\int_{-\infty}^{\infty}\frac{\dd\omega_E}{2\pi}
+    \frac{q^4}{\bigl(\omega_E^2 + q^2(q^2+1)\bigr)^2}
+    = -\frac{9}{2\pi}\int_0^\infty\frac{q\,\dd q}{(q^2+1)^{3/2}} = -\frac{9}{2\pi}.
+  \end{equation}
+\end{enumerate}
+\Lc This confirms \texttt{onebody\_\allowbreak scheme.tex} Eqs.~(18)--(20) and refutes
+\texttt{audit\_\allowbreak onebody.tex}'s claim that $s_{1,\mathrm{cont}} = 0$ in the
+bare-normalised (normal-ordered only) continuum theory.
+
+\subsection{\texorpdfstring{Continued bad vacuum ($s_{1,b,\mathrm{ac}} = +9/(4\pi)$) and Toda vacuum ($s_{1,T} = +3/(4\pi)$)}{Continued bad vacuum (s1bac = +9/(4 pi)) and Toda vacuum (s1T = +3/(4 pi))}}
+\Lc/\Ld (\scr) On the bad branch $\mathcal{H}_b$, the formal continuation
+$F_{\mathrm{ac}}(k) = -iF_g(ik)$ used for the soliton trace corresponds in the
+scaling family $\mathcal{L}_\sigma$ ($\sigma = c^2$ at $c=i$) to $x_g = -ix_b$
+and $U_g = -U_b$, so $-i\int\dd x_g\,W_g(U_g) = -\int\dd x_b\,W_g(-U_b)$, giving
+\begin{equation}
+  W_{b,\mathrm{ac}}(U) = -W_g(-U) = \frac{(1+6U)^{3/2} - 1 - 9U}{6\pi},
+  \qquad
+  W_{b,\mathrm{ac}}''(0) = +\frac{9}{2\pi},
+  \qquad
+  s_{1,b,\mathrm{ac}} = +\frac{9}{4\pi}.
+  \label{eq:Wbac}
+\end{equation}
+\Lc (\scr) We also verify~\eqref{eq:Wbac} directly from the bad dispersion
+$\omega_b(q;U) = |q|\sqrt{1+6U-q^2}$ on its strain-dependent real stable band
+$0 \le |q| \le \sqrt{1+6U}$: integrating
+$\frac{1}{2\pi}\int_0^{\sqrt{1+6U}} q\sqrt{1+6U-q^2}\,\dd q = \frac{(1+6U)^{3/2}}{6\pi}$
+and subtracting the $U=0$ constant $\frac{1}{6\pi}$ and the bad normal-ordering
+tadpole $-3\langle u^2\rangle_0^{\mathrm{band}}U/\hbar_B = -\frac{3U}{2\pi}$ yields
+exact agreement with~\eqref{eq:Wbac}. (Differentiating under the integral sign on a
+fixed interval $[0,1]$ instead requires the Hadamard finite part
+$\operatorname{FP}\int_0^1 q(1-q^2)^{-3/2}\,\dd q = -1$ because the band edge
+$\sqrt{1+6U}$ moves with $U$.) As \texttt{onebody\_\allowbreak scheme.tex} rightly states,
+the algebraic continuation~\eqref{eq:Wbac} is \Lc, whereas interpreting it as a
+physical bad-equation vacuum despite the unstable modes $|q|>1$ is \Ld.
+
+\Lc (\scr) For the Toda lattice at reference spacing $a$, $b = e^{-a/2}$, and
+$\hbar_T = h = 3b\hbar_B$, a uniform Boussinesq strain $U = \partial_{x_B}\phi_B$
+deforms the lattice spacing to $r = a - 6U$, multiplying the harmonic lattice
+dispersion $\omega_T(K;r) = 2b e^{3U}|\sin(K/2)|$ by $e^{3U}$ across the fixed
+Brillouin zone $K\in[-\pi,\pi]$. The one-loop zero-point energy per site is
+$e_{1,T}(r) = \frac{h}{4\pi}\int_0^{2\pi} 2be^{3U}\sin(K/2)\,\dd K = \frac{2hb}{\pi}e^{3U}$.
+Converting to Boussinesq energy density via $\Delta E_B = \Delta E_T/(6\sqrt{3}b^2)$
+and $\dd x_B = 2\sqrt{3}\,\dd n$ gives $\hbar_B W_{T,\mathrm{bare}}^B(U) = \frac{e_{1,T}(a-6U)}{36b^2}
+= \hbar_B\frac{e^{3U}}{6\pi}$. Subtracting the $U=0$ constant and linear pressure term yields
+\begin{equation}
+  W_T^B(U) = \frac{e^{3U} - 1 - 3U}{6\pi},
+  \qquad
+  (W_T^B)''(0) = \frac{3}{2\pi},
+  \qquad
+  s_{1,T} = \frac{1}{2}(W_T^B)''(0) = +\frac{3}{4\pi},
+  \label{eq:WTB}
+\end{equation}
+which agrees with the non-perturbative Bethe scaling identity
+$v_s(a,h) = \frac{a}{2}(q - h\partial_h q|_a) = ab + \frac{ah}{4\pi} + O(h^2\ln h)$ \Lc.
+
+\paragraph{Why $s_{1,b,\mathrm{ac}} = 9/(4\pi)$ differs by a factor of $3$ from $s_{1,T} = 3/(4\pi)$ \Lc (\scr).}
+In the Toda lattice, the classical potential in Boussinesq units is
+$V_{\mathrm{Toda}}^B(U) = \frac{e^{6U}-1-6U}{36} = \frac{1}{2}U^2 + U^3 + \frac{3}{2}U^4 + O(U^5)$,
+and a uniform strain $U$ rescales $\omega_T(K;U) = e^{3U}\omega_T(K;0)$ on a
+\emph{strain-independent} Brillouin zone $K\in[-\pi,\pi]$, producing
+$W_{T,\mathrm{bare}}^B(U) \propto e^{3U} = 1 + 3U + \frac{9}{2}U^2 + \cdots$.
+In the truncated continuum bad Hamiltonian $\mathcal{H}_b$, the quartic vertex
+$\frac{3}{2}U^4$ is omitted and $-q^4$ inside $\omega_b(q;U) = |q|\sqrt{1+6U-q^2}$ is
+not multiplied by $e^{6U}$; rescaling $q = \sqrt{1+6U}\,\tilde{q}$ pulls $(1+6U)^{1/2}$
+from the frequency and $(1+6U)$ from the measure $q\,\dd q$, producing
+$W_{b,\mathrm{ac}}^{\mathrm{bare}}(U) \propto (1+6U)^{3/2} = 1 + 9U + \frac{27}{2}U^2 + \cdots$,
+whose quadratic curvature is three times larger ($\frac{27}{2}$ versus $\frac{9}{2}$).
+
+\section{\texorpdfstring{Points 2 and 3: Non-circularity of $\Delta\mathcal{H}$ and its exact effect on the soliton}{Points 2 and 3: Non-circularity of Delta H and its exact effect on the soliton}}
+
+\paragraph{Point 2: Non-circularity of $\Delta\mathcal{H} = -\frac{3\hbar_B}{2\pi}u^2$ \Lc (\scr).}
+Subtracting~\eqref{eq:Wbac} from~\eqref{eq:WTB} gives the homogeneous vacuum
+energy-density mismatch between the Toda lattice and the continued continuum prescription:
+\begin{equation}
+  W_T^B(U) - W_{b,\mathrm{ac}}(U)
+  = \frac{e^{3U} - (1+6U)^{3/2} + 6U}{6\pi}
+  = -\frac{3}{2\pi}U^2 + \frac{3}{\pi}U^3 - \frac{9}{2\pi}U^4 + O(U^5).
+  \label{eq:W-diff}
+\end{equation}
+Matching the vacuum elastic modulus (the $O(U^2)$ coefficient) in the same reference
+coordinates uniquely fixes the local quadratic counterterm in the continuum effective
+Hamiltonian:
+\begin{equation}
+  \Delta\mathcal{H} = \hbar_B\lambda u^2,
+  \qquad
+  \lambda = s_{1,T} - s_{1,b,\mathrm{ac}} = \frac{3}{4\pi} - \frac{9}{4\pi} = -\frac{3}{2\pi}.
+  \label{eq:counterterm}
+\end{equation}
+Audit of \texttt{onebody\_\allowbreak scheme.tex} and
+\texttt{onebody\_\allowbreak scheme\_\allowbreak continuum.py}
+(lines~18--57) confirms that $\lambda = -\frac{3}{2\pi}$ is derived \emph{exclusively}
+from the homogeneous ($k=0$) vacuum mode sums $W_T^B(U)$ and $W_{b,\mathrm{ac}}(U)$:
+neither the soliton profile $u_0(x)$, nor the continuum soliton coefficient
+$C_{\mathrm{ac}} = 2/\pi$, nor the Toda Fermi-edge coefficient $C_T = 1/(2\pi)$
+is used anywhere to choose $\lambda$. The linear $O(U)$ difference between
+$W_{T,\mathrm{bare}}^B$ and $W_{b,\mathrm{ac}}^{\mathrm{bare}}$ is a background
+lattice-pressure term $\propto M = \int u\,\dd x = 2k$, which is already fixed
+to zero in the soliton dispersion by subtracting the Fermi-edge chemical potential
+$E(q)$ on the Toda side and by the equal-mode-count endpoint plus Wick tadpole on
+the continuum side \Lc.
+
+\paragraph{Point 3: Why adding $\Delta\mathcal{H} = \hbar_B\lambda u^2$ shifts $C_{\mathrm{ac}}$ by exactly $\lambda = -\frac{3}{2\pi}$ \Lc (\scr).}
+First, because $\Delta\mathcal{H} = \hbar_B\lambda\phi_x^2$ contains no time derivative
+$\phi_t$, the canonical conjugate field $\pi = \partial\mathcal{L}/\partial\phi_t = \phi_t$
+and the canonical field momentum functional $P[\phi,\pi] = -\int\pi\phi_x\,\dd x$ are
+unchanged. Second, since the classical soliton $(\phi_0,\pi_0)$ is a stationary point
+of $H_0 - vP$ ($\delta H_0 = v\,\delta P$), any $O(\hbar_B)$ deformation of the soliton
+profile at fixed canonical momentum ($\delta P = 0$) contributes zero to the $O(\hbar_B)$
+energy by first-order perturbation theory. Thus the shift in $F(k) = E_1|_P/\hbar_B$ is
+simply $\Delta F(k) = \lambda\int_{-\infty}^\infty u_0(x)^2\,\dd x$.
+
+Third, for \emph{any} travelling-wave soliton $\phi_0(x,t) = \Phi_0(x-vt)$, we have
+$\pi_0 = -vu_0$, so the classical canonical momentum is identically
+\begin{equation}
+  P_0 = -\int_{-\infty}^{\infty}\pi_0\phi_{0,x}\,\dd x = v\int_{-\infty}^{\infty} u_0(x)^2\,\dd x
+  \quad\implies\quad
+  \Delta F(k) = \lambda\int_{-\infty}^{\infty} u_0(x)^2\,\dd x = \lambda\,\frac{P_0(k)}{v(k)} = \frac{2\lambda}{3}k^3.
+  \label{eq:exact-shift}
+\end{equation}
+Since $|v(k)| = \sqrt{1\pm k^2} \to 1$ as $k\to 0^+$, dividing~\eqref{eq:exact-shift}
+by $|P_0(k)|$ gives
+\begin{equation}
+  \Delta C = \lim_{k\to 0^+}\frac{\Delta F(k)}{|P_0(k)|}
+  = \lim_{k\to 0^+}\frac{\lambda}{|v(k)|} = \lambda = -\frac{3}{2\pi},
+  \qquad
+  C_{\mathrm{matched}} = C_{\mathrm{ac}} + \lambda = \frac{2}{\pi} - \frac{3}{2\pi} = \frac{1}{2\pi} = C_T.
+\end{equation}
+Higher-order local terms in~\eqref{eq:W-diff} such as $u^3$, and dispersive matching
+terms such as $u_x^2$, have soliton integrals $\int u_0^3\,\dd x = \frac{4}{15}k^5$
+and $\int u_{0,x}^2\,\dd x = \frac{2}{15}k^5$ of order $O(k^5) = O(|P_0|^{5/3})$, so
+their contribution to $\lim_{k\to 0}F(k)/|P_0(k)|$ vanishes identically \Lc.
+
+\section{Points 4 and 5: Naturalness of the renormalisation condition and the good equation}
+
+\paragraph{Point 4: Naturalness and invariance of the sound-subtracted slope $C - s_1$ \Lc (\scr).}
+In a gapless $1+1$-dimensional effective field theory, $u^2 = \phi_x^2$ is the marginal
+elastic operator already present in the tree-level Hamiltonian $\frac{1}{2}\pi^2 + \frac{1}{2}u^2$.
+Because adding $\Delta\mathcal{H} = \hbar_B\lambda u^2$ shifts the vacuum sound-speed
+coefficient $s_1 \mapsto s_1 + \lambda$ and the small-amplitude soliton slope
+$C \mapsto C + \lambda$ by the \emph{exact same constant} $\lambda$, the physical
+soliton slope relative to the quantum sound cone,
+\begin{equation}
+  C_{\mathrm{rel}} := C - s_1 = \lim_{P\to 0}\frac{1}{\hbar_B}\left(\frac{E(P)}{|P|} - c_{\mathrm{sound}}\right),
+\end{equation}
+is an \emph{exact renormalisation-scheme invariant} (independent of $\lambda$) \Lc.
+Without adding any counterterm, the continued continuum trace and the Toda lattice
+already have the \emph{identical} sound-subtracted slope:
+\begin{equation}
+  C_{\mathrm{ac}} - s_{1,b,\mathrm{ac}} = \frac{2}{\pi} - \frac{9}{4\pi} = -\frac{1}{4\pi}
+  = \frac{1}{2\pi} - \frac{3}{4\pi} = C_T - s_{1,T}.
+  \label{eq:invariant}
+\end{equation}
+Depending on the coordinate/renormalisation convention chosen for the background sound speed,
+there are three natural choices of $\lambda$ on the continued bad branch (\scr):
+\begin{center}\footnotesize\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Renormalisation scheme & $\lambda$ & Vacuum $s_1$ & Soliton $C$ & Invariant $C - s_1$ \\
+\midrule
+1. Bare normal-ordered ($:\!u^3\!:$ only) & $0$ & $+9/(4\pi)$ & $+2/\pi$ & $-1/(4\pi)$ \\
+2. On-shell continuum sound ($c_{s,\mathrm{ren}}=1$) & $-9/(4\pi)$ & $0$ & $-1/(4\pi)$ & $-1/(4\pi)$ \\
+3. Toda-matched EFT (inherited Toda units) & $-3/(2\pi)$ & $+3/(4\pi)$ & $+1/(2\pi)$ & $-1/(4\pi)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Standard QFT/EFT matching between a lattice UV completion (analyzed in fixed bare
+time coordinates where $c_{s,T} = 1 + \frac{3\hbar_B}{4\pi}$) and a continuum EFT
+requires matching their low-energy vacuum elastic moduli (Scheme~3 above), or
+equivalently comparing the scheme-invariant physical observable $C - s_1 = -1/(4\pi)$
+(Scheme~2). The factor of $4$ between $C_{\mathrm{ac}} = 2/\pi$ and $C_T = 1/(2\pi)$
+(and the unmatched ratio $-8 = C_{\mathrm{ac}}/(C_T - s_{1,T})$ in \texttt{audit\_\allowbreak onebody.tex})
+arose solely from comparing Scheme~1 on the continuum side ($s_{1,b,\mathrm{ac}} = +9/(4\pi)$)
+against Scheme~3 on the Toda side ($s_{1,T} = +3/(4\pi)$) without matching the vacuum sound
+speeds \Lc.
+
+\paragraph{Point 5: The good equation \Lc/\Ld (\scr).}
+The good Boussinesq equation is linearly well-posed ($\omega_g(q;U) = |q|\sqrt{q^2+1-6U} \in \mathbb{R}$
+for all $q\in\mathbb{R}$ and $U<1/6$) and is not the real scaling limit of the Toda lattice,
+so Toda does not force the bad-branch lattice counterterm onto the good equation.
+On the good branch, the conditional soliton trace
+$F_g(k) = \frac{\sqrt{3}}{\pi}(\frac{3}{4}-k^2)\operatorname{artanh}\frac{2k}{\sqrt{3}} - \frac{3k}{2\pi}$
+and the convergent vacuum bubble~\eqref{eq:s1g} give:
+\begin{itemize}
+  \item \textbf{Bare normal-ordered scheme ($\lambda_g = 0$):}
+  $s_{1,g} = -\frac{9}{4\pi}$ and $C_g^{\mathrm{bare}} = -\frac{2}{\pi}$, with
+  sound-subtracted slope $C_g^{\mathrm{bare}} - s_{1,g} = -\frac{2}{\pi} - (-\frac{9}{4\pi}) = +\frac{1}{4\pi}$ \Lc.
+  \item \textbf{Natural on-shell acoustic renormalisation scheme ($c_{s,g,\mathrm{ren}} = 1$, i.e.\ $s_{1,g}^{\mathrm{ren}} = 0$):}
+  Fixing the renormalised vacuum sound speed to $1$ requires the finite elastic counterterm
+  $\Delta\mathcal{H}_g^{\mathrm{on\text{-}shell}} = +\frac{9\hbar_B}{4\pi}u^2$ ($\lambda_g = -s_{1,g} = +\frac{9}{4\pi}$),
+  which shifts the soliton coefficient to
+  \begin{equation}
+    C_g^{\mathrm{on\text{-}shell}} = C_g^{\mathrm{bare}} + \lambda_g
+    = C_g^{\mathrm{bare}} - s_{1,g} = -\frac{2}{\pi} + \frac{9}{4\pi} = +\frac{1}{4\pi}.
+  \end{equation}
+\end{itemize}
+Thus $C_g$ is $-\frac{2}{\pi}$ in the bare normal-ordered scheme and $+\frac{1}{4\pi}$
+in the on-shell renormalised-sound-speed scheme; in every scheme the physical slope
+relative to the quantum sound cone is $C_g - s_{1,g} = +\frac{1}{4\pi}$ \Lc.
+
+\section{Point 6: Diagnosis of \texttt{audit\_onebody.py}'s failing assertion and text errors}
+
+\Lc (\scr) We confirm \texttt{onebody\_\allowbreak scheme.tex}'s diagnosis of line~383 of
+\texttt{audit\_\allowbreak onebody.py}:
+\begin{enumerate}
+  \item \textbf{Why line 383 fails on the saved data:}
+  The relation $C_v(y) = s_{1,T} + \frac{1}{2}y\bigl(u'(y)-1\bigr)$ is an exact
+  $h\to 0$ \emph{Fermi-edge limit} identity, verified to $<10^{-45}$ by independent
+  50-digit Talbot and de Hoog Laplace inversions of
+  $\mathcal{L}[F] = \sqrt{\pi}g(s)/s^2$ and $\mathcal{L}[f] = \sqrt{\pi}g(s)/s$ (\scr).
+  At finite $h$, however, the exact Bethe scaling identity leaves a discrepancy
+  $R_h(y) = C_{v,h}(y) - s_{1,h} - \frac{y}{2}(\partial_y u_h - \frac{\sinh\kappa}{\kappa}) = O(hy^2)$
+  because $\kappa^2 = hy/b$ is finite ($\kappa \approx 1.45$ at $y=64$, $h=0.02$).
+  In \texttt{onebody\_\allowbreak toda\_\allowbreak results.json} and
+  \texttt{frame\_\allowbreak analysis.json}, the
+  central $h\to 0$ extrapolations use a 3-point Lagrange quadratic on
+  $h\in\{0.02,0.01,0.005\}$ with weights $(\frac{1}{3}, -2, \frac{8}{3})$, which
+  cancels $O(hy)$ and $O((hy)^2)$ but leaves an $O((hy)^3)$ truncation error that
+  grows as $y^3$:
+  \begin{equation}
+    R_{\mathrm{quad3}}(64) = \tfrac{1}{3}R_{0.02}(64) - 2R_{0.01}(64) + \tfrac{8}{3}R_{0.005}(64)
+    = -2.25467349\times 10^{-4},
+  \end{equation}
+  exceeding \texttt{audit\_\allowbreak onebody.py}'s $3\times 10^{-6}$ bound at $y=16,32,64$
+  ($-5.10\times 10^{-6}$, $-3.48\times 10^{-5}$, $-2.25\times 10^{-4}$), while
+  remaining well inside the combined fit-sensitivity spread ($1.101\times 10^{-3}$ at $y=64$).
+  On the finer \texttt{onebody\_\allowbreak prec\_\allowbreak scan.json} grid down to $h=0.0025$, a 7-point
+  quartic extrapolation reduces the $y=64$ residual by $240\times$ to
+  $-9.380\times 10^{-7} < 3\times 10^{-6}$ (and $-2.268\times 10^{-7}$ for an
+  8-point quintic, while a 6-point cubic gives $-5.578\times 10^{-6}$) \Lc.
+  \item \textbf{Four additional algebraic errors in \texttt{audit\_\allowbreak onebody.tex} confirmed (\scr):}
+  (i) Theorem~3 line~285 prints $b = \pi/a$ instead of $b = e^{-a/2}$;
+  (ii) line~298 prints $\lim_{h\to 0}(V/D - v_s)/h = \frac{a}{6}y(u'(y)-1)$ instead of
+  $\frac{a}{6}yu'(y)$ (the $-\frac{a}{6}y$ term comes from subtracting the classical
+  soliton velocity excess $ab(\frac{\sinh\kappa}{\kappa}-1)/h$, not $v_s$);
+  (iii) Eq.~(24) prints $+\frac{3e_0}{2y^2}$ in $C_E(y)$ instead of $+\frac{3e_0}{y^2}$
+   because $\frac{3}{4}y^{-3/2}\int y^{3/2}(-2e_0 y^{-3})\,\dd y = +\frac{3e_0}{y^2}$;
+  (iv) lines~197--199 misstate the bad stable-band resonance at $q_* = -\sqrt{3}/2$
+  (for $v=+1$) as $\omega_b(q_*) = -vq_*$ with $\omega_b'(q_*) = -1/2$, whereas in fact
+  $\omega_b(q_*) = \frac{\sqrt{3}}{4} \neq \pm q_*$ and
+  $\omega_b'(q_*) = \operatorname{sgn}(q_*)\frac{1-2q_*^2}{\sqrt{1-q_*^2}} = +1 = v$
+  (a stationary co-moving phase resonance $\omega_b'(q_*) = v$).
+  \item \textbf{Minor table spread discrepancy in \texttt{onebody\_\allowbreak scheme.tex} caught (\scr):}
+  In the table at lines~94--98 of \texttt{onebody\_\allowbreak scheme.tex}, the ``combined fit spread''
+  column prints $2.3259\times 10^{-5}$, $8.4061\times 10^{-5}$, and $2.9805\times 10^{-4}$
+  at $y=8,16,32$ (which is $\Delta C_v + \frac{y}{2}\Delta u'$, omitting the sound-speed
+  spread $\Delta s_{1,T} = 1.685\times 10^{-8}$), whereas \texttt{onebody\_\allowbreak scheme\_\allowbreak edge.py}
+  line~33 and its JSON include $\Delta s_{1,T}$, giving $2.3275\times 10^{-5}$,
+  $8.4078\times 10^{-5}$, and $2.9806\times 10^{-4}$. This $1.69\times 10^{-8}$
+  difference in the fourth significant digit of the diagnostic spread does not affect
+  any conclusion.
+\end{enumerate}
+
+\section{Verdict table and failures recorded}
+
+\begin{longtable}{@{}L{4.8cm}L{2.3cm}L{7.8cm}@{}}
+\toprule
+Audited claim in \texttt{onebody\_scheme} & Verdict & Independent audit finding (\scr) \\
+\midrule\endhead
+1. Vacuum sound-speed shifts: $s_{1,g} = -9/(4\pi)$, $s_{1,b,\mathrm{ac}} = +9/(4\pi)$, $s_{1,T} = +3/(4\pi)$ & Confirmed \Lc (bad vacuum \Ld) & Verified by 4 continuum regularisations (cutoff, dim-reg, heat-kernel, 2D Feynman bubble) and 2 Toda derivations. Refutes $s_{1,\mathrm{cont}}=0$ in \texttt{audit\_\allowbreak onebody.tex}. \\
+2. Non-circularity of counterterm $\Delta\mathcal{H} = -\frac{3\hbar_B}{2\pi}u^2$ & Confirmed \Lc & Fixed purely by $O(U^2)$ matching of homogeneous ($k=0$) vacuum energy densities $W_T^B(U) - W_{b,\mathrm{ac}}(U)$; zero soliton input used. \\
+3. Soliton shift $\Delta C = -3/(2\pi)$ and $C_{\mathrm{matched}} = 1/(2\pi) = C_T$ & Confirmed \Lc & Exact because $P_0 = v\int u_0^2\,\dd x \implies \Delta F/|P_0| = \lambda/|v| \to \lambda$. Higher-order $u^3, u_x^2$ terms are $O(k^5)$ and vanish in $F/|P_0|$ as $k\to 0$. \\
+4. Naturalness \& sound-subtracted invariance $C - s_1 = -1/(4\pi)$ & Confirmed \Lc & $C - s_1 = -1/(4\pi)$ is invariant under $\Delta\mathcal{H}=\hbar_B\lambda u^2$ and agrees between Toda and continued continuum without tuning. Unmatched ratio $-8$ refuted as apples-to-oranges. \\
+5. Good equation: no Toda-forced shift; $C_g$ values & Confirmed \Lc/\Ld & Bare normal-ordered $C_g = -2/\pi$ ($s_{1,g} = -9/(4\pi)$); natural on-shell scheme ($c_{s,g,\mathrm{ren}}=1$, $\lambda_g=+9/(4\pi)$) gives $C_g^{\mathrm{on\text{-}shell}} = +1/(4\pi)$. \\
+6. Diagnosis of \texttt{audit\_\allowbreak onebody.py} line~383 failure & Confirmed \Lc & Failure ($2.2547\times 10^{-4} > 3\times 10^{-6}$ at $y=64$) is an $O((hy)^3)$ 3-point quadratic truncation error; 7-point quartic gives $-9.38\times 10^{-7}$. Four text errors in \texttt{audit\_\allowbreak onebody.tex} confirmed. \\
+7. Real stable-band trace (Scheme~A) $F_{\mathrm{band}}$ & Confirmed \Lc & $F_{\mathrm{band}} = F_{\mathrm{ac}} - \frac{\sqrt{3}}{2}(k^2+\frac{3}{4})$ verified to $<10^{-62}$; diverges as $-9\sqrt{3}/(16k^3)$ in $F/|P_0|$ and is not repaired by $\Delta\mathcal{H}$. \\
+8. Scope of scheme explanation \textbf{(A)} & Confirmed \Lc/\Ld & \textbf{(A)} holds for the leading coefficient of the stipulated continued trace \Lc; full bad determinant, measure, and finite-$k$ equivalence remain \Ld. \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+  \item \textbf{Unchanged \texttt{audit\_\allowbreak onebody.py} line 383 failure (confirmed):}
+  Running \texttt{python3 phase2/scripts/audit\_\allowbreak onebody.py} fails at line~383 with
+  maximum residual $2.2546734882\times 10^{-4}$ at $y=64$ (and fails at $y=16,32$).
+  In \scr, this failure and the four algebraic errors in \texttt{audit\_\allowbreak onebody.tex}
+  (plus its $s_{1,\mathrm{cont}}=0$ assumption and unmatched ratio $-8$) are encoded as
+  explicit discrepancy assertions.
+  \item \textbf{Minor table spread omission in \texttt{onebody\_\allowbreak scheme.tex} lines 95--98:}
+  The text table in \texttt{onebody\_\allowbreak scheme.tex} omitted $\Delta s_{1,T} = 1.685\times 10^{-8}$
+  from the ``combined fit spread'' column at $y=8,16,32$, whereas \texttt{onebody\_\allowbreak scheme\_\allowbreak edge.py}
+  and its JSON included it. Recorded and verified in \scr.
+  \item \textbf{Development failures during construction of \scr\ and LaTeX build:}
+  \begin{itemize}
+    \item[(a)] Calling \texttt{sp.series} on \texttt{H\_g\_full.subs(eta, lam\_fluct * eta)}
+    without \texttt{.doit()} caused a SymPy \texttt{RecursionError} on unevaluated
+    \texttt{Derivative} nodes; fixed by calling \texttt{.doit()} before \texttt{sp.expand().coeff(lam\_fluct, 2)}.
+    \item[(b)] Integrating $\partial_U^2\omega_g(q;U)$ over $q\in[0,\infty)$ with symbolic
+    $1-6U$ not declared positive returned a \texttt{Piecewise}; fixed by substituting
+    a positive symbol $M_2 = 1-6U$.
+    \item[(c)] An initial transcription of the $O(U^3)$ and $O(U^4)$ Taylor coefficients of
+    $W_T^B(U) - W_{b,\mathrm{ac}}(U)$ wrote $+\frac{9}{2\pi}U^3 - \frac{189}{16\pi}U^4$
+    instead of $+\frac{3}{\pi}U^3 - \frac{9}{2\pi}U^4$, and $\frac{1}{5}k^5$ instead of
+    $\frac{2}{15}k^5$ for $\int u_{0,x}^2\,\dd x$; caught and corrected by SymPy assertions.
+    \item[(d)] Direct \texttt{mp.quad} of the un-rationalised subtracted vacuum integrand on
+    $[0,\infty)$ suffered catastrophic cancellation at large $q$, and the heat-kernel integral
+    at $\delta = 10^{-8}$ required breakpoints at $\delta^{-1/2}$ and $4\delta^{-1/2}$;
+    rationalising the integrand as $-18U^2 q/[\sqrt{q^2+1}(\sqrt{q^2+1-6U}+\sqrt{q^2+1})^2]$
+    and adding the $\delta^{-1/2}$ breakpoints achieved $<10^{-65}$ and $<10^{-62}$ accuracy
+    without relaxing any tolerance.
+    \item[(e)] The first \texttt{pdflatex} pass reported overfull boxes on un-broken filenames
+    and the Section~4 table, plus \texttt{hyperref} bookmark math warnings; adding
+    \texttt{\textbackslash allowbreak}, \texttt{\textbackslash footnotesize}, and
+    \texttt{\textbackslash texorpdfstring} resolved all warnings.
+  \end{itemize}
+\end{enumerate}
+
+\end{document}

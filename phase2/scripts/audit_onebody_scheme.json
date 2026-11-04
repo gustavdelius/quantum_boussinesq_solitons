@@ -1,0 +1,17 @@
+{
+  "precision_dps": 70,
+  "good_vacuum_sound_s1_g": "-9/(4*pi)",
+  "continued_bad_vacuum_sound_s1_b_ac": "9/(4*pi)",
+  "toda_vacuum_sound_s1_T": "3/(4*pi)",
+  "matching_counterterm_lambda": "-3/(2*pi)",
+  "continuum_bare_C_ac": "2/pi",
+  "continuum_matched_C": "1/(2*pi)",
+  "toda_exact_C_T": "1/(2*pi)",
+  "invariant_bad_C_minus_s1": "-1/(4*pi)",
+  "good_bare_C_g": "-2/pi",
+  "good_onshell_C_g": "1/(4*pi)",
+  "audit_onebody_line383_max_residual": "0.0002254673488156456000000000000000000000000000000000000000000000000000014",
+  "lagrange_quad3_residual_at_64": "-0.0002254673491140454666666666666666666666666666666666666666666666666666668",
+  "scheme_table_spread_omitted_sound_spread": "0.00000001685165339",
+  "runtime_seconds": 7.468657128018094
+}
