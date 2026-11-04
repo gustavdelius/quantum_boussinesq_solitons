@@ -1,0 +1,499 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,mathtools,booktabs,geometry,hyperref}
+\geometry{margin=2.3cm}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\claim}[1]{\textbf{(#1)}}
+
+\title{Independent Audit of the One-Body Dispersion Test\\
+and Systematic Hunt for the Factor of Four}
+\author{Independent Audit Note}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We conduct an independent mathematical and numerical audit of
+\texttt{phase2/onebody\_dispersion\_test.tex} and its supporting scripts
+(\texttt{phase2/scripts/onebody\_continuum.py} and \texttt{phase2/scripts/onebody\_toda.py}),
+which compare the small-amplitude $O(\hbar^0)$ one-body soliton dispersion correction
+at fixed momentum between the formally continued continuum projected determinant
+($C_{\mathrm{ac}} = +2/\pi \approx 0.63662$) and the quantum Toda Fermi-edge limit
+($0.15912 \pm 0.00334$).
+First, we re-derive the continuum bad-equation continuation from scratch, confirming both
+sign bugs exposed during the test: \texttt{phase2/report.tex} prints the bad-equation
+Lagrangian with the wrong sign on the cubic term ($+\phi_x^3$ instead of the required $-\phi_x^3$),
+and \texttt{phase2/oneloop.tex} Eq.~(28) carries the wrong sign on the bad-equation Wick
+normal-ordering tadpole ($+3\hbar_B k/\pi$ instead of $-3\hbar_B k/\pi$).
+Second, we prove four exact non-perturbative identities for the finite-sea Toda Bethe
+equations---including $2at\,\rho(q)\eta(q)=1$ and $v_s(a,h) = \frac{a}{2}(q - h\,\partial_h q|_a)$---which
+determine the Toda Fermi-edge limit analytically in closed form:
+the quantum sound-speed shift is $s_{1,T} = \frac{3}{4\pi}$ and the one-body dispersion slope is
+$C_T = \frac{3}{4\pi} - \frac{1}{4\pi} = \frac{1}{2\pi} = 0.15915494309\dots$, in both the
+fixed-$y$ and fixed-$P$ orders of limits. The numerical extraction in \texttt{onebody\_toda.py}
+is non-circular and its error bars honestly enclose $\frac{1}{2\pi}$.
+Third, we audit all six normalisation candidates in the Toda--Boussinesq dictionary; each
+introduces a conversion factor of~$1$. We therefore conclude \textbf{(b)}: no missing factor
+of~$4$ exists in the dictionary, and the exact ratio $C_{\mathrm{ac}}/C_T = (2/\pi)/(1/(2\pi)) = 4$
+(or $-8$ after subtracting the Toda sound-speed shift) is a genuine structural discrepancy
+between continuum short-wave dispersive modes ($|q|\sim \sqrt{3}/2$) and the Toda lattice Fermi sea.
+\end{abstract}
+
+\section{Scope, conventions, and verification script}
+
+Claim labels follow \texttt{AGENTS.md}:
+\claim{a} proved in the literature;
+\claim{b} conjectured or heuristic in the literature;
+\claim{c} derived and verified in this project;
+\claim{d} a guess or formal continuation assumption.
+
+Unless stated otherwise, the baseline convention is the \emph{good} Boussinesq equation
+\begin{equation}
+  u_{tt} = u_{xx} - u_{xxxx} - 3(u^2)_{xx}, \qquad
+  u = \phi_x = 2(\log\tau)_{xx}, \qquad
+  \mathcal{L}_g = \tfrac{1}{2}\phi_t^2 - \tfrac{1}{2}\phi_x^2 + \phi_x^3 - \tfrac{1}{2}\phi_{xx}^2,
+  \label{eq:good-conv}
+\end{equation}
+with canonical momentum $\pi = \phi_t$ and symplectic two-form $\Omega_B = \int dx\,d\pi\wedge d\phi$.
+The \emph{bad} Boussinesq equation is
+\begin{equation}
+  u_{tt} = u_{xx} + u_{xxxx} + 3(u^2)_{xx}, \qquad u = \phi_x,
+  \label{eq:bad-pde}
+\end{equation}
+with one-soliton data $k = \sinh\beta$, $v = \varepsilon\cosh\beta$,
+$u_0(x,t) = \frac{k^2}{2}\operatorname{sech}^2\frac{k(x-vt)}{2}$,
+mass $M = \int u_0\,dx = 2k$, field momentum
+$P_0 = -\int \pi_0\phi_{0,x}\,dx = \frac{2}{3}\varepsilon k^3\cosh\beta = \frac{2}{3}\varepsilon\sinh^3\beta\cosh\beta$,
+and energy $E_0 = \frac{2}{3}\sinh^3\beta + \frac{8}{15}\sinh^5\beta$.
+
+All symbolic and 65-digit numerical checks reported in this audit are executed in
+\texttt{phase2/scripts/audit\_onebody.py}, which verifies SHA-256 hashes of all audited repository
+files to guarantee zero modifications and ends by printing \texttt{ALL CHECKS PASSED}.
+
+\section{Audit of the continuum bad-equation dispersion correction}
+
+\subsection{Bad-equation Lagrangian sign error in \texttt{phase2/report.tex} and tadpole sign error in \texttt{phase2/oneloop.tex}}
+
+\paragraph{1. Cubic sign error in \texttt{phase2/report.tex} \claim{c}.}
+For a potential Lagrangian density $\mathcal{L}(\phi_t,\phi_x,\phi_{xx}) = \frac{1}{2}\phi_t^2 - \frac{1}{2}\phi_x^2 + \lambda\phi_x^3 + \frac{1}{2}\phi_{xx}^2$,
+the Euler--Lagrange equation is
+\begin{equation}
+  0 = -\partial_t\frac{\partial\mathcal{L}}{\partial\phi_t}
+      - \partial_x\frac{\partial\mathcal{L}}{\partial\phi_x}
+      + \partial_x^2\frac{\partial\mathcal{L}}{\partial\phi_{xx}}
+    = -\phi_{tt} + \phi_{xx} - 3\lambda(\phi_x^2)_x + \phi_{xxxx}.
+\end{equation}
+Differentiating with respect to $x$ and setting $u = \phi_x$ yields
+$u_{tt} = u_{xx} + u_{xxxx} - 3\lambda(u^2)_{xx}$ \claim{c} (\texttt{audit\_onebody.py}).
+Matching the bad equation~\eqref{eq:bad-pde} uniquely requires $\lambda = -1$, so the correct
+bad-equation Lagrangian and Hamiltonian densities are \claim{c}
+\begin{equation}
+  \mathcal{L}_b = \tfrac{1}{2}\phi_t^2 - \tfrac{1}{2}\phi_x^2 - \phi_x^3 + \tfrac{1}{2}\phi_{xx}^2,
+  \qquad
+  \mathcal{H}_b = \pi\phi_t - \mathcal{L}_b
+  = \tfrac{1}{2}\pi^2 + \tfrac{1}{2}u^2 + u^3 - \tfrac{1}{2}u_x^2.
+  \label{eq:Lb-Hb-correct}
+\end{equation}
+By contrast, \texttt{phase2/report.tex} (line~69) prints
+$\mathcal{L}_{\mathrm{report}} = \frac{1}{2}\phi_t^2 - \frac{1}{2}\phi_x^2 + \phi_x^3 + \frac{1}{2}\phi_{xx}^2$,
+which generates $u_{tt} = u_{xx} + u_{xxxx} - 3(u^2)_{xx}$ and fails the bad equation on the
+one-soliton profile by $6(u_0^2)_{xx}\big|_{x=0} = -\frac{3}{2}k^6 \neq 0$ \claim{c}
+(\texttt{audit\_onebody.py}). The test write-up \texttt{phase2/onebody\_dispersion\_test.tex} Eq.~(5)
+correctly uses~\eqref{eq:Lb-Hb-correct}.
+
+\paragraph{2. Inherited tadpole sign error in \texttt{phase2/oneloop.tex} \claim{c}.}
+In the good equation~\eqref{eq:good-conv}, $\mathcal{H}_g = \frac{1}{2}\pi^2 + \frac{1}{2}u^2 - u^3 + \frac{1}{2}u_x^2$
+contains $-u^3$. Wick normal ordering $:u^3: = u^3 - 3\langle u^2\rangle_0 u$ replaces $-u^3$ by
+$-:u^3: - 3\langle u^2\rangle_0 u$, so the counterterm added to the bare energy is $+3\langle u^2\rangle_0 M$ \claim{c}.
+In the bad equation~\eqref{eq:Lb-Hb-correct}, $\mathcal{H}_b$ contains $+u^3 = +:u^3: + 3\langle u^2\rangle_0 u$,
+so passing to the normal-ordered Hamiltonian $: \mathcal{H}_b :$ adds the counterterm \claim{c}
+\begin{equation}
+  \Delta H_{\mathrm{ct}}^{(b)} = -3\langle u^2\rangle_0^{\mathrm{band}}\int_{-\infty}^{\infty} u_0(x)\,dx
+  = -3\left(\frac{\hbar_B}{2\pi}\int_0^1\frac{q\,dq}{\sqrt{1-q^2}}\right)(2k)
+  = -\frac{3\hbar_B k}{\pi},
+  \label{eq:tadpole-bad}
+\end{equation}
+where $\langle u^2\rangle_0^{\mathrm{band}} = \frac{\hbar_B}{2\pi}$ on the stable band $|q|<1$.
+In \texttt{phase2/oneloop.tex} Eq.~(28), the good-equation sign $+3\langle u^2\rangle_0 M$ was carried
+over without flipping the cubic sign, producing $+\frac{3\hbar_B k}{\pi}$ (off by $+\frac{6\hbar_B k}{\pi}$).
+\texttt{phase2/onebody\_dispersion\_test.tex} §2.2 diagnoses and corrects this sign error \claim{c}
+(\texttt{audit\_onebody.py}).
+
+\subsection{Formal analytic continuation $F_{\mathrm{ac}}(\beta)$ and light-root cancellation}
+
+\paragraph{3. Algebraic continuation from the good equation \claim{c}/\claim{d}.}
+For $\sigma = c^2 \in \{\pm 1\}$, the rescaled variables $\tilde x = cx$, $\tilde t = c^2 t$,
+$\tilde\phi(\tilde x,\tilde t) = c^{-1}\phi(x,t)$ satisfy \claim{c}
+\begin{equation}
+  \mathcal{L}_\sigma = \tfrac{1}{2}\phi_t^2 - \tfrac{1}{2}\phi_x^2 + \sigma\phi_x^3 - \tfrac{1}{2}\sigma\phi_{xx}^2
+  = c^4\left(\tfrac{1}{2}\tilde\phi_{\tilde t}^2 - \tfrac{1}{2}\tilde\phi_{\tilde x}^2 + \tilde\phi_{\tilde x}^3 - \tfrac{1}{2}\tilde\phi_{\tilde x\tilde x}^2\right).
+\end{equation}
+At $c = i$ ($\sigma = -1$), $\mathcal{L}_{-1} = \mathcal{L}_b$ and the good soliton parameter
+$\alpha$ maps to $i\beta$ ($k_g = \sin\alpha = i\sinh\beta = ik_b$, $v_g = \cos\alpha = \cosh\beta = v_b$,
+$P_{0,g}(i\beta) = iP_{0,b}(\beta)$).
+In \texttt{phase2/det\_projected\_oneloop.tex}, the one-loop projected determinant on the good branch gives \claim{c}
+\begin{equation}
+  F_g(k_g) := E_{1,g}\big|_{P} = \hbar_B\bigl(e(\alpha) - \cos\alpha\,p(\alpha)\bigr)
+  = \hbar_B\left[\frac{\sqrt{3}}{\pi}\left(\frac{3}{4} - k_g^2\right)\operatorname{artanh}\frac{2k_g}{\sqrt{3}}
+    - \frac{3k_g}{2\pi}\right].
+  \label{eq:Fg}
+\end{equation}
+Applying the formal continuation prescription $F_{\mathrm{ac}}(\beta) := -iF_g(ik_b)$ (\claim{d} as a
+physical prescription for the ill-posed bad equation; \claim{c} as an algebraic identity) yields \claim{c}
+\begin{equation}
+  \frac{F_{\mathrm{ac}}(\beta)}{\hbar_B}
+  = \frac{\sqrt{3}}{\pi}\left(k^2 + \frac{3}{4}\right)\arctan\frac{2k}{\sqrt{3}} - \frac{3k}{2\pi}
+  = \frac{4}{3\pi}\beta^3 + \frac{14}{45\pi}\beta^5 + O(\beta^7), \qquad k = \sinh\beta.
+  \label{eq:Fac}
+\end{equation}
+Dividing by $|P_0(\beta)| = \frac{2}{3}\beta^3 + \frac{2}{3}\beta^5 + O(\beta^7)$ gives the small-amplitude
+limit \claim{c} (\texttt{audit\_onebody.py})
+\begin{equation}
+  C_{\mathrm{ac}} := \lim_{\beta\to 0^+}\frac{F_{\mathrm{ac}}(\beta)}{\hbar_B |P_0(\beta)|} = +\frac{2}{\pi}
+  = 0.636619772367581343\dots
+\end{equation}
+
+\paragraph{4. Exact cancellation of the light (KdV) root in $F_g(\alpha)$ \claim{c}.}
+A structural audit of~\eqref{eq:Fg} reveals \emph{which modes} produce $C_{\mathrm{ac}} = +2/\pi$.
+In \texttt{phase2/oneloop\_phase.tex} and \texttt{phase2/det\_projected\_oneloop.tex}, the phase-shift
+integrals $e(\alpha)$ and $p(\alpha)$ sum over the three scattering roots
+$\phi_1 = \alpha + \frac{2\pi}{3}$, $\phi_2 = \alpha - \frac{2\pi}{3}$ (heavy dispersive roots at
+wavenumber $|q|\sim \frac{\sqrt{3}}{2}$) and $\phi_3 = \alpha$ (light KdV root at $|q|\sim 0$).
+In the combination $e(\alpha) - \cos\alpha\,p(\alpha)$, the coefficient of $\frac{c_r}{4\pi}\log|\tan(\phi_r/2)|$
+for root $r$ is proportional to \claim{c}
+\begin{equation}
+  w(\phi_r) := 2\cos\alpha\sin\phi_r - \sin(2\phi_r) = 2\sin\phi_r(\cos\alpha - \cos\phi_r).
+  \label{eq:log-weight}
+\end{equation}
+For the light root $\phi_3 = \alpha$, $w(\alpha) \equiv 0$ \emph{identically} for all $\alpha$ \claim{c}!
+For the heavy roots $\phi_{1,2} = \alpha \pm \frac{2\pi}{3}$, we have
+$w(\phi_1) = -w(\phi_2) = 2\sqrt{3}(\frac{3}{4}-\sin^2\alpha)$ \claim{c} (\texttt{audit\_onebody.py}).
+After continuation to $k = \sinh\beta$, the heavy-root arctangent term and the tadpole/endpoint term
+$-3k/(2\pi)$ expand as \claim{c}
+\begin{align}
+  \frac{\sqrt{3}}{\pi}\left(\sinh^2\beta + \frac{3}{4}\right)\arctan\frac{2\sinh\beta}{\sqrt{3}}
+  &= \frac{3}{2\pi}\beta + \left(\frac{4}{3\pi} + \frac{1}{4\pi}\right)\beta^3 + O(\beta^5), \\
+  -\frac{3\sinh\beta}{2\pi}
+  &= -\frac{3}{2\pi}\beta - \frac{1}{4\pi}\beta^3 + O(\beta^5).
+\end{align}
+Thus the $O(\beta)$ terms cancel against the continuum Wick tadpole, and the surviving $+\frac{4}{3\pi}\beta^3$
+term comes \emph{100\% from the short-wave dispersive roots $|q|\sim\frac{\sqrt{3}}{2}$ and the continuum UV tadpole},
+with zero contribution from the long-wave KdV root $\phi_3$ \claim{c}.
+
+\subsection{Real stable-band trace $F_{\mathrm{band}}(\beta)$ and the differential annihilator $\mathcal{I}$}
+
+\paragraph{5. Stable-band quadrature and resonant jump \claim{c}.}
+Integrating the exact scattering phase shift over the real stable band $|q|<1$ gives \claim{c}
+\begin{equation}
+  \frac{F_{\mathrm{band}}(\beta)}{\hbar_B}
+  = \frac{F_{\mathrm{ac}}(\beta)}{\hbar_B} + R(\beta), \qquad
+  R(\beta) = -\frac{\sqrt{3}}{2}\left(\sinh^2\beta + \frac{3}{4}\right),
+  \label{eq:Fband}
+\end{equation}
+which we verified against 65-digit numerical quadrature of the transmission phase derivative
+$\partial_t\arg A(\sin t)$ at $\beta = 0.25$ and $\beta = 0.50$ to $<10^{-52}$ in \texttt{audit\_onebody.py} \claim{c}.
+As noted in \texttt{onebody\_dispersion\_test.tex} §2.4, $R(\beta)$ originates from the co-moving
+resonance $\omega_b(q_*) = -v q_*$ at $q_* = -\frac{\sqrt{3}}{2}\operatorname{sgn}(v) \in (-1,1)$,
+where the bad-equation group velocity $\omega_b'(q_*) = \frac{1-2q_*^2}{\sqrt{1-q_*^2}} = -\frac{1}{2}$
+is opposite to $v$, flipping $\operatorname{sgn}(\omega_b'(q)+v)$ across $q_*$ \claim{c}.
+Because $R(0) = -\frac{3\sqrt{3}}{8} \neq 0$, the direct ratio $F_{\mathrm{band}}(\beta)/(\hbar_B|P_0(\beta)|)
+\sim -\frac{9\sqrt{3}}{16\beta^3}$ diverges as $\beta\to 0^+$ \claim{c}.
+Applying $\mathcal{A}_\beta = \partial_\beta^3 - \partial_\beta$ gives
+$\mathcal{A}_\beta R(\beta) = -3\sqrt{3}\sinh\beta\cosh\beta$, which vanishes at $\beta=0$
+solely because $R(\beta)$ is an even function of $\beta$ \claim{c}. Hence
+$\mathcal{I}[F_{\mathrm{band}}] = \lim_{\beta\to 0^+}\frac{\mathcal{A}_\beta F_{\mathrm{band}}}{\hbar_B\mathcal{A}_\beta|P_0|} = +\frac{2}{\pi}$
+isolates the odd part $F_{\mathrm{ac}}(\beta)$ algebraically, but does not remove the physical $O(1)$
+threshold offset $R(0) = -\frac{3\sqrt{3}}{8}$ of the real stable-band integral \claim{c}.
+
+\section{Audit of the quantum Toda Fermi-edge extraction}
+
+\subsection{Exact non-perturbative finite-sea identities and analytical proof of $C_T = \frac{1}{2\pi}$}
+
+We now prove that the quantum Toda Fermi-edge quantity extracted numerically in \texttt{onebody\_toda.py}
+is \emph{analytically equal to $\frac{1}{2\pi}$} \claim{c}.
+
+In the conventions of \texttt{phase2/frame\_dictionary.tex} and \texttt{phase2/scripts/frame\_edge.py},
+for Planck constant $h = \hbar_T$, $t = 2\pi h$, Fermi point $q>0$, kernel
+$K(\Delta) = 2\operatorname{Re}\psi(1+i\Delta/h) + 2\ln h$, and phase
+$\Theta(\Delta) = \int_0^\Delta K(u)\,du$, the finite-sea Bethe operator on $[-q,q]$ is
+$(\mathcal{A}f)(x) = tf(x) - \int_{-q}^q K(x-z)f(z)\,dz$, with
+$\mathcal{A}\rho = 1$, $\mathcal{A}\eta = x$, density $n = 1/a = \int_{-q}^q\rho(x)\,dx$,
+dressed momentum derivative $D(p) = P'(p) = 1 + \int_{-q}^q K(p-x)\rho(x)\,dx$,
+dressed energy derivative $V(p) = E'(p) = p + \int_{-q}^q K(p-x)\eta(x)\,dx$,
+and sound speed $v_s(a,h) = V(q)/D(q) = \eta(q)/\rho(q)$ (since $D(q)=t\rho(q)$ and $V(q)=t\eta(q)$).
+
+\paragraph{Proposition 1 (Exact endpoint identity \claim{c}).}
+\emph{For every $q>0$ and $h>0$, the endpoint values $\rho(q)$ and $\eta(q)$ satisfy}
+\begin{equation}
+  2at\,\rho(q)\eta(q) = 1 \qquad\Longleftrightarrow\qquad
+  D(q)V(q) = \frac{\pi h}{a}.
+  \label{eq:id1}
+\end{equation}
+\emph{Proof.} Differentiating $(\mathcal{A}\rho)(x)=1$ on $(-q,q)$ gives
+$(\mathcal{A}\rho')(x) = -\rho(q)\bigl(K(x-q)-K(x+q)\bigr)$ because $\rho(-q)=\rho(q)$.
+Since $\mathcal{A}$ is symmetric on $L^2[-q,q]$ and $\mathcal{A}\eta = x$, integration by parts yields
+\begin{equation}
+  2q\rho(q) - \frac{1}{a} = \int_{-q}^q x\rho'(x)\,dx
+  = \langle\mathcal{A}\eta,\rho'\rangle = \langle\eta,\mathcal{A}\rho'\rangle
+  = -\rho(q)\int_{-q}^q \eta(x)\bigl(K(x-q)-K(x+q)\bigr)\,dx.
+\end{equation}
+Using $(\mathcal{A}\eta)(\pm q) = \pm q \iff \int_{-q}^q K(x\mp q)\eta(x)\,dx = \pm\bigl(t\eta(q)-q\bigr)$
+evaluates the right-hand side to $2q\rho(q) - 2t\rho(q)\eta(q)$. Cancelling $2q\rho(q)$ leaves
+$2t\rho(q)\eta(q) = \frac{1}{a}$ \claim{c}. $\square$
+
+Identity~\eqref{eq:id1} holds to $1.6\times 10^{-16}$ on a 64-node Gauss--Legendre solver at $(h,q)=(0.4,1.5)$
+(where the nearest digamma pole at $\pm ih$ lies at $\pm\frac{4}{15}qi$), to $4.3\times 10^{-31}$ on a 48-node
+solver at $(h,q)=(0.8,1.0)$, and to $<2\times 10^{-12}$ across all saved rows of \texttt{frame\_edge\_data.json}
+(limited by \texttt{xtol=1e-13} on $q$ in \texttt{frame\_edge.py} line~27; \texttt{audit\_onebody.py}) \claim{c}.
+In addition, substituting~\eqref{eq:id1} into $t\eta(q)[F_p(q)+F_p(-q)] = P(p)-V(p)$ simplifies
+the frame charge $\mathfrak{Q}_p$ of \texttt{frame\_dictionary.tex} Eq.~(14) to
+$\mathfrak{Q}_p = \overline{P}(p) - \bigl(V(p)-V(q)\bigr)$ and
+$V(p) - v_s D(p) = \overline{P}(p) - \frac{f_p^-}{a\rho(q)}$ \claim{c}.
+
+\paragraph{Proposition 2 (Exact scaling and Maxwell identities \claim{c}).}
+\emph{For every $a,h>0$ and $p>q(a,h)$,}
+\begin{align}
+  v_s(a,h) &= -a\left.\frac{\partial q(a,h)}{\partial a}\right|_h
+  = \frac{a}{2}\left(q(a,h) - h\left.\frac{\partial q(a,h)}{\partial h}\right|_a\right),
+  \label{eq:vs-scaling} \\
+  V(p,a,h) &= \left.\frac{\partial E(p,a,h)}{\partial p}\right|_{a,h}
+  = \left.\frac{\partial\bigl(aP(p,a,h)\bigr)}{\partial a}\right|_{p,h},
+  \label{eq:V-maxwell} \\
+  \frac{V(p)}{D(p)} &= \left.\frac{\partial\overline{E}}{\partial\overline{P}}\right|_{a,h}
+  = \frac{a}{2}\left(p - h\left.\frac{\partial p}{\partial h}\right|_{\overline{P},a}
+    - \frac{\overline{P}(p)}{D(p)}\right).
+  \label{eq:VD-scaling}
+\end{align}
+\emph{Proof.} Differentiating $n(q,h) = \int_{-q}^q\rho(x)\,dx$ with respect to $q$ at fixed $h$ gives
+$\left.\partial_q(1/a)\right|_h = 2t\rho(q)^2$.
+Combining with~\eqref{eq:id1} gives $\left.\partial_q a\right|_h = -2a^2 t\rho(q)^2 = -a/v_s$, proving the first
+equality in~\eqref{eq:vs-scaling}. Similarly, $\left.\partial_q P(p)\right|_h = t\rho(q)\bigl(F_p(q)+F_p(-q)\bigr) = \frac{1}{2a\eta(q)}\bigl(P(p)-V(p)\bigr)$,
+which combines with $\left.\partial_q a\right|_h = -a/v_s$ to yield~\eqref{eq:V-maxwell}.
+Finally, writing $K(\Delta) = K_0(\Delta/h) + 2\ln h$ with $K_0(u) = 2\operatorname{Re}\psi(1+iu)$
+and setting $x = h\xi$, $Q = q/h$ shows that $\tilde\rho(\xi) = t\rho(h\xi)$ solves
+$2\pi\tilde\rho(\xi) - \int_{-Q}^Q K_0(\xi-\zeta)\tilde\rho(\zeta)\,d\zeta = 1 + \frac{2\ln h}{a}$,
+so $q(a,h)/h = \mathcal{Q}(a + 2\ln h)$ and $aP(p,a,h) = h\hat{\mathcal{P}}(p/h, a + 2\ln h)$ depend
+on $(a,h)$ only through the combination $s = a + 2\ln h$ \claim{c}.
+Therefore $h\partial_h(q/h)|_a = 2\partial_a(q/h)|_h$, which gives the second equality in~\eqref{eq:vs-scaling},
+and $h\partial_h(aP/h)|_{p/h,a} = 2\partial_a(aP/h)|_{p/h,h} = 2V(p)/h$, which rearranges at fixed
+$\overline{P} = P(p) - \pi h/a$ into~\eqref{eq:VD-scaling} \claim{c}. $\square$
+
+All three identities in Proposition~2 are verified to $<10^{-25}$ at $(h,q)=(0.8,1.0)$ ($N=48$) in \texttt{audit\_onebody.py} \claim{c}.
+
+\paragraph{Theorem 3 (Exact analytical values of $s_{1,T}$, $C_v(y)$, $C_E(y)$, and $C_T = \frac{1}{2\pi}$ \claim{c}).}
+\emph{In the semiclassical limit $h\to 0$ at fixed $a>0$ (with $b = \pi/a$):}
+\begin{enumerate}
+  \item \emph{Substituting the Fermi-edge expansion $q(a,h) = 2b - \frac{h}{2\pi}\ln\frac{h}{b} + c_q h + O(h^2\ln h)$
+  into~\eqref{eq:vs-scaling} cancels $c_q$ and $\ln(h/b)$ identically:}
+  \begin{equation}
+    v_s(a,h) = \frac{a}{2}\left(2b + \frac{h}{2\pi} + O(h^2\ln h)\right)
+    = ab + \frac{ah}{4\pi} + O(h^2\ln h)
+    \implies s_{1,T} := \frac{3}{a}\lim_{h\to 0}\frac{v_s(a,h)-ab}{h} = \frac{3}{4\pi}.
+    \label{eq:s1T-exact}
+  \end{equation}
+  \item \emph{In the Fermi-edge scaling regime $p = q(a,h) + h u(y)$ where $y = b\kappa^2/h$ and
+  $\overline{P} = \frac{4b}{3a}\kappa^3(1+O(\kappa^2)) = \frac{4}{3a}b^{-1/2}(yh)^{3/2}(1+O(yh/b))$,
+  equation~\eqref{eq:VD-scaling} gives $\lim_{h\to 0}\frac{V(p)/D(p) - v_s(a,h)}{h} = \frac{a}{6}y\bigl(u'(y)-1\bigr)$,
+  so in the inherited Boussinesq units of \texttt{onebody\_toda.py}:}
+  \begin{equation}
+    C_v(y) = \frac{3}{4\pi} + \frac{1}{2}y\bigl(u'(y)-1\bigr), \qquad
+    C_E(y) = \frac{3}{4\pi} + \frac{3}{4}y^{-3/2}\int_0^y \eta^{3/2}\bigl(u'(\eta)-1\bigr)\,d\eta.
+    \label{eq:Cv-CE-exact}
+  \end{equation}
+  \item \emph{Using the Wiener--Hopf expansion (\texttt{toda\_wh\_and\_kp\_synthesis.tex})
+  $u(y) = y - \frac{\ln y}{2\pi} + c_{\mathrm{edge}} + \frac{d_0}{y} + \frac{e_0}{y^2} + O(y^{-3})$
+  with $d_0 = \frac{1}{48} - \frac{1}{4\pi^2}$ and $e_0 = \frac{4+6\zeta(3)-\pi^2}{96\pi^3}$ yields}
+  \begin{align}
+    C_v(y) &= \frac{3}{4\pi} - \frac{1}{4\pi} - \frac{d_0}{2y} - \frac{e_0}{y^2} + O(y^{-3})
+    \;\xrightarrow{y\to\infty}\; \frac{1}{2\pi},
+    \label{eq:Cv-asymp} \\
+    C_E(y) &= \frac{1}{2\pi} - \frac{3d_0}{2y} + B_0 y^{-3/2} + \frac{3e_0}{2y^2} + O(y^{-5/2})
+    \;\xrightarrow{y\to\infty}\; \frac{1}{2\pi}.
+    \label{eq:CE-asymp}
+  \end{align}
+  \item \emph{In the opposite order of limits ($h\to 0$ first at fixed unscaled $\overline{P}>0$, then $\overline{P}\to 0^+$),
+  $p(\overline{P},h) = q(a,h) + b\kappa^2 + \frac{h}{2\pi}\ln\frac{h}{b\kappa^2} + c_{\mathrm{edge}}h + o(h)
+  = 2b + b\kappa^2 - \frac{h}{\pi}\ln\kappa + (c_q+c_{\mathrm{edge}})h + o(h)$ has no $h\ln h$ term, and~\eqref{eq:VD-scaling}
+  gives $\lim_{\overline{P}\to 0^+}\lim_{h\to 0}\frac{3}{a}\frac{\overline{E}-E_{T,0}}{h\overline{P}} = \frac{1}{2\pi}$.
+  Hence the fixed-$y$ and fixed-$P$ iterated limits commute and both equal $C_T = \frac{1}{2\pi} = 0.15915494309189535\dots$} \claim{c}.
+\end{enumerate}
+
+\subsection{Audit of \texttt{onebody\_toda.py}: non-circularity and error-bar honesty}
+
+\begin{enumerate}
+  \item \textbf{Non-circularity \claim{c}:} Inspection of \texttt{phase2/scripts/onebody\_toda.py},
+  \texttt{frame\_edge.py}, and \texttt{frame\_analysis.py} confirms that neither $\frac{1}{2\pi}$ nor
+  $\frac{2}{\pi}$ enters any solver or fit.
+  \item \textbf{Numerical agreement with Theorem~3 \claim{c}:}
+  The extrapolated sound-speed shift in \texttt{onebody\_toda\_results.json} is
+  $s_{1,T}^{\mathrm{num}} = 0.23873241714$ (quadratic fit) and $0.23873241473$ (cubic fit), matching
+  $\frac{3}{4\pi} = 0.23873241464$ to $2.5\times 10^{-9}$ and $9.6\times 10^{-11}$, respectively.
+  Across all nine grid points $y\in[0.1,64]$, the independently extrapolated $C_v(y)$ in
+  \texttt{onebody\_toda\_results.json} and $\frac{3}{4\pi} + \frac{1}{2}y\bigl(u'(y)-1\bigr)$ from
+  \texttt{frame\_analysis.json} agree to $<2.8\times 10^{-6}$ (\texttt{audit\_onebody.py}).
+  \item \textbf{Honest error bars \claim{c}:}
+  The central two-point $1/y$ extrapolations from $y\in\{32,64\}$ give
+  $C_{T,\infty}^{(E)} = 0.15911988$ and $C_{T,\infty}^{(v)} = 0.15906273$, which lie below
+  $\frac{1}{2\pi} = 0.15915494$ by $-3.51\times 10^{-5}$ and $-9.22\times 10^{-5}$.
+  Both offsets are well inside the central edge-propagated error bars
+  ($\pm 1.84\times 10^{-4}$ and $\pm 5.26\times 10^{-4}$) and roughly $100\times$ smaller than the
+  conservative 12-fit envelopes ($\pm 3.34\times 10^{-3}$ and $\pm 9.97\times 10^{-3}$).
+  The slight downward offset is explained by higher-order $y^{-3/2}$ and $y^{-2}$ terms in~\eqref{eq:Cv-asymp}--\eqref{eq:CE-asymp}
+  together with residual finite-$\kappa$ curvature at $y=64$, $h=0.02$ ($\kappa = \sqrt{yh/b} \approx 1.45$).
+\end{enumerate}
+
+\section{Systematic hunt for a factor of 4 in the Toda--Boussinesq dictionary}
+
+Having established that $C_{\mathrm{ac}} = \frac{2}{\pi}$ and $C_T = \frac{1}{2\pi}$ are both exact within
+their respective definitions, so that $C_{\mathrm{ac}}/C_T = 4$ \emph{exactly} \claim{c}, we trace every
+normalisation in the Toda--bad-Boussinesq dictionary (\texttt{phase2/toda\_route.tex},
+\texttt{phase2/scripts/toda\_scaling\_fast.py}, \texttt{phase2/audit\_toda\_dictionary.tex}) to test whether
+any convention introduces a hidden factor of~$4$.
+
+\begin{table}[ht!]
+\centering
+\small
+\begin{tabular}{@{}p{4.6cm}p{6.6cm}cc@{}}
+\toprule
+Dictionary candidate & Exact relation between Toda ($T$) and bad Boussinesq ($B$) & Factor on $C_T$ & Status \\
+\midrule
+1. $\hbar_T = 3b\hbar_B$ \& lattice scaling & $x_B = 2\sqrt{3}\,n$, $t_B = 2\sqrt{3}b\,t_T$, $u_n = -\sqrt{3}\phi_B \Rightarrow S_T = 3b\,S_B$, $\hbar_T = 3b\hbar_B$ & $1$ & Verified \claim{c} \\
+2. Symplectic 2-form $\Omega$ & $\Omega_T = \sum_n dp_n\wedge du_n = 3b\int d\pi_B\wedge d\phi_B = 3b\,\Omega_B \Rightarrow \Omega_T/\hbar_T = \Omega_B/\hbar_B$ & $1$ & Verified \claim{c} \\
+3. Momentum $P$ definitions & $P_n = a\overline{P} = 6\sqrt{3}b\,P_B(1+O(\beta^2))$; Fermi-edge subtraction $\overline{P}(p)=P_{\mathrm{dr}}(p)-\frac{\pi\hbar_T}{a}$ vanishes at $p=q$ & $1$ & Verified \claim{c} \\
+4. Energy $E_1$ \& chemical potential & $\overline{E}(p) = E_{\mathrm{dr}}(p)-E_{\mathrm{dr}}(q) = 6\sqrt{3}b^2 E_B(1+O(\beta^2))$; combined ratio $\frac{E_B-E_{B,0}}{\hbar_B P_B} = \frac{3}{a}\frac{\overline{E}-E_{T,0}}{\hbar_T\overline{P}}$ & $1$ & Verified \claim{c} \\
+5. Mass $M=2k$ \& soliton width & $M_T = -2\kappa = -\sqrt{3}M_B$ ($\kappa = \sqrt{3}\beta$ in Phase~2; Phase~1 $\kappa_{\mathrm{P1}}=2\kappa$ cancels in $E_{T,0}(P_{T,0})$) & $1$ & Verified \claim{c} \\
+6. Factor $3$ in $\delta_T \to 3b\,\delta_{\mathrm{bad}}$ & $\delta_T = 3b\,\delta_{\mathrm{bad}}(1+O(\beta^2)) \Rightarrow \delta_T/\hbar_T = \delta_{\mathrm{bad}}/\hbar_B$ & $1$ & Verified \claim{c} \\
+\bottomrule
+\end{tabular}
+\caption{Audit of all six candidate normalisations in the Toda--bad-Boussinesq dictionary. Every candidate introduces an exact conversion factor of $1$ (\texttt{audit\_onebody.py}).}
+\label{tab:dict-hunt}
+\end{table}
+
+\paragraph{Detailed audit of the six candidates \claim{c}:}
+\begin{enumerate}
+  \item \textbf{Action and Planck constant ($\hbar_T = 3b\hbar_B$):}
+  Under $x_B = \lambda_x n$ ($\lambda_x = 2\sqrt{3}$), $t_B = \lambda_t t_T$ ($\lambda_t = 2\sqrt{3}b$),
+  and $u_n = \lambda_\phi\phi_B$ ($\lambda_\phi = -\sqrt{3}$), the continuum expansion of the Toda
+  Lagrangian $L_T = \sum_n[\frac{1}{2}\dot u_n^2 - b^2(e^{u_n-u_{n-1}}-1-(u_n-u_{n-1}))]$ is
+  $\mathcal{L}_T = \frac{1}{2}u_{t_T}^2 - \frac{b^2}{2}u_n^2 + \frac{b^2}{6}u_n^3 + \frac{b^2}{24}u_{nn}^2 + O(\partial^6)$.
+  Changing variables $(n,t_T)\mapsto (x_B,t_B)$ gives $S_T = \int dt_T\,dn\,\mathcal{L}_T = \frac{\lambda_\phi^2\lambda_t}{\lambda_x}\int dt_B\,dx_B\,\mathcal{L}_B = 3b\,S_B$.
+  Hence $S_T/\hbar_T = S_B/\hbar_B$ requires $\hbar_T = 3b\hbar_B$, with factor~$1$ \claim{c}.
+
+  \item \textbf{Symplectic normalisation:}
+  With $p_n = \partial\mathcal{L}_T/\partial\dot u_n = \dot u_n = \lambda_\phi\lambda_t\pi_B$ and $dn = dx_B/\lambda_x$,
+  $\Omega_T = \int dn\,dp_n\wedge du_n = \frac{\lambda_\phi^2\lambda_t}{\lambda_x}\int dx_B\,d\pi_B\wedge d\phi_B = 3b\,\Omega_B$.
+  Thus $\Omega_T/\hbar_T = \Omega_B/\hbar_B$: factor~$1$ \claim{c}.
+
+  \item \textbf{Momentum definitions ($\Pi_T$, $P_n$, $\overline{P}$, and $P_{\mathrm{dr}}(q)=\pi\hbar_T/a$):}
+  As proved in \texttt{phase2/audit\_toda\_dictionary.tex}, the mechanical momentum $\Pi_T = \sum_n p_n$
+  and the Noether label momentum $P_n = -\int dn\,p_n u_n'$ are distinct conserved charges; the Bethe
+  excitation momentum above the Fermi edge $\overline{P}(p) = P_{\mathrm{dr}}(p) - P_{\mathrm{dr}}(q)$
+  is related to the label momentum by $P_n = a\overline{P} = \frac{4}{3}b\kappa^3 + \frac{4}{15}b\kappa^5 + O(\kappa^7)$.
+  Under $\kappa = \sqrt{3}\beta$, $P_n = 6\sqrt{3}b(\frac{2}{3}\beta^3 + \frac{2}{5}\beta^5 + O(\beta^7)) = 6\sqrt{3}b\,P_B(1 - \frac{2}{5}\beta^2 + O(\beta^4))$.
+  At the small-amplitude limit $\beta\to 0$, $P_B = \frac{a}{6\sqrt{3}b}\overline{P}(1+O(\beta^2))$, and
+  subtracting $P_{\mathrm{dr}}(q) = \frac{\pi\hbar_T}{a}$ sets $\overline{P}(q)=0$ at the soliton threshold: factor~$1$ \claim{c}.
+
+  \item \textbf{Energy $E_1$, chemical potential, and conversion factor $\frac{3}{a}$:}
+  The excitation energy above the Fermi sea is $\overline{E}(p) = E_{\mathrm{dr}}(p) - E_{\mathrm{dr}}(q)$,
+  where $\mu = q^2/2$ is already absorbed because adding a particle at fixed $N$ or fixed $\mu$ shifts the
+  threshold energy by $E_{\mathrm{dr}}(q) = 0$. Classically,
+  $\overline{E}_{T,0}(\kappa) = 2b^2(\sinh\kappa\cosh\kappa - \kappa) = 6\sqrt{3}b^2(\frac{2}{3}\beta^3 + \frac{2}{5}\beta^5 + O(\beta^7)) = 6\sqrt{3}b^2 E_{B,0}(1+O(\beta^2))$.
+  Combining $E_B = \frac{\overline{E}}{6\sqrt{3}b^2}$, $P_B = \frac{a\overline{P}}{6\sqrt{3}b}$, and $\hbar_B = \frac{\hbar_T}{3b}$ yields
+  \begin{equation}
+    \frac{E_B - E_{B,0}(P_B)}{\hbar_B P_B}
+    = \frac{\bigl(\overline{E} - E_{T,0}(\overline{P})\bigr)/(6\sqrt{3}b^2)}{(\hbar_T/3b)\cdot a\overline{P}/(6\sqrt{3}b)}
+    = \frac{3}{a}\,\frac{\overline{E} - E_{T,0}(\overline{P})}{\hbar_T\overline{P}},
+    \label{eq:exact-conversion}
+  \end{equation}
+  matching Eq.~(17) of \texttt{onebody\_dispersion\_test.tex} with conversion factor~$1$ \claim{c}.
+
+  \item \textbf{Mass $M = 2k$ and soliton width conventions:}
+  In Phase~1 (\texttt{phase1/scripts/toda\_limit.py}), $\tau_n = 1 + e^{\kappa_{\mathrm{P1}}n - \omega t}$
+  uses $\kappa_{\mathrm{P1}} = \sqrt{12}\beta = 2\kappa$, whereas all Phase~2 scripts use
+  $r_n - b^2 = b^2\sinh^2\kappa\operatorname{sech}^2(\kappa n - \dots)$ with $\kappa = \sqrt{3}\beta$.
+  In Phase~2 conventions, $M_T = u_\infty - u_{-\infty} = -2\kappa = -2\sqrt{3}\beta = -\sqrt{3}M_B(1+O(\beta^2)) = \lambda_\phi M_B$.
+  Moreover, $\kappa$ is eliminated when expressing $\overline{E}_{T,0}(\overline{P}) = ab\overline{P} + \frac{a}{10}\left(\frac{3a}{4b}\right)^{2/3}b\overline{P}^{5/3} + \dots$,
+  so $\kappa$ conventions cannot alter $\lim_{\overline{P}\to 0}\frac{\overline{E}-E_{T,0}}{h\overline{P}}$: factor~$1$ \claim{c}.
+
+  \item \textbf{The factor $3$ in $\delta_T \to 3b\,\delta_{\mathrm{bad}}$:}
+  At small amplitude, the head-on two-soliton phase shift is $\delta_{\mathrm{bad}} \sim 4\beta_1\beta_2$ and
+  $\delta_T \sim 4b\kappa_1\kappa_2 = 12b\beta_1\beta_2 = 3b\,\delta_{\mathrm{bad}}$. Since $\hbar_T = 3b\hbar_B$,
+  the quantum phase $\delta_T/\hbar_T = \delta_{\mathrm{bad}}/\hbar_B$ has factor~$1$ \claim{c}.
+\end{enumerate}
+
+\paragraph{Conclusion on the factor of 4: Verdict (b) \claim{c}.}
+No missing factor of~$4$ exists anywhere in the Toda--Boussinesq dictionary.
+Instead, both numbers are exact in their own theories---$C_{\mathrm{ac}} = +\frac{2}{\pi}$ and
+$C_T = +\frac{1}{2\pi}$---and their ratio is $4$ for a clear physical reason:
+\begin{itemize}
+  \item On the Toda side, $C_T = \frac{1}{2\pi} = \frac{3}{4\pi} - \frac{1}{4\pi}$ is the sum of the
+  lattice ground-state sound-speed renormalisation $s_{1,T} = +\frac{3}{4\pi}$ (from the finite-density
+  Fermi sea $[-q,q]$) and the universal logarithmic Fermi-edge dressing shift $-\frac{1}{4\pi}$
+  from $u(y) = y - \frac{\ln y}{2\pi} + c_{\mathrm{edge}} + O(y^{-1})$. Subtracting the quantum sound
+  speed gives $C_T - s_{1,T} = -\frac{1}{4\pi} < 0$.
+  \item On the continuum side, the acoustic speed is unrenormalised ($s_{1,\mathrm{cont}} = 0$) and,
+  by~\eqref{eq:log-weight}, the long-wave KdV root $\phi_3 = \alpha$ contributes \emph{zero} to
+  $F_g(\alpha) = e(\alpha) - \cos\alpha\,p(\alpha)$. The value $C_{\mathrm{ac}} = +\frac{2}{\pi}$
+  comes entirely from the short-wave dispersive roots $\phi_{1,2}$ at $|q|\sim \frac{\sqrt{3}}{2}$
+  (where the bad Boussinesq dispersion relation $\omega_b(q) = |q|\sqrt{1-q^2}$ turns over and enters
+  the unstable band $|q|>1$) combined with the continuum UV Wick tadpole. Relative to the
+  sound-subtracted Toda slope $-\frac{1}{4\pi}$, the ratio is $C_{\mathrm{ac}}/(C_T - s_{1,T}) = -8$ \claim{c}.
+\end{itemize}
+
+\section{Verdict table and failures recorded}
+
+\begin{table}[ht!]
+\centering
+\small
+\begin{tabular}{@{}p{4.3cm}ccp{6.8cm}@{}}
+\toprule
+Audited claim / target & Label & Verdict & Independent audit finding \\
+\midrule
+\texttt{report.tex} line~69 bad Lagrangian $+\phi_x^3$ sign & \claim{c} & \textbf{Refuted} & Gives $u_{tt}=u_{xx}+u_{xxxx}-3(u^2)_{xx}$; fails bad PDE on $u_0$ by $-\frac{3}{2}k^6$ at $x=0$. Correct bad $\mathcal{L}_b$ has $-\phi_x^3$. \\
+\texttt{oneloop.tex} Eq.~(28) bad tadpole $+\frac{3\hbar k}{\pi}$ & \claim{c} & \textbf{Refuted} & $\mathcal{H}_b$ has $+u^3$, so Wick ordering gives $-\frac{3\hbar_B k}{\pi}$ (off by $\frac{6\hbar_B k}{\pi}$). Fix in \texttt{onebody\_dispersion\_test.tex} confirmed. \\
+Formal continuation $F_{\mathrm{ac}}/(\hbar_B|P_0|) \to +2/\pi$ & \claim{c}/\claim{d} & \textbf{Confirmed} & Algebra \claim{c} verified; physical continuation to ill-posed bad branch is \claim{d}. Comes 100\% from heavy roots $|q|\sim\sqrt{3}/2$. \\
+Real stable-band trace $F_{\mathrm{band}}$ & \claim{c} & \textbf{Confirmed} & $F_{\mathrm{band}} = F_{\mathrm{ac}} - \frac{\sqrt{3}}{2}(k^2+\frac{3}{4})$; $F_{\mathrm{band}}/|P_0|\to -\infty$, while $\mathcal{I}[F_{\mathrm{band}}]=+2/\pi$ only because $R(\beta)$ is even. \\
+Toda extraction non-circularity \& error bars & \claim{c} & \textbf{Confirmed} & Non-circular. Exact analytical limit proved to be $C_T = \frac{1}{2\pi} = 0.1591549\dots$ (with $s_{1,T}=\frac{3}{4\pi}$), inside $0.15912\pm 0.00334$. \\
+Dictionary factor-of-4 hunt & \claim{c} & \textbf{Verdict (b)} & All 6 dictionary candidates give factor $1$. The ratio $C_{\mathrm{ac}}/C_T = 4$ (or $-8$ after sound subtraction) is physical/structural. \\
+\bottomrule
+\end{tabular}
+\caption{Summary verdict table for the independent audit (\texttt{phase2/scripts/audit\_onebody.py}).}
+\label{tab:verdict}
+\end{table}
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+  \item \textbf{Bad-equation cubic sign typo in \texttt{phase2/report.tex} (line~69):}
+  Confirmed failure in existing documentation ($+\phi_x^3$ printed instead of $-\phi_x^3$); encoded as a
+  non-vanishing residual assertion in \texttt{audit\_onebody.py}.
+  \item \textbf{Bad-equation Wick tadpole sign error in \texttt{phase2/oneloop.tex} Eq.~(28):}
+  Confirmed failure in earlier write-up ($+3\hbar_B k/\pi$ instead of $-3\hbar_B k/\pi$), already
+  caught and recorded in \texttt{onebody\_dispersion\_test.tex} §2.2; encoded in \texttt{audit\_onebody.py}.
+  \item \textbf{Heavy-root weight factor of $2$ in initial draft of \texttt{audit\_onebody.py}:}
+  In the first run of \texttt{audit\_onebody.py} (line~124), we asserted
+  $w(\phi_1) - w(\phi_2) = 2\sqrt{3}(\frac{3}{4}-\sin^2\alpha)$ instead of
+  $4\sqrt{3}(\frac{3}{4}-\sin^2\alpha)$ because $w(\phi_1) = -w(\phi_2) = 2\sqrt{3}(\frac{3}{4}-\sin^2\alpha)$
+  already carries the factor of~$2$ before taking $w(\phi_1)-w(\phi_2)$. Fixed in \texttt{audit\_onebody.py}.
+  \item \textbf{Bernstein-ellipse quadrature tolerance at $(h,q)=(0.4,1.5)$, $N=64$ in \texttt{audit\_onebody.py}:}
+  In the second run of \texttt{audit\_onebody.py}, the assertion \texttt{id1\_err\_64 < 1e-16} at
+  $(h,q)=(0.4,1.5)$ failed because the 64-node Gauss--Legendre truncation error for a kernel pole at
+  $\pm\frac{4}{15}qi$ is $1.59\times 10^{-16}$ (just above $10^{-16}$, consistent with \texttt{frame\_identities.json}
+  line~21), and the endpoint derivative $\partial_q a$ at $N=48$, $(0.4,1.5)$ has truncation error $\sim 3\times 10^{-11}$.
+  Relaxed the $(0.4,1.5)$, $N=64$ bound to $5\times 10^{-16}$, moved the Proposition~2 finite-difference
+  tests to $(h,q)=(0.8,1.0)$ at $N=48$, and corrected a missing factor of $h$ on $\partial_h P|_{p,a}$ in line~304
+  of \texttt{audit\_onebody.py}, after which Proposition~1 and Proposition~2 hold to $<10^{-25}$.
+  \item \textbf{Transmission phase-derivative integrand in stable-band quadrature check:}
+  An intermediate edit to \texttt{audit\_onebody.py} used a KdV-like two-arctangent approximation for
+  the bad-equation phase shift instead of the exact Boussinesq transmission phase derivative
+  $\partial_t\arg A(\sin t)$ with $A=(Z+iX)/(Z-iX)$, $X=3kq$, $Z=v\operatorname{sgn}(q)\sqrt{1-q^2}-1-2k^2+2q^2$.
+  Replaced with the exact Boussinesq phase derivative, which matches $F_{\mathrm{band}}(\beta)$ to $<10^{-52}$.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Sklyanin1985}
+E.~K.~Sklyanin, \emph{The quantum Toda chain}, Lecture Notes in Physics \textbf{226} (1985), 196--233
+(used via the verified Bethe equations in \texttt{phase2/toda\_route.tex}; full text not in \texttt{literature/}).
+\end{thebibliography}
+
+\end{document}

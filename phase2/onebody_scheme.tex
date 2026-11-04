@@ -1,0 +1,594 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=23mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,longtable,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\Lc}{\textbf{(c)}\ }
+\newcommand{\Ld}{\textbf{(d)}\ }
+\newcommand{\dd}{\mathrm d}
+\newcommand{\ccheck}{\texttt{onebody\_\allowbreak scheme\_\allowbreak continuum.py}}
+\newcommand{\dcheck}{\texttt{onebody\_\allowbreak scheme\_\allowbreak dictionary.py}}
+\newcommand{\echeck}{\texttt{onebody\_\allowbreak scheme\_\allowbreak edge.py}}
+\title{The one-body factor of four:\\an audit and a lattice-matched continuum prescription}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\Lc The failed assertion in \texttt{audit\_onebody.py} is an unjustified
+accuracy claim about finite-$h$ extrapolations, not a failure of the limiting
+edge identity. Its maximum residual is $2.2546734882\,10^{-4}$, not below
+$3\,10^{-6}$. Independent inverse-Laplace calculations and fresh finite-sea
+solves diagnose the error.
+
+\Lc A more consequential omission is the continuum vacuum elastic
+renormalisation. In the specified good-equation prescription its sound-speed
+coefficient is $-9/(4\pi)$; under the \emph{same formal continuation} as the
+soliton trace it is $+9/(4\pi)$ for the bad equation. Toda's harmonic vacuum
+gives $+3/(4\pi)$. Matching these independently calculated vacuum coefficients
+requires the finite Hamiltonian density
+$\Delta\mathcal H=-3\hbar_B u^2/(2\pi)$, and changes the continued soliton
+coefficient from $2/\pi$ to exactly $1/(2\pi)$. Both bad prescriptions then
+have the same sound-subtracted coefficient $-1/(4\pi)$.
+
+\Lc Conclusion \textbf{(A), for the leading coefficient in the stipulated
+continued trace}: a precise lattice-matched prescription exists, fixed by
+vacuum matching rather than a soliton fit. This is an effective-field-theory
+finite matching term, not just a different Wick contraction of $u^3$.
+\Ld It does not construct the physical constrained bad-equation determinant,
+prove equivalence of complete quantum theories, or make the real stable-band
+trace agree with Toda. Those stronger identifications remain open.
+\end{abstract}
+
+\section{Scope, conventions and checks}
+Labels are (a) proved in the literature, (b) conjectured or heuristic in the
+literature, (c) derived or checked here, and (d) unestablished identification
+or guess. Numerical (c) means evidence at the stated precision, not a rigorous
+error bound. No external article, abstract, DOI or arXiv entry is cited.
+The relevant internal sources are identified in Section~\ref{sec:sources}.
+All scripts are in \texttt{phase2/scripts/}; each writes only its own
+\texttt{onebody\_scheme\_*.json} and ends with
+\texttt{ALL CHECKS PASSED}. We leave all existing files and git state alone.
+
+\Lc (\ccheck, \dcheck) Use the stipulated potentials and Hamiltonians,
+with $u=\phi_x$, $\pi=\phi_t$, and $\Omega=\int\dd\pi\wedge\dd\phi$:
+\begin{align}
+ \mathcal H_g&=\tfrac12\pi^2+\tfrac12u^2-u^3+\tfrac12u_x^2,
+ &v_g&=\sqrt{1-k^2},\\
+ \mathcal H_b&=\tfrac12\pi^2+\tfrac12u^2+u^3-\tfrac12u_x^2,
+ &v_b&=\sqrt{1+k^2}.
+\end{align}
+Here $k=\sin\alpha$ on the good branch and $k=\sinh\beta$ on the bad
+branch. We display right movers; parity supplies $|P|$ for left movers.
+For $u_0=(k^2/2)\operatorname{sech}^2(kx/2)$ the checked integrals are
+\begin{equation}\label{eq:moments}
+ \int u_0\dd x=2k,\qquad \int u_0^2\dd x=\frac23k^3,
+ \qquad \int u_0^3\dd x=\frac4{15}k^5,\qquad
+ P_0=v\int u_0^2\dd x.
+\end{equation}
+Throughout $F$ and $W$ denote \emph{coefficients} of $\hbar_B$ in the
+fixed-$P$ soliton energy and homogeneous vacuum energy density, respectively.
+The notation $s_1$ means $c_{\rm sound}=1+\hbar_Bs_1+\cdots$ in fixed
+classical Boussinesq units. We test candidate schemes; none is adopted as the
+PI's preferred quantum theory.
+
+\section{Assessment of audit\_onebody}\label{sec:assessment}
+\subsection{The failed assertion: limiting identity versus extrapolation}
+\Lc (\echeck) The original script was executed unchanged and failed at
+line 383, as reported. Its comparison is
+\begin{equation}\label{eq:identity}
+ C_v(y)=s_{1,T}+\frac y2\{u'(y)-1\},\qquad
+ s_{1,T}=\frac3{4\pi}.
+\end{equation}
+This is an $h\to0$ \emph{edge-limit} identity. The script substitutes
+independently extrapolated entries from \texttt{onebody\_toda\_results.json}
+and \texttt{frame\_analysis.json}, with finite-$h$ truncation errors.
+The input solves are double precision: evaluating the comparison at 65
+digits does not improve their extrapolation accuracy. The central fits use
+only three $h$ values for a quadratic intercept. At large $y$, the finite
+amplitude $\kappa^2=hy/b$ is not uniformly small on those grids.
+
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$y$ & original signed residual & combined fit spread & finer quartic residual\\\midrule
+8 & $-7.5273\,10^{-7}$ & $2.3259\,10^{-5}$ & ---\\
+16 & $-5.0951\,10^{-6}$ & $8.4061\,10^{-5}$ & $-1.6466\,10^{-9}$\\
+32 & $-3.4752\,10^{-5}$ & $2.9805\,10^{-4}$ & $-4.1939\,10^{-8}$\\
+64 & $-2.2547\,10^{-4}$ & $1.1013\,10^{-3}$ & $-9.3801\,10^{-7}$\\\bottomrule
+\end{tabular}
+\end{center}
+\Lc The residual is $C_v-s_1-y(u'-1)/2$. Every original residual lies
+inside its recorded combined sensitivity spread. Fitting the finer saved
+finite-sea rows independently, with a quartic through the last seven
+$h$ values down to $.0025$, recovers the original $3\,10^{-6}$ tolerance.
+At $y=64$, a quintic gives $-2.2681\,10^{-7}$; a cubic gives
+$-5.5779\,10^{-6}$ and still fails that tolerance. These are model
+sensitivities, not certified bounds. We do not relax or edit the old check.
+
+\paragraph{Independent calculation, not only refitting.}
+\Lc (\echeck) Factoring the half-line kernel at nonzero Fourier frequency
+gives the checked product and inverse transforms
+\begin{align}
+ g(s)&=s^{-1/2}\Gamma\!\left(1+\frac{s}{2\pi}\right)
+       \exp\!\left[-\frac{s}{2\pi}\log\frac{s}{2\pi e}\right],\\
+ 2\pi g(iw)g(-iw)&=\frac{2\pi}{1-e^{-|w|}},\quad w\ne0,\\
+ \mathcal L[F](s)&=\sqrt\pi\,g(s)/s^2,\quad
+ \mathcal L[f](s)=\sqrt\pi\,g(s)/s,\label{eq:transforms}\\
+ \mathcal L[J](s)&=\sqrt\pi\,g(s)/s^3,\\
+ F(u(y))&=\frac43y^{3/2},\quad f=F',\quad J'=F.
+\end{align}
+The normalization is fixed by $F\sim4u^{3/2}/3$, not by the target
+$C_T$. Fresh Talbot inversions and de Hoog contour checks at 45 digits
+agree within $10^{-35}$ in all three transforms. Differentiation and
+integration of the dressed momentum give
+\begin{equation}\label{eq:edgeobservables}
+ C_v=\frac3{4\pi}+\frac{3F}{4f}-\frac y2,
+ \qquad C_E=\frac3{4\pi}+\frac{3J}{4F}-\frac{3y}{10},
+ \qquad u'=\frac{2\sqrt y}{f}.
+\end{equation}
+Thus the fresh velocity results are
+\begin{center}\small
+\begin{tabular}{rrrr}\toprule
+$y$ & fresh $C_v$ & old intercept minus fresh & finer intercept minus fresh\\\midrule
+16 & $0.159293610890713$ & $-4.5672\,10^{-6}$ & $-1.5142\,10^{-9}$\\
+64 & $0.159189963972784$ & $-2.0347\,10^{-4}$ & $-8.7287\,10^{-7}$\\\bottomrule
+\end{tabular}
+\end{center}
+\Lc Separate fresh composite-Gauss finite-sea solutions at
+$h=.02,.01,.005$ use $800,1600,3200$ nodes, with a 4000-node
+refinement at $.005$. They reproduce the finer saved
+velocities within $10^{-7}$; the refinement changes the tested quantities
+by less than $10^{-11}$. Their \emph{finite-$h$} residual decreases
+towards zero. These computations use neither the old solver nor $C_T$ as
+an input. This distinguishes truncation error from an incorrect limiting
+identity.
+
+\subsection{Six dictionary factors}
+\Lc (\dcheck) All six leading classical conversions have factor one.
+The following checks make clear what this assertion does and does not fix.
+Write $a$ for mean Toda spacing and $b=e^{-a/2}$, with reference coordinates
+\begin{equation}\label{eq:dictionary}
+ x_B=2\sqrt3\,n,\quad t_B=2\sqrt3 b\,t_T,
+ \quad \phi_B=-U_T/\sqrt3,\quad
+ S_T=3bS_B,\quad \hbar_T=3b\hbar_B.
+\end{equation}
+Here $U_T$ is displacement; $u$ remains Boussinesq strain. The Taylor
+expansion of the Toda action through cubic strain and the first dispersive
+term, and the symplectic form, independently give the same factor $3b$.
+
+\begin{enumerate}
+\item \textbf{Planck constant.} The action factor fixes $\hbar_T=3b\hbar_B$;
+there is no extra factor four in the semiclassical exponential.
+\item \textbf{Momentum definitions.} The canonical soliton label momentum
+is $P_n=4b(\kappa\cosh\kappa-\sinh\kappa)$, not the total particle
+momentum $\Pi_T=2b\sinh\kappa$. The physical-frame canonical momentum is
+$P_n/a$. Their different small-$\kappa$ orders prohibit interchanging them.
+\item \textbf{Dressed momentum.} Independently integrate
+$p+(a\pi)^{-1}\int_0^\pi\Theta_0(p-2b\cos t)\dd t$, where
+$\Theta_0(d)=2d(\log d-1)$ and $p=2b\cosh\kappa$.
+It equals $P_n/a$ to better than $10^{-53}$ at four test points.
+At finite $h$, the checked origin is $P(q)=\pi h/a$; use
+$\overline P=P(p)-P(q)$.
+\item \textbf{Energy and its origin.} Use $\overline E=E(p)-E(q)$ and
+$E_{T,0}=2b^2(\sinh\kappa\cosh\kappa-\kappa)$. The conversion is
+\begin{equation}\label{eq:units}
+ P_B=\frac{a\overline P}{6\sqrt3 b},\quad
+ E_B=\frac{\overline E}{6\sqrt3 b^2},\quad
+ \frac{\Delta E_B}{\hbar_B P_B}
+ =\frac3a\frac{\Delta\overline E}{h\overline P}.
+\end{equation}
+With $\kappa=\sqrt3\beta$, the leading momentum, energy, and fifth-order
+excess above the classical sound line all match. An energy-origin shift
+cannot change a velocity coefficient.
+\item \textbf{Mass and width.} $M_B=2k$, $M_T=-2\kappa$, and
+$M_T/(-\sqrt3M_B)\to1$. Eliminating the width in favour of the canonical
+momentum removes a mere width reparametrisation.
+\item \textbf{Scattering phase.} Independent evaluation of the two exact
+Hirota polynomials in overtaking and head-on channels gives
+$\delta_T/(3b\delta_b)\to1$. At amplitude scale $10^{-5}$ the errors are
+$1.11\,10^{-10}$ and $6.49\,10^{-11}$. Division by the correspondingly
+scaled $\hbar$ leaves factor one.
+\end{enumerate}
+\Lc These checks exclude the proposed \emph{multiplicative classical}
+explanations. They do not determine an additive order-$\hbar$ elastic
+counterterm, a quantum frame convention, or a projected determinant domain.
+The audit's conclusion that the dictionary rules out a scheme explanation
+does not follow.
+
+\subsection{Toda decomposition and qualifications to its proof}
+\Lc (\dcheck, \echeck) Fresh 60-digit finite-sea solves check the
+endpoint identity $D(q)V(q)=\pi h/a$, the edge momentum origin, and
+\begin{equation}\label{eq:thermo}
+ v_s=-a\partial_aq\big|_h
+ =\frac a2(q-h\partial_hq\big|_a),\qquad
+ V(p)=\partial_a(aP(p))\big|_{p,h}.
+\end{equation}
+At $h=.8,q=1$, independent $q$ and $h$ differences with step $10^{-15}$
+and 48 Gauss nodes satisfy the specified $10^{-27}$ tolerance. Endpoint
+products and derivatives are not evaluated by substituting these identities
+into themselves.
+
+\Lc (\ccheck) The Toda sound coefficient has an independent vacuum
+derivation. The harmonic frequency at spacing $a$ is
+$\omega_T(K)=2b|\sin(K/2)|$, so the ground-state energy per particle is
+\begin{equation}\label{eq:todavac}
+ e(a,h)=b^2+h\frac1{4\pi}\int_0^{2\pi}\omega_T(K)\dd K+O(h^2)
+       =b^2+\frac{2hb}{\pi}+O(h^2).
+\end{equation}
+With unit particle mass, the long-wave sound speed is
+$a\sqrt{\partial_a^2 e}=ab+ah/(4\pi)+O(h^2)$; the dictionary gives
+$s_{1,T}=3/(4\pi)$ in Boussinesq units.
+
+\Lc (\echeck) Expanding \eqref{eq:transforms} at small $s$ and inverting
+the first logarithm gives
+\begin{equation}\label{eq:edgelog}
+ u(y)=y-\frac{\log y}{2\pi}
+       +\frac{1-\log(8\pi)}{2\pi}+O(y^{-1}\log^m y).
+\end{equation}
+Insertion into \eqref{eq:edgeobservables} yields, for the stipulated nested
+edge limit,
+\begin{equation}\label{eq:todac}
+ C_T=\frac3{4\pi}-\frac1{4\pi}=\frac1{2\pi}.
+\end{equation}
+Thus the decomposition is confirmed; ``universal'' here refers to this
+matched acoustic edge problem, not arbitrary UV completions or quantum
+frames. \Ld The audit's claimed proof of commutation with a fixed
+nonzero-$P$ semiclassical limit substitutes the large-$y$ expansion into a
+different limit without a uniform remainder estimate. Its formal result is
+compatible with \eqref{eq:todac}, but that substitution is not a proof of
+limit interchange.
+
+\paragraph{Additional errors in the audit text.}
+\Lc (\dcheck, \echeck) Theorem 3 prints $b=\pi/a$; the correct relation
+is $b=e^{-a/2}$. Its intermediate expression for $(V/D-v_s)/h$ incorrectly
+subtracts the classical $ay/6$ term: before subtracting classical soliton
+velocity the edge expression is $ay u'(y)/6$. The displayed final
+\eqref{eq:identity} is correct. If the inverse edge series contains
+$e_0/y^2$, integrating with $\dd P\propto\sqrt y\dd y$ gives the energy
+tail $3e_0/y^2$, not the printed $3e_0/(2y^2)$. None of these text errors
+changes the leading constant derived above.
+
+\subsection{What the short-wave claim establishes}
+\Lc (\ccheck) The conditional good trace and its formal continuation are
+\begin{align}
+ F_g(k)&=\frac{\sqrt3}{\pi}(\tfrac34-k^2)
+            \operatorname{artanh}(2k/\sqrt3)-\frac{3k}{2\pi},\\
+ F_{\rm ac}(k)&=-iF_g(ik)
+ =\frac{\sqrt3}{\pi}(\tfrac34+k^2)
+            \arctan(2k/\sqrt3)-\frac{3k}{2\pi}.
+ \label{eq:F}
+\end{align}
+They give $C_g=-2/\pi$ and $C_{\rm ac}=2/\pi$. For the three algebraic
+roots $\varphi=\alpha,\alpha\pm2\pi/3$, the coefficient of the logarithm
+in $e-vp$ is proportional to
+\begin{equation}\label{eq:weights}
+ w(\varphi)=2\sin\varphi(\cos\alpha-\cos\varphi),\quad
+ w(\alpha)=0,\quad
+ w(\alpha\pm2\pi/3)=\pm2\sqrt3(\tfrac34-\sin^2\alpha).
+\end{equation}
+This exactly confirms the \emph{logarithmic} light-root cancellation.
+It does not prove that the spectral integral has support only near
+$|q|=\sqrt3/2$. In particular the elementary term of the light root in
+the displayed charge sum is $-k/\pi$, not zero; all elementary root terms
+together give $-3k/(2\pi)$. Allocation among roots, endpoint and tadpole
+is representation dependent. The accurate statement is that the final
+nonpolynomial term in \eqref{eq:F} comes from the two heavy algebraic roots.
+The literal ``100\% short-wave modes'' assertion overinterprets this algebra.
+
+\Lc (\ccheck) The audit also incorrectly describes the real-band
+resonance. At $k\to0$, for a right mover and $q_*=-\sqrt3/2$,
+\begin{equation}\label{eq:resonance}
+ \omega(q_*)=\frac{\sqrt3}{4},\quad
+ \omega'(q_*)=1,\quad
+ \omega(q_*)-q_*=\frac{3\sqrt3}{4}\ne0.
+\end{equation}
+It is a stationary co-moving frequency ($\omega'-v\to0$), not a zero
+co-moving frequency $\omega=-vq$. The positive-$q$ group derivative there
+is $-1$ and reverses sign at negative $q$; the audit's $-1/2$ is wrong.
+The maximum of $\omega(q)$ on the positive band is at $1/\sqrt2$, not
+$\sqrt3/2$. The latter lies on the descending part, still inside the
+stable band.
+
+\section{Vacuum calculation and a precise matching prescription}
+\subsection{Good continuum: the missing acoustic renormalisation}
+\Lc (\ccheck) Put a constant strain $u=U+\eta_x$ on the good vacuum.
+The quadratic frequency at fixed reference coordinates is
+\begin{equation}\label{eq:homogeneous}
+ \omega_g(q;U)=|q|\sqrt{q^2+1-6U}.
+\end{equation}
+Its zero-point energy coefficient at a fixed wave-number cutoff is
+\begin{equation}\label{eq:bareW}
+ W_{g,\Lambda}^{\rm bare}(U)
+ =\frac1{2\pi}\int_0^\Lambda q\sqrt{q^2+1-6U}\dd q
+ =\frac{(\Lambda^2+1-6U)^{3/2}-(1-6U)^{3/2}}{6\pi}.
+\end{equation}
+Subtract the vacuum constant and exactly its first derivative at $U=0$.
+The latter is the specified normal-ordering tadpole, since
+$(W_{g,\Lambda}^{\rm bare})'(0)=-3(\sqrt{1+\Lambda^2}-1)/(2\pi)$.
+The remaining limit is
+\begin{equation}\label{eq:Wg}
+ W_g(U)=-\frac{(1-6U)^{3/2}-1+9U}{6\pi},\qquad
+ W_g''(0)=-\frac9{2\pi}.
+\end{equation}
+The convergent curvature is independently checked by
+\begin{equation}
+ W_g''(0)=-\frac9{2\pi}\int_0^\infty\frac{q\dd q}{(1+q^2)^{3/2}}
+         =-\frac9{2\pi}.
+\end{equation}
+Two direct subtracted quadratures at finite $\Lambda=100$ agree with the
+exact primitive within $10^{-62}$. A linear tadpole subtraction has zero
+second derivative: it does not remove this finite bubble contribution.
+
+\Lc With canonical kinetic coefficient one, the low-frequency quadratic
+effective action therefore has elastic modulus $1+\hbar_BW_g''(0)$ and
+\begin{equation}\label{eq:sg}
+ s_{1,g}=\tfrac12W_g''(0)=-\frac9{4\pi}.
+\end{equation}
+Each external potential fluctuation at a cubic vertex carries a spatial
+derivative. The static bubble fixes the elastic $q^2$ term, and the uniform
+kinetic mass density remains one. Equation~\eqref{eq:sg} is the
+\emph{thermodynamic acoustic coefficient} inferred from that elasticity;
+it is not an assertion that a perturbative on-shell phonon self-energy
+has a uniform expansion at an acoustic threshold. This directly refutes
+the audit's assertion $s_{1,\mathrm{cont}}=0$ for the stated bare-normalized
+continuum calculation. Defining the \emph{renormalized} speed to be one
+instead requires an additional finite subtraction, absent from that audit.
+
+\subsection{Continued bad vacuum and lattice vacuum}
+\Lc/\Ld (\ccheck) Continue the \emph{same prescription} as
+$F_b(k)=-iF_g(ik)$, rather than treating unstable modes as a real vacuum.
+The local density rule is
+\begin{equation}\label{eq:Wb}
+ W_{b,\rm ac}(U)=-W_g(-U)
+  =\frac{(1+6U)^{3/2}-1-9U}{6\pi},\qquad
+ s_{1,b,\rm ac}=\frac9{4\pi}.
+\end{equation}
+The sign is fixed by the spatial continuation as well as $U_g=-U_b$:
+for the branch $k_g=ik_b$ one has $x_g=-ix_b$, and
+$-i\int\dd x_g W_g(U_g)=-\int\dd x_b W_g(-U_b)$.
+Equivalently, retain the real analytic finite part of the integrated
+$q\sqrt{1+6U-q^2}$ primitive, then subtract its constant and linear terms.
+The algebra is (c); interpreting this as a physical bad-equation vacuum
+is (d). A fixed real stable-band cutoff is a different prescription and
+does not justify this continuation.
+
+\Lc (\ccheck) The Toda counterpart is real and requires no continuation.
+Keep the reference $b$ and coordinates of \eqref{eq:dictionary} fixed.
+A homogeneous Boussinesq strain changes lattice spacing by
+$r-a=-6U$, so the harmonic frequency in \eqref{eq:todavac} is multiplied
+by $e^{3U}$. The conversion of energy density is $1/(36b^2)$ and that
+of $h$ is $3b$. Subtracting constant and linear terms gives
+\begin{equation}\label{eq:WT}
+ W_T^{B}(U)=\frac{e^{3U}-1-3U}{6\pi},\qquad
+ \tfrac12(W_T^{B})''(0)=\frac3{4\pi}.
+\end{equation}
+The linear subtraction fixes background pressure/topological energy; it
+does not affect the sound coefficient. This is the continuum local limit
+of the \emph{lattice's own harmonic mode sum}, not a fitted soliton number.
+
+\subsection{Matching the elastic modulus}
+\Lc (\ccheck) Equations~\eqref{eq:Wb} and \eqref{eq:WT} determine
+\begin{equation}\label{eq:match}
+ W_T^B-W_{b,\rm ac}
+ =\frac{e^{3U}-(1+6U)^{3/2}+6U}{6\pi}
+ =-\frac3{2\pi}U^2+O(U^3).
+\end{equation}
+Here is the precise prescription required only to this order in amplitude:
+\begin{enumerate}
+\item Keep the conditional equal-mode-count, exactly tadpole-subtracted
+trace and its continuation \eqref{eq:F}, with the stated momentum and energy
+origins.
+\item Match the vacuum elastic modulus in the same reference coordinates
+to the microscopic Toda harmonic mode sum. Equivalently add
+\begin{equation}\label{eq:counterterm}
+ \boxed{\Delta\mathcal H=\hbar_B\lambda u^2,
+       \qquad\lambda=s_{1,T}-s_{1,b,\rm ac}=-\frac3{2\pi}.}
+\end{equation}
+No order-$\hbar_B$ kinetic or canonical-momentum rescaling is introduced.
+\item Evaluate this term on the classical soliton when computing the
+first-order energy at fixed canonical $P$. Profile changes do not contribute
+at this order, since the unperturbed profile is stationary for $H-vP$.
+\end{enumerate}
+\Lc (\ccheck) By \eqref{eq:moments} the resulting trace is
+\begin{equation}\label{eq:matched}
+ F_{\rm matched}(k)=F_{\rm ac}(k)-\frac{k^3}{\pi},\qquad
+ \boxed{\lim_{k\to0}\frac{F_{\rm matched}(k)}{P_0(k)}=\frac1{2\pi}.}
+\end{equation}
+The equality is exact for the \emph{limiting coefficient}. We do not assert
+that this function at finite $k$ equals Toda's dispersion. The full local
+difference in \eqref{eq:match}, as well as derivative matching terms, would
+require higher-amplitude matching; $\int u_0^3=O(k^5)$ already shows why
+it cannot affect the present $k^3$ coefficient.
+
+\paragraph{Natural or tuned?}
+\Lc The coefficient in \eqref{eq:counterterm} is forced if ``lattice
+compatible'' means matching the quantum vacuum elasticity of the specified
+Toda Hamiltonian, at fixed mean strain and in the inherited units. It was
+computed from the two vacuum mode sums, without using either soliton
+coefficient. This is natural finite matching of a low-energy parameter.
+It is not forced by the truncated Boussinesq equation alone. If one simply
+postulated this counterterm without its vacuum condition, it would be a
+tuned finite subtraction.
+
+\Lc The distinction is material. The lattice classical local potential
+in these units is
+$(e^{6U}-1-6U)/36=U^2/2+U^3+3U^4/2+\cdots$.
+Terms absent from the cubic continuum truncation and the full lattice
+dispersion participate in its quantum elasticity. Calling
+\eqref{eq:counterterm} a different \emph{regularisation scheme} means
+matching these finite UV contributions into the effective Hamiltonian;
+it is not a claim that two fixed bare Hamiltonians have identical physical
+sound velocities. With renormalized parameters held fixed, a regulator
+change alone cannot change a physical prediction.
+
+\Lc The diagnostic cancellation is particularly transparent:
+\begin{equation}\label{eq:soundsubtract}
+ C_{\rm ac}-s_{1,b,\rm ac}
+ =\frac2\pi-\frac9{4\pi}=-\frac1{4\pi}
+ =C_T-s_{1,T}.
+\end{equation}
+The audit subtracted Toda's sound shift but set the continuum one to zero.
+Its quoted ratio $-8$ therefore compares unequal acoustic baselines.
+
+\section{Other candidate prescriptions and the good equation}
+\paragraph{Cutoff endpoint and finite tadpole.}
+\Lc (\ccheck) In the good trace the required equal-mode-count endpoint
+has $B_\Lambda=3k\Lambda/(2\pi)+O(\Lambda^{-1})$ and no finite constant
+term. Omitting it with the same tadpole leaves a divergence, as the earlier
+determinant audit found. A finite redefinition of that endpoint can encode
+an arbitrary finite subtraction, but no alternative endpoint quantization
+was derived here from the lattice. In particular merely shifting a cutoff
+is not an independent derivation of \eqref{eq:counterterm}.
+
+\Lc A finite change to the Wick contraction of the cubic interaction
+adds a constant multiple of $M=2k$. Since $P\sim2k^3/3$, a nonzero such
+term creates a $k^{-2}$ divergence in $F/P$. It cannot convert one finite
+coefficient into the other. Once the finite soft limit is imposed, that
+linear freedom is fixed. The $u^2$ matching term is different: it changes
+the elastic modulus and survives the old origin/mass annihilator
+$\partial_\beta^3-\partial_\beta$ with limiting coefficient $\lambda$.
+
+\paragraph{Real stable band (Scheme A).}
+\Lc (\ccheck) Fresh quadrature of the exact Hirota transmission, using
+$q=\sin t$ and an independently checked rational integrand in $z=\cos t$,
+confirms the stipulated continuous-half-band trace
+\begin{equation}\label{eq:band}
+ F_{\rm band}=F_{\rm ac}-\frac{\sqrt3}{2}(k^2+\tfrac34),\qquad
+ F_{\rm band}/P_0\sim-\frac{9\sqrt3}{16k^3}.
+\end{equation}
+The correct bad Wick term is $-3k/\pi$. Three 70-digit checks give errors
+below $10^{-60}$. Subtracting the threshold constant alone still leaves an
+$O(k^2)$ obstruction. The elastic counterterm \eqref{eq:counterterm}
+does not remove either term. Consequently this specified Scheme A does
+\emph{not} match Toda; projecting out further modes would require a new
+spectral domain and boundary prescription, not an unexplained deletion
+of \eqref{eq:band}'s extra term.
+
+\paragraph{What the lattice mode sum has and has not supplied.}
+\Lc It has supplied \eqref{eq:WT}, and hence a non-tuned leading local
+matching condition. The independent Toda edge calculation supplies the
+remaining $-1/(4\pi)$, which agrees with the continued continuum trace
+after its own sound subtraction. \Ld We have not constructed the lattice
+soliton fluctuation determinant and taken its complete continuum limit,
+or proved that its constrained measure and endpoints produce
+\eqref{eq:matched} at finite amplitude. Thus the present result is a
+solution for the requested leading coefficient, not a full regulator
+equivalence theorem.
+
+\paragraph{Good equation.}
+\Lc (\ccheck) The well-posed good vacuum needs no unstable-band contour
+choice. Its finite elastic bubble is UV convergent after the stated linear
+subtraction; the prescribed value $s_{1,g}=-9/(4\pi)$ is not a UV divergence
+to discard. For its conditional soliton trace,
+\begin{equation}
+ C_g=-\frac2\pi,\qquad C_g-s_{1,g}=+\frac1{4\pi}.
+\end{equation}
+Absence of an unstable band does not preclude a finite $\hbar_B\lambda_g u^2$
+renormalisation: it shifts both $s_{1,g}$ and $C_g$ by $\lambda_g$.
+If the physical sound speed is defined to remain one, the corresponding
+finite coefficient is $\lambda_g=9/(4\pi)$ and the soliton slope relative
+to that sound line is $+1/(4\pi)$. With the bare Hamiltonian and the
+normal-ordering condition fixed, no such extra subtraction is required.
+\Ld Toda in the present real scaling regulates the bad branch, so it
+does not force the same correction on the good equation. Neither a common
+finite-amplitude quantum completion nor the remaining good projected
+determinant domain follows from this calculation. ``Scheme independent''
+is justified only after fixing the acoustic renormalisation and boundary
+conditions, not from linear well-posedness alone.
+
+\section{Verdict, reproducibility and failures recorded}
+\begin{longtable}{@{}p{.37\linewidth}p{.43\linewidth}p{.13\linewidth}@{}}
+\toprule Audited claim & Assessment & Check\\\midrule\endhead
+Failed $3\,10^{-6}$ assertion & \Lc Incorrect numerical accuracy claim;
+limiting identity confirmed. & edge\\
+Six dictionary factors & \Lc Confirmed at leading classical order;
+do not exclude finite quantum matching. & dictionary\\
+$C_T=3/(4\pi)-1/(4\pi)$ & \Lc Confirmed for the nested edge limit;
+uniform fixed-$P$ interchange unproved (d). & all three\\
+$C_{\rm ac}=2/\pi$ & \Lc Confirmed as conditional continued trace;
+physical determinant identification (d). & continuum\\
+Light-root cancellation / all short-wave origin & \Lc Log weight vanishes;
+literal spectral-localization inference is unsupported (d). & continuum\\
+Continuum sound unrenormalised & \Lc Refuted: good $-9/(4\pi)$,
+continued bad $+9/(4\pi)$. & continuum\\
+Scheme A equals Toda after a tadpole change & \Lc Refuted for the stated
+trace; nonzero even threshold term remains. & continuum\\
+Matching prescription & \Lc $\Delta\mathcal H=-3\hbar_Bu^2/(2\pi)$,
+fixed by lattice vacuum elasticity, gives $C=1/(2\pi)$. & continuum\\
+Genuinely physical factor four established & \Lc Rejected as an inference:
+the acoustic baselines were not matched. Full quantum equivalence (d). & all three\\
+\bottomrule
+\end{longtable}
+The check column abbreviates script names: add the prefix
+\texttt{onebody\_scheme\_} and the suffix \texttt{.py}.
+Each has a companion JSON with values, precision, and relevant limitations.
+Every formula newly claimed above
+as (c) is checked by symbolic algebra, independent quadrature, or the
+numerical asymptotics in these scripts; the stated physical and uniform-limit
+qualifications are not promoted to numerically proved theorems.
+
+\paragraph{Conclusion.}
+\Lc Choose \textbf{(A) for the factor-of-four coefficient}: the
+lattice-compatible prescription \eqref{eq:counterterm} is identified and
+reproduces $C_T$ exactly, conditional on the inherited continued trace.
+It is a finite vacuum-elastic matching prescription, not an arbitrary
+rescaling of $\hbar$ or a mass tadpole. \Ld If (A) is instead meant to
+assert equality of fully defined continuum and lattice quantum theories,
+that stronger question is undetermined: the physical bad contour/domain,
+boundary-compatible projected determinant, and a uniform quantum matching
+construction are still missing. No claim of (B) follows from the audited
+calculations.
+
+\paragraph{Failures recorded.}
+\begin{enumerate}
+\item The unchanged original audit failed at line 383. The measured maximum
+residual is $2.2546734882\,10^{-4}$; three rows ($y=16,32,64$) fail its
+$3\,10^{-6}$ bound. Its statement of agreement below $2.8\,10^{-6}$ is
+false for the files inspected. Nothing in that file was changed.
+\item The fresh composite sea with 16-point panels at $h=.02$ failed the
+endpoint-product tolerance $2\,10^{-11}$ with residual
+$3.3117711365\,10^{-8}$. A 24-point retry also failed, at
+$4.4067346994\,10^{-11}$. The final calculation uses 32-point panels
+and a 40-point refinement; the original tolerance is retained.
+\item The finer cubic fit still fails $3\,10^{-6}$ at $y=64$.
+Quartic and quintic fits are explicitly reported separately; a successful
+higher-order fit is not relabelled as success of the cubic or old fit.
+\item The audit's $b=\pi/a$, intermediate velocity subtraction, energy
+$e_0/y^2$ tail, and resonance kinematics fail the independent algebra as
+detailed above. The zero continuum sound shift fails the vacuum curvature
+calculation. The broad short-wave and physical-discrepancy conclusions
+are therefore qualified rather than inherited.
+\item The specified stable-band trace has a divergent soft ratio and is
+not repaired by the local elastic matching term. We retain that failed
+matching candidate instead of removing its even threshold contribution.
+\item The initial PDF build reported two overfull lines. The transform
+display and reproduction paragraph were reflowed; the final two-pass build
+has no overfull lines or unresolved references. An auxiliary log-check
+assertion initially mistook the package description ``Rerun checks for
+auxiliary files'' for a rerun warning. Inspection identified that false
+positive; the corrected check searches warning records instead.
+\end{enumerate}
+
+\paragraph{Reproduction and scope of execution.}
+Run the three new Python scripts from their directory, then run
+\texttt{pdflatex -interaction=nonstopmode -halt-on-error onebody\_scheme.tex}
+twice in \texttt{phase2/}. Every new script ends with
+\texttt{ALL CHECKS PASSED}. The original audit's expected failure is recorded
+separately. No repository-wide historical sweep was run: existing scripts
+can write non-prefix outputs, forbidden by this task. Existing input data
+were read only; the edge script records and rechecks their SHA-256 digests.
+
+\section{Internal sources read}\label{sec:sources}
+No external literature is used as an independently verified authority here.
+The internal documents used are \texttt{audit\_onebody.tex},
+\texttt{audit\_det\_projected.tex}, \texttt{det\_projected\_oneloop.tex},
+\texttt{onebody\_dispersion\_test.tex}, \texttt{onebody\_toda\_precision.tex},
+\texttt{toda\_route.tex}, and relevant sections of \texttt{oneloop.tex}
+and \texttt{frame\_dictionary.tex}. The old audit, one-body and frame
+analysis scripts, Toda classical/scaling routines, and precision edge/sea
+implementations were read to locate conventions and tests. Their
+mathematical inputs are rechecked above without importing their code.
+Saved finite-sea data are identified explicitly where reused; fresh
+calculations are distinguished from saved-data reanalysis.
+\end{document}

@@ -1,0 +1,38 @@
+{
+  "good_sound": "-9/(4*pi)",
+  "continued_bad_sound": "9/(4*pi)",
+  "Toda_sound": "3/(4*pi)",
+  "matching_H_density_per_hbar": "-3*U**2/(2*pi)",
+  "matched_C": "1/(2*pi)",
+  "good_sound_subtracted_C": "1/(4*pi)",
+  "bad_sound_subtracted_C": "-1/(4*pi)",
+  "vacuum_quadratures": [
+    {
+      "U": "0.01",
+      "quadrature_error": "1.265197510511690831883964654985507408025768793342505309712874065533271e-67"
+    },
+    {
+      "U": "-0.02",
+      "quadrature_error": "8.358932654339537001273804661872078978946252217374688406105529786307605e-67"
+    }
+  ],
+  "stable_band_quadratures": [
+    {
+      "k": "0.03",
+      "error": "1.8111358157653424735018238581775583561365062396278276379165229779871e-71"
+    },
+    {
+      "k": "0.2",
+      "error": "1.8111358157653424735018238581775583561365062396278276379165229779871e-71"
+    },
+    {
+      "k": "0.5",
+      "error": "1.8111358157653424735018238581775583561365062396278276379165229779871e-71"
+    }
+  ],
+  "limitations": [
+    "The bad vacuum determinant is formally continued, not a real stable-band determinant.",
+    "Only the leading small-amplitude coefficient is matched; no full lattice soliton determinant is computed.",
+    "No physical scheme is selected for the PI."
+  ]
+}
