@@ -1,0 +1,451 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\A}{\textbf{(a)}}
+\newcommand{\B}{\textbf{(b)}}
+\newcommand{\C}{\textbf{(c)}}
+\newcommand{\D}{\textbf{(d)}}
+\newcommand{\scr}[1]{\texttt{#1}}
+
+\title{Independent Audit of \texttt{phase2/uniform\_limits.tex}\\
+and \texttt{phase2/scripts/uniform\_limits\_*.py}}
+\author{Independent Audit}
+\date{November 2026}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+This document reports an independent mathematical and numerical audit of the
+package \scr{phase2/uniform\_limits.tex} (and its compiled \scr{.pdf}) together
+with its five verification scripts \scr{uniform\_limits\_analytic.py},
+\scr{uniform\_limits\_scan.py}, \scr{uniform\_limits\_wh.py},
+\scr{uniform\_limits\_matched.py}, and \scr{uniform\_limits\_refit.py}.
+All analytic identities have been re-derived from first principles and all
+numerical claims have been re-tested with independent code paths in
+\scr{phase2/scripts/audit\_uniform\_limits.py} (symbolic series reversion and
+integrand expansion in SymPy, de Hoog--Knight--Stokes Fourier--Pad\'e Laplace
+inversion with exact dressed-measure quadrature for the half-line Wiener--Hopf
+convolution, a Fej\'er first-rule Chebyshev Nystr\"om solver for the finite-sea
+Bethe equations, and independent sensitivity refits of all saved datasets). Every
+package script and \scr{audit\_uniform\_limits.py} exit cleanly and print
+\texttt{ALL CHECKS PASSED}.
+\end{abstract}
+
+\section{Executive Summary and Verdict Table}
+
+The package \scr{phase2/uniform\_limits.tex} is a disciplined post-errata
+re-assessment of the semiclassical ($h\to 0$) and edge ($Y=b\kappa^2/h$) limits
+on the Toda / bad-Boussinesq side. Unlike the earlier Phase~2d--2i packages
+corrected in \scr{phase2/audit\_phase2i.tex} and \scr{phase2/errata.tex},
+\scr{uniform\_limits.tex} does \emph{not} over-claim a finite-sea resolvent
+theorem or a settled finite-sea $1/Y$ two-body phase coefficient. Instead, it
+separates unconditional analytic identities from conditional half-line
+Wiener--Hopf statements and open finite-sea conjectures \D.
+
+Our independent audit confirms eight of the twelve main claims of the
+package, qualifies four claims where script coverage or table summaries require
+explicit caveats, and finds no refuted mathematical formulas in
+\scr{uniform\_limits.tex} itself (while confirming the package's own refutations
+of the earlier Phase~2d step bound and Phase~2f sign-definite $1/Y$ claim).
+
+\begin{center}
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}p{1.5cm} >{\raggedright\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}p{7.6cm}}
+\toprule
+Claim in \scr{uniform\_limits.tex} & Package label & Audit verdict & Independent audit evidence (\scr{audit\_uniform\_limits.py}) \\
+\midrule
+\endhead
+1. Bad-Boussinesq / Toda dictionary and fixed-$P$ vs fixed-$Y$ scale separation (\S1, Eq.~(1)) & \C & \textbf{Confirmed} & Re-derived $P_0'(\kappa)=4b\kappa\sinh\kappa>0$, $v_0=b\sinh\kappa/\kappa$, $\kappa=\sqrt{3}\beta$ cubic match, and $P_0|_{Y}=\frac43 b^{-1/2}(hY)^{3/2}+O(h^{5/2})\to 0$. Defect $s=\sigma_{\rm vac}$ vs $\eta\sigma_{\rm vac}$ convention checked. \\
+\addlinespace
+2. Bulk digamma kernel decomposition, primitive, and Lipschitz operator remainder (\S2, Eqs.~(2)--(8)) & \C/\D & \textbf{Qualified} & Formula and $O(h^2\log(1/h))$ bound confirmed, including exact closed-form cusp constant $2C_{\rm cusp}h^2$ and direct test on an interior Lipschitz function. Qualified only because \scr{uniform\_limits\_analytic.py} did not directly evaluate the $h$-dependent cusp integral or test $\mathcal A_h$ on a Lipschitz profile. \\
+\addlinespace
+3. Corrected half-line Wiener--Hopf transform $\mathcal L F=\sqrt{\pi}g(s)/s^2$ and inverse series $u(y)$ (\S3, Eqs.~(9)--(10)) & \C\ cond.\ / \D & \textbf{Confirmed} & Re-derived $g(i\omega)g(-i\omega)=1/(1-e^{-|\omega|})$, forward $y(u)$ with $-\frac{1}{16\pi^3}(\log u)^2/u^2$, and reversion $u(y)$ through $O(y^{-3})$, confirming $A,c,d,e$ and absence of $\log^k y/y^m$ for $m=1,2,3$. \\
+\addlinespace
+4. One-body $C_E(y),C_v(y)$ series and phonon-first ($y\downarrow 0$) vs soliton-edge ($y\to\infty$) limits (\S3, Eqs.~(11)--(12)) & \C\ cond. & \textbf{Qualified} & Confirmed $C_E(0^+)=C_v(0^+)=\frac{3}{4\pi}$ vs $\frac{1}{2\pi}$ at $y\to\infty$ (difference $\frac{1}{4\pi}$). Qualified because \scr{uniform\_limits\_analytic.py} checked the $y\downarrow 0$ limit symbolically only for $C_v(y)$, omitting the small-$u$ expansion of $3J(u)/(4F(u))$ needed for $C_E(0^+)$. \\
+\addlinespace
+5. Proposition~1: matched half-line two-body expansion $R(Y,r)=c_0(r)+c_1(r)/Y+O(Y^{-3/2}\log^M Y)$ (\S4, Eqs.~(13)--(19)) & \C\ cond.\ / \D & \textbf{Qualified} & Confirmed $c_0(r)$, $c_1(r)$, and $O(Y^{-3/2}\log^M Y)$ split under stated hypotheses. Qualified because \scr{uniform\_limits\_matched.py} hard-coded $I_0(t)$ and $I_1(t)$ rather than deriving them symbolically from $8Y^{3/2}t^2 f(u(Y)-u(r^2Y)+u(Yt^2))$; our audit script supplies the missing symbolic derivation. \\
+\addlinespace
+6. Non-zero $(\log Y)^2/Y$ Taylor term in $\Phi_{\rm cl}(u(Y),u(r^2Y))$ and cancellation (\S4, Eq.~(20)) & \C & \textbf{Confirmed} & Confirmed quadratic Hessian term $\frac{(d_2-r^2d_1)^2}{r(1-r^2)Y}=\frac{1-r^2}{4\pi^2 r}\frac{(\log Y)^2}{Y}$ and its cancellation against the dressed-measure outer integral. \\
+\addlinespace
+7. Endpoint moment $\mu$, $K=-2\mu=0$, and truncated tail $\mu_{[0,Y]}=-2e/\sqrt{Y}+\cdots$ (\S4, Eq.~(21)) & \C\ cond.\ / \D & \textbf{Confirmed} & Confirmed $K=-2\mu=0$ from $\mathcal L J=\sqrt{\pi}g(s)/s^3$ having only half-integer powers of $y$, and confirmed $-2e/\sqrt{Y}$ tail. \\
+\addlinespace
+8. Renewed read-only one-body fit $C_T=0.15915494136\pm 8.23\times 10^{-6}$ on \scr{onebody\_prec\_scan.json} (\S5) & \C & \textbf{Confirmed} & Confirmed non-circular free-intercept fit. Leaving the $1/y$ slope free as well on the 7-point quartic $h\to 0$ values gives $0.1591551100\pm 5.07\times 10^{-7}$ ($y$-spread $5.07\times 10^{-7}$ vs $4.73\times 10^{-7}$ with fixed $-3d/(2y)$), still bracketing $1/(2\pi)$ within $1.7\times 10^{-7}$. \\
+\addlinespace
+9. Reproduction of three Phase~2d step-bound violations $>0.004$ and linear-$h$ ratio $0.500415$ (\S5) & \C & \textbf{Confirmed} & Independently verified all three violations in \scr{toda\_edge\_twoterm.json} ($0.006326$, $0.009016$, $0.004512$) and ratio $0.500415$. \\
+\addlinespace
+10. Classical-subtracted and unsubtracted Phase~2f refits showing $c_1$ sign reversal (\S5) & \C & \textbf{Confirmed} & Independently verified that $c_1$ changes sign across $(h,Y)$ windows and bases both before and after subtracting $\Phi_{\rm lat}/h$. \\
+\addlinespace
+11. Endpoint-resolved half-line WH convolution $Q(u(Y),u(r^2Y))$ and negative $c_1$ fits (\S5) & \C\ cond. & \textbf{Confirmed} & Recomputed via independent de Hoog Fourier--Pad\'e inversion and exact dressed-measure quadrature $z=u(w^2)$ (agreement $<5\times 10^{-8}$); $c_1<0$ across all bases and windows, bracketing formal $c_1(r)$. \\
+\addlinespace
+12. Fresh fixed-$P$ ($\kappa_1$ fixed) and growing-$Y$ finite-sea scans and error budgets (\S5) & \C/\D & \textbf{Qualified} & Confirmed finite-sea values with independent Fej\'er Chebyshev Nystr\"om solver ($<2\times 10^{-7}$). Qualified by two points: (i) at $\kappa_1=0.12$, $1/y=h/(b\kappa_1^2)\in[0.286,2.29]$ is outside the large-$y$ regime, explaining the $h$-fit blow-up; (ii) the $\kappa_1=0.35$ table row prints the phase mesh diagnostic $4.54\times 10^{-9}$ rather than $\max(\text{energy},\text{phase})=4.99\times 10^{-9}$. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\section{Mandatory Six-Point Audit Checklist}
+
+\begin{enumerate}
+\item \textbf{Verification of every \C\ claim (\scr{audit\_uniform\_limits.py}).}
+All \C\ claims in \scr{uniform\_limits.tex} are backed by executable checks, with
+three script-coverage gaps identified and closed by our independent script:
+\begin{itemize}
+\item In \S2, \scr{uniform\_limits\_analytic.py} checked the cusp integral
+$\int_{-1}^1 R(z/h)|z|\,dz=\frac{h^2}{3}\log(1/h)+O(h^2)$ only indirectly via the
+moment increment $\int_{1000}^{2000}2xR(x)\,dx\approx\frac13\log 2$, and did not
+numerically test the operator remainder on a Lipschitz function. In
+\scr{audit\_uniform\_limits.py} we evaluate the exact $h$-dependent cusp integral
+against its three-term asymptotic series
+$\frac{h^2}{3}\log(1/h)+2C_{\rm cusp}h^2-\frac{h^4}{60}+O(h^6)$ and test
+$\mathcal A_h f(x_0)$ directly on $f(z)=|z-x_0|+\frac12\cos z$.
+\item In \S3, \scr{uniform\_limits\_analytic.py} checked the $y\downarrow 0$
+limit symbolically only for $C_v(y)$, not $C_E(y)$. In
+\scr{audit\_uniform\_limits.py} we derive the $s\to\infty$ expansion
+$g(s)=1+\frac{\pi}{6s}+\frac{\pi^2}{72s^2}+O(s^{-3})$, obtain
+$F(u)=\sqrt{\pi}u+\frac{\pi^{3/2}}{12}u^2+O(u^3)$ and
+$J(u)=\frac{\sqrt{\pi}}{2}u^2+\frac{\pi^{3/2}}{36}u^3+O(u^4)$, and verify
+symbolically that both $C_E(0^+)$ and $C_v(0^+)$ equal $\frac{3}{4\pi}$.
+\item In \S4, \scr{uniform\_limits\_matched.py} typed the outer integrands
+$I_0(t)$ and $I_1(t)$ in Eqs.~(16)--(17) by hand before integrating them. In
+\scr{audit\_uniform\_limits.py} we derive $I_0(t)$ and $I_1(t)$ symbolically by
+expanding $8Y^{3/2}t^2 f(u(Y)-u(r^2Y)+u(Yt^2))$ in powers of $Y^{-1}$.
+\end{itemize}
+
+\item \textbf{Honesty of error budgets.}
+The package separates mesh-refinement diagnostics ($N\to 2N$), $h\to 0$
+extrapolation spread across multiple polynomial and logarithmic bases and window
+lengths, and $y$- or $Y$-basis/window spread, adding the three components
+linearly. Our independent refits confirm that no target value ($1/(2\pi)$ or
+$c_1(r)$) is fed into any fit. Two qualifications on the error budgets are
+recorded in \S\ref{sec:detailed}: (a) the one-body fit subtracts the analytic
+half-line tail $-3d/(2y)$ before fitting $(1,y^{-2},\dots)$, which narrows the
+$y$-window spread by a factor of $23$ compared with a fully unconstrained
+$(1,y^{-1},y^{-2},\dots)$ fit; and (b) in the fixed-$\kappa_1$ table at
+$\kappa_1=0.35$, the ``Max.\ mesh diagnostic'' column prints the two-body phase
+mesh difference $4.54\times 10^{-9}$ rather than the one-body energy mesh
+difference $4.99\times 10^{-9}$.
+
+\item \textbf{Conventions: good/bad dictionary and integrable defect $s$ parameter.}
+The project's canonical equation is the \emph{good} Boussinesq equation
+$u_{tt}=u_{xx}-u_{xxxx}-3(u^2)_{xx}$ with $u=\phi_x$,
+$L=\frac12\phi_t^2-\frac12\phi_x^2+\phi_x^3-\frac12\phi_{xx}^2$,
+$\Omega=\int d\pi\wedge d\phi$, one-soliton $k=\sin\alpha$, $v=\varepsilon\cos\alpha$,
+$M=2k$, and $P=\frac23\varepsilon k^3\cos\alpha$ \A. The analytic continuation
+$\alpha=i\beta$ gives the \emph{bad} equation
+$u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx}$ with $k=\sinh\beta$, $v=\varepsilon\cosh\beta$,
+and $P_{\rm bad}=\frac23\varepsilon\sinh^3\beta\cosh\beta$ \C.
+The package \scr{uniform\_limits.tex} works exclusively in the Toda /
+bad-Boussinesq sector with $a=1$, $b=e^{-1/2}$, $h=\hbar_T=3b\hbar_B$,
+$P_0(\kappa)=4b(\kappa\cosh\kappa-\sinh\kappa)$,
+$E_0(\kappa)=2b^2(\sinh\kappa\cosh\kappa-\kappa)$, and $\kappa=\sqrt{3}\beta$ at
+leading cubic order $P_B=P_0/(6\sqrt{3}b)=\frac23\beta^3+O(\beta^5)$ \C.
+Regarding the integrable-defect convention audited across Phase~2 (where
+scattering transmission uses $s=\sigma_{\rm vac}$ whereas the bound-state
+spectrum uses $c=\eta\sigma_{\rm vac}$), \scr{uniform\_limits.tex} does not invoke
+defect formulas and never conflates $s$ with $\eta\sigma_{\rm vac}$ \C.
+
+\item \textbf{Absence of circularity.}
+We inspected all five scripts for self-comparisons, target injection, or
+retroactive tolerance loosening. In \scr{uniform\_limits\_refit.py}, the intercept
+$y^0$ (or $h^0$, $Y^0$) and slope $Y^{-1}$ are solved by unconstrained
+high-precision least squares (\scr{mpmath.qr\_solve}). In
+\scr{uniform\_limits\_wh.py}, $Q(u(Y),u(r^2Y))$ is computed from numerical
+contour inversion without using $c_0(r)$ or $c_1(r)$. No circularity is present \C.
+
+\item \textbf{Consistency with earlier audits (\scr{audit\_phase2i.tex}, \scr{errata.tex}).}
+The package incorporates every correction mandated by \scr{audit\_phase2i.tex}
+and \scr{errata.tex}: it uses the corrected Laplace transform
+$\mathcal L F(s)=\sqrt{\pi}g(s)/s^2$ (fixing the Phase~2g missing $1/s^2$),
+retires the invalid $K_0=0$ and $O(Y^{-2})$ proofs in favor of a conditional
+$O(Y^{-3/2}\log^M Y)$ matched bound, reproduces the three Phase~2d $>0.004$ step
+violations, and demonstrates that the Phase~2f finite-sea $1/Y$ coefficient
+remains sign-indeterminate after full classical lattice subtraction \C.
+
+\item \textbf{Foreground script execution and runtimes.}
+All five package scripts and our independent audit script were executed in the
+foreground from the repository root and printed \texttt{ALL CHECKS PASSED}:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Script & Foreground runtime & Status \\
+\midrule
+\scr{phase2/scripts/uniform\_limits\_analytic.py} & $32.1\,\text{s}$ & \texttt{ALL CHECKS PASSED} \\
+\scr{phase2/scripts/uniform\_limits\_scan.py} & $1.5\,\text{s}$ (cache check; $1026.4\,\text{s}$ full scan) & \texttt{ALL CHECKS PASSED} \\
+\scr{phase2/scripts/uniform\_limits\_wh.py} & $0.8\,\text{s}$ (cache check; $529.2\,\text{s}$ full WH) & \texttt{ALL CHECKS PASSED} \\
+\scr{phase2/scripts/uniform\_limits\_matched.py} & $20.2\,\text{s}$ & \texttt{ALL CHECKS PASSED} \\
+\scr{phase2/scripts/uniform\_limits\_refit.py} & $6.1\,\text{s}$ & \texttt{ALL CHECKS PASSED} \\
+\scr{phase2/scripts/audit\_uniform\_limits.py} & $81.8\,\text{s}$ (independent audit) & \texttt{ALL CHECKS PASSED} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{enumerate}
+
+\section{Detailed Claim-by-Claim Audit}\label{sec:detailed}
+
+\subsection{Section 1: Conventions and Fixed-$P$ vs Fixed-$Y$ Limits}
+\paragraph{Claim 1 (\C, Confirmed).}
+In \scr{audit\_uniform\_limits.py} (\texttt{audit\_conventions\_and\_scales}), we
+symbolically verified $P_0'(\kappa)=4b\kappa\sinh\kappa>0$ for $\kappa>0$,
+$dE_0/dP_0=b\sinh\kappa/\kappa$, and the small-$\kappa$ expansions
+\begin{align}
+ P_0(\kappa) &= \frac{4b}{3}\kappa^3 + \frac{2b}{15}\kappa^5 + \frac{b}{210}\kappa^7 + O(\kappa^9), \nonumber\\
+ E_0(\kappa) - b P_0(\kappa) &= \frac{2b^2}{15}\kappa^5 + \frac{13b^2}{630}\kappa^7 + O(\kappa^9). \label{eq:E0_minus_bP0}
+\end{align}
+Setting $\kappa=\sqrt{hY/b}$ at fixed $Y$ yields
+$P_0=\frac43 b^{-1/2}(hY)^{3/2}+\frac{2}{15}b^{-3/2}(hY)^{5/2}+O(h^{7/2})\to 0$
+as $h\to 0$, confirming that fixed-$Y$ limits shrink the classical momentum
+whereas fixed-$P_0>0$ limits send $Y=b\kappa^2/h\propto h^{-1}\to\infty$ \C.
+
+\subsection{Section 2: Bulk Digamma Kernel Boundary Layer}
+\paragraph{Claim 2 (\C/\D, Qualified).}
+For $K_h(d)=2\operatorname{Re}\psi(1+id/h)-2\log(1/h)=2\log|d|+R(d/h)$ with
+$R(x)=2\operatorname{Re}\psi(1+ix)-2\log|x|$, our script
+(\texttt{audit\_kernel\_boundary\_layer}) independently verifies:
+\begin{enumerate}
+\item The exact primitive $G(L)=\int_0^L R(x)\,dx=2\operatorname{Im}\log\Gamma(1+iL)-2L\log L+2L$
+to $10^{-61}$ against numerical differentiation and quadrature \C.
+\item The non-alternating Bernoulli tail (since $(-1)^m B_{2m}=-|B_{2m}|<0$ for all $m\ge 1$):
+\begin{align}
+ R(x) &= \frac{1}{6x^2}+\frac{1}{60x^4}+\frac{1}{126x^6}+\frac{1}{120x^8}+\frac{1}{66x^{10}}+O(x^{-12}),\nonumber\\
+ G(L) &= \frac{\pi}{2}-\frac{1}{6L}-\frac{1}{180L^3}-\frac{1}{630L^5}-\frac{1}{840L^7}-\frac{1}{594L^9}+O(L^{-11}), \label{eq:R_G_asympt}
+\end{align}
+and the small-$x$ expansion $R(x)+2\log|x|=-2\gamma+2\zeta(3)x^2-2\zeta(5)x^4+O(x^6)$ \C.
+\item \textbf{Direct cusp-integral evaluation (closing a script gap in \scr{uniform\_limits\_analytic.py}):}
+Changing variables $z=hu$ gives $\mathcal I_{\rm cusp}(h)=\int_{-1}^1 R(z/h)|z|\,dz=2h^2\int_0^{1/h}uR(u)\,du$.
+Splitting at $u=1$ and integrating \eqref{eq:R_G_asympt} yields the exact
+asymptotic expansion
+\begin{equation}
+ \mathcal I_{\rm cusp}(h) = \frac{h^2}{3}\log\frac1h + 2C_{\rm cusp}h^2 - \frac{h^4}{60} + O(h^6),
+ \qquad C_{\rm cusp} = \int_0^1 uR(u)\,du + \int_1^\infty u\Bigl(R(u)-\frac{1}{6u^2}\Bigr)\,du \approx -0.2580151499, \label{eq:I_cusp}
+\end{equation}
+which matches 60-digit quadrature to $4.2\times 10^{-15}$ at $h=10^{-2}$ and
+$4.2\times 10^{-21}$ at $h=10^{-3}$ \C.
+\item \textbf{Direct Lipschitz operator test:} For $f(z)=|z-x_0|+\frac12\cos z$ at
+$x_0=0.2$ on $[-1,1]$, the remainder
+$\Delta_h=\mathcal A_h f(x_0)-\bigl[-\int_{-1}^1 2\log|x_0-z|f(z)\,dz+\pi h f(x_0)\bigr]$
+satisfies $|\Delta_h|/(h^2\log(1/h))\in\{0.2073,0.2367,0.2571\}$ at
+$h\in\{0.02,0.01,0.005\}$, approaching the theoretical cusp coefficient $1/3$ \C.
+The package's caveat that this direct-operator estimate does not bound
+$\mathcal A_h^{-1}$ up to the endpoints $z=\pm q$ is confirmed \D.
+\end{enumerate}
+
+\subsection{Section 3: Corrected Half-Line Wiener--Hopf Series and Order of Limits}
+\paragraph{Claims 3 and 4 (\C\ conditional, Confirmed / Qualified).}
+In \scr{audit\_uniform\_limits.py} (\texttt{audit\_wh\_reversion\_and\_matched\_proof}),
+we independently expand $g(s)=s^{-1/2}\Gamma(1+\frac{s}{2\pi})\exp(-\frac{s}{2\pi}\log\frac{s}{2\pi e})$
+as $s\to 0^+$ and apply the Hankel contour identity
+$\mathcal L^{-1}[s^{-\nu}\log^m s](u)=(-1)^m\partial_\nu^m[u^{\nu-1}/\Gamma(\nu)]$
+to $\mathcal L F(s)=\sqrt{\pi}g(s)/s^2$ and $\mathcal L J(s)=\sqrt{\pi}g(s)/s^3$.
+We confirm:
+\begin{enumerate}
+\item The forward expansion $y(u)=[(3/4)F(u)]^{2/3}$ contains the logarithmic term
+$-\frac{1}{16\pi^3}\frac{(\log u)^2}{u^2}$ \C.
+\item Series reversion of $y(u)$ yields
+$u(y)=y-A\log y+c+\frac{d}{y}+\frac{e}{y^2}+\frac{f_3}{y^3}+O(y^{-4})$ with
+$A=\frac{1}{2\pi}$, $c=\frac{1-\log(8\pi)}{2\pi}$,
+$d=\frac{1}{48}-\frac{1}{4\pi^2}$,
+$e=\frac{4+6\zeta(3)-\pi^2}{96\pi^3}$, and
+$f_3=\frac{3\pi^2-36-24\zeta(3)}{576\pi^4}$, with \emph{all}
+$\log^k y/y^m$ ($k\ge 1$) terms canceling identically through $m=1,2,3$ \C.
+\item In the $s\to\infty$ ($u\downarrow 0$, $y\downarrow 0$) phonon-first regime,
+Stirling's series gives $g(s)=1+\frac{\pi}{6s}+\frac{\pi^2}{72s^2}+O(s^{-3})$,
+whence $F(u)=\sqrt{\pi}u+\frac{\pi^{3/2}}{12}u^2+O(u^3)$,
+$J(u)=\frac{\sqrt{\pi}}{2}u^2+\frac{\pi^{3/2}}{36}u^3+O(u^4)$, and
+$u(y)=\frac{4}{3\sqrt{\pi}}y^{3/2}-\frac{4}{27\sqrt{\pi}}y^3+O(y^{9/2})$.
+Substituting into $C_E(y)$ and $C_v(y)$ gives the small-$y$ expansions
+\begin{equation}
+ C_E(y) = \frac{3}{4\pi} - \frac{3}{10}y + \frac{1}{2\sqrt{\pi}}y^{3/2} + O(y^3), \qquad
+ C_v(y) = \frac{3}{4\pi} - \frac{1}{2}y + \frac{1}{\sqrt{\pi}}y^{3/2} + O(y^3), \label{eq:CE_Cv_small_y}
+\end{equation}
+so $C_E(0^+)=C_v(0^+)=\frac{3}{4\pi}$, differing from the $y\to\infty$ limit
+$\frac{1}{2\pi}$ by $\frac{1}{4\pi}$ \C. Claim~4 is qualified only because
+\scr{uniform\_limits\_analytic.py} checked $C_v(0^+)$ symbolically without
+deriving the small-$y$ series of $J(u(y))/F(u(y))$ for $C_E(0^+)$.
+\end{enumerate}
+
+\subsection{Section 4: Conditional Proposition 1 and Endpoint Moment}
+\paragraph{Claims 5, 6, and 7 (\C\ conditional / \D, Qualified / Confirmed).}
+Using the exact measure transformation $z=u(x)$ with $B(z)\,dz=2\sqrt{x}\,dx$
+and $x=Yt^2$ ($dx=2Yt\,dt$), the half-line convolution is
+\begin{equation}
+ Q(u(Y),u(r^2Y)) = 8Y^{3/2}\int_0^r t^2 f\bigl(u(Y)-u(r^2Y)+u(Yt^2)\bigr)\,dt. \label{eq:Q_transformed}
+\end{equation}
+For $r\in(0,1)$ in a compact set, $\sigma=1-r^2+t^2\ge 1-r^2>0$ keeps the
+argument $W=u(Y)-u(r^2Y)+u(Yt^2)$ of order $Y$ across the \emph{entire}
+interval $t\in[0,r]$, including the endpoint layer $t\in[0,L/\sqrt{Y}]$.
+Writing $W=u(x_W)$ and solving for the dressed coordinate $x_W$ at fixed $t>0$
+gives
+\begin{equation}
+ x_W = Y\sigma + \Delta_0 + \frac{1}{Y}\left[\frac{A\Delta_0}{\sigma} + d\Bigl(1-\frac{1}{r^2}+\frac{1}{t^2}-\frac{1}{\sigma}\Bigr)\right] + O(Y^{-2}), \qquad \Delta_0 = -A\log\frac{t^2}{r^2\sigma}, \label{eq:xW_expansion}
+\end{equation}
+where both $\log Y$ and $c$ cancel out of $\Delta_0$. Substituting
+\eqref{eq:xW_expansion} into $f(u(x_W))=x_W^{-1/2}[1-(2d+3A^2)/x_W^2+O(x_W^{-3})]$
+and expanding $8Y^{3/2}t^2[f(u(x_W))-(Y\sigma)^{-1/2}]$ in SymPy reproduces
+$I_0(t)$ and $I_1(t)$ in Eqs.~(16)--(17) of \scr{uniform\_limits.tex}
+identically, and 60-digit quadrature on $[0,r]$ matches the closed forms $c_0(r)$
+and $c_1(r)$ to $<10^{-54}$ \C. Splitting at $t=L/\sqrt{Y}$ bounds both the
+inner contribution ($\int_0^{L/\sqrt{Y}}dt=O(Y^{-1/2})$ multiplied by the
+$O(Y^{-1})$ outer $d$-term, and $\int_0^{L/\sqrt{Y}}t^2\log^m Y\,dt=O(Y^{-3/2}\log^m Y)$)
+and the outer $O(Y^{-2}t^{-2}\log^m Y)$ tail by $O(Y^{-3/2}\log^M Y)$ \C.
+Claim~5 is qualified only because \scr{uniform\_limits\_matched.py} hard-coded
+$I_0(t)$ and $I_1(t)$ rather than deriving them symbolically from
+\eqref{eq:Q_transformed}--\eqref{eq:xW_expansion}.
+
+We also confirm the quadratic Taylor term
+$\frac{(d_2-r^2d_1)^2}{r(1-r^2)Y}=\frac{1-r^2}{4\pi^2 r}\frac{(\log Y)^2}{Y}$ of
+$\Phi_{\rm cl}(u(Y),u(r^2Y))$ (Claim~6, \C) and the identity $K=-2\mu=0$ from
+$\mathcal L J(s)=\sqrt{\pi}g(s)/s^3$ having only half-integer powers of $y$,
+which implies $\mu_{[0,Y]}=-2e/\sqrt{Y}+O(Y^{-3/2}\log^m Y)$ (Claim~7, \C\
+conditional).
+
+\subsection{Section 5: Independent Solver Cross-Checks and Saved-Data Refits}
+\paragraph{Claims 8--12 (\C/\D, Confirmed / Qualified).}
+\begin{enumerate}
+\item \textbf{One-body refit and free-$1/y$ sensitivity (Claim~8, Confirmed \C):}
+We confirm the package's read-only refit of \scr{onebody\_prec\_scan.json}:
+when the analytic half-line $1/y$ term $-3d/(2y)$ is subtracted prior to fitting
+$(1,y^{-2},y^{-3})$ on $y\ge 4,8,16$, the free intercept is
+$C_T=0.15915494136\pm 8.23\times 10^{-6}$ (mesh $5.68\times 10^{-8}$, $h$-spread
+$7.70\times 10^{-6}$, $y$-spread $4.73\times 10^{-7}$), containing
+$1/(2\pi)\approx 0.15915494309$ within $1.73\times 10^{-9}$ \C.
+As an independent audit sensitivity check, if the $1/y$ coefficient is
+\emph{also} left free on the same windows $(4,32),(8,32),(8,64),(16,64)$ of the
+7-point quartic $h\to 0$ extrapolated points using bases $(1,y^{-1},y^{-2})$ and
+$(1,y^{-1},y^{-2},y^{-3})$, the $y$-window/basis half-spread increases only
+slightly from $4.73\times 10^{-7}$ to $5.07\times 10^{-7}$ with center
+$0.1591551100$ (bracketing $1/(2\pi)$ within $1.67\times 10^{-7}$) \C.
+(By contrast, using only a 4-point quadratic $h\to 0$ fit up to $y=64$ introduces
+a $-2.6\times 10^{-5}$ $h$-truncation bias because $hy=0.64$ at $h=0.01$,
+showing that the 7-point higher-degree $h$ extrapolation is essential.)
+
+\item \textbf{Phase~2d step violations and Phase~2f sign reversal (Claims~9--10, Confirmed \C):}
+In \scr{audit\_uniform\_limits.py}, we independently scan
+\scr{toda\_edge\_twoterm.json} and confirm the three step violations $>0.004$:
+$(y_1,y_2)=(3,1)$ from $h=0.01\to 0.005$ ($0.006326022$), $(6,1)$ from
+$0.01\to 0.005$ ($0.009016413$), and $(6,1)$ from $0.005\to 0.0025$
+($0.004511945$), with step ratio $0.500415$ demonstrating a dominant linear-$h$
+error \C. On \scr{matching\_toda\_data.json} plus \scr{matching\_toda\_fine.json}
+($h\in\{0.04,0.02,0.01,0.005,0.0025\}$), subtracting $\Phi_{\rm lat}/h$ leaves a
+fitted $1/Y$ coefficient spanning $[-0.050095,+0.028953]$ ($r=0.4$),
+$[-0.100731,+0.042933]$ ($r=0.5$), and $[-0.178826,+0.054938]$ ($r=0.6$),
+confirming that the sign of $c_1$ is not determined by the saved finite-sea
+grids \C.
+
+\item \textbf{Independent de Hoog / dressed-measure WH convolution (Claim~11, Confirmed \C\ cond.):}
+Without calling \scr{uniform\_limits\_wh.py}, we used de Hoog--Knight--Stokes
+Fourier--Pad\'e Laplace inversion in $\operatorname{Re}s>0$ and evaluated
+$Q(u(Y),u(r^2Y))$ via the exact dressed-measure integral
+$8\int_0^{r\sqrt{Y}}w^2 f(u(Y)-u(r^2Y)+u(w^2))\,dw$ (which eliminates the
+$z^{-1/2}$ endpoint singularity of $B(z)$ and requires only large-argument
+evaluations of $f$). At $Y\in\{16,64\}$, $r=0.5$, our independent residuals
+$R(16,0.5)=-0.0208545987$ and $R(64,0.5)=-0.0198503876$
+agree with \scr{uniform\_limits\_wh.json} to $1.02\times 10^{-9}$ and
+$1.07\times 10^{-8}$, respectively \C. Refitting across 12 model variants
+(including a $(1,Y^{-1},Y^{-3/2}\log Y,Y^{-2})$ audit basis) gives strictly
+negative $c_1$ in every case ($[-0.007985,-0.007660]$ at $r=0.4$,
+$[-0.021454,-0.021442]$ at $r=0.5$, $[-0.048516,-0.048128]$ at $r=0.6$),
+bracketing the formal values $c_1(r)\in\{-0.007737,-0.021445,-0.048436\}$ \C.
+
+\item \textbf{Independent Fej\'er Chebyshev finite-sea solver and fresh-scan audit (Claim~12, Qualified \C/\D):}
+We implemented an independent Nystr\"om solver (\texttt{FejerTodaSea}) using
+Fej\'er's first rule at Chebyshev roots $x_j=-\cos((2j-1)\pi/(2N))$ on $[-q,q]$.
+At $h=0.02$, $\kappa_1=0.35$, Fej\'er quadrature with $N=360$ gives
+$q=1.2417850574$ and $C_E=0.1594792365$, agreeing with the Gauss--Legendre cache in
+\scr{uniform\_limits\_scan.json} ($q=1.2417849705$, $C_E=0.1594791631$) to $8.7\times 10^{-8}$ and
+$7.3\times 10^{-8}$, respectively \C.
+We qualify Claim~12 with two audit observations:
+\begin{itemize}
+\item \emph{Quantitative cause of small-$\kappa_1$ $h$-fit spread:} At fixed
+$\kappa_1$, the edge variable is $y=b\kappa_1^2/h$, so the large-$y$ expansion
+parameter is $1/y=h/(b\kappa_1^2)$. At $\kappa_1=0.12$, as $h$ decreases from
+$0.02$ to $0.0025$, $1/y$ runs from $2.290>1$ to $0.286$ ($y\in[0.437,3.494]$).
+Thus the $h\in[0.0025,0.02]$ scan at $\kappa_1=0.12,0.18$ sits inside the
+$y=O(1)$ crossover between $C_E(0^+)=\frac{3}{4\pi}\approx 0.23873$ and
+$C_E(\infty)=\frac{1}{2\pi}\approx 0.15915$, rather than in the asymptotic
+$h\to 0$ power-series regime \C.
+\item \emph{Minor table discrepancy at $\kappa_1=0.35$:} In the fixed-$\kappa_1$
+table of \scr{uniform\_limits.tex}, the ``Max.\ mesh diagnostic'' column reports
+$\max(\text{energy mesh},\text{phase mesh})$ for $\kappa_1\in\{0.12,0.18,0.25\}$,
+but at $\kappa_1=0.35$ it prints $4.54\times 10^{-9}$ (the two-body phase mesh
+diagnostic $4.536\times 10^{-9}$) instead of the larger one-body energy mesh
+diagnostic $4.990\times 10^{-9}$ recorded in \scr{uniform\_limits\_refit.json}.
+This $4.5\times 10^{-10}$ difference is four orders of magnitude smaller than the
+$h$-extrapolation spread ($5.71\times 10^{-5}$) and does not affect any
+conclusion \C.
+\end{itemize}
+\end{enumerate}
+
+\section{Failures Recorded}
+
+In accordance with \scr{AGENTS.md}, we record both the package/historical
+discrepancies asserted by the audit script and the intermediate check failures
+encountered and fixed while developing \scr{audit\_uniform\_limits.py}:
+\begin{enumerate}
+\item \textbf{Historical Phase~2d step-bound failure (asserted in \scr{audit\_uniform\_limits.py}):}
+Three steps in \scr{toda\_edge\_twoterm.json} exceed the claimed $0.004$ uniform
+bound ($0.006326$, $0.009016$, $0.004512$), with linear-$h$ step ratio $0.500415$.
+\item \textbf{Historical Phase~2f $1/Y$ sign-definiteness failure (asserted in \scr{audit\_uniform\_limits.py}):}
+Across $(h,Y)$ windows and extrapolation bases on the saved finite-sea data, the
+fitted $1/Y$ coefficient changes sign both before and after subtracting
+$\Phi_{\rm lat}/h$.
+\item \textbf{Audit script development failure 1 (fixed):}
+In \texttt{toda\_E0\_minus\_bP0\_series}, our initial hand-calculated $\kappa^7$
+coefficient of $E_0(\kappa)-bP_0(\kappa)$ was typed as $\frac{1}{42}b^2\kappa^7$
+instead of $\bigl(\frac{8}{315}-\frac{1}{210}\bigr)b^2\kappa^7=\frac{13}{630}b^2\kappa^7$.
+SymPy caught the mismatch immediately; corrected to $\frac{13}{630}$.
+\item \textbf{Audit script development failure 2 (fixed):}
+In \texttt{fixed\_Y\_shrinking\_momentum}, \texttt{sp.series(..., h, 0, 3).removeO()}
+retained both $O(h^{3/2})$ and $O(h^{5/2})$ because $5/2<3$, whereas our initial
+assertion subtracted only the leading $\frac43 b^{-1/2}(hY)^{3/2}$ term. Updated
+to verify both the $h^{3/2}$ and $\frac{2}{15}b^{-3/2}(hY)^{5/2}$ terms.
+\item \textbf{Audit script development failure 3 (fixed):}
+In \texttt{kernel\_G\_asymptotic\_L100} and \texttt{kernel\_R\_asymptotic\_L100},
+our initial asymptotic test used alternating signs at $L^{-4},L^{-6},\dots$,
+forgetting that $i^{2m}=(-1)^m$ combines with $B_{2m}=(-1)^{m-1}|B_{2m}|$ to make
+every term in $R(L)=\sum_{m\ge 1}\frac{|B_{2m}|}{mL^{2m}}$ positive (and every
+subleading term in $G(L)$ negative), and required the $m=5$ term
+$\frac{1}{66L^{10}}$ at $L=100$ to pass the strict $10^{-22}$ threshold without
+weakening the tolerance.
+\item \textbf{Audit script development failure 4 (fixed):}
+In \texttt{cusp\_integral\_asymptotic}, evaluating $C_{\rm cusp}$ with
+\texttt{mp.quad(..., [1, 4, 20, mp.inf])} suffered catastrophic cancellation in
+$R(u)=2\operatorname{Re}\psi(1+iu)-2\log u$ at the transformed infinity nodes
+$u>10^{30}$ (giving a $2.47\times 10^{-3}$ error at $h=10^{-2}$). Splitting at
+$u_0=10$ and summing the convergent Bernoulli tail
+$\sum_{m\ge 2}\frac{|B_{2m}|}{m(2m-2)u_0^{2m-2}}$ restored 40-digit accuracy.
+\item \textbf{Audit script development failure 5 (fixed):}
+In \texttt{audit\_wh\_reversion\_and\_matched\_proof}, differentiating
+$\Gamma(\nu)^{-1}$ symbolically left unexpanded half-integer polygammas
+$\psi^{(r)}(\frac52-k)$ and unsplit $\log(8\pi)$ vs $3\log 2+\log\pi$, and our
+initial $J(u(y))$ formula omitted the $-\frac{8A}{9}y^{3/2}$ term and factor of
+$2$ in $-\frac{8d}{3}y^{1/2}+\frac{16e}{3}y^{-1/2}$ (since
+$\frac{16}{9}\cdot(-\frac{3d}{2})=-\frac{8d}{3}$). Implementing the exact
+half-integer polygamma recurrence from $\nu=\frac12$ and the $\frac{16}{9}$
+prefactor resolved both checks identically.
+\item \textbf{Audit script development failure 6 (fixed):}
+In \texttt{audit\_independent\_wh\_convolution}, our first attempt used a fixed
+Talbot contour wrapping into $\operatorname{Re}s<-2\pi$ and a factor of $4w^2$
+instead of $2\,dF=8w^2\,dw$. Because $\Gamma(1+s/(2\pi))$ has poles at
+$s=-2\pi n$ on the negative real axis, the Talbot contour crossed those poles
+and gave an $O(10)$ error at $Y=16$. Switching to de Hoog--Knight--Stokes
+Fourier--Pad\'e inversion along a vertical line in $\operatorname{Re}s>0$ and
+using $8w^2\,dw$ reproduced $u(Y)$ to $<10^{-24}$ and $R(Y,r)$ to $<1.1\times 10^{-8}$.
+\item \textbf{Audit script development failure 7 (fixed):}
+In \texttt{FejerTodaSea}, our initial prototype solved $\rho(q)=0$ in hyperbolic
+rapidity coordinates rather than the unit-density normalization
+$\int_{-q}^q\rho(x)\,dx=1$ in bare momentum $x\in[-q,q]$ with bare energy
+$x^2/2$. Enforcing $\int_{-q}^q\rho(x)\,dx=1$ on Fej\'er Chebyshev nodes
+matched the Gauss--Legendre Fermi momentum and one-body energy to $<2\times 10^{-7}$.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{DLMF}
+NIST Digital Library of Mathematical Functions, \url{https://dlmf.nist.gov/},
+Chapter~5 (Gamma Function), verified for the digamma and log-gamma Stirling
+series used in \S2--\S3.
+\end{thebibliography}
+
+\end{document}
