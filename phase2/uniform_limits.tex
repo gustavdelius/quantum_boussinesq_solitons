@@ -1,0 +1,544 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,hyperref}
+\hypersetup{hidelinks}
+\emergencystretch=3em
+\newcommand{\C}{\textbf{(c)}\ }
+\newcommand{\D}{\textbf{(d)}\ }
+\newcommand{\scr}[1]{\texttt{uniform\_\allowbreak limits\_\allowbreak #1.py}}
+\newcommand{\file}[1]{\nolinkurl{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newtheorem{proposition}{Conditional proposition}
+\title{Uniform Toda limits and robust subleading asymptotics:\\boundary layers, endpoint matching, and remaining gaps}
+\author{Research note for Gustav Delius}
+\date{4 November 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+\C The bulk kernel expansion misses a delta-like contribution of mass
+$\pi h$. On fixed interior sets and for uniformly Lipschitz test functions,
+its inclusion leaves an $O(h^2\log(1/h))$ operator remainder. This is not a
+uniform inverse estimate for the singular Bethe density.
+\C In the corrected half-line model, an explicit matched-endpoint argument,
+conditional on stated differentiated asymptotic bounds, protects the constant
+and $Y^{-1}$ two-body coefficients. Independent endpoint-resolved numerical
+convolution tests their negative subleading signs without prescribing a leading
+fit intercept. The classical Taylor term $(\log Y)^2/Y$ is real; its absence
+from the complete half-line phase at this order is a cancellation, not permission
+to omit it from individual pieces.
+\C Read-only refits reproduce all three failures of the Phase 2d step bound
+and the Phase 2f sign reversal. The one-body nested-limit coefficient remains
+compatible with $1/(2\pi)$ in the published deterministic envelope.
+\D Uniform finite-sea-to-half-line resolvent control, interchange with the
+fixed-nonzero-momentum limit, and the physical two-body quantum frame are
+not established. This report makes partial progress on open problem 3; it does
+not declare it solved.
+\end{abstract}
+
+\section{Scope, precedence and conventions}
+Labels mean (a) proved in literature, (b) literature heuristic, (c) project
+calculation or explicitly conditional implication, and (d) unproved hypothesis
+or identification. Numerical (c) statements concern the sampled problem only.
+The controlling sources are the README status and master-report conclusions,
+\file{errata.tex}, \file{audit_phase2i.tex}, \file{audit_frame_dictionary.tex},
+and the one-body precision note, with the later scheme audit taking precedence
+on sound normalisation. The Phase 2h independent checker and Phase 2d/2f
+implementations and caches were also read. No external paper, abstract,
+DOI or arXiv entry was newly read or cited. Internal references below identify
+actual files, not independent literature proofs.
+
+\C The calculation retains the existing Toda extraction: $a=1$,
+$b=e^{-1/2}$, $h=\hbar_T=3b\hbar_B$ and
+\begin{equation}
+ P_0(\kappa)=4b(\kappa\cosh\kappa-\sinh\kappa),\quad
+ E_0(\kappa)=2b^2(\sinh\kappa\cosh\kappa-\kappa),\quad
+ Y=b\kappa^2/h.
+ \label{eq:scales}
+\end{equation}
+The inherited continuum dictionary is the \emph{bad} Boussinesq scaling,
+$\kappa=\sqrt3\beta$ to leading order, $k=\sinh\beta$, $v=\epsilon\cosh\beta$,
+$u_{tt}=u_{xx}+u_{xxxx}+3(u^2)_{xx}$, rather than a newly chosen good-equation
+regularisation. Its classical charge conversion is
+$P_B=\overline P/(6\sqrt3 b)$ and $E_B=\overline E/(6\sqrt3 b^2)$.
+No change to the existing sound line, quantum frame, or regulator is made.
+Checks: \scr{analytic}, \scr{scan}, \scr{refit}.
+
+\C At every finite $h$, a prescribed momentum is enforced by solving
+$\overline P(p)=P_0(\kappa)$ before evaluating energy or phase.
+``Fixed dressed momentum'' in an edge scan means this inversion at each
+point; the target itself shrinks as $h^{3/2}$ when $Y$ is fixed.
+It does not mean a fixed nonzero momentum while $h$ varies.
+Indeed $P_0'=4b\kappa\sinh\kappa>0$ and
+$P_0\sim4b\kappa^3/3$ (\scr{analytic}). At fixed units, strictly nonzero fixed
+$P_0$ fixes $\kappa$; a subsequent small-amplitude limit is a separate operation.
+
+\section{What the kernel does and does not control}
+\C Define the finite-sea problem exactly as in the audited precision package:
+\begin{align}
+ K_h(d)&=2\Re\psi(1+id/h)+2\log h,\qquad
+ \Theta_h(d)=2h\Im\log\Gamma(1+id/h)+2d\log h,\\
+ \mathcal A_h f&=2\pi h f-\int_{-q}^qK_h(x-z)f(z)\,dz,
+ \quad \mathcal A_h\rho=1,\quad \mathcal A_h\eta=x,
+ \quad\int_{-q}^q\rho=1.\label{eq:sea}
+\end{align}
+The log-Gamma phase is its continuous branch on the real argument line.
+These definitions and the endpoint counting check are implemented in
+\scr{scan}; they are not modified to improve agreement.
+
+\paragraph{A uniform direct-operator estimate (c; \scr{analytic}).}
+Put
+\begin{equation}
+ R(x)=2\Re\psi(1+ix)-2\log|x|,
+ \qquad K_h(d)=2\log|d|+R(d/h).
+\end{equation}
+The primitive on $x>0$ and its tail give
+\begin{align}
+ \int_0^L R(x)\,dx
+ &=2\Im\log\Gamma(1+iL)-2L\log L+2L,\\
+ R(x)&=\frac1{6x^2}+\frac1{60x^4}+O(x^{-6}),\qquad
+ \int_{\mathbb R}R(x)\,dx=\pi.\label{eq:mass}
+\end{align}
+Near zero $R(x)=-2\log|x|-2\gamma+O(x^2)$, so it is absolutely integrable.
+Thus, for $x$ a fixed distance $\delta>0$ from the endpoints, and $f$ with
+uniformly bounded Lipschitz norm,
+\begin{align}
+ \int_{-q}^q R((x-z)/h)f(z)\,dz
+ &=\pi h f(x)+O_{q,\delta}(h^2\log(1/h)\|f\|_{\rm Lip}),\\
+ \mathcal A_h f
+ &=-\int_{-q}^q2\log|x-z|f(z)\,dz+\pi h f(x)
+   +O_{q,\delta}(h^2\log(1/h)\|f\|_{\rm Lip}).\label{eq:operator}
+\end{align}
+To prove the estimate, subtract $f(x)$ inside the integral, use
+$|f(x-hs)-f(x)|\leq h|s|\operatorname{Lip}(f)$ and
+$\int^{O(1/h)} |sR(s)|\,ds=O(\log(1/h))$; the missing tails multiplying
+$f(x)$ are $O(h^2/\delta)$. This uses absolute-value estimates and no assumed
+positivity of $R$. The logarithm is not merely formal: the test function
+$|z|$ at $x=0$ gives
+\begin{equation}
+ \int_{-1}^1R(z/h)|z|\,dz
+ =\frac{h^2}{3}\log(1/h)+O(h^2).\label{eq:cusp}
+\end{equation}
+Direct 70-digit integration verifies the primitive, mass tail and logarithmic
+moment increment. The asymptotic equalities follow from the displayed
+primitive and digamma expansion, not from extrapolating those numerical tests.
+
+\C At fixed $d\ne0$, $R(d/h)=O(h^2)$, whereas on $d=hu$ it is $R(u)$.
+The pointwise expansion therefore cannot be inserted termwise across the sea
+without matching the diagonal region. In particular $\mathcal A_h$ has a
+$\pi h$ local term, not the $2\pi h$ suggested by discarding that region.
+\D Equation~\eqref{eq:operator} is not an estimate for
+$\mathcal A_h^{-1}$ on the endpoint-singular densities or their $q$ derivatives.
+No bound on that inverse, the moving endpoint, or its differentiated error is
+proved here. Consequently $h\log h$ corrections in observables divided by $h$
+are admissible fit alternatives; this calculation neither forces nor excludes
+them for the actual dressed phase. Smooth interior data can have additional
+cancellations not available for a generic Lipschitz test function.
+
+\section{Corrected half-line asymptotics and one-body limits}
+\paragraph{Precisely which half-line problem (c, conditional; \scr{analytic}).}
+Use the corrected factor and normalization:
+\begin{equation}
+ g(s)=s^{-1/2}\Gamma(1+s/(2\pi))
+ \exp\{-s\log[s/(2\pi e)]/(2\pi)\},\qquad
+ \mathcal L F=\sqrt\pi\,g(s)/s^2,\quad F(u)=\tfrac43 y(u)^{3/2}.
+ \label{eq:wh}
+\end{equation}
+The branch is principal for $\Re s>0$; define $B=F'$ and $f=F''$ on $u>0$.
+Then $\mathcal L B=\sqrt\pi g/s$ and
+$\mathcal L f=\sqrt\pi(g-1)$, since $B(0^+)=\sqrt\pi$.
+The nonzero-frequency product is
+$2\pi g(i\omega)g(-i\omega)=2\pi/(1-e^{-|\omega|})$.
+This is a corrected half-line model, not a proof that the zero-frequency
+finite-sea matching has the required uniform remainder.
+
+\C Formal inverse Laplace expansion and reversion, checked symbolically
+through cubic order in $s$ and at 70 digits, give
+\begin{align}
+ u(y)&=y-A\log y+c+\frac d y+\frac e{y^2}+\cdots,\label{eq:u}\\
+ A&=\frac1{2\pi},\quad c=\frac{1-\log(8\pi)}{2\pi},\quad
+ d=\frac1{48}-\frac1{4\pi^2},\quad
+ e=\frac{4+6\zeta(3)-\pi^2}{96\pi^3}.\nonumber
+\end{align}
+There is no $(\log y)/y$, $(\log y)^2/y^2$ or $(\log y)/y^2$ in this
+\emph{inverse} series. This does not remove logarithms from $y(u)$.
+The coefficients are $d=-0.00449696257725111$ and
+$e=0.000451097178817793$. Their interpretation as coefficients of the
+finite-sea limit remains conditional on matching.
+
+\C With $J(u)=\int_0^uF(w)\,dw$ and the inherited harmonic sound shift,
+\begin{align}
+ C_E(y)&=\frac3{4\pi}+\frac{3J(u(y))}{4F(u(y))}-\frac{3y}{10},
+ &C_v(y)&=\frac3{4\pi}+\frac y2(u'(y)-1),\label{eq:CE}\\
+ C_E(y)&=\frac1{2\pi}-\frac{3d}{2y}
+       +\frac{9K}{16y^{3/2}}+\frac{3e}{y^2}+\cdots,
+ &C_v(y)&=\frac1{2\pi}-\frac d{2y}-\frac e{y^2}+\cdots.\label{eq:tails}
+\end{align}
+Here $K$ is the possible integration constant when the large-$y$ derivative
+series is integrated in isolation. Keeping it in finite-data fits avoids
+assuming an unproved endpoint sum rule. The sound coefficient follows from
+$e_{\rm vac}(a,h)=b^2+2hb/\pi+O(h^2)$ and
+$v_s=a\sqrt{\partial_a^2e_{\rm vac}}=ab+ah/(4\pi)+O(h^2)$.
+Checks: \scr{analytic}, \scr{matched}, \scr{refit}.
+
+\paragraph{A concrete order-of-limits distinction (c, conditional on this model).}
+For $y\downarrow0$, $F\sim\sqrt\pi u$, so $u\sim4y^{3/2}/(3\sqrt\pi)$.
+Consequently both quantities in \eqref{eq:CE} tend to $3/(4\pi)$, whereas
+for $y\to\infty$ they tend to $1/(2\pi)$. At finite $h$, taking $P\to0$
+first in $3[\overline E(P)-E_0(P)]/(hP)$ gives $3(v_s-b)/h$.
+Thus the phonon-first limit is $3/(4\pi)$, differing from the nested
+soliton-edge coefficient by $1/(4\pi)$. These two regimes must not be
+called a single path-independent joint limit. Checks: \scr{analytic}.
+\D This distinction does not evaluate $\lim_{\kappa\to0}\lim_{h\to0}$
+at fixed nonzero $\kappa$ in the inner limit; that is precisely the missing
+interchange addressed numerically below.
+
+\section{Matched endpoint analysis of the two-body half-line phase}
+\C The two-term phase tested here, with its inherited orientation and
+normalization, is
+\begin{equation}
+ Q(u,v)=2\int_0^v f(u-v+z)B(z)\,dz,\quad u>v>0,
+ \qquad R(Y,r)=Q(u(Y),u(r^2Y))-\Phi_{\rm cl}(Y,r),\label{eq:Q}
+\end{equation}
+where
+$\Phi_{\rm cl}(Y,r)=2Y(1-r^2)\log[(1-r)/(1+r)]+4rY$.
+This is the corrected convolution tested in the Phase 2i audit.
+It is not substituted for an antisymmetric physical scattering phase.
+The finite-sea counterpart is exactly the historical two-term expression,
+with its classical frame subtraction and full classical lattice phase removed.
+At leading edge order that frame subtraction removes $4rY$; the finite-sea
+classical reference consequently tends to $2Y(1-r^2)\log[(1-r)/(1+r)]$.
+The resulting residual is the same $R$ as in \eqref{eq:Q}; the two
+unsubtracted phases are not being equated.
+Checks: \scr{scan}, \scr{wh}, \scr{matched}, \scr{refit}.
+
+\begin{proposition}[matched half-line implication, (c)]
+Assume $u$ is increasing and regular on the open positive axis, obeys the
+small-$y$ behavior stated above, and for $y\geq1$ the remainder after
+$y-A\log y+c+d/y$ and its first three derivatives are bounded by constants
+times $y^{-2-j}\log^m(2+y)$, $j=0,1,2,3$. For $r$ in a fixed compact subset
+of $(0,1)$, the convolution \eqref{eq:Q} then has
+\begin{align}
+ R(Y,r)&=c_0(r)+\frac{c_1(r)}Y
+       +O\bigl(Y^{-3/2}\log^M Y\bigr),\label{eq:result}\\
+ c_0(r)&=-\frac2\pi[\operatorname{Li}_2(r)-\operatorname{Li}_2(-r)-2r],\nonumber\\
+ c_1(r)&=-\frac{r^3}{6(1-r^2)}
+ -2d\left[\frac{1-r^2}{r^2}\log\frac{1-r}{1+r}+\frac2r\right].\label{eq:c1}
+\end{align}
+Here $M$ is a finite logarithmic power depending on the remainder hypotheses;
+no uniformity as $r\to0$ or $r\to1$ is asserted.
+\end{proposition}
+\C Checks for the algebra, exact transformed measure and coefficient
+integrals are in \scr{matched}; the implication's endpoint estimates follow
+below. \D The differentiated bounds are hypotheses: symbolic reversion and
+numerical inversion are evidence for them in \eqref{eq:wh}, not a proved
+finite-sea resolvent theorem.
+
+\paragraph{Derivation and the previously missing endpoint estimate (c).}
+Changing variables $z=u(x)$ makes $B(z)\,dz=2\sqrt{x}\,dx$ exact. Put
+$x=Yt^2$, $\sigma=1-r^2+t^2$ and
+$\Delta_0=-A\log[t^2/(r^2\sigma)]$. Differentiating $F(u(x))$ twice yields
+\begin{equation}
+ f(u(x))=\frac1{\sqrt{x}\,u'(x)^2}
+ -\frac{2\sqrt{x}\,u''(x)}{u'(x)^3}
+ =x^{-1/2}\left[1-\frac{2d+3A^2}{x^2}+\cdots\right].
+\end{equation}
+The $x^{-1}$ relative term cancels. At every fixed $t>0$, solving for the
+argument's dressed coordinate gives the balanced displacement
+\begin{equation}
+ \delta(Y)-\delta(r^2Y)+\delta(Yt^2)-\delta(Y\sigma),
+ \qquad\delta(y)=u(y)-y.
+\end{equation}
+Its leading term is $\Delta_0$: both $\log Y$ and $c$ cancel.
+The constant and $Y^{-1}$ integrands, after the classical term is removed, are
+\begin{align}
+ I_0(t)&=-4t^2\Delta_0/\sigma^{3/2},\\
+ I_1(t)&=\frac8{\sigma^{5/2}}
+ \left[t^2\left(-2d-3A^2-\frac{A\Delta_0}{2}
+                       +\frac{3\Delta_0^2}{8}\right)
+ -\frac{d\sigma}{2}\{1+t^2(1-r^{-2}-\sigma^{-1})\}\right].
+\end{align}
+Direct independent 60-digit quadrature of $I_0,I_1$ agrees with
+\eqref{eq:c1} and $c_0$ at five ratios from $0.2$ to $0.8$, to below $10^{-54}$.
+
+\C Split the exact integral at $t=L/\sqrt Y$, for a fixed sufficiently large
+$L$. On the inner interval the exact displacement and its truncated logarithm
+are bounded by a power of $\log Y$ plus the integrable $d/(Yt^2)$ term.
+Their contribution to the residual is bounded by a constant times
+$Y^{-3/2}\log^M Y$: $\int_0^{L/\sqrt Y}t^2dt=O(Y^{-3/2})$ and the last
+term contributes $Y^{-1}\int_0^{L/\sqrt Y}dt=O(Y^{-3/2})$.
+On the outer interval the worst neglected displacement contributes
+$Y^{-2}\int_{L/\sqrt Y}^r t^{-2}\log^m(2+Yt^2)dt
+=O(Y^{-3/2}\log^M Y)$; other Taylor remainders are no larger.
+The argument of $f$ stays of order $Y$ because $1-r^2$ is bounded below.
+This supplies an integrable endpoint bound at the first two orders under the
+stated hypotheses. It does not justify the stronger historical
+$O(Y^{-2})$ remainder without further moment matching.
+
+\paragraph{The logarithmic Taylor term is not zero (c; \scr{analytic}).}
+For displacements $d_1,d_2$ of $(Y,r^2Y)$, the quadratic Taylor term of
+$\Phi_{\rm cl}$ is
+\begin{equation}
+ \frac{(d_2-r^2d_1)^2}{r(1-r^2)Y}.
+\end{equation}
+Taking $d_1=-A\log Y+c$, $d_2=d_1-\log r/\pi$ gives the nonzero coefficient
+$(1-r^2)/(4\pi^2r)$ of $(\log Y)^2/Y$.
+It cancels only after the other half-line contributions and exact dressed
+measure are included. The proposition explains that cancellation at order
+$Y^{-1}$ conditionally, without discarding the small endpoint.
+
+\paragraph{A further endpoint moment, not a finite-sea theorem (c).}
+Define the convergent moment
+\begin{equation}
+ \mu=\int_0^\infty\sqrt{x}
+ [u(x)-x+A\log x-c-d/x],dx.\label{eq:mu}
+\end{equation}
+Integration by parts gives $K=-2\mu$ in \eqref{eq:tails}.
+The first fractional endpoint contribution in the phase is correspondingly
+$K/(1-r^2)^{3/2}\,Y^{-3/2}$.
+For the formal transform \eqref{eq:wh}, $\mathcal LJ=\sqrt\pi g/s^3$
+has only half-integer algebraic powers (and their logarithms); its formal
+large-$y$ series contains no constant $K$. This predicts $\mu=K=0$.
+\scr{matched} checks the finite-cutoff moment independently against direct
+quadrature at $y=4$, and tests its large-cutoff tail
+$\mu_{[0,Y]}=-2e/\sqrt Y+O(Y^{-3/2}\log^mY)$ through $Y=4096$.
+\D A full contour remainder proof, or the extra matching needed to promote
+an $O(Y^{-2})$ remainder to the finite-sea theory, is not supplied.
+Fractional and logarithmic alternatives therefore remain in the fit ensemble.
+
+\section{Numerical results and separated uncertainties}
+\paragraph{One-body: a renewed fit to the saved finite-sea data (c).}
+The constant remains free. Six scaled $h$ models use polynomial degrees
+2--5, the last 4--8 points, and both $h\log h$ and $h^2\log h$ alternatives.
+After subtracting only the derived $-3d/(2y)$ tail, sixteen amplitude fits
+vary windows within $4\leq y\leq64$ and allow powers, $y^{-3/2}$, or
+$y^{-2}\log y$. The central fit and its separately propagated diagnostics are
+
+\[C_T=0.15915494136\ \pm\ 8.23\times10^{-6}.\]
+\begin{center}\begin{tabular}{lr}\toprule Component & Size\\\midrule
+Mesh/roundoff & $5.68\times10^{-8}$\\
+$h$-basis/window spread & $7.70\times10^{-6}$\\
+Amplitude-basis/window spread & $4.73\times10^{-7}$\\
+\bottomrule\end{tabular}\end{center}
+This reproduces the precision note's envelope with a new read-only fit.
+It is not a new finite-sea dataset or a confidence interval. Absolute
+regression weights propagate mesh differences plus a $2\times10^{-10}$ floor;
+model spreads are added linearly. No allowance bounds failure of the edge
+ansatz or the physical charge dictionary. Check: \scr{refit}.
+
+\paragraph{Phase 2d: the bound is false, not a failed convergence test (c).}
+The saved raw phase differences reproduce these violations:
+\begin{center}\begin{tabular}{rrrr}\toprule
+$(y_1,y_2)$ & $h$ before & $h$ after & Absolute change\\\midrule
+$(3,1)$ & 0.0100 & 0.0050 & 0.006326022\\
+$(6,1)$ & 0.0100 & 0.0050 & 0.009016413\\
+$(6,1)$ & 0.0050 & 0.0025 & 0.004511945\\
+\bottomrule\end{tabular}\end{center}
+For $(6,1)$ the ratio of the two successive changes is $0.500415$,
+compatible with a leading linear-$h$ correction over these three points.
+Three points neither establish that asymptotic law nor exclude $h\log h$.
+The original $0.004$ assertion remains false; no replacement universal bound
+is asserted. Check: \scr{refit}.
+
+\paragraph{Phase 2f: robust saved-data refits (c).}
+First subtract the full classical lattice phase, evaluated at 60 digits using
+the hyperbolic cross ratio, instead of only its edge limit:
+\begin{equation}
+ \Phi_{\rm lat}/h=\frac{2b(\cosh\kappa_1-\cosh\kappa_2)\log A_T
+       +4b(\kappa_2\sinh\kappa_1-\kappa_1\sinh\kappa_2)}h,
+ \quad A_T=\frac{\sinh^2[(\kappa_1-\kappa_2)/2]}
+                  {\sinh^2[(\kappa_1+\kappa_2)/2]}.
+\end{equation}
+All smallest-3, smallest-4 and all-5 point sets are tested with
+$(1,h,h^2)$, $(1,h,h^2,h^3)$, $(1,h,h\log h)$,
+$(1,h,h^2,h^2\log h)$ and $(1,h,h^2,h\log h)$ whenever determined.
+For the subsequent $Y$ fit, both $\{8,16,32\}$ and $\{4,8,16,32\}$ are used,
+with a free constant and $1/Y$ coefficient, plus respectively
+$1/Y^2$, $\log Y/Y$ or $(\log Y)^2/Y$. These are sensitivity fits;
+exact interpolation of a sparse dataset does not select a basis.
+\begin{center}\begin{tabular}{rrr}\toprule
+$r$ & Range of free $c_0$ & Range of free $1/Y$ coefficient\\\midrule
+0.4 & $[-0.010315,-0.005614]$ & $[-0.050095,0.028953]$\\
+0.5 & $[-0.020902,-0.012102]$ & $[-0.100731,0.042933]$\\
+0.6 & $[-0.037707,-0.023335]$ & $[-0.178826,0.054938]$\\
+\bottomrule\end{tabular}\end{center}
+The $1/Y$ coefficient here is basis-dependent when logarithms are allowed;
+these ranges must not be read as estimates of a unique physical coefficient.
+They expose what the saved data cannot resolve. The original, unsubtracted
+Phase 2f two-point slopes also reverse sign between the recorded quadratic
+and $h\log h$ extrapolations:
+\begin{center}\begin{tabular}{rrrr}\toprule
+$r$ & Quadratic & Cubic & $h\log h$\\\midrule
+0.4 & -0.0070801 & -0.0072612 & 0.0091481\\
+0.5 & -0.0209913 & -0.0213631 & 0.0178186\\
+0.6 & -0.0482194 & -0.0489074 & 0.0303174\\
+\bottomrule\end{tabular}\end{center}
+The saved mesh difference at $h=0.01$ is $2.13\times10^{-12}$;
+that one refinement cannot bound mesh errors at every other $h$.
+Checks and complete fit coefficients/weights: \scr{refit} and its JSON.
+
+\paragraph{Endpoint-resolved half-line phase (c, conditional model).}
+Fresh convolution data use $Y=16,32,64,128,256,512$ and
+$r=0.4,0.5,0.6$. Neither $c_0$ nor $c_1$ is fixed in the fits.
+The central basis is $(1,Y^{-1},Y^{-2},Y^{-3})$ on $Y\geq32$.
+Alternatives start at $16$ and include $Y^{-3/2}$, or both
+$(\log Y)/Y$ and $(\log Y)^2/Y$ with a $Y^{-2}$ tail.
+\begin{center}\small\begin{tabular}{rrrrr}\toprule
+$r$ & Free $c_1$ & Model spread & Quadrature diagnostic & Formal $c_1$\\\midrule
+0.4 & -0.0077363875 & $5.36\times10^{-4}$ & $1.10\times10^{-8}$ & -0.0077365880\\
+0.5 & -0.0214445505 & $3.36\times10^{-5}$ & $3.97\times10^{-8}$ & -0.0214445873\\
+0.6 & -0.0484360177 & $5.36\times10^{-4}$ & $5.32\times10^{-8}$ & -0.0484359877\\
+\bottomrule\end{tabular}\end{center}
+The largest raw quadrature difference is $7.23\times10^{-13}$; the independent inversion-method difference at the sampled arguments is below $2.70\times10^{-41}$.
+Absolute fit weights propagate the quadrature differences plus a $10^{-28}$
+arithmetic floor. The much larger model spread is the honest limitation
+of the subleading extraction. Every tested coefficient is negative, and
+\eqref{eq:c1} lies inside these diagnostic envelopes. Tiny fitted logarithmic
+coefficients are not a numerical proof of exact zeros. Checks: \scr{wh},
+\scr{refit}. A conditional half-line sign does not resolve the sign from
+finite-sea data alone.
+
+\paragraph{Fresh fixed-$P$ and growing-$Y$ finite-sea checks (c).}
+The base meshes at $h=0.02,0.01,0.005,0.0025$ have
+$N=700,1200,2200,4200$ nodes. Separate refinements at the last three values
+use $N=1500,2750,5250$. Ground-state normalization, edge counting,
+fixed-momentum inversion, positive dressed derivative and the exact
+thermodynamic derivative identity are asserted. The same $h$-basis ensemble
+as above is used on the four available points. The central fixed-$\kappa$
+estimate is the quadratic fit through the finest three values.
+The phase column is the classical-subtracted two-term phase at
+$\kappa_2/\kappa_1=0.5$.
+\begin{center}\small\begin{tabular}{rrrrrr}\toprule
+$\kappa_1$ & $C(\kappa_1)$ & $h$ spread & Phase & $h$ spread & Max. mesh diagnostic\\\midrule
+0.12 & 0.15915758 & $1.41\times10^{-3}$ & -0.0194700 & $2.28\times10^{-2}$ & $4.52\times10^{-9}$\\
+0.18 & 0.15878874 & $4.84\times10^{-4}$ & -0.0212320 & $3.48\times10^{-3}$ & $3.53\times10^{-9}$\\
+0.25 & 0.15842942 & $8.29\times10^{-5}$ & -0.0217711 & $8.90\times10^{-4}$ & $3.83\times10^{-9}$\\
+0.35 & 0.15773618 & $1.67\times10^{-5}$ & -0.0238967 & $1.71\times10^{-5}$ & $4.99\times10^{-9}$\\
+0.50 & 0.15628198 & $3.32\times10^{-6}$ & -0.0282305 & $2.17\times10^{-6}$ & $7.57\times10^{-9}$\\
+0.70 & 0.15360594 & $6.36\times10^{-7}$ & -0.0357984 & $4.63\times10^{-7}$ & $1.12\times10^{-8}$\\
+\bottomrule\end{tabular}\end{center}
+The largest available mesh difference plus a $2\times10^{-10}$ floor is
+propagated with the largest absolute fit-weight norm. This is an empirical
+mesh diagnostic, including an assumption that the unrefined coarsest point
+is no worse; it is not a rigorous discretization bound. The large spreads
+at the smallest amplitudes show that these data do not yet isolate the
+fixed-$P$ semiclassical limit there. No small-$\kappa$ extrapolation from
+this table is advertised as a uniform result.
+
+For $r=0.5$, the fresh fixed-$Y$ phase comparison is:
+\begin{center}\begin{tabular}{rrrrr}\toprule
+$Y$ & Finite-sea intercept & $h$ spread & Mesh diagnostic & WH discrepancy\\\midrule
+16 & -0.020854748 & $2.85\times10^{-4}$ & $3.88\times10^{-9}$ & $1.50\times10^{-7}$\\
+32 & -0.020187307 & $9.79\times10^{-4}$ & $4.65\times10^{-9}$ & $2.06\times10^{-6}$\\
+64 & -0.019876722 & $2.94\times10^{-3}$ & $6.21\times10^{-9}$ & $2.63\times10^{-5}$\\
+128 & -0.019970355 & $6.81\times10^{-3}$ & $9.28\times10^{-9}$ & $2.87\times10^{-4}$\\
+\bottomrule\end{tabular}\end{center}
+The central intercept is cubic in $h$. The growth of the extrapolation
+sensitivity with $Y$ matters even when mesh differences are tiny. It is
+not a controlled expansion along $Y\propto h^{-1}$. Checks:
+\scr{scan}, \scr{refit}.
+
+
+\paragraph{Reproduction and arithmetic scope.}
+\C All five scripts are new and write only \file{uniform_limits_*.json}.
+\scr{analytic} uses SymPy and 70-digit mpmath; \scr{matched} and
+\scr{refit} use 60 digits. \scr{wh} uses 40 digits, an independent inverse
+Laplace method at sampled arguments, and 12-/20-node Gauss quadrature on
+explicit geometric panels beginning at zero. That panel construction keeps
+the $z=O(1)$ region as $Y$ grows. The dense finite-sea solver in
+\scr{scan} uses double precision, with 60-digit classical energy subtraction;
+higher-precision fitting does not upgrade those data.
+The solver algorithm is adapted from the audited precision implementation,
+not claimed as a second independent discretisation. Existing modules are not
+imported or executed. Input hashes in the refit cache guard against concurrent
+changes during that run.
+
+\C To reproduce, run only these files from \file{phase2/scripts/}:
+\begin{verbatim}
+python3 uniform_limits_analytic.py
+python3 uniform_limits_scan.py
+python3 uniform_limits_wh.py
+python3 uniform_limits_matched.py
+python3 uniform_limits_refit.py
+\end{verbatim}
+The scan, WH and matched-moment scripts validate their completed numerical caches by default;
+\file{--refresh} regenerates them. The two main numerical timings are recorded in their
+caches. The report is compiled with two \file{pdflatex} passes in
+\file{phase2/}. No old cache, git state, README, or existing report is changed.
+
+\section{Limit verdicts and claims that survive}
+\begin{longtable}{@{}L{3.1cm}L{7.5cm}L{3.9cm}@{}}
+\toprule Limit & Verdict & Check\\\midrule\endhead
+Bulk kernel, fixed interior test functions & \C Uniform direct-operator
+estimate \eqref{eq:operator}; diagonal layer must be retained. Does not
+control the inverse on Bethe densities. & \scr{analytic}\\
+WH edge coefficients & \C Corrected formal $A,c,d,e$ survive. Absence of
+specified logarithms holds in $u(y)$ through $y^{-2}$. Finite-sea uniform
+identification remains \D. & \scr{analytic}, \scr{matched}\\
+One-body nested edge $C_T$ & \C $1/(2\pi)$ survives conditionally, with the
+independent finite-sea envelope reproduced. Small-momentum-first coefficient
+is instead $3/(4\pi)$. & \scr{analytic}, \scr{refit}\\
+Fixed nonzero dressed $P$, then small amplitude & \D Not interchangeable by
+any result here. Fresh fixed-$\kappa$ scans are diagnostics, not a proof
+of the limiting coefficient. & \scr{scan}, \scr{refit}\\
+Half-line two-body, $r$ in compact subset of $(0,1)$ & \C Conditional matched
+lemma protects $c_0,c_1$ and excludes net $\log^jY/Y$, $j=1,2$, at this order.
+Fresh convolution fits support negative $c_1$. & \scr{matched}, \scr{wh},
+\scr{refit}\\
+Finite sea: $h\to0$ versus $Y\to\infty$ & \D No uniform inverse or differentiated
+endpoint bound; the joint overlap requires $Y\gg1$ and $hY\ll1$.
+Taking $Y\to\infty$ first at fixed $h$ exits the small-amplitude regime.
+& \scr{analytic}, \scr{scan}\\
+Equal/vanishing amplitudes & \D No uniform conclusion as $r\to1$ or $r\to0$.
+The argument requires both $(1-r^2)Y$ and $r^2Y$ large; constants deteriorate.
+& Explicit denominators and domain in matched lemma\\
+Physical two-body phase, including head-on & \D The corrected overtaking
+convolution does not determine the physical quantum frame, absolute phase,
+or a head-on interchange theorem. Earlier audit qualifications remain.
+& Scope of \eqref{eq:Q}\\
+Phase 2d bound; Phase 2f sign precision & \C The bound remains false and saved
+fits do not resolve the subleading sign. Negative half-line signs do not
+retroactively make those fits precise. & \scr{refit}\\
+\bottomrule
+\end{longtable}
+
+\paragraph{What would complete the open part (research judgment, d).}
+One needs a uniform bound for the finite-sea resolvent after isolating its
+normalisation/zero-frequency mode, with weighted endpoint norms and at least
+the derivatives needed for fixed-momentum inversion. The bound must cover an
+expanding interval $1\ll Y\ll h^{-1}$ and state how its error grows with $Y$
+and with the two amplitude separations. Only then can a joint path
+$Y=Y(h)$ be chosen with a proved vanishing error, or compared to the fixed
+$\kappa$ semiclassical limit. Physical phase matching additionally requires
+the quantum-frame dictionary identified by the controlling audits.
+
+\section{Failures recorded}
+\begin{enumerate}
+\item \C The historical successive-change assertion $<0.004$ fails at all
+three entries reproduced in the numerical section. It is not rerun or
+weakened. The new checker asserts that those failures are present in the
+saved data. A raw change between two $h$ values is neither a mesh error nor
+an extrapolation error bound.
+\item \C The Phase 2f sign claim fails under its already-saved $h\log h$
+alternative, and correcting the classical curvature alone does not remove
+basis dependence. No preferred fit is selected because it agrees with a target.
+\item \C The first symbolic check of $e$ failed because SymPy retained
+$\psi^{(1)}(-1/2)$ and $\psi^{(2)}(-1/2)$ unevaluated. Explicit recurrence
+identities, independently checked at 70 digits, reduce the expression and
+pass the unchanged exact-zero assertion. This was a simplification failure,
+not evidence that the audited coefficient was wrong. A later exact
+classical-limit check also failed on structural equality of factored and
+expanded SymPy expressions; simplifying their difference to exact zero
+repaired it, with no numerical tolerance introduced.
+\item \C The first direct endpoint-moment quadrature at $y=4$ used 12/20
+nodes; its 20-node discrepancy $6.22\times10^{-14}$ failed the unchanged
+$10^{-14}$ assertion. The grid was refined to 20/32 nodes; the separate
+$10^{-10}$ quadrature-spread criterion was also retained.
+\item \C The first PDF had a table heading extending 5.51 points beyond its
+column. A formatting helper initially used a repository-relative path while
+already in \file{phase2/}, causing a file-not-found error. The path was fixed
+and the heading shortened before the final two-pass build and visual review.
+\end{enumerate}
+\C Success markers certify the checks actually asserted, including reproduced
+counterexamples. They do not certify the open resolvent assumptions or the
+physical continuum identifications.
+\end{document}
