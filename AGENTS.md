@@ -13,6 +13,7 @@ Instructions for AI agents (and humans) working in this repository. It is a rese
 - **Verify everything.** Every formula labelled (c) needs a Python (SymPy/mpmath) check, at high precision where feasible. Each script must end by printing `ALL CHECKS PASSED`.
 - **Report failures honestly.** List failed checks, including ones that were later fixed, in the write-up (a "failures recorded" list). Never weaken a check to make it pass without saying so.
 - **Ask the PI** before making any choice that depends on preference: which equation to study, regularisation schemes, conventions, or the scope of a write-up.
+- **Record pending PI decisions in the repository.** When you put a choice to the PI, add it to "Open decisions" in `README.md`: the options, your recommendation and the commit or write-up that raised it. When the PI decides, move it to "Resolved" with the decision and the commit. Never leave a pending decision only in a chat or in an agent's private memory, since other agents on other machines cannot see it.
 
 ## Fixed convention
 

@@ -38,6 +38,17 @@ The [classical review](phase1/review.pdf) gives the potential and third-order La
 
 **Document format.** Phase 1 and Phase 2 are written in **LaTeX** (compiled to PDF), suitable for heavy mathematics. Computations are in **Python/SymPy** scripts that the documents reference.
 
+## Open decisions
+
+Choices that wait on the PI (see `AGENTS.md`). Move an item to "Resolved" with the decision and its commit.
+
+- **Bad-equation determinant prescription (validation item V3).** The one-loop problem on the bad equation is ill-posed on the full phase space and well posed on the Charlier–Lenells class. On 3 November 2026 three regularisations were put to the PI: (A) the Charlier–Lenells-reduced theory with stable phonons |q| < 1 only (recommended, labelled as a choice of quantum theory); (B) the Toda lattice as the definition; (C) continuation from the good equation. No choice has been recorded. The [master report](phase2/report.pdf) (V3) asks for a physical prescription, or a PI choice, before the continued trace is extended. V1 depends on it.
+
+Resolved:
+
+- **Priority (4 November 2026, `446bf1a`, `26eba1d`).** The good equation is the main thread; the bad equation and quantum Toda serve as validation.
+- **±π/2 constant in the continued bad candidate.** The defect-triangle test (`e3328a6`) found a failure by e^{±iπ/2}. The later candidate audit (`phase2/audit_smx.pdf`) refuted the printed crossing offset: direct quadrature gives crossing sum zero, not π/2, and the checker had inserted the offset by hand. **(d):** this probably removes the source of the defect failure, but the defect test has not been rerun without the offset. Candidate selection remains open as next step (5) in the report.
+
 ## Status
 
 The PI's priority is quantum scattering on the **good equation**. The bad equation and the quantum Toda chain provide validation tests. The previous README was updated at `adb9116` (12:19 UTC on 4 November 2026) and the report at `446bf1a` (12:30 UTC). The [Phase 2 master report](phase2/report.pdf) now covers the subsequent work through `bfc3944` (17:08 UTC).
